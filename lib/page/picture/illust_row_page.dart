@@ -51,13 +51,13 @@ class IllustRowPage extends StatefulWidget {
   final IllustStore? store;
   final GestureDragEndCallback? onHorizontalDragEnd;
 
-  const IllustRowPage(
-      {Key? key,
-      required this.id,
-      this.heroString,
-      this.store,
-      this.onHorizontalDragEnd})
-      : super(key: key);
+  const IllustRowPage({
+    Key? key,
+    required this.id,
+    this.heroString,
+    this.store,
+    this.onHorizontalDragEnd,
+  }) : super(key: key);
 
   @override
   _IllustRowPageState createState() => _IllustRowPageState();
@@ -74,7 +74,9 @@ class _IllustRowPageState extends State<IllustRowPage>
   @override
   void initState() {
     _refreshController = EasyRefreshController(
-        controlFinishLoad: true, controlFinishRefresh: true);
+      controlFinishLoad: true,
+      controlFinishRefresh: true,
+    );
     _scrollController = ScrollController();
     _illustStore = widget.store ?? IllustStore(widget.id, null);
     _illustStore.fetch();
@@ -97,7 +99,8 @@ class _IllustRowPageState extends State<IllustRowPage>
     if (mounted &&
         _scrollController.hasClients &&
         _aboutStore.illusts.isEmpty &&
-        !_aboutStore.fetching) _aboutStore.next();
+        !_aboutStore.fetching)
+      _aboutStore.next();
   }
 
   @override
@@ -111,9 +114,7 @@ class _IllustRowPageState extends State<IllustRowPage>
   Widget _buildAppbar() {
     return Column(
       children: [
-        Container(
-          height: MediaQuery.of(context).padding.top,
-        ),
+        Container(height: MediaQuery.of(context).padding.top),
         Container(
           child: Row(
             mainAxisSize: MainAxisSize.max,
@@ -125,13 +126,13 @@ class _IllustRowPageState extends State<IllustRowPage>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
-                      icon: Icon(Icons.more_vert),
-                      onPressed: () {
-                        buildShowModalBottomSheet(
-                            context, _illustStore.illusts!);
-                      })
+                    icon: Icon(Icons.more_vert),
+                    onPressed: () {
+                      buildShowModalBottomSheet(context, _illustStore.illusts!);
+                    },
+                  ),
                 ],
-              )
+              ),
             ],
           ),
         ),
@@ -166,81 +167,85 @@ class _IllustRowPageState extends State<IllustRowPage>
             widget.onHorizontalDragEnd!(details);
           }
         },
-        child: Observer(builder: (context) {
-          return Visibility(
-            visible: _illustStore.errorMessage == null,
-            child: FloatingActionButton(
-              heroTag: widget.id,
-              backgroundColor: Colors.white,
-              onPressed: () => _illustStore.star(),
-              child: Observer(builder: (_) {
-                return StarIcon(
-                  state: _illustStore.state,
-                );
-              }),
-            ),
-          );
-        }),
+        child: Observer(
+          builder: (context) {
+            return Visibility(
+              visible: _illustStore.errorMessage == null,
+              child: FloatingActionButton(
+                heroTag: widget.id,
+                backgroundColor: Colors.white,
+                onPressed: () => _illustStore.star(),
+                child: Observer(
+                  builder: (_) {
+                    return StarIcon(state: _illustStore.state);
+                  },
+                ),
+              ),
+            );
+          },
+        ),
       ),
-      body: Observer(builder: (_) {
-        if (!tempView)
-          for (var i in muteStore.banillusts) {
-            if (i.illustId == widget.id.toString()) {
-              return BanPage(
-                name: "${I18n.of(context).illust}\n${i.name}\n",
-                onPressed: () {
-                  setState(() {
-                    tempView = true;
-                  });
-                },
-              );
-            }
-          }
-        if (!tempView && _illustStore.illusts != null) {
-          for (var j in muteStore.banUserIds) {
-            if (j.userId == _illustStore.illusts!.user.id.toString()) {
-              return BanPage(
-                name: "${I18n.of(context).painter}\n${j.name}\n",
-                onPressed: () {
-                  setState(() {
-                    tempView = true;
-                  });
-                },
-              );
-            }
-          }
-          for (var t in muteStore.banTags) {
-            for (var t1 in _illustStore.illusts!.tags) {
-              if (t.name == t1.name)
+      body: Observer(
+        builder: (_) {
+          if (!tempView)
+            for (var i in muteStore.banillusts) {
+              if (i.illustId == widget.id.toString()) {
                 return BanPage(
-                  name: "${I18n.of(context).tag}\n${t.name}\n",
+                  name: "${I18n.of(context).illust}\n${i.name}\n",
                   onPressed: () {
                     setState(() {
                       tempView = true;
                     });
                   },
                 );
+              }
+            }
+          if (!tempView && _illustStore.illusts != null) {
+            for (var j in muteStore.banUserIds) {
+              if (j.userId == _illustStore.illusts!.user.id.toString()) {
+                return BanPage(
+                  name: "${I18n.of(context).painter}\n${j.name}\n",
+                  onPressed: () {
+                    setState(() {
+                      tempView = true;
+                    });
+                  },
+                );
+              }
+            }
+            for (var t in muteStore.banTags) {
+              for (var t1 in _illustStore.illusts!.tags) {
+                if (t.name == t1.name)
+                  return BanPage(
+                    name: "${I18n.of(context).tag}\n${t.name}\n",
+                    onPressed: () {
+                      setState(() {
+                        tempView = true;
+                      });
+                    },
+                  );
+              }
             }
           }
-        }
-        return Container(
-          child: Stack(
-            children: [
-              _buildContent(context, _illustStore.illusts),
-              _buildAppbar()
-            ],
-          ),
-        );
-      }),
+          return Container(
+            child: Stack(
+              children: [
+                _buildContent(context, _illustStore.illusts),
+                _buildAppbar(),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
   Widget colorText(String text, BuildContext context) => SelectionArea(
-        child: Text(
-          text,
-          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-        ),
-      );
+    child: Text(
+      text,
+      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+    ),
+  );
 
   ScrollController scrollController = ScrollController();
 
@@ -273,110 +278,117 @@ class _IllustRowPageState extends State<IllustRowPage>
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
       },
-      child: Observer(builder: (context) {
-        return Container(
-          child: Stack(
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: expectWidth,
-                    child: CustomScrollView(slivers: [
-                      ..._buildPhotoList(data, centerType, height),
-                      SliverToBoxAdapter(
-                          child: Container(
-                        height: MediaQuery.of(context).padding.bottom,
-                      ))
-                    ]),
-                  ),
-                  Expanded(
-                    child: Container(
-                      color: Theme.of(context).cardColor,
-                      child: EasyRefresh(
-                        controller: _refreshController,
-                        onLoad: () {
-                          _aboutStore.next();
-                        },
-                        child: CustomScrollView(
-                          controller: _scrollController,
-                          slivers: [
-                            SliverToBoxAdapter(
-                                child: Container(
-                                    height:
-                                        MediaQuery.of(context).padding.top)),
-                            SliverToBoxAdapter(
-                              child: IllustDetailContent(
-                                illusts: data,
-                                userStore: userStore,
-                                illustStore: _illustStore,
-                                loadAbout: () {
-                                  _loadAbout();
-                                },
-                              ),
+      child: Observer(
+        builder: (context) {
+          return Container(
+            child: Stack(
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: expectWidth,
+                      child: CustomScrollView(
+                        slivers: [
+                          ..._buildPhotoList(data, centerType, height),
+                          SliverToBoxAdapter(
+                            child: Container(
+                              height: MediaQuery.of(context).padding.bottom,
                             ),
-                            _buildRecom()
-                          ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        color: Theme.of(context).cardColor,
+                        child: EasyRefresh(
+                          controller: _refreshController,
+                          onLoad: () {
+                            _aboutStore.next();
+                          },
+                          child: CustomScrollView(
+                            controller: _scrollController,
+                            slivers: [
+                              SliverToBoxAdapter(
+                                child: Container(
+                                  height: MediaQuery.of(context).padding.top,
+                                ),
+                              ),
+                              SliverToBoxAdapter(
+                                child: IllustDetailContent(
+                                  illusts: data,
+                                  userStore: userStore,
+                                  illustStore: _illustStore,
+                                  loadAbout: () {
+                                    _loadAbout();
+                                  },
+                                ),
+                              ),
+                              _buildRecom(),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              Row(children: [
-                Container(
-                  width: expectWidth - (dividerWidth * 0.5),
+                  ],
                 ),
-                GestureDetector(
-                  onTap: () {},
-                  onHorizontalDragUpdate: (details) {
-                    userSetting.setDragStartX(details.localPosition.dx);
-                  },
-                  behavior: HitTestBehavior.translucent,
-                  child: Container(
-                    width: dividerWidth,
-                  ),
+                Row(
+                  children: [
+                    Container(width: expectWidth - (dividerWidth * 0.5)),
+                    GestureDetector(
+                      onTap: () {},
+                      onHorizontalDragUpdate: (details) {
+                        userSetting.setDragStartX(details.localPosition.dx);
+                      },
+                      behavior: HitTestBehavior.translucent,
+                      child: Container(width: dividerWidth),
+                    ),
+                    Spacer(),
+                  ],
                 ),
-                Spacer()
-              ])
-            ],
-          ),
-        );
-      }),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
   SliverGrid _buildRecom() {
     return SliverGrid(
-        delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-          var list = _aboutStore.illusts
-              .map((element) => IllustStore(element.id, element))
-              .toList();
-          return InkWell(
-            onTap: () {
-              Leader.push(
-                  context,
-                  PictureListPage(
-                    iStores: list,
-                    lightingStore: null,
-                    store: list[index],
-                  ));
-            },
-            onLongPress: () {
-              saveStore.saveImage(_aboutStore.illusts[index]);
-              if (userSetting.starAfterSave && (_illustStore.state == 0)) {
-                _illustStore.star(
-                    restrict:
-                        userSetting.defaultPrivateLike ? "private" : "public");
-              }
-            },
-            child: PixivImage(
-              _aboutStore.illusts[index].imageUrls.squareMedium,
-              enableMemoryCache: false,
-            ),
-          );
-        }, childCount: _aboutStore.illusts.length),
-        gridDelegate:
-            SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3));
+      delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+        var list = _aboutStore.illusts
+            .map((element) => IllustStore(element.id, element))
+            .toList();
+        return InkWell(
+          onTap: () {
+            Leader.push(
+              context,
+              PictureListPage(
+                iStores: list,
+                lightingStore: null,
+                store: list[index],
+              ),
+            );
+          },
+          onLongPress: () {
+            saveStore.saveImage(_aboutStore.illusts[index]);
+            if (userSetting.starAfterSave && (_illustStore.state == 0)) {
+              _illustStore.star(
+                restrict: userSetting.defaultPrivateLike ? "private" : "public",
+              );
+            }
+          },
+          child: PixivImage(
+            _aboutStore.illusts[index].imageUrls.squareMedium,
+            enableMemoryCache: false,
+          ),
+        );
+      }, childCount: _aboutStore.illusts.length),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+      ),
+    );
   }
 
   List<Widget> _buildPhotoList(Illusts data, bool centerType, double height) {
@@ -385,83 +397,87 @@ class _IllustRowPageState extends State<IllustRowPage>
         SliverToBoxAdapter(
           child: NullHero(
             tag: widget.heroString,
-            child: UgoiraLoader(
-              id: widget.id,
-              illusts: data,
-            ),
+            child: UgoiraLoader(id: widget.id, illusts: data),
           ),
         ),
       if (data.type != "ugoira")
         data.pageCount == 1
             ? (centerType
-                ? SliverFillRemaining(
-                    child: _buildPicture(data, height),
-                  )
-                : SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                    return _buildPicture(data, height);
-                  }, childCount: 1)))
+                  ? SliverFillRemaining(child: _buildPicture(data, height))
+                  : SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        return _buildPicture(data, height);
+                      }, childCount: 1),
+                    ))
             : SliverList(
-                delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                return InkWell(
+                delegate: SliverChildBuilderDelegate((
+                  BuildContext context,
+                  int index,
+                ) {
+                  return InkWell(
                     onLongPress: () {
                       _pressSave(data, index);
                     },
                     onTap: () {
                       Leader.push(
-                          context,
-                          PhotoZoomPage(
-                            index: index,
-                            illusts: data,
-                            illustStore: _illustStore,
-                          ));
+                        context,
+                        PhotoZoomPage(
+                          index: index,
+                          illusts: data,
+                          illustStore: _illustStore,
+                        ),
+                      );
                     },
-                    child: _buildIllustsItem(index, data, height));
-              }, childCount: data.metaPages.length)),
+                    child: _buildIllustsItem(index, data, height),
+                  );
+                }, childCount: data.metaPages.length),
+              ),
     ];
   }
 
   Widget _buildPicture(Illusts data, double height) {
-    return Center(child: Builder(
-      builder: (BuildContext context) {
-        String url = data.illustDetailUrl;
-        if (data.type == "manga") {
-          url = data.managaDetailUrl;
-        }
-        Widget placeWidget = Container(height: height);
-        return InkWell(
-          onLongPress: () {
-            _pressSave(data, 0);
-          },
-          onTap: () {
-            Leader.push(
+    return Center(
+      child: Builder(
+        builder: (BuildContext context) {
+          String url = data.illustDetailUrl;
+          if (data.type == "manga") {
+            url = data.managaDetailUrl;
+          }
+          Widget placeWidget = Container(height: height);
+          return InkWell(
+            onLongPress: () {
+              _pressSave(data, 0);
+            },
+            onTap: () {
+              Leader.push(
                 context,
                 PhotoZoomPage(
                   index: 0,
                   illusts: data,
                   illustStore: _illustStore,
-                ));
-          },
-          child: NullHero(
-            tag: widget.heroString,
-            child: PixivImage(
-              url,
-              fade: false,
-              width: MediaQuery.of(context).size.width,
-              placeWidget: (url != data.imageUrls.medium)
-                  ? PixivImage(
-                      data.imageUrls.medium,
-                      width: MediaQuery.of(context).size.width,
-                      placeWidget: placeWidget,
-                      fade: false,
-                    )
-                  : placeWidget,
+                ),
+              );
+            },
+            child: NullHero(
+              tag: widget.heroString,
+              child: PixivImage(
+                url,
+                fade: false,
+                width: MediaQuery.of(context).size.width,
+                placeWidget: (url != data.imageUrls.medium)
+                    ? PixivImage(
+                        data.imageUrls.medium,
+                        width: MediaQuery.of(context).size.width,
+                        placeWidget: placeWidget,
+                        fade: false,
+                      )
+                    : placeWidget,
+              ),
             ),
-          ),
-        );
-      },
-    ));
+          );
+        },
+      ),
+    );
   }
 
   Center _buildErrorContent(BuildContext context) {
@@ -472,19 +488,18 @@ class _IllustRowPageState extends State<IllustRowPage>
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child:
-                Text(':(', style: Theme.of(context).textTheme.headlineMedium),
+            child: Text(
+              ':(',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
           ),
-          Text(
-            '${_illustStore.errorMessage}',
-            maxLines: 5,
-          ),
+          Text('${_illustStore.errorMessage}', maxLines: 5),
           ElevatedButton(
             onPressed: () {
               _illustStore.fetch();
             },
             child: Text(I18n.of(context).refresh),
-          )
+          ),
         ],
       ),
     );
@@ -514,40 +529,44 @@ class _IllustRowPageState extends State<IllustRowPage>
         placeWidget: Container(
           height: height,
           child: Center(
-            child: Text('$index',
-                style: Theme.of(context).textTheme.headlineMedium),
+            child: Text(
+              '$index',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
           ),
         ),
       );
     }
     return index == 0
         ? (userSetting.pictureQuality >= 1
-            ? NullHero(
-                child: PixivImage(
-                  illust.illustDetailImageUrl(index),
-                  placeWidget: PixivImage(
+              ? NullHero(
+                  child: PixivImage(
+                    illust.illustDetailImageUrl(index),
+                    placeWidget: PixivImage(
+                      illust.metaPages[index].imageUrls!.medium,
+                      fade: false,
+                    ),
+                    fade: false,
+                  ),
+                  tag: widget.heroString,
+                )
+              : NullHero(
+                  child: PixivImage(
                     illust.metaPages[index].imageUrls!.medium,
                     fade: false,
                   ),
-                  fade: false,
-                ),
-                tag: widget.heroString,
-              )
-            : NullHero(
-                child: PixivImage(
-                  illust.metaPages[index].imageUrls!.medium,
-                  fade: false,
-                ),
-                tag: widget.heroString,
-              ))
+                  tag: widget.heroString,
+                ))
         : PixivImage(
             illust.illustDetailImageUrl(index),
             fade: false,
             placeWidget: Container(
               height: 150,
               child: Center(
-                child: Text('$index',
-                    style: Theme.of(context).textTheme.headlineMedium),
+                child: Text(
+                  '$index',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
               ),
             ),
           );
@@ -555,36 +574,38 @@ class _IllustRowPageState extends State<IllustRowPage>
 
   Future _longPressTag(BuildContext context, Tags f) async {
     switch (await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            title: Text(f.name),
-            children: <Widget>[
-              SimpleDialogOption(
-                onPressed: () {
-                  Navigator.pop(context, 0);
-                },
-                child: Text(I18n.of(context).ban),
-              ),
-              SimpleDialogOption(
-                onPressed: () {
-                  Navigator.pop(context, 1);
-                },
-                child: Text(I18n.of(context).bookmark),
-              ),
-              SimpleDialogOption(
-                onPressed: () {
-                  Navigator.pop(context, 2);
-                },
-                child: Text(I18n.of(context).copy),
-              ),
-            ],
-          );
-        })) {
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: Text(f.name),
+          children: <Widget>[
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(context, 0);
+              },
+              child: Text(I18n.of(context).ban),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(context, 1);
+              },
+              child: Text(I18n.of(context).bookmark),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(context, 2);
+              },
+              child: Text(I18n.of(context).copy),
+            ),
+          ],
+        );
+      },
+    )) {
       case 0:
         {
-          muteStore.insertBanTag(BanTagPersist(
-              name: f.name, translateName: f.translatedName ?? ""));
+          muteStore.insertBanTag(
+            BanTagPersist(name: f.name, translateName: f.translatedName ?? ""),
+          );
         }
         break;
       case 1:
@@ -595,10 +616,12 @@ class _IllustRowPageState extends State<IllustRowPage>
       case 2:
         {
           await Clipboard.setData(ClipboardData(text: f.name));
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            duration: Duration(seconds: 1),
-            content: Text(I18n.of(context).copied_to_clipboard),
-          ));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              duration: Duration(seconds: 1),
+              content: Text(I18n.of(context).copied_to_clipboard),
+            ),
+          );
         }
     }
   }
@@ -609,45 +632,49 @@ class _IllustRowPageState extends State<IllustRowPage>
         await _longPressTag(context, f);
       },
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return ResultPage(
-            word: f.name,
-            translatedName: f.translatedName ?? "",
-          );
-        }));
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) {
+              return ResultPage(
+                word: f.name,
+                translatedName: f.translatedName ?? "",
+              );
+            },
+          ),
+        );
       },
       child: RichText(
-          textAlign: TextAlign.center,
-          text: TextSpan(
-              text: "#${f.name}",
-              children: [
-                TextSpan(
-                  text: " ",
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                TextSpan(
-                    text: "${f.translatedName ?? "~"}",
-                    style: Theme.of(context).textTheme.bodySmall)
-              ],
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall!
-                  .copyWith(color: Theme.of(context).colorScheme.secondary))),
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          text: "#${f.name}",
+          children: [
+            TextSpan(text: " ", style: Theme.of(context).textTheme.bodySmall),
+            TextSpan(
+              text: "${f.translatedName ?? "~"}",
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+          style: Theme.of(context).textTheme.bodySmall!.copyWith(
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+        ),
+      ),
     );
   }
 
   Widget _buildNameAvatar(BuildContext context, Illusts illust) {
     if (userStore == null)
       userStore = UserStore(illust.user.id, null, illust.user);
-    return Observer(builder: (_) {
-      Future.delayed(Duration(seconds: 2), () {
-        _loadAbout();
-      });
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Padding(
+    return Observer(
+      builder: (_) {
+        Future.delayed(Duration(seconds: 2), () {
+          _loadAbout();
+        });
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Padding(
               child: GestureDetector(
                 onLongPress: () {
                   userStore!.follow();
@@ -673,19 +700,21 @@ class _IllustRowPageState extends State<IllustRowPage>
                       ),
                       Center(
                         child: Hero(
-                          tag: illust.user.profileImageUrls.medium +
+                          tag:
+                              illust.user.profileImageUrls.medium +
                               this.hashCode.toString(),
                           child: PainterAvatar(
                             url: illust.user.profileImageUrls.medium,
                             id: illust.user.id,
                             onTap: () async {
                               await Leader.push(
-                                  context,
-                                  UsersPage(
-                                    id: illust.user.id,
-                                    userStore: userStore,
-                                    heroTag: this.hashCode.toString(),
-                                  ));
+                                context,
+                                UsersPage(
+                                  id: illust.user.id,
+                                  userStore: userStore,
+                                  heroTag: this.hashCode.toString(),
+                                ),
+                              );
                               _illustStore.illusts!.user.isFollowed =
                                   userStore!.isFollow;
                             },
@@ -696,44 +725,45 @@ class _IllustRowPageState extends State<IllustRowPage>
                   ),
                 ),
               ),
-              padding: EdgeInsets.all(8.0)),
-          Expanded(
-            child: Padding(
               padding: EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  SelectionArea(
-                    child: Text(
-                      illust.title,
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary),
-                    ),
-                  ),
-                  Container(
-                    height: 4.0,
-                  ),
-                  Hero(
-                    tag: illust.user.name + this.hashCode.toString(),
-                    child: SelectionArea(
+            ),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    SelectionArea(
                       child: Text(
-                        illust.user.name,
-                        style: Theme.of(context).textTheme.bodyMedium,
+                        illust.title,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
                       ),
                     ),
-                  ),
-                  Text(
-                    illust.createDate.toShortTime(),
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
+                    Container(height: 4.0),
+                    Hero(
+                      tag: illust.user.name + this.hashCode.toString(),
+                      child: SelectionArea(
+                        child: Text(
+                          illust.user.name,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      illust.createDate.toShortTime(),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
-      );
-    });
+          ],
+        );
+      },
+    );
   }
 
   Future<void> _pressSave(Illusts illust, int index) async {
@@ -741,72 +771,68 @@ class _IllustRowPageState extends State<IllustRowPage>
       saveStore.saveImage(illust, index: index);
       if (userSetting.starAfterSave && (_illustStore.state == 0)) {
         _illustStore.star(
-            restrict: userSetting.defaultPrivateLike ? "private" : "public");
+          restrict: userSetting.defaultPrivateLike ? "private" : "public",
+        );
       }
       return;
     }
     showModalBottomSheet(
-        context: context,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(16),
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (c1) {
+        return Container(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              illust.metaPages.isNotEmpty
+                  ? ListTile(
+                      title: Text(I18n.of(context).muti_choice_save),
+                      leading: Icon(Icons.save),
+                      onTap: () async {
+                        Navigator.of(context).pop();
+                        _showMutiChoiceDialog(illust, context);
+                      },
+                    )
+                  : Container(),
+              ListTile(
+                leading: Icon(Icons.save_alt),
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  saveStore.saveImage(illust, index: index);
+                  if (userSetting.starAfterSave && (_illustStore.state == 0)) {
+                    _illustStore.star(
+                      restrict: userSetting.defaultPrivateLike
+                          ? "private"
+                          : "public",
+                    );
+                  }
+                },
+                onLongPress: () async {
+                  Navigator.of(context).pop();
+                  saveStore.saveImage(illust, index: index);
+                  if (userSetting.starAfterSave && (_illustStore.state == 0)) {
+                    _illustStore.star(
+                      restrict: userSetting.defaultPrivateLike
+                          ? "private"
+                          : "public",
+                    );
+                  }
+                },
+                title: Text(I18n.of(context).save),
+              ),
+              ListTile(
+                leading: Icon(Icons.cancel),
+                onTap: () => Navigator.of(context).pop(),
+                title: Text(I18n.of(context).cancel),
+              ),
+              Container(height: MediaQuery.of(c1).padding.bottom),
+            ],
           ),
-        ),
-        builder: (c1) {
-          return Container(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                illust.metaPages.isNotEmpty
-                    ? ListTile(
-                        title: Text(I18n.of(context).muti_choice_save),
-                        leading: Icon(
-                          Icons.save,
-                        ),
-                        onTap: () async {
-                          Navigator.of(context).pop();
-                          _showMutiChoiceDialog(illust, context);
-                        },
-                      )
-                    : Container(),
-                ListTile(
-                  leading: Icon(Icons.save_alt),
-                  onTap: () async {
-                    Navigator.of(context).pop();
-                    saveStore.saveImage(illust, index: index);
-                    if (userSetting.starAfterSave &&
-                        (_illustStore.state == 0)) {
-                      _illustStore.star(
-                          restrict: userSetting.defaultPrivateLike
-                              ? "private"
-                              : "public");
-                    }
-                  },
-                  onLongPress: () async {
-                    Navigator.of(context).pop();
-                    saveStore.saveImage(illust, index: index);
-                    if (userSetting.starAfterSave &&
-                        (_illustStore.state == 0)) {
-                      _illustStore.star(
-                          restrict: userSetting.defaultPrivateLike
-                              ? "private"
-                              : "public");
-                    }
-                  },
-                  title: Text(I18n.of(context).save),
-                ),
-                ListTile(
-                  leading: Icon(Icons.cancel),
-                  onTap: () => Navigator.of(context).pop(),
-                  title: Text(I18n.of(context).cancel),
-                ),
-                Container(
-                  height: MediaQuery.of(c1).padding.bottom,
-                )
-              ],
-            ),
-          );
-        });
+        );
+      },
+    );
   }
 
   Future _showMutiChoiceDialog(Illusts illust, BuildContext context) async {
@@ -816,12 +842,14 @@ class _IllustRowPageState extends State<IllustRowPage>
       indexs.add(false);
     }
     final result = await showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(16.0))),
-        builder: (context) {
-          return StatefulBuilder(builder: (context, setDialogState) {
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
             return SafeArea(
               child: SizedBox(
                 height: MediaQuery.of(context).size.height * 0.8,
@@ -838,58 +866,65 @@ class _IllustRowPageState extends State<IllustRowPage>
                         itemBuilder: (context, index) {
                           final data = illust.metaPages[index];
                           return Container(
-                              child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: InkWell(
-                              onTap: () {
-                                setDialogState(() {
-                                  indexs[index] = !indexs[index];
-                                });
-                              },
-                              onLongPress: () {
-                                Leader.push(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: InkWell(
+                                onTap: () {
+                                  setDialogState(() {
+                                    indexs[index] = !indexs[index];
+                                  });
+                                },
+                                onLongPress: () {
+                                  Leader.push(
                                     context,
                                     PhotoZoomPage(
                                       index: index,
                                       illusts: illust,
                                       illustStore: _illustStore,
-                                    ));
-                              },
-                              child: Stack(
-                                children: [
-                                  PixivImage(
-                                    data.imageUrls!.squareMedium,
-                                    placeWidget: Container(
-                                      child: Center(
-                                        child: Text(index.toString()),
+                                    ),
+                                  );
+                                },
+                                child: Stack(
+                                  children: [
+                                    PixivImage(
+                                      data.imageUrls!.squareMedium,
+                                      placeWidget: Container(
+                                        child: Center(
+                                          child: Text(index.toString()),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Align(
+                                    Align(
                                       alignment: Alignment.bottomRight,
                                       child: Visibility(
-                                          visible: indexs[index],
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(4.0),
-                                            child: Icon(
-                                              Icons.check_circle,
-                                              color: Colors.green,
-                                            ),
-                                          ))),
-                                ],
+                                        visible: indexs[index],
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: Icon(
+                                            Icons.check_circle,
+                                            color: Colors.green,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ));
+                          );
                         },
                         itemCount: illust.metaPages.length,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3),
+                          crossAxisCount: 3,
+                        ),
                       ),
                     ),
                     ListTile(
-                      leading: Icon(!allOn
-                          ? Icons.check_circle_outline
-                          : Icons.check_circle),
+                      leading: Icon(
+                        !allOn
+                            ? Icons.check_circle_outline
+                            : Icons.check_circle,
+                      ),
                       title: Text(I18n.of(context).all),
                       onTap: () {
                         allOn = !allOn;
@@ -910,8 +945,10 @@ class _IllustRowPageState extends State<IllustRowPage>
                 ),
               ),
             );
-          });
-        });
+          },
+        );
+      },
+    );
     switch (result) {
       case "OK":
         {
@@ -922,61 +959,60 @@ class _IllustRowPageState extends State<IllustRowPage>
 
   Future buildShowModalBottomSheet(BuildContext context, Illusts illusts) {
     return showModalBottomSheet(
-        isScrollControlled: true,
-        context: context,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(16),
+      isScrollControlled: true,
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) {
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(8.0),
+              topRight: Radius.circular(8.0),
+            ),
           ),
-        ),
-        builder: (_) {
-          return Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(8.0),
-                    topRight: Radius.circular(8.0))),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      _buildNameAvatar(context, illusts),
-                      if (illusts.metaPages.isNotEmpty)
-                        ListTile(
-                          title: Text(I18n.of(context).muti_choice_save),
-                          leading: Icon(
-                            Icons.save,
-                          ),
-                          onTap: () async {
-                            Navigator.of(context).pop();
-                            _showMutiChoiceDialog(illusts, context);
-                          },
-                        ),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    _buildNameAvatar(context, illusts),
+                    if (illusts.metaPages.isNotEmpty)
                       ListTile(
-                        title: Text(I18n.of(context).copymessage),
-                        leading: Icon(
-                          Icons.local_library,
-                        ),
+                        title: Text(I18n.of(context).muti_choice_save),
+                        leading: Icon(Icons.save),
                         onTap: () async {
-                          await Clipboard.setData(ClipboardData(
-                              text:
-                                  'title:${illusts.title}\npainter:${illusts.user.name}\nillust id:${widget.id}'));
-                          BotToast.showText(
-                              text: I18n.of(context).copied_to_clipboard);
                           Navigator.of(context).pop();
+                          _showMutiChoiceDialog(illusts, context);
                         },
                       ),
-                      Builder(builder: (context) {
+                    ListTile(
+                      title: Text(I18n.of(context).copymessage),
+                      leading: Icon(Icons.local_library),
+                      onTap: () async {
+                        await Clipboard.setData(
+                          ClipboardData(
+                            text:
+                                'title:${illusts.title}\npainter:${illusts.user.name}\nillust id:${widget.id}',
+                          ),
+                        );
+                        BotToast.showText(
+                          text: I18n.of(context).copied_to_clipboard,
+                        );
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    Builder(
+                      builder: (context) {
                         return ListTile(
                           title: Text(I18n.of(context).share),
-                          leading: Icon(
-                            Icons.share,
-                          ),
+                          leading: Icon(Icons.share),
                           onTap: () {
                             final box =
                                 context.findRenderObject() as RenderBox?;
@@ -986,79 +1022,86 @@ class _IllustRowPageState extends State<IllustRowPage>
                             Navigator.of(context).pop();
                             final link =
                                 "https://www.pixiv.net/artworks/${widget.id}";
-                            SharePlus.instance.share(ShareParams(
-                                text: link, sharePositionOrigin: pos));
+                            SharePlus.instance.share(
+                              ShareParams(text: link, sharePositionOrigin: pos),
+                            );
                           },
                         );
-                      }),
-                      ListTile(
-                        leading: Icon(
-                          Icons.link,
-                        ),
-                        title: Text(I18n.of(context).link),
-                        onTap: () async {
-                          await Clipboard.setData(ClipboardData(
-                              text:
-                                  "https://www.pixiv.net/artworks/${widget.id}"));
-                          BotToast.showText(
-                              text: I18n.of(context).copied_to_clipboard);
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      ListTile(
-                        title: Text(I18n.of(context).ban),
-                        leading: Icon(Icons.brightness_auto),
-                        onTap: () {
-                          muteStore.insertBanIllusts(BanIllustIdPersist(
-                              illustId: widget.id.toString(),
-                              name: illusts.title));
-                          Navigator.pop(context);
-                        },
-                      ),
-                      ListTile(
-                        title: Text(I18n.of(context).report),
-                        leading: Icon(Icons.report),
-                        onTap: () async {
-                          await showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text(I18n.of(context).report),
-                                  content:
-                                      Text(I18n.of(context).report_message),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: Text(I18n.of(context).cancel),
-                                      onPressed: () {
-                                        Navigator.of(context).pop("CANCEL");
-                                      },
-                                    ),
-                                    TextButton(
-                                      child: Text(I18n.of(context).ok),
-                                      onPressed: () {
-                                        Navigator.of(context).pop("OK");
-                                      },
-                                    ),
-                                  ],
-                                );
-                              });
-                        },
-                      )
-                    ],
-                  ),
-                  Container(
-                    height: MediaQuery.of(context).padding.bottom,
-                  )
-                ],
-              ),
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.link),
+                      title: Text(I18n.of(context).link),
+                      onTap: () async {
+                        await Clipboard.setData(
+                          ClipboardData(
+                            text: "https://www.pixiv.net/artworks/${widget.id}",
+                          ),
+                        );
+                        BotToast.showText(
+                          text: I18n.of(context).copied_to_clipboard,
+                        );
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    ListTile(
+                      title: Text(I18n.of(context).ban),
+                      leading: Icon(Icons.brightness_auto),
+                      onTap: () {
+                        muteStore.insertBanIllusts(
+                          BanIllustIdPersist(
+                            illustId: widget.id.toString(),
+                            name: illusts.title,
+                          ),
+                        );
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      title: Text(I18n.of(context).report),
+                      leading: Icon(Icons.report),
+                      onTap: () async {
+                        await showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text(I18n.of(context).report),
+                              content: Text(I18n.of(context).report_message),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text(I18n.of(context).cancel),
+                                  onPressed: () {
+                                    Navigator.of(context).pop("CANCEL");
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text(I18n.of(context).ok),
+                                  onPressed: () {
+                                    Navigator.of(context).pop("OK");
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                Container(height: MediaQuery.of(context).padding.bottom),
+              ],
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
   Future<void> _showBookMarkTag() async {
-    final result =
-        await Leader.pushWithScaffold(context, TagForIllustPage(id: widget.id));
+    final result = await Leader.pushWithScaffold(
+      context,
+      TagForIllustPage(id: widget.id),
+    );
     if (result is Map) {
       LPrinter.d(result);
       String restrict = result['restrict'];

@@ -85,7 +85,7 @@ dev_dependencies:
     sdk: flutter
   mobx_codegen: ^2.6.1
   json_serializable: ^6.8.0
-  sqflite_common_ffi: ^2.4.0
+  sqflite_common_ffi: ^2.4.0+1
   msix: ^3.16.9
   analyzer: 7.6.0
   build_runner: 2.6.0
