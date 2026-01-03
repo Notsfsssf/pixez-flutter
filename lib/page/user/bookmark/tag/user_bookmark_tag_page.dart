@@ -36,6 +36,7 @@ class _UserBookmarkTagPageState extends State<UserBookmarkTagPage>
   late TabController _tabController;
   late String? currentTag;
   late TextEditingController _tagController;
+  String? _suggestedTag;
 
   @override
   void initState() {
@@ -68,7 +69,77 @@ class _UserBookmarkTagPageState extends State<UserBookmarkTagPage>
       ),
       body: Column(
         children: [
-          Container(child: Row(children: [TextField()])),
+          Container(
+            height: 50,
+            margin: EdgeInsets.symmetric(horizontal: 14.0, vertical: 8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Theme.of(
+                          context,
+                        ).textTheme.bodyLarge!.color!.withValues(alpha: 0.4),
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            child: TextField(
+                              controller: _tagController,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Enter tag name',
+                              ),
+                              onSubmitted: (v) {
+                                Navigator.of(context).pop({
+                                  'tag': v,
+                                  'restrict': _tabController.index == 0
+                                      ? 'public'
+                                      : 'private',
+                                });
+                              },
+                              onChanged: (v) {
+                                setState(() {
+                                  _suggestedTag = v;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+
+                        if (_suggestedTag != null && _suggestedTag!.isNotEmpty)
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _suggestedTag = null;
+                                _tagController.clear();
+                              });
+                            },
+                            icon: Icon(Icons.clear),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.check),
+                  onPressed: () {
+                    Navigator.of(context).pop({
+                      'tag': _tagController.text,
+                      'restrict': _tabController.index == 0
+                          ? 'public'
+                          : 'private',
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
           Expanded(
             child: TabBarView(
               controller: _tabController,
@@ -98,18 +169,19 @@ class _NewWidgetState extends State<NewWidget> {
     controlFinishLoad: true,
     controlFinishRefresh: true,
   );
-  late BookMarkTagStore _bookMarkTagStore = BookMarkTagStore(
-    int.parse(accountStore.now!.userId),
-    _easyRefreshController,
-  );
+  late BookMarkTagStore _bookMarkTagStore;
   late String restrict;
 
   @override
   void initState() {
+    _bookMarkTagStore = BookMarkTagStore(
+      int.parse(accountStore.now!.userId),
+      _easyRefreshController,
+    );
     restrict = widget.restrict;
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((duration) {
-      _bookMarkTagStore.fetch(widget.restrict);
+      _bookMarkTagStore.fetch(restrict);
     });
   }
 
@@ -128,38 +200,35 @@ class _NewWidgetState extends State<NewWidget> {
           refreshOnStart: true,
           header: PixezDefault.header(context),
           footer: PixezDefault.footer(context),
-          child: ListView.builder(
-            itemBuilder: (context, index) {
-              if (index == 0)
-                return ListTile(
-                  title: Text(I18n.of(context).all),
-                  onTap: () {
-                    Navigator.pop(context, {"tag": null, "restrict": restrict});
-                  },
-                );
-              else if (index == 1)
-                return ListTile(
-                  title: Text(I18n.of(context).unclassified),
-                  onTap: () {
-                    Navigator.pop(context, {
-                      "tag": "未分類",
-                      "restrict": restrict,
-                    }); //日语
-                  },
-                );
-              var bookmarkTag = _bookMarkTagStore.bookmarkTags[index - 2];
-              return ListTile(
-                title: Text(bookmarkTag.name),
-                trailing: Text(bookmarkTag.count.toString()),
+          child: ListView(
+            children: [
+              ListTile(
+                title: Text(I18n.of(context).all),
+                onTap: () {
+                  Navigator.pop(context, {"tag": null, "restrict": restrict});
+                },
+              ),
+              ListTile(
+                title: Text(I18n.of(context).unclassified),
                 onTap: () {
                   Navigator.pop(context, {
-                    "tag": bookmarkTag.name,
+                    "tag": "未分類",
                     "restrict": restrict,
-                  });
+                  }); //日语
                 },
-              );
-            },
-            itemCount: _bookMarkTagStore.bookmarkTags.length + 2,
+              ),
+              for (var bookmarkTag in _bookMarkTagStore.bookmarkTags)
+                ListTile(
+                  title: Text(bookmarkTag.name),
+                  trailing: Text(bookmarkTag.count.toString()),
+                  onTap: () {
+                    Navigator.pop(context, {
+                      "tag": bookmarkTag.name,
+                      "restrict": restrict,
+                    });
+                  },
+                ),
+            ],
           ),
           onRefresh: () async {
             await _bookMarkTagStore.fetch(restrict);

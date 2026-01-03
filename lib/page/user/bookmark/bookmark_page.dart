@@ -141,7 +141,9 @@ class _BookmarkPageState extends State<BookmarkPage> {
             child: InkWell(
               onTap: () async {
                 final result = await Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => UserBookmarkTagPage()),
+                  MaterialPageRoute(
+                    builder: (_) => UserBookmarkTagPage(currentTag: currentTag),
+                  ),
                 );
                 if (result != null) {
                   String? tag = result['tag'];
