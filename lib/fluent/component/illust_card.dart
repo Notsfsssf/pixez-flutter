@@ -158,7 +158,7 @@ class _IllustCardState extends State<IllustCard> {
       }
     }
 
-    return buildInkWell(context);
+    return _buildInkWell(context);
   }
 
   _onSave() async {
@@ -236,7 +236,7 @@ class _IllustCardState extends State<IllustCard> {
           );
   }
 
-  Widget buildInkWell(BuildContext context) {
+  Widget _buildInkWell(BuildContext context) {
     var tooLong =
         store.illusts!.height.toDouble() / store.illusts!.width.toDouble() > 3;
     var radio = (tooLong)
@@ -251,12 +251,36 @@ class _IllustCardState extends State<IllustCard> {
                 child: Stack(
                   children: [
                     Positioned.fill(child: _buildPic(tag, tooLong)),
-                    Positioned(top: 5.0, right: 5.0, child: _buildVisibility()),
+                Positioned(
+                  top: 5.0,
+                  right: 5.0,
+                  child: Row(
+                    children: [
+                      if (userSetting.feedAIBadge &&
+                          store.illusts!.illustAIType == 2)
+                        _buildAIBadge(),
+                      _buildVisibility(),
+                    ],
+                  ),
+                ),
                   ],
                 )),
             _buildBottom(context),
           ],
         ));
+  }
+
+  Widget _buildAIBadge() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.all(Radius.circular(4.0)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 2.0),
+        child: Text("AI", style: TextStyle(color: Colors.white)),
+      ),
+    );
   }
 
   Widget _buildAnimationWraper(BuildContext context, Widget child) {
