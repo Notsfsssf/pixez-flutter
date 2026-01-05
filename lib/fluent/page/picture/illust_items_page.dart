@@ -568,11 +568,14 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
                   child: Text(I18n.of(context).save),
                   onPressed: () {
                     saveStore.saveChoiceImage(illust, indexs);
+                    Navigator.of(context).pop();
                   },
                 ),
                 Button(
                   child: Text(I18n.of(context).cancel),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
                 )
               ],
             );
