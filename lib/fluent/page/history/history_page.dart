@@ -14,66 +14,64 @@
  *
  */
 
+import 'dart:math';
+
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/fluent/component/context_menu.dart';
 import 'package:pixez/fluent/component/pixez_button.dart';
-import 'package:pixez/fluent/component/pixiv_image.dart';
-import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
-import 'package:pixez/main.dart';
 import 'package:pixez/models/illust_persist.dart';
-import 'package:pixez/fluent/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/history/history_store.dart';
+import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 
-class HistoryPage extends StatefulHookConsumerWidget {
+class HistoryPage extends HookConsumerWidget {
   const HistoryPage({super.key});
 
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _HistoryPageState();
-}
+  Widget buildAppBarUI(context) => Container(
+    child: Padding(
+      child: Text(
+        I18n.of(context).history,
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0),
+      ),
+      padding: EdgeInsets.only(left: 20.0, top: 30.0, bottom: 30.0),
+    ),
+  );
 
-class _HistoryPageState extends ConsumerState<HistoryPage> {
-  late TextEditingController _textEditingController;
-
-  Widget buildBody(List<IllustPersist> data) => Builder(
-        builder: (context) {
-          final count =
-              (MediaQuery.of(context).orientation == Orientation.portrait)
-                  ? userSetting.crossCount
-                  : userSetting.hCrossCount;
-
-          final reIllust = data.reversed.toList();
-          if (reIllust.isEmpty) return Container();
-
-          return GridView.builder(
-            itemCount: reIllust.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: count),
-            itemBuilder: (context, index) => _HistoryItem(
-              reIllust: reIllust,
-              index: index,
-            ),
-          );
-        },
-      );
-
-  @override
-  void initState() {
-    _textEditingController = TextEditingController();
-    super.initState();
+  Widget buildBody(List<IllustPersist> data, WidgetRef ref) {
+    final reIllust = data.reversed.toList();
+    if (reIllust.isEmpty) {
+      return Center(child: Container());
+    }
+    return LayoutBuilder(
+      builder: (context, snapshot) {
+        final rowCount = max(2, (snapshot.maxWidth / 200).floor());
+        return GridView.builder(
+          itemCount: reIllust.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: rowCount,
+          ),
+          itemBuilder: (context, index) =>
+              _HistoryItem(reIllust: reIllust, index: index),
+        );
+      },
+    );
   }
 
   @override
-  void dispose() {
-    _textEditingController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final data = ref.watch(historyProvider.select((state) => state.data));
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dataFuture = ref.watch(historyProvider);
+    final _textEditingController = useTextEditingController();
+    useEffect(() {
+      Future.delayed(Duration.zero, () async {
+        await ref.read(historyProvider.notifier).fetch();
+      });
+      return null;
+    }, []);
     return ScaffoldPage(
       header: PageHeader(
         title: Text(I18n.of(context).history),
@@ -89,42 +87,37 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
           placeholder: I18n.of(context).search_word_hint,
           prefix: IconButton(
             icon: Icon(FluentIcons.delete),
-            onPressed: () async => await _cleanAll(context),
+            onPressed: () async => await _cleanAll(context, ref),
           ),
           suffix: IconButton(
             icon: Icon(FluentIcons.clear),
-            onPressed: () {
-              _textEditingController.clear();
-            },
+            onPressed: () => _textEditingController.clear(),
           ),
         ),
       ),
-      content: buildBody(data),
+      content: buildBody(dataFuture.data, ref),
     );
   }
 
-  Future<void> _cleanAll(BuildContext context) async {
+  Future<void> _cleanAll(BuildContext context, WidgetRef ref) async {
     final result = await showDialog(
-        context: context,
-        builder: (context) {
-          return ContentDialog(
-            title: Text("${I18n.of(context).delete} ${I18n.of(context).all}?"),
-            actions: <Widget>[
-              Button(
-                child: Text(I18n.of(context).cancel),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              FilledButton(
-                child: Text(I18n.of(context).ok),
-                onPressed: () {
-                  Navigator.of(context).pop("OK");
-                },
-              ),
-            ],
-          );
-        });
+      context: context,
+      builder: (context) {
+        return ContentDialog(
+          title: Text("${I18n.of(context).delete} ${I18n.of(context).all}?"),
+          actions: <Widget>[
+            Button(
+              child: Text(I18n.of(context).cancel),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            FilledButton(
+              child: Text(I18n.of(context).ok),
+              onPressed: () => Navigator.of(context).pop("OK"),
+            ),
+          ],
+        );
+      },
+    );
     if (result == "OK") {
       ref.read(historyProvider.notifier).deleteAll();
     }
@@ -142,50 +135,56 @@ class _HistoryItem extends HookConsumerWidget {
     return ContextMenu(
       child: PixEzButton(
         child: PixivImage(reIllust[index].pictureUrl),
-        onPressed: () {
-          Leader.push(
-            context,
-            IllustLightingPage(
-                id: reIllust[index].illustId,
-                store: IllustStore(reIllust[index].illustId, null)),
-            icon: Icon(FluentIcons.picture),
-            title: Text(
-                I18n.of(context).illust_id + ': ${reIllust[index].illustId}'),
-          );
-        },
+        onPressed: () => _navigateTo(context),
       ),
       items: [
         MenuFlyoutItem(
+          text: Text("Open"), // TODO: I18n
+          leading: Icon(FluentIcons.open_in_new_window),
+          onPressed: () => _navigateTo(context),
+        ),
+        MenuFlyoutItem(
           text: Text(I18n.of(context).delete),
-          onPressed: () async {
-            await showDialog(
-              context: context,
-              builder: (context) {
-                return ContentDialog(
-                  title: Text("${I18n.of(context).delete}?"),
-                  actions: <Widget>[
-                    HyperlinkButton(
-                      child: Text(I18n.of(context).cancel),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    HyperlinkButton(
-                      child: Text(I18n.of(context).ok),
-                      onPressed: () {
-                        ref
-                            .read(historyProvider.notifier)
-                            .delete(reIllust[index].illustId);
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
-          },
-        )
+          leading: Icon(FluentIcons.delete),
+          onPressed: () => _delete(context, ref),
+        ),
       ],
     );
+  }
+
+  void _navigateTo(BuildContext context) {
+    Leader.push(
+      context,
+      IllustLightingPage(
+        id: reIllust[index].illustId,
+        store: IllustStore(reIllust[index].illustId, null),
+      ),
+      icon: Icon(FluentIcons.picture),
+      title: Text(I18n.of(context).illust_id + ': ${reIllust[index].illustId}'),
+    );
+  }
+
+  Future<void> _delete(BuildContext context, WidgetRef ref) async {
+    final result = await showDialog(
+      context: context,
+      builder: (context) {
+        return ContentDialog(
+          title: Text("${I18n.of(context).delete}?"),
+          actions: <Widget>[
+            Button(
+              child: Text(I18n.of(context).cancel),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            FilledButton(
+              child: Text(I18n.of(context).ok),
+              onPressed: () => Navigator.of(context).pop("OK"),
+            ),
+          ],
+        );
+      },
+    );
+    if (result == "OK") {
+      ref.read(historyProvider.notifier).delete(reIllust[index].illustId);
+    }
   }
 }
