@@ -217,7 +217,7 @@ abstract class _SaveStoreBase with Store {
 
   _saveInternal(String url, Illusts illusts, String fileName, int index,
       {bool redo = false}) async {
-    if (Platform.isAndroid) {
+    if (Platform.isAndroid || Platform.isWindows) {
       try {
         String targetFileName = fileName;
         if (userSetting.singleFolder) {
@@ -245,7 +245,7 @@ abstract class _SaveStoreBase with Store {
 
   Future<void> saveToGalleryWithUser(Uint8List uint8list, String userName,
       int userId, int sanityLevel, String fileName) async {
-    if (Platform.isAndroid || Platform.isIOS) {
+    if (Platform.isAndroid || Platform.isIOS || Platform.isWindows) {
       try {
         String overFileName = fileName;
         if (userSetting.singleFolder) {
