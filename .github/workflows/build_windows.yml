@@ -156,10 +156,6 @@ jobs:
       - name: 签出仓库
         uses: actions/checkout@v6
 
-      - name: Download a Loose Artifact
-        shell: pwsh
-        run: Invoke-WebRequest -UseBasicParsing -Uri '${{ needs.build.outputs.binary-artifact }}' -OutFile "artifacts/windows-amd64.zip"
-
       - name: Download a Msix Artifact
         if: needs.build.outputs.msix-conclusion == 'success'
         uses: actions/download-artifact@v7
