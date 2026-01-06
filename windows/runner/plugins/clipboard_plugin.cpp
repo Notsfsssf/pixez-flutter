@@ -17,6 +17,10 @@ using namespace Windows::Storage;
 using namespace Windows::Storage::Streams;
 using namespace Windows::Graphics::Imaging;
 
+typedef Windows::ApplicationModel::DataTransfer::Clipboard WinRTClipboard;
+typedef Windows::ApplicationModel::DataTransfer::DataPackage DataPackage;
+typedef Windows::ApplicationModel::DataTransfer::DataPackageOperation DataPackageOperation;
+
 string Clipboard::name = "com.perol.dev/clipboard";
 
 void Clipboard::Initialize(BinaryMessenger *messenger, const StandardMethodCodec *codec)
@@ -27,25 +31,28 @@ void Clipboard::Initialize(BinaryMessenger *messenger, const StandardMethodCodec
       [](const MethodCall<EncodableValue> &call,
          unique_ptr<MethodResult<EncodableValue>> result) -> std::future<void>
       {
-        if (call.method_name().compare("copyImageFromPath") == 0)
+        if (call.method_name().compare("copyImageFromByteArray") == 0)
         {
           const auto *arguments = get_if<EncodableMap>(call.arguments());
-          const auto path = get<string>(arguments->at(EncodableValue("path")));
+          const auto data = get<vector<uint8_t>>(arguments->at(EncodableValue("data")));
 
-          co_await CopyImageFromPathAsync(path);
+          co_await CopyImageFromByteArrayAsync(data);
           result->Success();
         }
       });
 }
 
-IAsyncAction Clipboard::CopyImageFromPathAsync(const string &path)
-{
-  typedef Windows::ApplicationModel::DataTransfer::Clipboard WinRTClipboard;
-  typedef Windows::ApplicationModel::DataTransfer::DataPackage DataPackage;
-  typedef Windows::ApplicationModel::DataTransfer::DataPackageOperation DataPackageOperation;
 
-  const auto file = co_await StorageFile::GetFileFromPathAsync(to_hstring(path));
-  const auto stream = co_await file.OpenReadAsync();
+IAsyncAction Clipboard::CopyImageFromByteArrayAsync(const vector<uint8_t> data)
+{
+  const auto stream = InMemoryRandomAccessStream();
+  DataWriter writer{stream};
+  writer.WriteBytes(data);
+  co_await writer.StoreAsync();
+  co_await writer.FlushAsync();
+
+  stream.Seek(0);
+  
   const auto reference = RandomAccessStreamReference::CreateFromStream(stream);
 
   const DataPackage content{};

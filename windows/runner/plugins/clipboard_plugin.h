@@ -8,7 +8,7 @@ class Clipboard
 {
 private:
   static std::string name;
-  static winrt::Windows::Foundation::IAsyncAction CopyImageFromPathAsync(const std::string &path);
+  static winrt::Windows::Foundation::IAsyncAction CopyImageFromByteArrayAsync(const std::vector<uint8_t> data);
 
 public:
   static void Initialize(flutter::BinaryMessenger *messenger, const flutter::StandardMethodCodec *codec);

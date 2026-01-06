@@ -833,15 +833,7 @@ class IllustItem extends StatelessWidget {
           MenuFlyoutItem(
             text: Text(I18n.of(context).copy),
             leading: Icon(FluentIcons.copy),
-            onPressed: () async {
-              final url = ClipboardPlugin.getImageUrl(data, index);
-              if (url == null) return;
-
-              ClipboardPlugin.showToast(
-                context,
-                ClipboardPlugin.copyImageFromUrl(url),
-              );
-            },
+            onPressed: () => ClipboardPlugin.copy(context, data, index),
           ),
         MenuFlyoutItem(
           text: Text(I18n.of(context).copymessage),
