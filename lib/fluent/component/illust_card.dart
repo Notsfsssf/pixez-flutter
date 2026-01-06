@@ -108,15 +108,7 @@ class _IllustCardState extends State<IllustCard> {
           MenuFlyoutItem(
             leading: Icon(FluentIcons.copy),
             text: Text(I18n.of(context).copy),
-            onPressed: () async {
-              final url = ClipboardPlugin.getImageUrl(store.illusts!, 0);
-              if (url == null) return;
-
-              ClipboardPlugin.showToast(
-                context,
-                ClipboardPlugin.copyImageFromUrl(url),
-              );
-            },
+            onPressed: () => ClipboardPlugin.copy(context, store.illusts!, 0),
           ),
         MenuFlyoutItem(
           leading: Icon(FluentIcons.save),
