@@ -176,15 +176,7 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                     FluentIcons.copy,
                     color: Colors.white,
                   ),
-                  onPressed: () async {
-                    final url = ClipboardPlugin.getImageUrl(_illusts, _index);
-                    if (url == null) return;
-
-                    ClipboardPlugin.showToast(
-                      context,
-                      ClipboardPlugin.copyImageFromUrl(url),
-                    );
-                  },
+                  onPressed: () => ClipboardPlugin.copy(context, _illusts, _index),
                 ),
                 ContextMenu(
                   child: IconButton(

@@ -50,7 +50,9 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
   late IllustStore illustStore;
   late IllustAboutStore aboutStore;
   final EasyRefreshController refreshController = EasyRefreshController(
-      controlFinishLoad: true, controlFinishRefresh: true);
+    controlFinishLoad: true,
+    controlFinishRefresh: true,
+  );
   final ScrollController scrollController = ScrollController();
   bool tempView = false;
 
@@ -83,7 +85,8 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
         scrollController.hasClients &&
         scrollController.offset + 180 >=
             scrollController.position.maxScrollExtent &&
-        aboutStore.illusts.isEmpty) aboutStore.next();
+        aboutStore.illusts.isEmpty)
+      aboutStore.next();
   }
 
   @override
@@ -98,114 +101,112 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
   Widget build(BuildContext context) {
     super.build(context);
     return ScaffoldPage(
-      content: Observer(builder: (_) {
-        if (!tempView)
-          for (var i in muteStore.banillusts) {
-            if (i.illustId == widget.id.toString()) {
-              return BanPage(
-                name: "${I18n.of(context).illust}\n${i.name}\n",
-                onPressed: () {
-                  setState(() {
-                    tempView = true;
-                  });
-                },
-              );
-            }
-          }
-        if (!tempView && illustStore.illusts != null) {
-          for (var j in muteStore.banUserIds) {
-            if (j.userId == illustStore.illusts!.user.id.toString()) {
-              return BanPage(
-                name: "${I18n.of(context).painter}\n${j.name}\n",
-                onPressed: () {
-                  setState(() {
-                    tempView = true;
-                  });
-                },
-              );
-            }
-          }
-          for (var t in muteStore.banTags) {
-            for (var t1 in illustStore.illusts!.tags) {
-              if (t.name == t1.name)
+      content: Observer(
+        builder: (_) {
+          if (!tempView)
+            for (var i in muteStore.banillusts) {
+              if (i.illustId == widget.id.toString()) {
                 return BanPage(
-                  name: "${I18n.of(context).tag}\n${t.name}\n",
+                  name: "${I18n.of(context).illust}\n${i.name}\n",
                   onPressed: () {
                     setState(() {
                       tempView = true;
                     });
                   },
                 );
+              }
+            }
+          if (!tempView && illustStore.illusts != null) {
+            for (var j in muteStore.banUserIds) {
+              if (j.userId == illustStore.illusts!.user.id.toString()) {
+                return BanPage(
+                  name: "${I18n.of(context).painter}\n${j.name}\n",
+                  onPressed: () {
+                    setState(() {
+                      tempView = true;
+                    });
+                  },
+                );
+              }
+            }
+            for (var t in muteStore.banTags) {
+              for (var t1 in illustStore.illusts!.tags) {
+                if (t.name == t1.name)
+                  return BanPage(
+                    name: "${I18n.of(context).tag}\n${t.name}\n",
+                    onPressed: () {
+                      setState(() {
+                        tempView = true;
+                      });
+                    },
+                  );
+              }
             }
           }
-        }
-        return Stack(
-          alignment: AlignmentDirectional.bottomEnd,
-          children: [
-            buildContent(context, illustStore.illusts),
-            Container(
-              margin: EdgeInsets.only(right: 8.0, bottom: 8.0),
-              child: ContextMenu(
-                child: ButtonTheme(
-                  child: IconButton(
-                    icon: Observer(
-                      builder: (_) => StarIcon(
-                        state: illustStore.state,
+          return Stack(
+            alignment: AlignmentDirectional.bottomEnd,
+            children: [
+              buildContent(context, illustStore.illusts),
+              Container(
+                margin: EdgeInsets.only(right: 8.0, bottom: 8.0),
+                child: ContextMenu(
+                  child: ButtonTheme(
+                    child: IconButton(
+                      icon: Observer(
+                        builder: (_) => StarIcon(state: illustStore.state),
+                      ),
+                      onPressed: star,
+                    ),
+                    data: ButtonThemeData(
+                      iconButtonStyle: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.all(
+                          FluentTheme.of(context).inactiveBackgroundColor,
+                        ),
+                        shadowColor: WidgetStateProperty.all(
+                          FluentTheme.of(context).shadowColor,
+                        ),
+                        shape: WidgetStateProperty.all(CircleBorder()),
                       ),
                     ),
-                    onPressed: illustStore.star,
                   ),
-                  data: ButtonThemeData(
-                    iconButtonStyle: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(
-                        FluentTheme.of(context).inactiveBackgroundColor,
-                      ),
-                      shadowColor: WidgetStateProperty.all(
-                        FluentTheme.of(context).shadowColor,
-                      ),
-                      shape: WidgetStateProperty.all(CircleBorder()),
+                  items: [
+                    MenuFlyoutItem(
+                      text: Text(I18n.of(context).favorited_tag),
+                      onPressed: () async {
+                        await showBookMarkTag();
+                      },
                     ),
-                  ),
+                  ],
                 ),
-                items: [
-                  MenuFlyoutItem(
-                    text: Text(I18n.of(context).favorited_tag),
-                    onPressed: () async {
-                      await showBookMarkTag();
-                    },
-                  ),
-                ],
               ),
-            )
-          ],
-        );
-      }),
+            ],
+          );
+        },
+      ),
     );
   }
 
   Widget colorText(String text, BuildContext context) => Container(
-        child: Text(
-          text,
-          style: TextStyle(color: FluentTheme.of(context).accentColor),
-        ),
-      );
+    child: Text(
+      text,
+      style: TextStyle(color: FluentTheme.of(context).accentColor),
+    ),
+  );
 
   Widget buildContent(BuildContext context, Illusts? data);
 
   SliverGrid buildRecom() {
     return SliverGrid(
-        delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-          var list = aboutStore.illusts
-              .map((element) => IllustStore(element.id, element))
-              .toList();
-          return MoreItem(
-            index,
-            list,
-            aboutStore,
-          );
-        }, childCount: aboutStore.illusts.length),
-        gridDelegate:
-            SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3));
+      delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+        var list = aboutStore.illusts
+            .map((element) => IllustStore(element.id, element))
+            .toList();
+        return MoreItem(index, list, aboutStore, _pressSave);
+      }, childCount: aboutStore.illusts.length),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+      ),
+    );
   }
 
   List<Widget> buildPhotoList(Illusts data, bool centerType, double height) {
@@ -215,26 +216,24 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
           child: Center(
             child: NullHero(
               tag: widget.heroString,
-              child: UgoiraLoader(
-                id: widget.id,
-                illusts: data,
-              ),
+              child: UgoiraLoader(id: widget.id, illusts: data),
             ),
           ),
         ),
       if (data.type != "ugoira")
         data.pageCount == 1
             ? (centerType
-                ? SliverFillRemaining(
-                    child: buildPicture(data, height),
-                  )
-                : SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                    return buildPicture(data, height);
-                  }, childCount: 1)))
+                  ? SliverFillRemaining(child: buildPicture(data, height))
+                  : SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        return buildPicture(data, height);
+                      }, childCount: 1),
+                    ))
             : SliverList(
-                delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
+                delegate: SliverChildBuilderDelegate((
+                  BuildContext context,
+                  int index,
+                ) {
                   return IllustItem(
                     index,
                     data,
@@ -243,6 +242,7 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
                     onMultiSavePressed: () async {
                       await showMutiChoiceDialog(data, context);
                     },
+                    save: _pressSave,
                   );
                 }, childCount: data.metaPages.length),
               ),
@@ -250,41 +250,44 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
   }
 
   Widget buildPicture(Illusts data, double height) {
-    return Center(child: Builder(
-      builder: (BuildContext context) {
-        String url = data.illustDetailUrl;
-        if (data.type == "manga") {
-          url = data.managaDetailUrl;
-        }
-        Widget placeWidget = Container(height: height);
-        return LayoutBuilder(
-          builder: (context, constraints) => IllustItem(
-            0,
-            data,
-            widget,
-            icon: NullHero(
-              tag: widget.heroString,
-              child: PixivImage(
-                url,
-                fade: false,
-                width: constraints.maxWidth,
-                placeWidget: (url != data.imageUrls.medium)
-                    ? PixivImage(
-                        data.imageUrls.medium,
-                        width: constraints.maxWidth,
-                        placeWidget: placeWidget,
-                        fade: false,
-                      )
-                    : placeWidget,
+    return Center(
+      child: Builder(
+        builder: (BuildContext context) {
+          String url = data.illustDetailUrl;
+          if (data.type == "manga") {
+            url = data.managaDetailUrl;
+          }
+          Widget placeWidget = Container(height: height);
+          return LayoutBuilder(
+            builder: (context, constraints) => IllustItem(
+              0,
+              data,
+              widget,
+              icon: NullHero(
+                tag: widget.heroString,
+                child: PixivImage(
+                  url,
+                  fade: false,
+                  width: constraints.maxWidth,
+                  placeWidget: (url != data.imageUrls.medium)
+                      ? PixivImage(
+                          data.imageUrls.medium,
+                          width: constraints.maxWidth,
+                          placeWidget: placeWidget,
+                          fade: false,
+                        )
+                      : placeWidget,
+                ),
               ),
+              onMultiSavePressed: () async {
+                await showMutiChoiceDialog(data, context);
+              },
+              save: _pressSave,
             ),
-            onMultiSavePressed: () async {
-              await showMutiChoiceDialog(data, context);
-            },
-          ),
-        );
-      },
-    ));
+          );
+        },
+      ),
+    );
   }
 
   Center buildErrorContent(BuildContext context) {
@@ -297,16 +300,13 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
             padding: const EdgeInsets.all(8.0),
             child: Text(':(', style: FluentTheme.of(context).typography.title),
           ),
-          Text(
-            '${illustStore.errorMessage}',
-            maxLines: 5,
-          ),
+          Text('${illustStore.errorMessage}', maxLines: 5),
           FilledButton(
             onPressed: () {
               illustStore.fetch();
             },
             child: Text(I18n.of(context).refresh),
-          )
+          ),
         ],
       ),
     );
@@ -339,8 +339,10 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
           placeWidget: Container(
             height: height,
             child: Center(
-              child: Text('$index',
-                  style: FluentTheme.of(context).typography.title),
+              child: Text(
+                '$index',
+                style: FluentTheme.of(context).typography.title,
+              ),
             ),
           ),
         ),
@@ -348,32 +350,34 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
     }
     return index == 0
         ? (userSetting.pictureQuality >= 1
-            ? NullHero(
-                child: PixivImage(
-                  illust.illustDetailImageUrl(index),
-                  placeWidget: PixivImage(
-                    illust.metaPages[index].imageUrls!.medium,
+              ? NullHero(
+                  child: PixivImage(
+                    illust.illustDetailImageUrl(index),
+                    placeWidget: PixivImage(
+                      illust.metaPages[index].imageUrls!.medium,
+                      fade: false,
+                    ),
                     fade: false,
                   ),
-                  fade: false,
-                ),
-                tag: widget.heroString,
-              )
-            : NullHero(
-                child: PixivImage(
-                  illust.illustDetailImageUrl(index),
-                  fade: false,
-                ),
-                tag: widget.heroString,
-              ))
+                  tag: widget.heroString,
+                )
+              : NullHero(
+                  child: PixivImage(
+                    illust.illustDetailImageUrl(index),
+                    fade: false,
+                  ),
+                  tag: widget.heroString,
+                ))
         : PixivImage(
             illust.illustDetailImageUrl(index),
             fade: false,
             placeWidget: Container(
               height: 150,
               child: Center(
-                child: Text('$index',
-                    style: FluentTheme.of(context).typography.title),
+                child: Text(
+                  '$index',
+                  style: FluentTheme.of(context).typography.title,
+                ),
               ),
             ),
           );
@@ -386,16 +390,17 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
   Widget buildNameAvatar(BuildContext context, Illusts illust) {
     if (userStore == null)
       userStore = UserStore(illust.user.id, null, illust.user);
-    return Observer(builder: (_) {
-      Future.delayed(Duration(seconds: 2), () {
-        _loadAbout();
-      });
-      return ContextMenu(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Padding(
+    return Observer(
+      builder: (_) {
+        Future.delayed(Duration(seconds: 2), () {
+          _loadAbout();
+        });
+        return ContextMenu(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Padding(
                 child: Container(
                   height: 70,
                   width: 70,
@@ -417,7 +422,8 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
                       ),
                       Center(
                         child: Hero(
-                          tag: illust.user.profileImageUrls.medium +
+                          tag:
+                              illust.user.profileImageUrls.medium +
                               this.hashCode.toString(),
                           child: PainterAvatar(
                             url: illust.user.profileImageUrls.medium,
@@ -431,8 +437,10 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
                                   heroTag: this.hashCode.toString(),
                                 ),
                                 icon: Icon(FluentIcons.account_browser),
-                                title: Text(I18n.of(context).painter_id +
-                                    '${illust.user.id}'),
+                                title: Text(
+                                  I18n.of(context).painter_id +
+                                      '${illust.user.id}',
+                                ),
                               );
                               illustStore.illusts!.user.isFollowed =
                                   userStore!.isFollow;
@@ -443,49 +451,50 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
                     ],
                   ),
                 ),
-                padding: EdgeInsets.all(8.0)),
-            Expanded(
-              child: Padding(
                 padding: EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      illust.title,
-                      style:
-                          TextStyle(color: FluentTheme.of(context).accentColor),
-                    ),
-                    Container(
-                      height: 4.0,
-                    ),
-                    Hero(
-                      tag: illust.user.name + this.hashCode.toString(),
-                      child: Text(
-                        illust.user.name,
-                        style: FluentTheme.of(context).typography.body,
+              ),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        illust.title,
+                        style: TextStyle(
+                          color: FluentTheme.of(context).accentColor,
+                        ),
                       ),
-                    ),
-                    Text(
-                      illust.createDate.toShortTime(),
-                      style: FluentTheme.of(context).typography.caption,
-                    ),
-                  ],
+                      Container(height: 4.0),
+                      Hero(
+                        tag: illust.user.name + this.hashCode.toString(),
+                        child: Text(
+                          illust.user.name,
+                          style: FluentTheme.of(context).typography.body,
+                        ),
+                      ),
+                      Text(
+                        illust.createDate.toShortTime(),
+                        style: FluentTheme.of(context).typography.caption,
+                      ),
+                    ],
+                  ),
                 ),
               ),
+            ],
+          ),
+          items: [
+            MenuFlyoutItem(
+              text: Text(I18n.of(context).follow),
+              onPressed: () async {
+                await userStore!.follow();
+              },
             ),
           ],
-        ),
-        items: [
-          MenuFlyoutItem(
-            text: Text(I18n.of(context).follow),
-            onPressed: () async {
-              await userStore!.follow();
-            },
-          ),
-        ],
-      );
-    });
+        );
+      },
+    );
   }
 
   Future showMutiChoiceDialog(Illusts illust, BuildContext context) async {
@@ -495,19 +504,19 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
       indexs.add(false);
     }
     await showDialog(
-        context: context,
-        builder: (context) {
-          return StatefulBuilder(builder: (context, setDialogState) {
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
             return ContentDialog(
               title: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     I18n.of(context).muti_choice_save,
-                    style: FluentTheme.of(context)
-                        .typography
-                        .title
-                        ?.copyWith(color: FluentTheme.of(context).accentColor),
+                    style: FluentTheme.of(context).typography.title?.copyWith(
+                      color: FluentTheme.of(context).accentColor,
+                    ),
                   ),
                   Text(illust.title),
                 ],
@@ -544,7 +553,8 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
                             itemCount: illust.metaPages.length,
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2),
+                                  crossAxisCount: 2,
+                                ),
                           ),
                         ),
                         Checkbox(
@@ -557,7 +567,7 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
                             }
                             setDialogState(() {});
                           },
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -567,17 +577,29 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
                 FilledButton(
                   child: Text(I18n.of(context).save),
                   onPressed: () {
+                    if (userSetting.starAfterSave && (illustStore.state == 0)) {
+                      illustStore.star(
+                        restrict: userSetting.defaultPrivateLike
+                            ? "private"
+                            : "public",
+                      );
+                    }
                     saveStore.saveChoiceImage(illust, indexs);
+                    Navigator.of(context).pop();
                   },
                 ),
                 Button(
                   child: Text(I18n.of(context).cancel),
-                  onPressed: () {},
-                )
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
               ],
             );
-          });
-        });
+          },
+        );
+      },
+    );
   }
 
   Widget buildMultiChoiceItem(
@@ -594,17 +616,12 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
           PixivImage(
             data.imageUrls!.squareMedium,
             placeWidget: Container(
-              child: Center(
-                child: Text(index.toString()),
-              ),
+              child: Center(child: Text(index.toString())),
             ),
           ),
           Align(
             alignment: Alignment.bottomRight,
-            child: Checkbox(
-              checked: indexs[index],
-              onChanged: onChanged,
-            ),
+            child: Checkbox(checked: indexs[index], onChanged: onChanged),
           ),
         ],
       ),
@@ -620,15 +637,16 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
       LPrinter.d(result);
       String restrict = result['restrict'];
       List<String>? tags = result['tags'];
+      if (userSetting.saveAfterStar && (illustStore.state == 0)) {
+        saveStore.saveImage(illustStore.illusts!);
+      }
       illustStore.star(restrict: restrict, tags: tags, force: true);
     }
   }
 
   List<Widget> buildDetail(BuildContext context, Illusts data) {
     return [
-      SliverToBoxAdapter(
-        child: buildNameAvatar(context, data),
-      ),
+      SliverToBoxAdapter(child: buildNameAvatar(context, data)),
       SliverToBoxAdapter(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -638,40 +656,32 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   SelectionContainer.disabled(
-                      child: Text(I18n.of(context).illust_id)),
-                  Container(
-                    width: 10.0,
+                    child: Text(I18n.of(context).illust_id),
                   ),
+                  Container(width: 10.0),
                   colorText(data.id.toString(), context),
-                  Container(
-                    width: 20.0,
-                  ),
+                  Container(width: 20.0),
                   SelectionContainer.disabled(
-                      child: Text(I18n.of(context).pixel)),
-                  Container(
-                    width: 10.0,
+                    child: Text(I18n.of(context).pixel),
                   ),
-                  colorText("${data.width}x${data.height}", context)
+                  Container(width: 10.0),
+                  colorText("${data.width}x${data.height}", context),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   SelectionContainer.disabled(
-                      child: Text(I18n.of(context).total_view)),
-                  Container(
-                    width: 10.0,
+                    child: Text(I18n.of(context).total_view),
                   ),
+                  Container(width: 10.0),
                   colorText(data.totalView.toString(), context),
-                  Container(
-                    width: 20.0,
-                  ),
+                  Container(width: 20.0),
                   SelectionContainer.disabled(
-                      child: Text(I18n.of(context).total_bookmark)),
-                  Container(
-                    width: 10.0,
+                    child: Text(I18n.of(context).total_bookmark),
                   ),
-                  colorText("${data.totalBookmarks}", context)
+                  Container(width: 10.0),
+                  colorText("${data.totalBookmarks}", context),
                 ],
               ),
             ],
@@ -687,12 +697,13 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
             runSpacing: 0,
             children: [
               if (data.illustAIType == 2)
-                Text("${I18n.of(context).ai_generated}",
-                    style: FluentTheme.of(context)
-                        .typography
-                        .caption!
-                        .copyWith(color: FluentTheme.of(context).accentColor)),
-              for (var f in data.tags) buildRow(context, f)
+                Text(
+                  "${I18n.of(context).ai_generated}",
+                  style: FluentTheme.of(context).typography.caption!.copyWith(
+                    color: FluentTheme.of(context).accentColor,
+                  ),
+                ),
+              for (var f in data.tags) buildRow(context, f),
             ],
           ),
         ),
@@ -720,9 +731,12 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
                 style: FluentTheme.of(context).typography.body!,
               ),
               onPressed: () {
-                Leader.push(context, CommentPage(id: data.id),
-                    icon: Icon(FluentIcons.comment),
-                    title: Text(I18n.of(context).view_comment));
+                Leader.push(
+                  context,
+                  CommentPage(id: data.id),
+                  icon: Icon(FluentIcons.comment),
+                  title: Text(I18n.of(context).view_comment),
+                );
               },
             ),
           ),
@@ -734,8 +748,37 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
           child: Text(I18n.of(context).about_picture),
         ),
       ),
-      buildRecom()
+      buildRecom(),
     ];
+  }
+
+  Future<void> star() async {
+    if (userSetting.saveAfterStar && (illustStore.state == 0)) {
+      saveStore.saveImage(illustStore.illusts!);
+    }
+    illustStore.star(
+      restrict: userSetting.defaultPrivateLike ? "private" : "public",
+    );
+    if (userSetting.followAfterStar) {
+      bool success = await illustStore.followAfterStar();
+      if (success) {
+        userStore?.isFollow = true;
+        BotToast.showText(
+          text:
+              "${illustStore.illusts!.user.name} ${I18n.of(context).followed}",
+        );
+      }
+    }
+  }
+
+  Future<void> _pressSave(Illusts illust, int index) async {
+    saveStore.saveImage(illust, index: index);
+    if (userSetting.starAfterSave && (illustStore.state == 0)) {
+      illustStore.star(
+        restrict: userSetting.defaultPrivateLike ? "private" : "public",
+      );
+    }
+    return;
   }
 
   @override
@@ -748,6 +791,7 @@ class IllustItem extends StatelessWidget {
   final IllustItemsPage widget;
   final Widget icon;
   final Future Function() onMultiSavePressed;
+  final Future Function(Illusts illust, int index) save;
 
   IllustItem(
     this.index,
@@ -755,6 +799,7 @@ class IllustItem extends StatelessWidget {
     this.widget, {
     required this.icon,
     required this.onMultiSavePressed,
+    required this.save,
   });
   @override
   Widget build(BuildContext context) {
@@ -763,10 +808,7 @@ class IllustItem extends StatelessWidget {
         onPressed: () {
           Leader.push(
             context,
-            PhotoZoomPage(
-              index: index,
-              illusts: data,
-            ),
+            PhotoZoomPage(index: index, illusts: data),
             icon: Icon(FluentIcons.picture),
             title: Text(I18n.of(context).illust_id + ': ${data.id}'),
           );
@@ -777,66 +819,52 @@ class IllustItem extends StatelessWidget {
         if (data.metaPages.isNotEmpty)
           MenuFlyoutItem(
             text: Text(I18n.of(context).muti_choice_save),
-            leading: Icon(
-              FluentIcons.save,
-            ),
+            leading: Icon(FluentIcons.save),
             onPressed: () async {
               await onMultiSavePressed();
             },
           ),
         MenuFlyoutItem(
           leading: Icon(FluentIcons.save),
-          onPressed: () async {
-            await saveStore.saveImage(data, index: index);
-          },
+          onPressed: () => save(data, index),
           text: Text(I18n.of(context).save),
         ),
         if (ClipboardPlugin.supported)
           MenuFlyoutItem(
             text: Text(I18n.of(context).copy),
-            leading: Icon(
-              FluentIcons.copy,
-            ),
-            onPressed: () async {
-              final url = ClipboardPlugin.getImageUrl(data, index);
-              if (url == null) return;
-
-              ClipboardPlugin.showToast(
-                context,
-                ClipboardPlugin.copyImageFromUrl(url),
-              );
-            },
+            leading: Icon(FluentIcons.copy),
+            onPressed: () => ClipboardPlugin.copy(context, data, index),
           ),
         MenuFlyoutItem(
           text: Text(I18n.of(context).copymessage),
-          leading: Icon(
-            FluentIcons.library,
-          ),
+          leading: Icon(FluentIcons.library),
           onPressed: () async {
-            await Clipboard.setData(ClipboardData(
+            await Clipboard.setData(
+              ClipboardData(
                 text:
-                    'title:${data.title}\npainter:${data.user.name}\nillust id:${widget.id}'));
+                    'title:${data.title}\npainter:${data.user.name}\nillust id:${widget.id}',
+              ),
+            );
             BotToast.showText(text: I18n.of(context).copied_to_clipboard);
           },
         ),
         MenuFlyoutItem(
           text: Text(I18n.of(context).share),
-          leading: Icon(
-            FluentIcons.share,
-          ),
+          leading: Icon(FluentIcons.share),
           onPressed: () async {
             final link = "https://www.pixiv.net/artworks/${widget.id}";
             SharePlus.instance.share(ShareParams(text: link));
           },
         ),
         MenuFlyoutItem(
-          leading: Icon(
-            FluentIcons.link,
-          ),
+          leading: Icon(FluentIcons.link),
           text: Text(I18n.of(context).link),
           onPressed: () async {
-            await Clipboard.setData(ClipboardData(
-                text: "https://www.pixiv.net/artworks/${widget.id}"));
+            await Clipboard.setData(
+              ClipboardData(
+                text: "https://www.pixiv.net/artworks/${widget.id}",
+              ),
+            );
             BotToast.showText(text: I18n.of(context).copied_to_clipboard);
           },
         ),
@@ -844,8 +872,12 @@ class IllustItem extends StatelessWidget {
           text: Text(I18n.of(context).ban),
           leading: Icon(FluentIcons.brightness),
           onPressed: () async {
-            await muteStore.insertBanIllusts(BanIllustIdPersist(
-                illustId: widget.id.toString(), name: data.title));
+            await muteStore.insertBanIllusts(
+              BanIllustIdPersist(
+                illustId: widget.id.toString(),
+                name: data.title,
+              ),
+            );
           },
         ),
         MenuFlyoutItem(
@@ -876,7 +908,7 @@ class IllustItem extends StatelessWidget {
               },
             );
           },
-        )
+        ),
       ],
     );
   }
@@ -887,12 +919,9 @@ class MoreItem extends StatelessWidget {
   final int index;
   final List<IllustStore> list;
   final IllustAboutStore _aboutStore;
+  final Future Function(Illusts illust, int index) save;
 
-  MoreItem(
-    this.index,
-    this.list,
-    this._aboutStore,
-  );
+  MoreItem(this.index, this.list, this._aboutStore, this.save);
   @override
   Widget build(BuildContext context) {
     return ContextMenu(
@@ -917,10 +946,8 @@ class MoreItem extends StatelessWidget {
       items: [
         MenuFlyoutItem(
           text: Text(I18n.of(context).save),
-          onPressed: () async {
-            await saveStore.saveImage(_aboutStore.illusts[index]);
-          },
-        )
+          onPressed: () => save(_aboutStore.illusts[index], index),
+        ),
       ],
     );
   }
