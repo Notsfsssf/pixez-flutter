@@ -5,11 +5,11 @@ jobs:
   Build_IOS:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'master'
+          channel: 'stable'
       - run: flutter --version
       - run: flutter pub get
       - run: flutter packages pub run build_runner build --delete-conflicting-outputs
