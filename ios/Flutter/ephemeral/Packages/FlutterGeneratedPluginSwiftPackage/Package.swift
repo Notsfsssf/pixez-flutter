@@ -15,6 +15,7 @@ let package = Package(
         .library(name: "FlutterGeneratedPluginSwiftPackage", type: .static, targets: ["FlutterGeneratedPluginSwiftPackage"])
     ],
     dependencies: [
+        .package(name: "webview_flutter_wkwebview", path: "../.packages/webview_flutter_wkwebview"),
         .package(name: "url_launcher_ios", path: "../.packages/url_launcher_ios"),
         .package(name: "sqflite_darwin", path: "../.packages/sqflite_darwin"),
         .package(name: "shared_preferences_foundation", path: "../.packages/shared_preferences_foundation"),
@@ -23,7 +24,6 @@ let package = Package(
         .package(name: "package_info_plus", path: "../.packages/package_info_plus"),
         .package(name: "in_app_purchase_storekit", path: "../.packages/in_app_purchase_storekit"),
         .package(name: "image_picker_ios", path: "../.packages/image_picker_ios"),
-        .package(name: "webview_flutter_wkwebview", path: "../.packages/webview_flutter_wkwebview"),
         .package(name: "just_audio", path: "../.packages/just_audio"),
         .package(name: "audio_session", path: "../.packages/audio_session"),
         .package(name: "video_player_avfoundation", path: "../.packages/video_player_avfoundation"),
@@ -35,6 +35,7 @@ let package = Package(
         .target(
             name: "FlutterGeneratedPluginSwiftPackage",
             dependencies: [
+                .product(name: "webview-flutter-wkwebview", package: "webview_flutter_wkwebview"),
                 .product(name: "url-launcher-ios", package: "url_launcher_ios"),
                 .product(name: "sqflite-darwin", package: "sqflite_darwin"),
                 .product(name: "shared-preferences-foundation", package: "shared_preferences_foundation"),
@@ -43,7 +44,6 @@ let package = Package(
                 .product(name: "package-info-plus", package: "package_info_plus"),
                 .product(name: "in-app-purchase-storekit", package: "in_app_purchase_storekit"),
                 .product(name: "image-picker-ios", package: "image_picker_ios"),
-                .product(name: "webview-flutter-wkwebview", package: "webview_flutter_wkwebview"),
                 .product(name: "just-audio", package: "just_audio"),
                 .product(name: "audio-session", package: "audio_session"),
                 .product(name: "video-player-avfoundation", package: "video_player_avfoundation"),

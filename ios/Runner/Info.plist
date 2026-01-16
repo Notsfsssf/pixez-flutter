@@ -74,6 +74,10 @@
 	<true/>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>请允许App访问您的媒体资料库以保存图片</string>
+	<key>NSCameraUsageDescription</key>
+	<string>请允许APP访问摄像头，用以拍摄图片进行搜索</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>请允许APP访问位置信息，用以网页浏览等功能</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>请允许APP保存图片到相册</string>
 	<key>NSPhotoLibraryUsageDescription</key>

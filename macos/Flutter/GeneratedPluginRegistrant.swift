@@ -10,7 +10,6 @@ import device_info_plus
 import dynamic_color
 import file_picker
 import file_selector_macos
-import flutter_inappwebview_macos
 import in_app_purchase_storekit
 import just_audio
 import macos_window_utils
@@ -32,7 +31,6 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   DynamicColorPlugin.register(with: registry.registrar(forPlugin: "DynamicColorPlugin"))
   FilePickerPlugin.register(with: registry.registrar(forPlugin: "FilePickerPlugin"))
   FileSelectorPlugin.register(with: registry.registrar(forPlugin: "FileSelectorPlugin"))
-  InAppWebViewFlutterPlugin.register(with: registry.registrar(forPlugin: "InAppWebViewFlutterPlugin"))
   InAppPurchasePlugin.register(with: registry.registrar(forPlugin: "InAppPurchasePlugin"))
   JustAudioPlugin.register(with: registry.registrar(forPlugin: "JustAudioPlugin"))
   MacOSWindowUtilsPlugin.register(with: registry.registrar(forPlugin: "MacOSWindowUtilsPlugin"))

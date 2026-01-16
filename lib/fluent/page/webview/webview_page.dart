@@ -1,11 +1,8 @@
-import 'dart:io';
-
 import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:pixez/custom_tab_plugin.dart';
 import 'package:pixez/er/leader.dart';
-import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/weiss_plugin.dart';
 
@@ -19,94 +16,25 @@ class WebViewPage extends StatefulWidget {
 }
 
 class _WebViewPageState extends State<WebViewPage> {
-  late InAppWebViewController _webViewController;
-  bool _alreadyAgree = false;
+  late final WebViewController _webViewController;
   double progressValue = 0.0;
 
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    WeissPlugin.stop();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ScaffoldPage(
-      header: Row(children: [
-        IconButton(
-          icon: Icon(FluentIcons.open_in_new_window),
-          onPressed: () {
-            try {
-              CustomTabPlugin.launch(widget.url);
-            } catch (e) {
-              BotToast.showText(text: e.toString());
-            }
+    _webViewController = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {
+            setState(() => progressValue = progress / 100);
           },
-        ),
-        IconButton(
-          icon: Icon(FluentIcons.refresh),
-          onPressed: () => _webViewController.reload(),
-        ),
-        SizedBox(width: 8.0),
-        Visibility(
-          visible: progressValue < 1.0,
-          child: ProgressBar(value: progressValue * 100),
-        ),
-      ]),
-      content: InAppWebView(
-        initialUrlRequest: URLRequest(url: WebUri(widget.url)),
-        initialSettings: InAppWebViewSettings(
-          useShouldOverrideUrlLoading: true,
-          useHybridComposition: true,
-        ),
-        onWebViewCreated: (controller) => _webViewController = controller,
-        onReceivedServerTrustAuthRequest: (controller, challenge) async {
-          if (Platform.isIOS || _alreadyAgree) {
-            return ServerTrustAuthResponse(
-              action: ServerTrustAuthResponseAction.PROCEED,
-            );
-          }
-          final result = await showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) => ContentDialog(
-              title: Text(
-                "${challenge.protectionSpace.sslError?.message ?? "Ssl Cert Error"},continue?",
-              ),
-              actions: [
-                HyperlinkButton(
-                  onPressed: () => Navigator.of(context).pop("cancel"),
-                  child: Text(I18n.of(context).cancel),
-                ),
-                HyperlinkButton(
-                  onPressed: () => Navigator.of(context).pop("ok"),
-                  child: Text(I18n.of(context).ok),
-                ),
-              ],
-            ),
-          );
-          if (result != "ok") {
-            Navigator.of(context).pop();
-          } else {
-            _alreadyAgree = true;
-          }
-          return ServerTrustAuthResponse(
-            action: result == "ok"
-                ? ServerTrustAuthResponseAction.PROCEED
-                : ServerTrustAuthResponseAction.CANCEL,
-          );
-        },
-        onLoadStop: (InAppWebViewController controller, Uri? uri) async {
-          if (uri != null &&
-              !userSetting.disableBypassSni &&
-              uri.host == "accounts.pixiv.net") {
-            controller.evaluateJavascript(
-              source: """
+          onPageStarted: (String url) {},
+          onPageFinished: (String url) async {
+            final uri = Uri.parse(url);
+            if (!userSetting.disableBypassSni &&
+                uri.host == "accounts.pixiv.net") {
+              _webViewController.runJavaScript("""
 javascript:(function() {
  let forms = document.getElementsByTagName('form'); 
  for (let name of forms) {
@@ -120,28 +48,57 @@ javascript:(function() {
         name.style.display = 'none';
 } 
   })()
-""",
-            );
-          }
-        },
-        onProgressChanged: (_, progress) {
-          setState(() => progressValue = progress / 100);
-        },
-        shouldOverrideUrlLoading: (
-          InAppWebViewController controller,
-          NavigationAction navigationAction,
-        ) async {
-          if (navigationAction.request.url == null)
-            return NavigationActionPolicy.ALLOW;
-          var uri = navigationAction.request.url!;
-          if (uri.scheme == "pixiv") {
-            Leader.pushWithUri(context, uri);
-            Navigator.of(context).pop("OK");
-            return NavigationActionPolicy.CANCEL;
-          }
-          return NavigationActionPolicy.ALLOW;
-        },
+""");
+            }
+          },
+          onWebResourceError: (WebResourceError error) {},
+          onNavigationRequest: (NavigationRequest request) {
+            var uri = Uri.parse(request.url);
+            if (uri.scheme == "pixiv") {
+              Leader.pushWithUri(context, uri);
+              Navigator.of(context).pop("OK");
+              return NavigationDecision.prevent;
+            }
+            return NavigationDecision.navigate;
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse(widget.url));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WeissPlugin.stop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaffoldPage(
+      header: Row(
+        children: [
+          IconButton(
+            icon: Icon(FluentIcons.open_in_new_window),
+            onPressed: () {
+              try {
+                CustomTabPlugin.launch(widget.url);
+              } catch (e) {
+                BotToast.showText(text: e.toString());
+              }
+            },
+          ),
+          IconButton(
+            icon: Icon(FluentIcons.refresh),
+            onPressed: () => _webViewController.reload(),
+          ),
+          SizedBox(width: 8.0),
+          Visibility(
+            visible: progressValue < 1.0,
+            child: ProgressBar(value: progressValue * 100),
+          ),
+        ],
       ),
+      content: WebViewWidget(controller: _webViewController),
     );
   }
 }

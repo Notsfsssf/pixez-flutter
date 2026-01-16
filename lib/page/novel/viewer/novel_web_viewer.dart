@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:pixez/network/api_client.dart';
 
 class NovelWebViewer extends StatefulWidget {
@@ -13,6 +13,8 @@ class NovelWebViewer extends StatefulWidget {
 
 class _NovelWebViewerState extends State<NovelWebViewer> {
   String? initNovelHtml;
+  WebViewController? _controller;
+
   @override
   void initState() {
     super.initState();
@@ -25,6 +27,9 @@ class _NovelWebViewerState extends State<NovelWebViewer> {
       if (mounted) {
         setState(() {
           initNovelHtml = response.data;
+          _controller = WebViewController()
+            ..setJavaScriptMode(JavaScriptMode.unrestricted)
+            ..loadHtmlString(initNovelHtml ?? "");
         });
       }
     } catch (e) {}
@@ -33,13 +38,10 @@ class _NovelWebViewerState extends State<NovelWebViewer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
-        body: initNovelHtml != null ? _buildWebView(context) : Container());
-  }
-
-  Widget _buildWebView(BuildContext context) {
-    return InAppWebView(
-      initialData: InAppWebViewInitialData(data: initNovelHtml ?? ""),
+      appBar: AppBar(),
+      body: initNovelHtml != null && _controller != null
+          ? WebViewWidget(controller: _controller!)
+          : Container(),
     );
   }
 }
