@@ -385,10 +385,24 @@ class _IllustCardState extends State<IllustCard> {
                 if (userSetting.saveAfterStar && (store.state == 0)) {
                   saveStore.saveImage(store.illusts!);
                 }
+                // TODO: 添加配置项 开关和过滤器
+                final List<String>? tags;
+                if (userSetting.autoTagWhenStar) {
+                  final filters = [RegExp(r"\d+users入り")];
+                  tags = store.illusts?.tags
+                      .map((tag) => tag.name)
+                      .where(
+                        (tag) => !filters.any((regex) => regex.hasMatch(tag)),
+                      )
+                      .toList();
+                } else {
+                  tags = null;
+                }
                 store.star(
                   restrict: userSetting.defaultPrivateLike
                       ? "private"
                       : "public",
+                  tags: tags,
                 );
                 if (userSetting.followAfterStar) {
                   bool success = await store.followAfterStar();

@@ -756,8 +756,20 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
     if (userSetting.saveAfterStar && (illustStore.state == 0)) {
       saveStore.saveImage(illustStore.illusts!);
     }
+    // TODO: 添加配置项 开关和过滤器
+    final List<String>? tags;
+    if (userSetting.autoTagWhenStar) {
+      final filters = [RegExp(r"\d+users入り")];
+      tags = illustStore.illusts?.tags
+          .map((tag) => tag.name)
+          .where((tag) => !filters.any((regex) => regex.hasMatch(tag)))
+          .toList();
+    } else {
+      tags = null;
+    }
     illustStore.star(
       restrict: userSetting.defaultPrivateLike ? "private" : "public",
+      tags: tags,
     );
     if (userSetting.followAfterStar) {
       bool success = await illustStore.followAfterStar();
@@ -801,6 +813,7 @@ class IllustItem extends StatelessWidget {
     required this.onMultiSavePressed,
     required this.save,
   });
+
   @override
   Widget build(BuildContext context) {
     return ContextMenu(
@@ -922,6 +935,7 @@ class MoreItem extends StatelessWidget {
   final Future Function(Illusts illust, int index) save;
 
   MoreItem(this.index, this.list, this._aboutStore, this.save);
+
   @override
   Widget build(BuildContext context) {
     return ContextMenu(

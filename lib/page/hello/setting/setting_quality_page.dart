@@ -377,6 +377,14 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 userSetting.setStarAfterSave(value);
               },
             ),
+            SwitchListTile(
+              value: userSetting.autoTagWhenStar,
+              title: Text(
+                  I18n.of(context).automatically_tag_when_bookmarking),
+              onChanged: (value) async {
+                userSetting.setAutoTagWhenStar(value);
+              },
+            ),
             Divider(),
           ]),
         );

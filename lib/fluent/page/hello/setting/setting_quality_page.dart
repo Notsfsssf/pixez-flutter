@@ -441,6 +441,17 @@ class _SettingQualityPageState extends State<SettingQualityPage>
               },
             ),
           ),
+          ListTile(
+            title: Text(
+              I18n.of(context).automatically_tag_when_bookmarking,
+            ),
+            trailing: ToggleSwitch(
+              checked: userSetting.autoTagWhenStar,
+              onChanged: (value) async {
+                userSetting.setAutoTagWhenStar(value);
+              },
+            ),
+          ),
         ],
       ),
     );
