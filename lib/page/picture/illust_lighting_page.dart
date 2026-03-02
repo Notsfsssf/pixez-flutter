@@ -263,10 +263,25 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                           (_illustStore.state == 0)) {
                         saveStore.saveImage(_illustStore.illusts!);
                       }
+                      // TODO: 添加配置项 开关和过滤器
+                      final List<String>? tags;
+                      if ("TODO" == "TODO") {
+                        final filters = [RegExp(r"\d+users入り")];
+                        tags = _illustStore.illusts!.tags
+                            .map((tag) => tag.name)
+                            .where(
+                              (tag) =>
+                                  !filters.any((regex) => regex.hasMatch(tag)),
+                            )
+                            .toList();
+                      } else {
+                        tags = null;
+                      }
                       _illustStore.star(
                         restrict: userSetting.defaultPrivateLike
                             ? "private"
                             : "public",
+                        tags: tags,
                       );
                       if (userSetting.followAfterStar) {
                         bool success = await _illustStore.followAfterStar();
