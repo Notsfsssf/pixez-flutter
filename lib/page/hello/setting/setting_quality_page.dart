@@ -380,7 +380,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             SwitchListTile(
               value: userSetting.autoTagWhenStar,
               title: Text(
-                  "收藏时自动添加标签"),
+                  I18n.of(context).automatically_tag_when_bookmarking),
               onChanged: (value) async {
                 userSetting.setAutoTagWhenStar(value);
               },
