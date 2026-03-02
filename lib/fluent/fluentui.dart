@@ -30,6 +30,7 @@ initFluent(List<String> args) async {
     ),
     () async {
       await Window.initialize();
+      Window.hideWindowControls();
 
       _effect = await getEffect();
       await windowManager.show();
