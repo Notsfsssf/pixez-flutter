@@ -1,0 +1,410 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  get_version:
+    name: 获取版本号
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ toJson(steps.gitversion.outputs) }}
+    steps:
+      - name: 签出仓库（完整历史）
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: 初始化 GitVersion
+        uses: gittools/actions/gitversion/setup@v4
+        with:
+          versionSpec: "6.6.x"
+
+      - name: 计算版本 Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v4
+        with:
+          overrideConfig: |
+            assembly-versioning-scheme=MajorMinorPatchTag
+            assembly-file-versioning-format="{Major}.{Minor}.{Patch}.{BuildMetaData ?? 0}"
+
+  build_windows:
+    name: Build Windows
+    needs: get_version
+    runs-on: windows-latest
+    outputs:
+      windows-amd64-loose: ${{ toJson(steps.windows-amd64.outputs) }}
+      windows-amd64-msix: ${{ toJson(steps.windows-amd64-msix.outputs) }}
+      windows-amd64-msix-wrapper: ${{ toJson(steps.windows-amd64-msix-wrapper.outputs) }}
+    steps:
+      - name: 签出仓库
+        uses: actions/checkout@v6
+
+      - name: 初始化 Rust 工具链
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+
+      - name: 初始化 Flutter 环境
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: 还原依赖
+        run: flutter pub get --no-example --enforce-lockfile
+
+      - name: 生成代码
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: 构建项目
+        shell: pwsh
+        run: |-
+          flutter build windows `
+            --release `
+            --no-pub `
+            --build-name=${{ fromJSON(needs.get_version.outputs.version).majorMinorPatch }} `
+            --build-number=${{ fromJSON(needs.get_version.outputs.version).buildMetaData }}
+
+      - name: 上传产物
+        id: windows-amd64
+        uses: actions/upload-artifact@v6
+        with:
+          name: pixez.windows-amd64.loose
+          path: build/windows/x64/runner/Release/**/*
+          compression-level: 9
+
+      - name: 还原证书
+        id: restore-msix-cert
+        shell: pwsh
+        if: env.CERTIFICATE != '' && github.event_name != 'pull_request'
+        env:
+          CERTIFICATE: ${{ secrets.CERTIFICATE }}
+          CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
+        run: |-
+          $certFile = (New-TemporaryFile).FullName + '.pfx'
+          [System.IO.File]::WriteAllBytes($certFile, [System.Convert]::FromBase64String($env:CERTIFICATE))
+          $Private:Password = ConvertTo-SecureString -String $env:CERTIFICATE_PASSWORD -AsPlainText
+          $Private:Certificate = Get-PfxCertificate $certFile -Password $Private:Password
+          $Private:Certificate.Subject
+          Write-Output "CERTIFICATE_PATH=$certFile" >> "$env:GITHUB_OUTPUT"
+          Write-Output "CERTIFICATE_SUBJECT=$($Private:Certificate.Subject)" >> "$env:GITHUB_OUTPUT"
+
+      - name: 构建 MSIX
+        id: build-msix
+        shell: pwsh
+        if: steps.restore-msix-cert.conclusion == 'success'
+        env:
+          CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
+        run: |-
+          dart run msix:create `
+            --certificate-path '${{ steps.restore-msix-cert.outputs.CERTIFICATE_PATH }}' `
+            --certificate-password $env:CERTIFICATE_PASSWORD `
+            --build-windows false `
+            --version '${{ fromJSON(needs.get_version.outputs.version).assemblySemVer }}' `
+            --publisher '${{ steps.restore-msix-cert.outputs.CERTIFICATE_SUBJECT }}'
+
+      - name: 上传 MSIX
+        id: windows-amd64-msix
+        if: steps.build-msix.conclusion == 'success'
+        uses: actions/upload-artifact@v6
+        with:
+          name: pixez.windows-amd64.msix
+          path: build/windows/x64/runner/Release/pixez.msix
+          compression-level: 9
+
+      - name: 生成 MSIX 安装器
+        id: build-msix-wrapper
+        if: steps.build-msix.conclusion == 'success'
+        uses: frg2089/MsixInstaller@v2
+        with:
+          msix: build/windows/x64/runner/Release/pixez.msix
+          name: pixez.windows-amd64.msix.exe
+
+      - name: 上传 MSIX 安装器
+        id: windows-amd64-msix-wrapper
+        if: steps.build-msix-wrapper.conclusion == 'success'
+        uses: actions/upload-artifact@v6
+        with:
+          name: pixez.windows-amd64.msix.exe
+          path: ${{ steps.build-msix-wrapper.outputs.path }}
+          compression-level: 9
+
+  build_android:
+    name: Build Android
+    needs: get_version
+    runs-on: ubuntu-latest
+    outputs:
+      android-aab: ${{ toJson(steps.android-aab.outputs) }}
+      android-apk: ${{ toJson(steps.android-apk.outputs) }}
+    if: github.event_name != 'pull_request'
+    steps:
+      - name: 检查密钥存储
+        shell: pwsh
+        env:
+          STORE: ${{ secrets.STORE }}
+        run: |-
+          if ($env:STORE) {
+            Write-Output "密钥存储已配置"
+          } else {
+            Write-Output "密钥存储未配置"
+            exit 1
+          }
+
+      - name: 签出仓库
+        uses: actions/checkout@v6
+
+      - name: 初始化 Java 环境
+        uses: actions/setup-java@v5
+        with:
+          distribution: "microsoft" # 不知道用哪个 就先用微软的
+          java-version: 17
+
+      - name: 初始化 Android 开发工具包
+        uses: android-actions/setup-android@v3
+
+      - name: 初始化 Rust 工具链
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+
+      - name: 初始化 Flutter 环境
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: 还原密钥存储
+        shell: pwsh
+        env:
+          STORE: ${{ secrets.STORE }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |-
+          $storeFile = (New-TemporaryFile).FullName + '.jks'
+          [System.IO.File]::WriteAllBytes($storeFile, [System.Convert]::FromBase64String($env:STORE))
+          Write-Output "storeFile=$storeFile" >> ./android/key.properties
+          Write-Output "storePassword=$env:STORE_PASSWORD" >> ./android/key.properties
+          Write-Output "keyAlias=$env:KEY_ALIAS" >> ./android/key.properties
+          Write-Output "keyPassword=$env:KEY_PASSWORD" >> ./android/key.properties
+
+      - name: 还原依赖
+        run: flutter pub get --no-example --enforce-lockfile
+
+      - name: 生成代码
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: 构建 AAB
+        shell: pwsh
+        run: |-
+          flutter build appbundle `
+            --release `
+            --no-pub `
+            --build-name=${{ fromJSON(needs.get_version.outputs.version).majorMinorPatch }} `
+            --build-number=${{ fromJSON(needs.get_version.outputs.version).buildMetaData }}
+
+      - name: 上传产物
+        id: android-aab
+        uses: actions/upload-artifact@v6
+        with:
+          name: android-aab
+          path: build/app/outputs/bundle/release/app-release.aab
+          compression-level: 9
+
+      - name: 构建 APK
+        shell: pwsh
+        run: |-
+          flutter build apk `
+            --release `
+            --no-pub `
+            --build-name=${{ fromJSON(needs.get_version.outputs.version).majorMinorPatch }} `
+            --build-number=${{ fromJSON(needs.get_version.outputs.version).buildMetaData }}
+
+      - name: 上传产物
+        id: android-apk
+        uses: actions/upload-artifact@v6
+        with:
+          name: android-apk
+          path: build/app/outputs/flutter-apk/*.apk
+          compression-level: 9
+
+  build_ios:
+    name: Build iOS
+    needs: get_version
+    runs-on: macos-latest
+    outputs:
+      ios-ipa: ${{ toJson(steps.ios-ipa.outputs) }}
+    steps:
+      - name: 签出仓库
+        uses: actions/checkout@v6
+
+      - name: 初始化 Rust 工具链
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+
+      - name: 初始化 Flutter 环境
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: 还原依赖
+        run: flutter pub get --no-example --enforce-lockfile
+
+      - name: 生成代码
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: 构建项目
+        shell: pwsh
+        run: |-
+          flutter build ios `
+            --release `
+            --no-codesign `
+            --no-pub `
+            --build-name=${{ fromJSON(needs.get_version.outputs.version).majorMinorPatch }} `
+            --build-number=${{ fromJSON(needs.get_version.outputs.version).buildMetaData }}
+
+      - name: Create Payload directory and move Runner.app
+        run: |
+          mkdir -p build/ios/iphoneos/Payload
+          mv build/ios/iphoneos/Runner.app build/ios/iphoneos/Payload
+
+      - name: Change directory and zip Payload to create pixez-ios.ipa
+        run: |
+          cd build/ios/iphoneos/
+          zip -r pixez-ios.ipa Payload
+
+      - name: 上传产物
+        id: ios-ipa
+        uses: actions/upload-artifact@v6
+        with:
+          name: pixez-ios
+          path: build/ios/iphoneos/pixez-ios.ipa
+
+  summary:
+    name: 总结 Artifacts
+    needs:
+      - build_android
+      - build_ios
+      - build_windows
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - name: 生成校验和
+        shell: pwsh
+        run: |-
+          Write-Output '### Build Success :rocket:' >> summary.md
+          Write-Output '|File|SHA256|' >> summary.md
+          Write-Output '|:-|:-:|' >> summary.md
+          $Private:Tmp = '${{ needs.build_windows.outputs.windows-amd64-loose }}'
+          if ($Private:Tmp -AND $Private:Tmp -NE '{}') {
+            $Private:Json = ConvertFrom-Json $Private:Tmp
+            Write-Output "|[pixez.windows-amd64.zip]($($Private:Json.'artifact-url'))|$($Private:Json.'artifact-digest')|" >> summary.md
+          }
+
+          $Private:Tmp = '${{ needs.build_windows.outputs.windows-amd64-msix }}'
+          if ($Private:Tmp -AND $Private:Tmp -NE '{}') {
+            $Private:Json = ConvertFrom-Json $Private:Tmp
+            Write-Output "|[pixez.windows-amd64.msix]($($Private:Json.'artifact-url'))|$($Private:Json.'artifact-digest')|" >> summary.md
+          }
+
+          $Private:Tmp = '${{ needs.build_windows.outputs.windows-amd64-msix-wrapper }}'
+          if ($Private:Tmp -AND $Private:Tmp -NE '{}') {
+            $Private:Json = ConvertFrom-Json $Private:Tmp
+            Write-Output "|[pixez.windows-amd64.msix.exe]($($Private:Json.'artifact-url'))|$($Private:Json.'artifact-digest')|" >> summary.md
+          }
+
+          $Private:Tmp = '${{ needs.build_android.outputs.android-aab }}'
+          if ($Private:Tmp -AND $Private:Tmp -NE '{}') {
+            $Private:Json = ConvertFrom-Json $Private:Tmp
+            Write-Output "|[pixez.android.aab]($($Private:Json.'artifact-url'))|$($Private:Json.'artifact-digest')|" >> summary.md
+          }
+
+          $Private:Tmp = '${{ needs.build_android.outputs.android-apk }}'
+          if ($Private:Tmp -AND $Private:Tmp -NE '{}') {
+            $Private:Json = ConvertFrom-Json $Private:Tmp
+            Write-Output "|[pixez.android.apk]($($Private:Json.'artifact-url'))|$($Private:Json.'artifact-digest')|" >> summary.md
+          }
+
+          $Private:Tmp = '${{ needs.build_ios.outputs.ios-ipa }}'
+          if ($Private:Tmp -AND $Private:Tmp -NE '{}') {
+            $Private:Json = ConvertFrom-Json $Private:Tmp
+            Write-Output "|[pixez.ios.ipa]($($Private:Json.'artifact-url'))|$($Private:Json.'artifact-digest')|" >> summary.md
+          }
+
+      - name: 展示 Summary
+        shell: pwsh
+        run: |-
+          Get-Content summary.md >> $env:GITHUB_STEP_SUMMARY  
+          Write-Output '' >> $env:GITHUB_STEP_SUMMARY  
+          Write-Output '### MSIX 安装教程' >> $env:GITHUB_STEP_SUMMARY  
+          Write-Output '![image](https://github.com/Notsfsssf/pixez-flutter/assets/42184238/f1956682-f527-487d-997b-523319cd78d3)' >> $env:GITHUB_STEP_SUMMARY  
+
+      - name: 在 PR 中评论
+        shell: pwsh
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |-
+          gh pr comment ${{ github.event.pull_request.number }} `
+            --body-file summary.md `
+            --edit-last `
+            --create-if-none
+
+  publish_release:
+    name: Publish to Release
+    needs:
+      - build_android
+      - build_ios
+      - build_windows
+    if: github.ref_type == 'tag'
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v8
+        if: needs.build_windows.outputs.windows-amd64-loose
+        with:
+          artifact-ids: ${{ fromJSON(needs.build_windows.outputs.windows-amd64-loose).artifact-id }}
+          skip-decompress: true
+
+      - uses: actions/download-artifact@v8
+        if: needs.build_windows.outputs.windows-amd64-msix
+        with:
+          artifact-ids: ${{ fromJSON(needs.build_windows.outputs.windows-amd64-msix).artifact-id  }}
+
+      - uses: actions/download-artifact@v8
+        if: needs.build_windows.outputs.windows-amd64-msix-wrapper
+        with:
+          artifact-ids: ${{ fromJSON(needs.build_windows.outputs.windows-amd64-msix-wrapper).artifact-id }}
+
+      - uses: actions/download-artifact@v8
+        if: needs.build_android.outputs.android-aab
+        with:
+          artifact-ids: ${{ fromJSON(needs.build_android.outputs.android-aab).artifact-id }}
+
+      - uses: actions/download-artifact@v8
+        if: needs.build_android.outputs.android-apk
+        with:
+          artifact-ids: ${{ fromJSON(needs.build_android.outputs.android-apk).artifact-id }}
+
+      - uses: actions/download-artifact@v8
+        if: needs.build_ios.outputs.ios-ipa
+        with:
+          artifact-ids: ${{ fromJSON(needs.build_ios.outputs.ios-ipa).artifact-id }}
+            
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body: |-
+            <details>
+              <summary>
+                <h3>MSIX 安装教程</h3>
+              </summary>
+
+              <img src="https://github.com/Notsfsssf/pixez-flutter/assets/42184238/f1956682-f527-487d-997b-523319cd78d3" alt="MSIX 安装教程" />
+            </details>
+          append_body: true
+          files: ./*
