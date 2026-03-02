@@ -377,6 +377,14 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                 userSetting.setStarAfterSave(value);
               },
             ),
+            SwitchListTile(
+              value: userSetting.autoTagWhenStar,
+              title: Text(
+                  "收藏时自动添加标签"),
+              onChanged: (value) async {
+                userSetting.setAutoTagWhenStar(value);
+              },
+            ),
             Divider(),
           ]),
         );

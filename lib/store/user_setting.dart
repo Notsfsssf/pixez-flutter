@@ -85,6 +85,7 @@ abstract class _UserSetting with Store {
   static const String ILLUST_DETAIL_SAVE_SKIP_LONG_PRESS_KEY =
       "illust_detail_save_skip_long_press";
   static const String DRAG_START_X_KEY = "drag_start_x";
+  static const String AUTO_TAG_WHEN_STAR_KEY = "auto_tag_when_star";
 
   @observable
   double dragStartX = 0;
@@ -190,6 +191,8 @@ abstract class _UserSetting with Store {
   String? format = "";
   @observable
   bool feedAIBadge = false;
+  @observable
+  bool autoTagWhenStar = false;
   static const String intialFormat = "{illust_id}_p{part}";
 
   @action
@@ -365,6 +368,12 @@ abstract class _UserSetting with Store {
   }
 
   @action
+  setAutoTagWhenStar(bool v) async {
+    await prefs.setBool(AUTO_TAG_WHEN_STAR_KEY, v);
+    autoTagWhenStar = v;
+  }
+
+  @action
   askInit() async {
     prefs = await Prefer.getInstance();
     int themeModeIndex = prefs.getInt(THEME_MODE_KEY) ?? 0;
@@ -450,6 +459,7 @@ abstract class _UserSetting with Store {
     swipeChangeArtwork = prefs.getBool(SWIPE_CHANGE_ARTWORK_KEY) ?? true;
     useSaunceNaoWebview = prefs.getBool(USE_SAUNCE_NAO_WEBVIEW) ?? false;
     dragStartX = prefs.getDouble(DRAG_START_X_KEY) ?? 0;
+    autoTagWhenStar = prefs.getBool(AUTO_TAG_WHEN_STAR_KEY) ?? false;
     illustDetailSaveSkipLongPress =
         prefs.getBool(ILLUST_DETAIL_SAVE_SKIP_LONG_PRESS_KEY) ?? false;
     if (Platform.isAndroid) {

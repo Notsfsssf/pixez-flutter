@@ -758,7 +758,7 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
     }
     // TODO: 添加配置项 开关和过滤器
     final List<String>? tags;
-    if ("TODO" == "TODO") {
+    if (userSetting.autoTagWhenStar) {
       final filters = [RegExp(r"\d+users入り")];
       tags = illustStore.illusts?.tags
           .map((tag) => tag.name)
