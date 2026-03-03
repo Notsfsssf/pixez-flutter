@@ -13,6 +13,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+import com.android.build.gradle.LibraryExtension
 
 allprojects {
     repositories {
@@ -34,4 +35,36 @@ subprojects {
 
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
+}
+
+// 强制覆盖所有子项目(插件)的配置
+subprojects {
+    // 定义一个修改函数，避免重复代码
+    fun com.android.build.gradle.LibraryExtension.forceUpgrade() {
+        compileSdk = 36
+
+        // 很多老旧插件没有 namespace，强制升级 SDK 后必须补上，否则会报错
+        if (namespace == null) {
+            namespace = project.group.toString()
+        }
+    }
+
+    // 1. 针对尚未配置的项目，注册 afterEvaluate 钩子，确保在插件配置完成后执行覆盖
+    if (!project.state.executed) {
+        project.afterEvaluate {
+            if (project.plugins.hasPlugin("com.android.library")) {
+                project.extensions.configure<com.android.build.gradle.LibraryExtension> {
+                    forceUpgrade()
+                }
+            }
+        }
+    }
+    // 2. 针对已经配置完成的项目，直接执行覆盖（防止报 already evaluated 错误）
+    else {
+        if (project.plugins.hasPlugin("com.android.library")) {
+            project.extensions.configure<com.android.build.gradle.LibraryExtension> {
+                forceUpgrade()
+            }
+        }
+    }
 }
