@@ -70,7 +70,7 @@ jobs:
         id: windows-amd64
         uses: actions/upload-artifact@v6
         with:
-          name: pixez.windows-amd64.loose
+          name: windows-x86_64-release
           path: build/windows/x64/runner/Release/**/*
           compression-level: 9
 
@@ -103,14 +103,17 @@ jobs:
             --build-windows false `
             --version '${{ fromJSON(needs.get_version.outputs.version).assemblySemVer }}' `
             --publisher '${{ steps.restore-msix-cert.outputs.CERTIFICATE_SUBJECT }}'
+          Move-Item `
+            -LiteralPath build/windows/x64/runner/Release/pixez.msix `
+            -Destination build/windows/x64/runner/Release/windows-x86_64-release.msix
 
       - name: 上传 MSIX
         id: windows-amd64-msix
         if: steps.build-msix.conclusion == 'success'
         uses: actions/upload-artifact@v6
         with:
-          name: pixez.windows-amd64.msix
-          path: build/windows/x64/runner/Release/pixez.msix
+          name: windows-x86_64-release.msix
+          path: build/windows/x64/runner/Release/windows-x86_64-release.msix
           compression-level: 9
 
       - name: 生成 MSIX 安装器
@@ -118,15 +121,15 @@ jobs:
         if: steps.build-msix.conclusion == 'success'
         uses: frg2089/MsixInstaller@v2
         with:
-          msix: build/windows/x64/runner/Release/pixez.msix
-          name: pixez.windows-amd64.msix.exe
+          msix: build/windows/x64/runner/Release/windows-x86_64-release.msix
+          name: windows-x86_64-release.msix
 
       - name: 上传 MSIX 安装器
         id: windows-amd64-msix-wrapper
         if: steps.build-msix-wrapper.conclusion == 'success'
         uses: actions/upload-artifact@v6
         with:
-          name: pixez.windows-amd64.msix.exe
+          name: windows-x86_64-release.msix.exe
           path: ${{ steps.build-msix-wrapper.outputs.path }}
           compression-level: 9
 
