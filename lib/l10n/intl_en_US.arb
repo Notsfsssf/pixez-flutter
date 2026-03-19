@@ -334,5 +334,33 @@
   "news_follow_title": "Following",
   "user_page_info_title": "User info",
   "input_regexp_hint": "Enter tag name or regular expression",
-  "automatically_tag_when_bookmarking": "Automatically tag when bookmarking"
+  "automatically_tag_when_bookmarking": "Automatically tag when bookmarking",
+  "bookmarkSearchTagEmpty": "Tag cannot be empty",
+  "bookmarkSearchTagExists": "This tag already exists",
+  "bookmarkSearchTagInputHint": "Input keywords",
+  "bookmarkAutoRequestInterval": "Bookmark auto request interval",
+  "bookmarkAutoRequestIntervalHelper": "Set the delay between automatic bookmark requests in milliseconds.",
+  "bookmarkAutoRequestIntervalInvalid": "Please enter an integer greater than 0.",
+  "bookmarkAutoRequestIntervalWarningTitle": "Warning",
+  "bookmarkAutoRequestIntervalWarning": "Request intervals below 700 ms are likely to trigger rate limiting.",
+  "bookmarkAutoRequestIntervalValue": "Current: {value} ms",
+  "@bookmarkAutoRequestIntervalValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "bookmarkDeepSearchStats": "Continuous searching (Matched: {matchedCount} / Total: {fetchedCount})",
+  "@bookmarkDeepSearchStats": {
+    "placeholders": {
+      "matchedCount": {
+        "type": "String"
+      },
+      "fetchedCount": {
+        "type": "String"
+      }
+    }
+  },
+  "continuousRequesting": "Loading continuously"
 }
