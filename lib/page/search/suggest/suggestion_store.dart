@@ -22,13 +22,30 @@ part 'suggestion_store.g.dart';
 class SuggestionStore = _SuggestionStoreBase with _$SuggestionStore;
 
 abstract class _SuggestionStoreBase with Store {
+  int _requestVersion = 0;
+
   @observable
   AutoWords? autoWords;
-  fetch(String query) async {
+
+  void clear() {
+    _requestVersion++;
+    autoWords = null;
+  }
+
+  Future<void> fetch(String query) async {
+    final requestVersion = ++_requestVersion;
     try {
-      AutoWords autoWords =
+      final AutoWords autoWords =
           await apiClient.getSearchAutoCompleteKeywords(query);
+      if (requestVersion != _requestVersion) {
+        return;
+      }
       this.autoWords = autoWords;
-    } catch (e) {}
+    } catch (_) {
+      if (requestVersion != _requestVersion) {
+        return;
+      }
+      autoWords = null;
+    }
   }
 }
