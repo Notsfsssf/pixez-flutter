@@ -86,6 +86,8 @@ abstract class _UserSetting with Store {
       "illust_detail_save_skip_long_press";
   static const String DRAG_START_X_KEY = "drag_start_x";
   static const String AUTO_TAG_WHEN_STAR_KEY = "auto_tag_when_star";
+  static const String BOOKMARK_AUTO_REQUEST_INTERVAL_KEY =
+      "bookmark_auto_request_interval";
 
   @observable
   double dragStartX = 0;
@@ -193,6 +195,7 @@ abstract class _UserSetting with Store {
   bool feedAIBadge = false;
   @observable
   bool autoTagWhenStar = false;
+  int bookmarkAutoRequestInterval = 700;
   static const String intialFormat = "{illust_id}_p{part}";
 
   @action
@@ -462,6 +465,9 @@ abstract class _UserSetting with Store {
     autoTagWhenStar = prefs.getBool(AUTO_TAG_WHEN_STAR_KEY) ?? false;
     illustDetailSaveSkipLongPress =
         prefs.getBool(ILLUST_DETAIL_SAVE_SKIP_LONG_PRESS_KEY) ?? false;
+    bookmarkAutoRequestInterval = _normalizeBookmarkAutoRequestInterval(
+      prefs.getInt(BOOKMARK_AUTO_REQUEST_INTERVAL_KEY) ?? 700,
+    );
     if (Platform.isAndroid) {
       try {
         await SecurePlugin.configSecureWindow(nsfwMask);
@@ -641,6 +647,17 @@ abstract class _UserSetting with Store {
   Future<void> setCopyInfoText(String text) async {
     copyInfoText = text;
     await prefs.setString(COPY_INFO_TEXT_KEY, text);
+  }
+
+  int _normalizeBookmarkAutoRequestInterval(int value) {
+    return min(max(value, 100), 10000);
+  }
+
+  @action
+  Future<void> setBookmarkAutoRequestInterval(int value) async {
+    final normalized = _normalizeBookmarkAutoRequestInterval(value);
+    bookmarkAutoRequestInterval = normalized;
+    await prefs.setInt(BOOKMARK_AUTO_REQUEST_INTERVAL_KEY, normalized);
   }
 
   @action
