@@ -30,8 +30,8 @@ class _BookmarkAutoRequestIntervalPageState
   }
 
   Future<void> _resetToDefault() async {
-    _textEditingController.text = '500';
-    await userSetting.setBookmarkAutoRequestInterval(500);
+    _textEditingController.text = '700';
+    await userSetting.setBookmarkAutoRequestInterval(700);
   }
 
   Future<void> _save() async {
