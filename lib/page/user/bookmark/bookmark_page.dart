@@ -57,6 +57,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
 
   late LightSource futureGet;
   String restrict = 'public';
+  late LightingListController _lightingController;
   late ScrollController _scrollController;
   late StreamSubscription<String> subscription;
   String? currentTag;
@@ -68,7 +69,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
   List<String> _searchTags = [];
 
   // a ref of the inner lightingStore
-  LightingStore? _lightingStore;
+  LightingStore? get _lightingStore => _lightingController.store;
 
   // is in continuous auto fetching state
   bool _isDeepSearching = false;
@@ -76,26 +77,8 @@ class _BookmarkPageState extends State<BookmarkPage> {
   // performing a fetch
   bool _isDeepSearchLoading = false;
 
-  // ref to the the ongoing fetch 
+  // ref to the the ongoing fetch
   Future<void>? _deepSearchTask;
-
-  void _bindLightingStore(LightingStore store) {
-    // Keep the latest LightingStore so bookmark search and continuous loading
-    // controls can observe the list state managed inside LightingList.
-    _lightingStore = store;
-  }
-
-  void _handleStoreChanged(LightingStore store) {
-    _lightingStore = store;
-    if (!mounted) {
-      return;
-    }
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        setState(() {});
-      }
-    });
-  }
 
   void _startDeepSearch() {
     if (_lightingStore == null || _isDeepSearching) return;
@@ -201,8 +184,9 @@ class _BookmarkPageState extends State<BookmarkPage> {
     });
   }
 
+  // iStores is a mobx observable 
+  // these two value will be observed.
   int get _fetchedIllustCount => _lightingStore?.iStores.length ?? 0;
-
   int get _matchedIllustCount {
     final store = _lightingStore;
     if (store == null) {
@@ -215,6 +199,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
 
   @override
   void initState() {
+    _lightingController = LightingListController();
     _scrollController = ScrollController();
     restrict = widget.restrict;
     futureGet = ApiForceSource(
@@ -233,6 +218,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
     _isDeepSearching = false;
     _deepSearchTask = null;
     subscription.cancel();
+    _lightingController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -255,8 +241,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                 height: _showSearch ? 180 : 45,
               ),
               filter: _filterIllust,
-              onStoreCreated: _bindLightingStore,
-              onStoreChanged: _handleStoreChanged,
+              controller: _lightingController,
               enableRefresh: !_isDeepSearching,
               enableLoad: !_isDeepSearching,
               showContinuousLoadHint: _isDeepSearching,
@@ -270,8 +255,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
         scrollController: _scrollController,
         source: futureGet,
         filter: _filterIllust,
-        onStoreCreated: _bindLightingStore,
-        onStoreChanged: _handleStoreChanged,
+        controller: _lightingController,
         enableRefresh: !_isDeepSearching,
         enableLoad: !_isDeepSearching,
         showContinuousLoadHint: _isDeepSearching,
@@ -344,18 +328,11 @@ class _BookmarkPageState extends State<BookmarkPage> {
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () async {
-                  // if (_showSearch) {
-                  //   await _stopDeepSearch();
-                  // }
                   if (!mounted) {
                     return;
                   }
-                  // final isClosingSearch = _showSearch;
                   setState(() {
                     _showSearch = !_showSearch;
-                    // if (isClosingSearch) {
-                    //   _searchTags.clear();
-                    // }
                   });
                 },
                 child: Chip(
@@ -413,42 +390,57 @@ class _BookmarkPageState extends State<BookmarkPage> {
                               horizontal: 16.0,
                               vertical: 4.0,
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  I18n.of(context).bookmarkDeepSearchStats(
-                                    _matchedIllustCount.toString(),
-                                    _fetchedIllustCount.toString(),
-                                  ),
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                ),
-                                Row(
-                                  children: [
-                                    if (_isDeepSearchLoading)
-                                      const Padding(
-                                        padding: EdgeInsets.only(right: 8.0),
-                                        child: SizedBox(
-                                          width: 16,
-                                          height: 16,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
+                            child: AnimatedBuilder(
+                              animation: _lightingController,
+                              builder: (_, __) {
+                                return Observer(
+                                  builder: (_) {
+                                    return Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          I18n.of(context).bookmarkDeepSearchStats(
+                                            _matchedIllustCount.toString(),
+                                            _fetchedIllustCount.toString(),
                                           ),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall,
                                         ),
-                                      ),
-                                    Switch(
-                                      value: _isDeepSearching,
-                                      onChanged: (val) async {
-                                        if (val) {
-                                          _startDeepSearch();
-                                        } else {
-                                          await _stopDeepSearch();
-                                        }
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                        Row(
+                                          children: [
+                                            if (_isDeepSearchLoading)
+                                              const Padding(
+                                                padding: EdgeInsets.only(
+                                                  right: 8.0,
+                                                ),
+                                                child: SizedBox(
+                                                  width: 16,
+                                                  height: 16,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    strokeWidth: 2,
+                                                  ),
+                                                ),
+                                              ),
+                                            Switch(
+                                              value: _isDeepSearching,
+                                              onChanged: (val) async {
+                                                if (val) {
+                                                  _startDeepSearch();
+                                                } else {
+                                                  await _stopDeepSearch();
+                                                }
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
                             ),
                           ),
                         ],

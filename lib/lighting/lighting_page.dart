@@ -19,7 +19,6 @@ import 'dart:math';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mobx/mobx.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/exts.dart';
@@ -70,6 +69,28 @@ class _ContinuousRequestFooter extends NotLoadFooter {
   }
 }
 
+class LightingListController extends ChangeNotifier {
+  LightingStore? _store;
+
+  LightingStore? get store => _store;
+
+  void _attach(LightingStore store) {
+    if (identical(_store, store)) {
+      return;
+    }
+    _store = store;
+    notifyListeners();
+  }
+
+  void _detach(LightingStore store) {
+    if (!identical(_store, store)) {
+      return;
+    }
+    _store = null;
+    notifyListeners();
+  }
+}
+
 class LightingList extends StatefulWidget {
   final LightSource source;
   final Widget? header;
@@ -78,8 +99,7 @@ class LightingList extends StatefulWidget {
   final String? portal;
   final bool? ai;
   final bool Function(Illusts)? filter;
-  final Function(LightingStore)? onStoreCreated;
-  final ValueChanged<LightingStore>? onStoreChanged;
+  final LightingListController? controller;
   final bool enableRefresh;
   final bool enableLoad;
   final bool showContinuousLoadHint;
@@ -93,8 +113,7 @@ class LightingList extends StatefulWidget {
     this.portal,
     this.ai,
     this.filter,
-    this.onStoreCreated,
-    this.onStoreChanged,
+    this.controller,
     this.enableRefresh = true,
     this.enableLoad = true,
     this.showContinuousLoadHint = false,
@@ -113,12 +132,13 @@ class _LightingListState extends State<LightingList> {
   @override
   void didUpdateWidget(LightingList oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller?._detach(_store);
+      widget.controller?._attach(_store);
+    }
     if (oldWidget.source != widget.source) {
       _store.source = widget.source;
       _fetch();
-    }
-    if (oldWidget.onStoreChanged != widget.onStoreChanged) {
-      widget.onStoreChanged?.call(_store);
     }
   }
 
@@ -131,8 +151,6 @@ class _LightingListState extends State<LightingList> {
       _scrollController.position.jumpTo(0.0);
     }
   }
-
-  ReactionDisposer? disposer;
 
   void _updateBackToTopVisible(bool atEdge) {
     // Back-to-top is not implemented yet. Ignore scroll-driven state changes.
@@ -149,21 +167,15 @@ class _LightingListState extends State<LightingList> {
     );
     _store = LightingStore(widget.source);
     _store.easyRefreshController = _refreshController;
-    // Expose the internal store immediately so parents like BookmarkPage can
-    // coordinate filtering, stats and continuous paging state.
-    widget.onStoreCreated?.call(_store);
-    disposer = reaction<int>((_) => _store.iStores.length, (_) {
-      // Notify on list growth so parent widgets can refresh derived counters
-      // without reaching into LightingStore's own reactions.
-      widget.onStoreChanged?.call(_store);
-    });
+    // Expose the internal store through a controller so callers can access the store instance
+    widget.controller?._attach(_store);
     super.initState();
     _store.fetch();
   }
 
   @override
   void dispose() {
-    disposer?.call();
+    widget.controller?._detach(_store);
     if (widget.scrollController == null) {
       _scrollController.dispose();
     }
