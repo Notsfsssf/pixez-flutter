@@ -36,6 +36,7 @@ import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/series/illust_series_page.dart';
 import 'package:pixez/page/soup/soup_page.dart';
 import 'package:pixez/page/user/users_page.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class Leader {
@@ -272,8 +273,13 @@ class Leader {
         if (link.pathSegments.length == 1 &&
             link.pathSegments[0] == "info.php") {
           try {
-            // https://www.pixiv.net/info.php?id=12907
-            CustomTabPlugin.launch(link.toString());
+            BotToast.showText(text: "info.php not supported yet");
+            SharePlus.instance.share(
+              ShareParams(
+                text: link.toString(),
+                sharePositionOrigin: Rect.zero,
+              ),
+            );
             return true;
           } catch (e) {}
         }
