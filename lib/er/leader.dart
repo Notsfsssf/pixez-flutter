@@ -20,7 +20,6 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:pixez/constants.dart';
-import 'package:pixez/custom_tab_plugin.dart';
 import 'package:pixez/er/fluent_leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
