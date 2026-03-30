@@ -103,6 +103,29 @@ class _IllustRowPageState extends State<IllustRowPage>
       _aboutStore.next();
   }
 
+  Future<void> _autoBookmarkAfterSave(Illusts illust) async {
+    if (!userSetting.starAfterSave) {
+      return;
+    }
+    final targetStore = illust.id == _illustStore.id
+        ? _illustStore
+        : IllustStore(illust.id, illust);
+    if (targetStore.state == 0) {
+      await targetStore.star(
+        restrict: userSetting.defaultPrivateLike ? "private" : "public",
+      );
+      try {
+        final targetIllust = _aboutStore.illusts.firstWhere(
+          (e) => e.id == illust.id,
+        );
+        targetIllust.isBookmarked = true;
+        if (mounted) {
+          setState(() {});
+        }
+      } catch (e) {}
+    }
+  }
+
   @override
   void dispose() {
     _illustStore.dispose();
@@ -371,13 +394,10 @@ class _IllustRowPageState extends State<IllustRowPage>
               ),
             );
           },
-          onLongPress: () {
-            saveStore.saveImage(_aboutStore.illusts[index]);
-            if (userSetting.starAfterSave && (_illustStore.state == 0)) {
-              _illustStore.star(
-                restrict: userSetting.defaultPrivateLike ? "private" : "public",
-              );
-            }
+          onLongPress: () async {
+            final illust = _aboutStore.illusts[index];
+            saveStore.saveImage(illust);
+            await _autoBookmarkAfterSave(illust);
           },
           child: PixivImage(
             _aboutStore.illusts[index].imageUrls.squareMedium,
@@ -769,11 +789,7 @@ class _IllustRowPageState extends State<IllustRowPage>
   Future<void> _pressSave(Illusts illust, int index) async {
     if (userSetting.illustDetailSaveSkipLongPress) {
       saveStore.saveImage(illust, index: index);
-      if (userSetting.starAfterSave && (_illustStore.state == 0)) {
-        _illustStore.star(
-          restrict: userSetting.defaultPrivateLike ? "private" : "public",
-        );
-      }
+      await _autoBookmarkAfterSave(illust);
       return;
     }
     showModalBottomSheet(
@@ -801,24 +817,12 @@ class _IllustRowPageState extends State<IllustRowPage>
                 onTap: () async {
                   Navigator.of(context).pop();
                   saveStore.saveImage(illust, index: index);
-                  if (userSetting.starAfterSave && (_illustStore.state == 0)) {
-                    _illustStore.star(
-                      restrict: userSetting.defaultPrivateLike
-                          ? "private"
-                          : "public",
-                    );
-                  }
+                  await _autoBookmarkAfterSave(illust);
                 },
                 onLongPress: () async {
                   Navigator.of(context).pop();
                   saveStore.saveImage(illust, index: index);
-                  if (userSetting.starAfterSave && (_illustStore.state == 0)) {
-                    _illustStore.star(
-                      restrict: userSetting.defaultPrivateLike
-                          ? "private"
-                          : "public",
-                    );
-                  }
+                  await _autoBookmarkAfterSave(illust);
                 },
                 title: Text(I18n.of(context).save),
               ),
