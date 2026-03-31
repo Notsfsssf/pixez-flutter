@@ -68,10 +68,10 @@ class PixivImage extends StatefulWidget {
                     verifyCertificates: false, sni: false),
                 dnsSettings: r.DnsSettings.dynamic(
                   resolver: (host) async {
-                    if (host == 'i.pximg.net') {
+                    if (host == ImageHost) {
                       return [Hoster.iPximgNet()];
                     }
-                    if (host == 's.pximg.net') {
+                    if (host == ImageSHost) {
                       return [Hoster.sPximgNet()];
                     }
                     return await InternetAddress.lookup(host)

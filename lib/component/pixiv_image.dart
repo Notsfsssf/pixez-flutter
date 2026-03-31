@@ -76,17 +76,16 @@ class PixivImage extends StatefulWidget {
     final dio = Dio();
     final client = await r.RhttpCompatibleClient.createSync(
       settings:
-          (userSetting.disableBypassSni ||
-              userSetting.pictureSource != ImageHost)
+          (userSetting.disableBypassSni)
           ? null
           : r.ClientSettings(
               tlsSettings: r.TlsSettings(verifyCertificates: false, sni: false),
               dnsSettings: r.DnsSettings.dynamic(
                 resolver: (host) async {
-                  if (host == 'i.pximg.net') {
+                  if (host == ImageHost) {
                     return [Hoster.iPximgNet()];
                   }
-                  if (host == 's.pximg.net') {
+                  if (host == ImageSHost) {
                     return [Hoster.sPximgNet()];
                   }
                   return await InternetAddress.lookup(
