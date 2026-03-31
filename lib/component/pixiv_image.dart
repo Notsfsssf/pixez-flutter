@@ -76,7 +76,8 @@ class PixivImage extends StatefulWidget {
     final dio = Dio();
     final client = await r.RhttpCompatibleClient.createSync(
       settings:
-          (userSetting.disableBypassSni)
+          (userSetting.disableBypassSni ||
+              userSetting.pictureSource != ImageHost)
           ? null
           : r.ClientSettings(
               tlsSettings: r.TlsSettings(verifyCertificates: false, sni: false),
