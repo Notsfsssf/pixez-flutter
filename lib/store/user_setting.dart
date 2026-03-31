@@ -397,7 +397,6 @@ abstract class _UserSetting with Store {
     languageNum = prefs.getInt(LANGUAGE_NUM_KEY) ?? 0;
     disableBypassSni = prefs.getBool('disable_bypass_sni') ?? false;
     ApiClient.Accept_Language = languageList[languageNum];
-    await PixivImage.generatePixivCache();
     await oAuthClient.createDioClient();
     await apiClient.createDioClient();
     apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader] =
@@ -417,6 +416,7 @@ abstract class _UserSetting with Store {
     pictureSource = disableBypassSni
         ? ImageHost
         : (prefs.getString(PICTURE_SOURCE_KEY) ?? ImageHost);
+    await PixivImage.generatePixivCache();
     await Hoster.initMap();
     themeInitState = 1;
     fetcher.start(pictureSource!);

@@ -22,6 +22,7 @@ import 'package:dio_compatibility_layer/dio_compatibility_layer.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_cache_manager_dio/flutter_cache_manager_dio.dart';
 import 'package:pixez/er/hoster.dart';
+import 'package:pixez/exts.dart';
 import 'package:pixez/main.dart';
 import 'package:rhttp/rhttp.dart' as r;
 
@@ -78,6 +79,14 @@ class PixivImage extends StatefulWidget {
                   },
                 )));
     dio.interceptors.add(LogInterceptor(responseBody: false));
+    dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (options, handler) {
+        if (options.uri.host == ImageHost || options.uri.host == ImageSHost) {
+          options.path = options.uri.toTureUri().toString();
+        }
+        handler.next(options);
+      },
+    ));
     dio.httpClientAdapter = ConversionLayerAdapter(client);
     DioCacheManager.initialize(dio);
   }
