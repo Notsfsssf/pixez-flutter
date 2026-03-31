@@ -35,11 +35,6 @@ extension HostExts on Uri {
           return this.replace(host: userSetting.pictureSource);
         } catch (e) {}
       }
-      if (this.host == ImageHost) {
-        return this.replace(host: splashStore.host);
-      } else if (this.host == ImageSHost) {
-        return this.replace(host: splashStore.host);
-      }
     }
     return this;
   }
