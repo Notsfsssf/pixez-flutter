@@ -333,5 +333,34 @@
   "start_follow": "开始关注",
   "news_follow_title": "已关注",
   "user_page_info_title": "详情",
-  "input_regexp_hint": "输入正则表达式"
+  "input_regexp_hint": "输入正则表达式",
+  "automatically_tag_when_bookmarking": "收藏时自动添加标签",
+  "bookmarkSearchTagEmpty": "标签不能为空",
+  "bookmarkSearchTagExists": "该标签已存在",
+  "bookmarkSearchTagInputHint": "输入关键字",
+  "bookmarkAutoRequestInterval": "收藏自动请求间隔",
+  "bookmarkAutoRequestIntervalHelper": "设置收藏持续搜索时每次自动请求之间的间隔，单位为毫秒。",
+  "bookmarkAutoRequestIntervalInvalid": "请输入大于 0 的整数。",
+  "bookmarkAutoRequestIntervalWarningTitle": "警告",
+  "bookmarkAutoRequestIntervalWarning": "700ms 以下的请求间隔容易触发风控。",
+  "bookmarkAutoRequestIntervalValue": "当前：{value} ms",
+  "@bookmarkAutoRequestIntervalValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "bookmarkDeepSearchStats": "持续搜索 (命中: {matchedCount} / 总数: {fetchedCount})",
+  "@bookmarkDeepSearchStats": {
+    "placeholders": {
+      "matchedCount": {
+        "type": "String"
+      },
+      "fetchedCount": {
+        "type": "String"
+      }
+    }
+  },
+  "continuousRequesting": "正在持续请求"
 }

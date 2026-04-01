@@ -28,7 +28,10 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_page.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/user/bookmark/bookmark_search.dart'
+    show BookMarkSearchView;
 import 'package:pixez/page/user/bookmark/tag/user_bookmark_tag_page.dart';
 import 'package:pixez/page/user/works/works_page.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
@@ -50,14 +53,153 @@ class BookmarkPage extends StatefulWidget {
 }
 
 class _BookmarkPageState extends State<BookmarkPage> {
+  static const _searchCardAnimationDuration = Duration(milliseconds: 220);
+
   late LightSource futureGet;
   String restrict = 'public';
+  late LightingListController _lightingController;
   late ScrollController _scrollController;
   late StreamSubscription<String> subscription;
   String? currentTag;
 
+  // toggle bookmark search card display
+  bool _showSearch = false;
+
+  // [BOOKMARK SEARCH MAIN STATE] current bookmark search tags
+  List<String> _searchTags = [];
+
+  // a ref of the inner lightingStore
+  LightingStore? get _lightingStore => _lightingController.store;
+
+  // is in continuous auto fetching state
+  bool _isDeepSearching = false;
+
+  // performing a fetch
+  bool _isDeepSearchLoading = false;
+
+  // ref to the the ongoing fetch
+  Future<void>? _deepSearchTask;
+
+  void _startDeepSearch() {
+    if (_lightingStore == null || _isDeepSearching) return;
+    setState(() {
+      _isDeepSearching = true;
+    });
+    _deepSearchTask = _runDeepSearch();
+  }
+
+  Future<void> _runDeepSearch() async {
+    // Continuous search keeps paging until the source runs out, the user stops
+    // it, or a page request fails.
+    while (_isDeepSearching &&
+        _lightingStore!.nextUrl != null &&
+        _lightingStore!.nextUrl!.isNotEmpty) {
+      if (!mounted) break;
+      setState(() {
+        _isDeepSearchLoading = true;
+      });
+      final success = await _lightingStore!.fetchNext();
+      if (!mounted) break;
+      setState(() {
+        _isDeepSearchLoading = false;
+      });
+
+      if (!success) {
+        setState(() {
+          _isDeepSearching = false;
+        });
+        break;
+      }
+
+      if (_isDeepSearching) {
+        // The request interval is user-configurable to balance speed and rate
+        // limiting risk during continuous bookmark scanning.
+        await Future.delayed(
+          Duration(milliseconds: userSetting.bookmarkAutoRequestInterval),
+        );
+      }
+    }
+
+    if (mounted) {
+      setState(() {
+        _isDeepSearching = false;
+        _isDeepSearchLoading = false;
+      });
+    }
+    _deepSearchTask = null;
+  }
+
+  Future<void> _stopDeepSearch() async {
+    if (_isDeepSearching && mounted) {
+      setState(() {
+        _isDeepSearching = false;
+      });
+    } else {
+      _isDeepSearching = false;
+    }
+    await _deepSearchTask;
+  }
+
+  Future<void> _switchBookmarkSource({
+    required String nextRestrict,
+    String? nextTag,
+  }) async {
+    // Source changes must stop the current continuous search first so old page
+    // requests do not continue against a stale bookmark query.
+    await _stopDeepSearch();
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      restrict = nextRestrict;
+      currentTag = nextTag;
+      futureGet = ApiForceSource(
+        futureGet: (bool e) =>
+            apiClient.getBookmarksIllust(widget.id, nextRestrict, nextTag),
+      );
+    });
+  }
+
+  bool _filterIllust(Illusts illust) {
+    if (_searchTags.isEmpty) return true;
+    final normalizedTitle = illust.title.toLowerCase();
+
+    return _searchTags.every((searchTag) {
+      final keyword = searchTag.toLowerCase();
+      if (normalizedTitle.contains(keyword)) {
+        return true;
+      }
+
+      for (var tag in illust.tags) {
+        if (tag.name.toLowerCase().contains(keyword)) {
+          return true;
+        }
+        if (tag.translatedName != null &&
+            tag.translatedName!.toLowerCase().contains(keyword)) {
+          return true;
+        }
+      }
+
+      return false;
+    });
+  }
+
+  // iStores is a mobx observable 
+  // these two value will be observed.
+  int get _fetchedIllustCount => _lightingStore?.iStores.length ?? 0;
+  int get _matchedIllustCount {
+    final store = _lightingStore;
+    if (store == null) {
+      return 0;
+    }
+    return store.iStores
+        .where((element) => _filterIllust(element.illusts!))
+        .length;
+  }
+
   @override
   void initState() {
+    _lightingController = LightingListController();
     _scrollController = ScrollController();
     restrict = widget.restrict;
     futureGet = ApiForceSource(
@@ -73,7 +215,10 @@ class _BookmarkPageState extends State<BookmarkPage> {
 
   @override
   void dispose() {
+    _isDeepSearching = false;
+    _deepSearchTask = null;
     subscription.cancel();
+    _lightingController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -88,7 +233,18 @@ class _BookmarkPageState extends State<BookmarkPage> {
               source: futureGet,
               scrollController: _scrollController,
               isNested: widget.isNested,
-              header: Container(height: 45),
+              // Reserve the search card's vertical space before the card itself
+              // fades/sizes in, which avoids the grid jumping abruptly.
+              header: AnimatedContainer(
+                duration: _searchCardAnimationDuration,
+                curve: Curves.easeOutCubic,
+                height: _showSearch ? 180 : 45,
+              ),
+              filter: _filterIllust,
+              controller: _lightingController,
+              enableRefresh: !_isDeepSearching,
+              enableLoad: !_isDeepSearching,
+              showContinuousLoadHint: _isDeepSearching,
             ),
             buildTopChip(context),
           ],
@@ -98,6 +254,11 @@ class _BookmarkPageState extends State<BookmarkPage> {
         isNested: widget.isNested,
         scrollController: _scrollController,
         source: futureGet,
+        filter: _filterIllust,
+        controller: _lightingController,
+        enableRefresh: !_isDeepSearching,
+        enableLoad: !_isDeepSearching,
+        showContinuousLoadHint: _isDeepSearching,
       );
     } else {
       return Container();
@@ -107,79 +268,186 @@ class _BookmarkPageState extends State<BookmarkPage> {
   Widget buildTopChip(BuildContext context) {
     return Align(
       alignment: Alignment.topCenter,
-      child: Row(
+      child: Column(
         mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SortGroup(
-            children: [I18n.of(context).public, I18n.of(context).private],
-            onChange: (index) {
-              if (index == 0)
-                setState(() {
-                  futureGet = ApiForceSource(
-                    futureGet: (bool e) => apiClient.getBookmarksIllust(
-                      widget.id,
-                      restrict = 'public',
-                      currentTag,
-                    ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SortGroup(
+                children: [I18n.of(context).public, I18n.of(context).private],
+                onChange: (index) async {
+                  await _switchBookmarkSource(
+                    nextRestrict: index == 0 ? 'public' : 'private',
+                    nextTag: currentTag,
                   );
-                });
-              if (index == 1)
-                setState(() {
-                  futureGet = ApiForceSource(
-                    futureGet: (bool e) => apiClient.getBookmarksIllust(
-                      widget.id,
-                      restrict = 'private',
-                      currentTag,
-                    ),
-                  );
-                });
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: GestureDetector(
-              onTap: () async {
-                final result = await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => UserBookmarkTagPage(currentTag: currentTag),
-                  ),
-                );
-                if (result != null) {
-                  String? tag = result['tag'];
-                  String restrict = result['restrict'];
-                  setState(() {
-                    currentTag = tag;
-                    futureGet = ApiForceSource(
-                      futureGet: (bool e) => apiClient.getBookmarksIllust(
-                        widget.id,
-                        restrict,
-                        tag,
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: GestureDetector(
+                  onTap: () async {
+                    await _stopDeepSearch();
+                    final result = await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            UserBookmarkTagPage(currentTag: currentTag),
                       ),
                     );
-                  });
-                }
-              },
-              behavior: HitTestBehavior.opaque,
-              child: Chip(
-                label: Row(
-                  children: [
-                    Icon(Icons.tag, size: 18),
-                    if (currentTag != null)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Text(
-                          currentTag!,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ),
-                  ],
+                    if (result != null) {
+                      String? tag = result['tag'];
+                      String restrict = result['restrict'];
+                      await _switchBookmarkSource(
+                        nextRestrict: restrict,
+                        nextTag: tag,
+                      );
+                    }
+                  },
+                  behavior: HitTestBehavior.opaque,
+                  child: Chip(
+                    label: Row(
+                      children: [
+                        Icon(Icons.tag, size: 18),
+                        if (currentTag != null)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              currentTag!,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ),
+                      ],
+                    ),
+                    backgroundColor: Theme.of(context).cardColor,
+                    elevation: 4.0,
+                    padding: EdgeInsets.all(0.0),
+                  ),
                 ),
-                backgroundColor: Theme.of(context).cardColor,
-                elevation: 4.0,
-                padding: EdgeInsets.all(0.0),
               ),
-            ),
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () async {
+                  if (!mounted) {
+                    return;
+                  }
+                  setState(() {
+                    _showSearch = !_showSearch;
+                  });
+                },
+                child: Chip(
+                  label: Icon(
+                    _showSearch ? Icons.search_off : Icons.search,
+                    color:
+                        Theme.of(context).textTheme.bodySmall?.color ??
+                        Colors.grey,
+                    size: 18,
+                  ),
+                  backgroundColor: Theme.of(context).cardColor,
+                  elevation: 4.0,
+                  padding: EdgeInsets.all(0.0),
+                ),
+              ),
+            ],
+          ),
+          AnimatedSwitcher(
+            duration: _searchCardAnimationDuration,
+            switchInCurve: Curves.easeOutCubic,
+            switchOutCurve: Curves.easeInCubic,
+            transitionBuilder: (child, animation) {
+              // Fade + vertical size keeps the search panel expansion feeling
+              // lightweight while matching the reserved header height above.
+              return FadeTransition(
+                opacity: animation,
+                child: SizeTransition(
+                  sizeFactor: animation,
+                  axisAlignment: -1,
+                  child: child,
+                ),
+              );
+            },
+            child: _showSearch
+                ? Padding(
+                    key: const ValueKey('bookmark-search-card'),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 8.0,
+                    ),
+                    child: Card(
+                      child: Column(
+                        children: [
+                          BookMarkSearchView(
+                            tags: _searchTags,
+                            onChange: (tags) {
+                              setState(() {
+                                _searchTags = tags;
+                              });
+                            },
+                          ),
+                          const Divider(height: 1),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                              vertical: 4.0,
+                            ),
+                            child: AnimatedBuilder(
+                              animation: _lightingController,
+                              builder: (_, __) {
+                                return Observer(
+                                  builder: (_) {
+                                    return Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          I18n.of(context).bookmarkDeepSearchStats(
+                                            _matchedIllustCount.toString(),
+                                            _fetchedIllustCount.toString(),
+                                          ),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall,
+                                        ),
+                                        Row(
+                                          children: [
+                                            if (_isDeepSearchLoading)
+                                              const Padding(
+                                                padding: EdgeInsets.only(
+                                                  right: 8.0,
+                                                ),
+                                                child: SizedBox(
+                                                  width: 16,
+                                                  height: 16,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    strokeWidth: 2,
+                                                  ),
+                                                ),
+                                              ),
+                                            Switch(
+                                              value: _isDeepSearching,
+                                              onChanged: (val) async {
+                                                if (val) {
+                                                  _startDeepSearch();
+                                                } else {
+                                                  await _stopDeepSearch();
+                                                }
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : const SizedBox(key: ValueKey('bookmark-search-empty')),
           ),
         ],
       ),

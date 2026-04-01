@@ -26,6 +26,7 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/glance_illust_persist.dart';
 import 'package:pixez/page/about/languages.dart';
+import 'package:pixez/page/hello/setting/bookmark_auto_request_interval_page.dart';
 import 'package:pixez/page/hello/setting/copy_text_page.dart';
 import 'package:pixez/page/hello/setting/setting_cross_adapter_page.dart';
 import 'package:pixez/page/network/network_page.dart';
@@ -102,6 +103,25 @@ class _SettingQualityPageState extends State<SettingQualityPage>
               title: Text(I18n.of(context).share_info_format),
               trailing: const Icon(Icons.arrow_right),
               onTap: () => Leader.push(context, CopyTextPage()),
+            ),
+            ListTile(
+                  leading: const Icon(Icons.timer_outlined),
+                  title: Text(I18n.of(context).bookmarkAutoRequestInterval),
+                  subtitle: Text(
+                    I18n.of(context).bookmarkAutoRequestIntervalValue(
+                      userSetting.bookmarkAutoRequestInterval.toString(),
+                    ),
+                  ),
+                  trailing: const Icon(Icons.arrow_right),
+                  onTap: () async {
+                    await Leader.push(
+                      context,
+                      const BookmarkAutoRequestIntervalPage(),
+                    );
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  },
             ),
             _buildLanguageSelect(),
             Divider(),

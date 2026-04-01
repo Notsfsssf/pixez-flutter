@@ -1355,10 +1355,9 @@ packages:
   rhttp:
     dependency: "direct main"
     description:
-      name: rhttp
-      sha256: b111638045b730f825a85cb045017b5bd3dfb47b38e98eb293b0519ee6050f2e
-      url: "https://pub.dev"
-    source: hosted
+      path: "third_party/rhttp"
+      relative: true
+    source: path
     version: "0.15.1"
   riverpod:
     dependency: transitive
