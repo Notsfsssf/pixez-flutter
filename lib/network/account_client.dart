@@ -120,8 +120,7 @@ class AccountClient {
         settings: userSetting.disableBypassSni
             ? null
             : r.ClientSettings(
-                tlsSettings:
-                    r.TlsSettings(verifyCertificates: false, sni: false),
+                httpVersionPref: r.HttpVersionPref.http3,
                 dnsSettings: r.DnsSettings.dynamic(
                   resolver: (host) async {
                     final ip = Hoster.api();

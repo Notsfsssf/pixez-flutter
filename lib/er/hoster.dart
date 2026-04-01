@@ -11,8 +11,8 @@ import 'package:rhttp/rhttp.dart' as r;
 class Hoster {
   static Map<String, dynamic> _map = Map();
   static Map<String, dynamic> _constMap = {
-    "app-api.pixiv.net": "210.140.139.155",
-    "oauth.secure.pixiv.net": "210.140.139.155",
+    "app-api.pixiv.net": "104.18.42.239",
+    "oauth.secure.pixiv.net": "104.18.42.239",
     "i.pximg.net": "210.140.139.133",
     "s.pximg.net": "210.140.139.133",
     "doh": "doh.dns.sb",
