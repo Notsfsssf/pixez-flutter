@@ -289,6 +289,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.15.0"
+  cronet_http:
+    dependency: transitive
+    description:
+      name: cronet_http
+      sha256: "8e77bc6f203e0bc9126e6a9092508a3435dbcb04da3b53ed1a358909385c5e0e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.8.0"
   cross_file:
     dependency: transitive
     description:
@@ -313,6 +321,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
+  cupertino_http:
+    dependency: transitive
+    description:
+      name: cupertino_http
+      sha256: "82cbec60c90bf785a047a9525688b6dacac444e177e1d5a5876963d3c50369e8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.0"
   cupertino_icons:
     dependency: transitive
     description:
@@ -593,10 +609,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_rust_bridge
-      sha256: "37ef40bc6f863652e865f0b2563ea07f0d3c58d8efad803cc01933a4b2ee067e"
+      sha256: e87d6b9ee934dcd24a128ccb2bd91905d2d5fe5c06245d6a8f5477d4907a437a
       url: "https://pub.dev"
     source: hosted
-    version: "2.11.1"
+    version: "2.12.0"
   flutter_svg:
     dependency: transitive
     description:
@@ -919,6 +935,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
+  jni:
+    dependency: transitive
+    description:
+      name: jni
+      sha256: "8706a77e94c76fe9ec9315e18949cc9479cc03af97085ca9c1077b61323ea12d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.15.2"
   json_annotation:
     dependency: "direct main"
     description:
@@ -1071,6 +1095,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.16.13"
+  native_dio_adapter:
+    dependency: "direct main"
+    description:
+      name: native_dio_adapter
+      sha256: "9bbfa5221fd287eb063962bbe6534290e5f87933e576fac210149fb80253b89a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.5.1"
   native_toolchain_c:
     dependency: transitive
     description:
@@ -1355,11 +1387,10 @@ packages:
   rhttp:
     dependency: "direct main"
     description:
-      name: rhttp
-      sha256: b111638045b730f825a85cb045017b5bd3dfb47b38e98eb293b0519ee6050f2e
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.15.1"
+      path: "../rhttp/rhttp"
+      relative: true
+    source: path
+    version: "0.16.0"
   riverpod:
     dependency: transitive
     description:

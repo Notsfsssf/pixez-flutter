@@ -71,7 +71,8 @@ dependencies:
   # Desktop Support
   flutter_acrylic: ^1.1.4
   window_manager: ^0.5.1
-  rhttp: ^0.15.1
+  rhttp:
+    path: ../rhttp/rhttp
   dio_compatibility_layer: ^0.1.1
   flutter_cache_manager_dio: ^4.0.0
   file_picker: ^10.3.10
@@ -83,6 +84,7 @@ dependencies:
   webview_flutter: ^4.13.1
   sqlite3: 3.1.6
   sqflite_common_ffi: ^2.4.0
+  native_dio_adapter: ^1.5.1
 
 dev_dependencies:
   flutter_test:
