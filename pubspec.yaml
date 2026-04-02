@@ -84,7 +84,6 @@ dependencies:
   webview_flutter: ^4.13.1
   sqlite3: 3.1.6
   sqflite_common_ffi: ^2.4.0
-  native_dio_adapter: ^1.5.1
 
 dev_dependencies:
   flutter_test:

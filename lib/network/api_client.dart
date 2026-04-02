@@ -74,12 +74,12 @@ class ApiClient {
           ? null
           : r.ClientSettings(
               tlsSettings: r.TlsSettings(verifyCertificates: false, sni: true),
-              dnsSettings: r.DnsSettings.dynamic(
-                resolver: (host) async {
-                  final ip = Hoster.api();
-                  return [ip];
-                },
-              ),
+              // dnsSettings: r.DnsSettings.dynamic(
+              //   resolver: (host) async {
+              //     final ip = Hoster.api();
+              //     return [ip];
+              //   },
+              // ),
             ),
     );
     httpClient.httpClientAdapter = ConversionLayerAdapter(compatibleClient);
