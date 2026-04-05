@@ -15,25 +15,15 @@ use rustls::pki_types::{CertificateDer, EchConfigListBytes, PrivateKeyDer, Serve
 use rustls::{DigitallySignedStruct, Error as TlsError, RootCertStore, SignatureScheme};
 use serde_json::Value;
 use std::collections::HashMap;
-use std::io;
-use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
+use std::net::{IpAddr, SocketAddr};
 use std::str::FromStr;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 pub use tokio_util::sync::CancellationToken;
 
-const DOH_ENDPOINT: &str = "https://1.0.0.1/dns-query";
 const ALIDNS_RESOLVE_ENDPOINT: &str = "https://dns.alidns.com/resolve";
 const APP_API_PIXIV_NET_HOST: &str = "app-api.pixiv.net";
 const APP_API_PIXIV_NET_ECH_BOOTSTRAP_HOST: &str = "cloudflare-ech.com";
-const DNS_CLASS_IN: u16 = 1;
-const DNS_TYPE_A: u16 = 1;
-const DNS_TYPE_CNAME: u16 = 5;
-const DNS_TYPE_AAAA: u16 = 28;
-const DNS_TYPE_HTTPS: u16 = 65;
-const DNS_SVC_PARAM_ECH: u16 = 5;
-const DNS_ALIAS_MODE_PRIORITY: u16 = 0;
-const DNS_MAX_CHAIN_DEPTH: usize = 5;
 
 #[derive(Clone)]
 pub struct ClientSettings {
@@ -160,7 +150,7 @@ pub struct RequestClient {
 
 struct ClientRuntime {
     cookie_jar: Option<Arc<Jar>>,
-    doh: Arc<DohTransport>,
+    ech: Arc<EchTransport>,
     ech_clients: RwLock<HashMap<String, Option<reqwest::Client>>>,
 }
 
@@ -187,7 +177,7 @@ impl RequestClient {
             return Ok(cached.unwrap_or_else(|| self.client.clone()));
         }
 
-        let ech_config = match self.runtime.doh.lookup_ech_config(&host).await {
+        let ech_config = match self.runtime.ech.lookup_ech_config(&host).await {
             Ok(ech_config) => ech_config,
             Err(_) => return Ok(self.client.clone()),
         };
@@ -250,7 +240,7 @@ fn create_client(settings: ClientSettings) -> Result<RequestClient, RhttpError> 
             .as_ref()
             .filter(|settings| settings.store_cookies)
             .map(|_| Arc::new(Jar::default())),
-        doh: Arc::new(DohTransport::new()?),
+        ech: Arc::new(EchTransport::new()?),
         ech_clients: RwLock::new(HashMap::new()),
     });
 
@@ -356,7 +346,7 @@ fn build_reqwest_client(
         HttpVersionPref::All => client,
     };
 
-    client = apply_dns_settings(client, settings.dns_settings.as_ref(), runtime.doh.clone())?;
+    client = apply_dns_settings(client, settings.dns_settings.as_ref())?;
 
     if let Some(user_agent) = settings.user_agent.as_ref() {
         client = client.user_agent(user_agent.clone());
@@ -537,7 +527,6 @@ fn build_ech_tls_config(
 fn apply_dns_settings(
     mut client: reqwest::ClientBuilder,
     dns_settings: Option<&DnsSettings>,
-    doh: Arc<DohTransport>,
 ) -> Result<reqwest::ClientBuilder, RhttpError> {
     match dns_settings {
         Some(DnsSettings::StaticDns(settings)) => {
@@ -546,8 +535,6 @@ fn apply_dns_settings(
                     address: SocketAddr::from_str(fallback.clone().digest_ip().as_str())
                         .map_err(|e| RhttpError::RhttpUnknownError(format!("{e:?}")))?,
                 }));
-            } else {
-                client = client.dns_resolver(Arc::new(DohResolver { transport: doh }));
             }
 
             for (hostname, ips) in &settings.overrides {
@@ -577,9 +564,7 @@ fn apply_dns_settings(
                 resolver: settings.resolver.clone(),
             }));
         }
-        None => {
-            client = client.dns_resolver(Arc::new(DohResolver { transport: doh }));
-        }
+        None => {}
     }
 
     Ok(client)
@@ -674,42 +659,13 @@ impl Resolve for DynamicResolver {
     }
 }
 
-struct DohResolver {
-    transport: Arc<DohTransport>,
-}
-
-impl Resolve for DohResolver {
-    fn resolve(&self, name: Name) -> Resolving {
-        let transport = self.transport.clone();
-        let host = name.as_str().trim_end_matches('.').to_string();
-
-        Box::pin(async move {
-            let addresses = transport
-                .lookup_ip_addrs(&host)
-                .await
-                .map_err(to_box_error)?;
-            let addrs: Addrs = Box::new(
-                addresses
-                    .into_iter()
-                    .map(|ip| SocketAddr::new(ip, 0))
-                    .collect::<Vec<_>>()
-                    .into_iter(),
-            );
-            Ok(addrs)
-        })
-    }
-}
-
-struct DohTransport {
-    endpoint: Url,
+struct EchTransport {
     ech_endpoint: Url,
     client: reqwest::Client,
 }
 
-impl DohTransport {
+impl EchTransport {
     fn new() -> Result<Self, RhttpError> {
-        let endpoint =
-            Url::parse(DOH_ENDPOINT).map_err(|e| RhttpError::RhttpUnknownError(e.to_string()))?;
         let ech_endpoint = Url::parse(ALIDNS_RESOLVE_ENDPOINT)
             .map_err(|e| RhttpError::RhttpUnknownError(e.to_string()))?;
         let client = reqwest::Client::builder()
@@ -719,66 +675,9 @@ impl DohTransport {
             .map_err(|e| RhttpError::RhttpUnknownError(e.to_string()))?;
 
         Ok(Self {
-            endpoint,
             ech_endpoint,
             client,
         })
-    }
-
-    async fn lookup_ip_addrs(&self, host: &str) -> Result<Vec<IpAddr>, RhttpError> {
-        if let Some(ip_addrs) = hardcoded_ip_addrs(host) {
-            return Ok(ip_addrs);
-        }
-
-        let mut current_host = host.to_string();
-
-        for _ in 0..DNS_MAX_CHAIN_DEPTH {
-            let (a_result, aaaa_result) = tokio::join!(
-                self.lookup_dns(current_host.as_str(), DNS_TYPE_A),
-                self.lookup_dns(current_host.as_str(), DNS_TYPE_AAAA),
-            );
-
-            let mut ips = Vec::new();
-            let mut alias = None;
-            let mut first_error = None;
-
-            match a_result {
-                Ok(result) => {
-                    ips.extend(result.ips);
-                    alias = result.cname.or(alias);
-                }
-                Err(error) => first_error = Some(error),
-            }
-
-            match aaaa_result {
-                Ok(result) => {
-                    ips.extend(result.ips);
-                    alias = result.cname.or(alias);
-                }
-                Err(error) => {
-                    if first_error.is_none() {
-                        first_error = Some(error);
-                    }
-                }
-            }
-
-            if !ips.is_empty() {
-                return Ok(ips);
-            }
-
-            if let Some(next_host) = alias {
-                current_host = next_host;
-                continue;
-            }
-
-            return Err(first_error.unwrap_or_else(|| {
-                RhttpError::RhttpUnknownError(format!("No DNS records returned for {host}"))
-            }));
-        }
-
-        Err(RhttpError::RhttpUnknownError(format!(
-            "DNS alias chain too deep for {host}"
-        )))
     }
 
     async fn lookup_ech_config(&self, host: &str) -> Result<Option<Vec<u8>>, RhttpError> {
@@ -789,51 +688,7 @@ impl DohTransport {
                 .map(Some);
         }
 
-        let mut current_host = host.to_string();
-
-        for _ in 0..DNS_MAX_CHAIN_DEPTH {
-            let result = self.lookup_dns(&current_host, DNS_TYPE_HTTPS).await?;
-
-            if let Some(ech_config) = result.ech {
-                return Ok(Some(ech_config));
-            }
-
-            if let Some(next_host) = result.https_alias.or(result.cname) {
-                current_host = next_host;
-                continue;
-            }
-
-            return Ok(None);
-        }
-
         Ok(None)
-    }
-
-    async fn lookup_dns(&self, host: &str, record_type: u16) -> Result<DnsLookup, RhttpError> {
-        let request_body = build_dns_query(host, record_type)?;
-        let response = self
-            .client
-            .post(self.endpoint.clone())
-            .header("accept", "application/dns-message")
-            .header("content-type", "application/dns-message")
-            .body(request_body)
-            .send()
-            .await
-            .map_err(|e| RhttpError::RhttpUnknownError(format!("DoH request failed: {e}")))?;
-
-        let status = response.status();
-        if !status.is_success() {
-            return Err(RhttpError::RhttpUnknownError(format!(
-                "DoH query failed with status {status}"
-            )));
-        }
-
-        let body = response
-            .bytes()
-            .await
-            .map_err(|e| RhttpError::RhttpUnknownError(format!("DoH body read failed: {e}")))?;
-
-        parse_dns_response(body.as_ref())
     }
 
     async fn lookup_alidns_https_ech(&self, host: &str) -> Result<Vec<u8>, RhttpError> {
@@ -861,190 +716,6 @@ impl DohTransport {
 
         parse_alidns_https_ech_response(body.as_ref())
     }
-}
-
-fn hardcoded_ip_addrs(host: &str) -> Option<Vec<IpAddr>> {
-    if !host.eq_ignore_ascii_case(APP_API_PIXIV_NET_HOST) {
-        return None;
-    }
-
-    Some(vec![
-        IpAddr::V4(Ipv4Addr::new(104, 18, 10, 118)),
-        IpAddr::V4(Ipv4Addr::new(104, 18, 11, 118)),
-        IpAddr::V6(Ipv6Addr::new(0x2606, 0x4700, 0, 0, 0, 0, 0x6812, 0x0a76)),
-        IpAddr::V6(Ipv6Addr::new(0x2606, 0x4700, 0, 0, 0, 0, 0x6812, 0x0b76)),
-    ])
-}
-
-struct DnsLookup {
-    ips: Vec<IpAddr>,
-    cname: Option<String>,
-    https_alias: Option<String>,
-    ech: Option<Vec<u8>>,
-}
-
-fn build_dns_query(host: &str, record_type: u16) -> Result<Vec<u8>, RhttpError> {
-    let host = host.trim_end_matches('.');
-    if host.is_empty() {
-        return Err(RhttpError::RhttpUnknownError(
-            "DNS query host is empty".to_string(),
-        ));
-    }
-
-    let mut query = Vec::with_capacity(host.len() + 18);
-    query.extend_from_slice(&[
-        0x00, 0x00, // id
-        0x01, 0x00, // recursion desired
-        0x00, 0x01, // qdcount
-        0x00, 0x00, // ancount
-        0x00, 0x00, // nscount
-        0x00, 0x00, // arcount
-    ]);
-
-    for label in host.split('.') {
-        if label.is_empty() || label.len() > 63 {
-            return Err(RhttpError::RhttpUnknownError(format!(
-                "Invalid DNS label in host: {host}"
-            )));
-        }
-        query.push(label.len() as u8);
-        query.extend_from_slice(label.as_bytes());
-    }
-
-    query.push(0);
-    query.extend_from_slice(&record_type.to_be_bytes());
-    query.extend_from_slice(&DNS_CLASS_IN.to_be_bytes());
-
-    Ok(query)
-}
-
-fn parse_dns_response(message: &[u8]) -> Result<DnsLookup, RhttpError> {
-    if message.len() < 12 {
-        return Err(RhttpError::RhttpUnknownError(
-            "Invalid DNS response: header too short".to_string(),
-        ));
-    }
-
-    let rcode = message[3] & 0x0f;
-    if rcode != 0 {
-        return Err(RhttpError::RhttpUnknownError(format!(
-            "DNS response returned rcode {rcode}"
-        )));
-    }
-
-    let qdcount = u16::from_be_bytes([message[4], message[5]]) as usize;
-    let ancount = u16::from_be_bytes([message[6], message[7]]) as usize;
-    let mut offset = 12usize;
-
-    for _ in 0..qdcount {
-        skip_name(message, &mut offset)?;
-        offset = offset
-            .checked_add(4)
-            .filter(|offset| *offset <= message.len())
-            .ok_or_else(|| {
-                RhttpError::RhttpUnknownError(
-                    "Invalid DNS response: truncated question".to_string(),
-                )
-            })?;
-    }
-
-    let mut lookup = DnsLookup {
-        ips: Vec::new(),
-        cname: None,
-        https_alias: None,
-        ech: None,
-    };
-
-    for _ in 0..ancount {
-        skip_name(message, &mut offset)?;
-        let record_type = read_u16(message, &mut offset)?;
-        let class = read_u16(message, &mut offset)?;
-        let _ttl = read_u32(message, &mut offset)?;
-        let rdata_length = read_u16(message, &mut offset)? as usize;
-        let rdata_start = offset;
-        let rdata_end = rdata_start
-            .checked_add(rdata_length)
-            .filter(|offset| *offset <= message.len())
-            .ok_or_else(|| {
-                RhttpError::RhttpUnknownError("Invalid DNS response: truncated answer".to_string())
-            })?;
-
-        if class == DNS_CLASS_IN {
-            match record_type {
-                DNS_TYPE_A if rdata_length == 4 => {
-                    lookup.ips.push(IpAddr::from([
-                        message[rdata_start],
-                        message[rdata_start + 1],
-                        message[rdata_start + 2],
-                        message[rdata_start + 3],
-                    ]));
-                }
-                DNS_TYPE_AAAA if rdata_length == 16 => {
-                    let mut address = [0u8; 16];
-                    address.copy_from_slice(&message[rdata_start..rdata_end]);
-                    lookup.ips.push(IpAddr::from(address));
-                }
-                DNS_TYPE_CNAME => {
-                    let mut name_offset = rdata_start;
-                    let cname = read_name(message, &mut name_offset)?;
-                    if !cname.is_empty() {
-                        lookup.cname = Some(cname);
-                    }
-                }
-                DNS_TYPE_HTTPS => {
-                    let (alias, ech) = parse_https_rdata(message, rdata_start, rdata_end)?;
-                    if lookup.https_alias.is_none() {
-                        lookup.https_alias = alias;
-                    }
-                    if lookup.ech.is_none() {
-                        lookup.ech = ech;
-                    }
-                }
-                _ => {}
-            }
-        }
-
-        offset = rdata_end;
-    }
-
-    Ok(lookup)
-}
-
-fn parse_https_rdata(
-    message: &[u8],
-    start: usize,
-    end: usize,
-) -> Result<(Option<String>, Option<Vec<u8>>), RhttpError> {
-    let mut offset = start;
-    let priority = read_u16(message, &mut offset)?;
-    let target_name = read_name(message, &mut offset)?;
-    let alias = if priority == DNS_ALIAS_MODE_PRIORITY && !target_name.is_empty() {
-        Some(target_name)
-    } else {
-        None
-    };
-
-    let mut ech = None;
-    while offset < end {
-        let key = read_u16(message, &mut offset)?;
-        let value_len = read_u16(message, &mut offset)? as usize;
-        let value_end = offset
-            .checked_add(value_len)
-            .filter(|offset| *offset <= end)
-            .ok_or_else(|| {
-                RhttpError::RhttpUnknownError(
-                    "Invalid HTTPS RR: truncated service parameter".to_string(),
-                )
-            })?;
-
-        if key == DNS_SVC_PARAM_ECH {
-            ech = Some(message[offset..value_end].to_vec());
-        }
-
-        offset = value_end;
-    }
-
-    Ok((alias, ech))
 }
 
 fn parse_alidns_https_ech_response(body: &[u8]) -> Result<Vec<u8>, RhttpError> {
@@ -1097,145 +768,6 @@ fn extract_https_svc_param<'a>(data: &'a str, key: &str) -> Option<&'a str> {
     let tail = &data[start..];
     let end = tail.find('"')?;
     Some(&tail[..end])
-}
-
-fn skip_name(message: &[u8], offset: &mut usize) -> Result<(), RhttpError> {
-    let mut cursor = *offset;
-    let mut jumps = 0usize;
-
-    loop {
-        let length = *message.get(cursor).ok_or_else(|| {
-            RhttpError::RhttpUnknownError("Invalid DNS name: truncated label".to_string())
-        })?;
-
-        if length & 0b1100_0000 == 0b1100_0000 {
-            cursor = cursor
-                .checked_add(2)
-                .ok_or_else(|| RhttpError::RhttpUnknownError("Invalid DNS pointer".to_string()))?;
-            *offset = cursor;
-            return Ok(());
-        }
-
-        if length == 0 {
-            *offset = cursor + 1;
-            return Ok(());
-        }
-
-        if length & 0b1100_0000 != 0 {
-            return Err(RhttpError::RhttpUnknownError(
-                "Invalid DNS label encoding".to_string(),
-            ));
-        }
-
-        cursor = cursor
-            .checked_add(1 + length as usize)
-            .filter(|offset| *offset <= message.len())
-            .ok_or_else(|| {
-                RhttpError::RhttpUnknownError("Invalid DNS name: label overflow".to_string())
-            })?;
-
-        jumps += 1;
-        if jumps > 128 {
-            return Err(RhttpError::RhttpUnknownError(
-                "Invalid DNS name: too many labels".to_string(),
-            ));
-        }
-    }
-}
-
-fn read_name(message: &[u8], offset: &mut usize) -> Result<String, RhttpError> {
-    let mut labels = Vec::new();
-    let mut cursor = *offset;
-    let mut jumped = false;
-    let mut jumps = 0usize;
-
-    loop {
-        let length = *message.get(cursor).ok_or_else(|| {
-            RhttpError::RhttpUnknownError("Invalid DNS name: truncated label".to_string())
-        })?;
-
-        if length & 0b1100_0000 == 0b1100_0000 {
-            let next = *message.get(cursor + 1).ok_or_else(|| {
-                RhttpError::RhttpUnknownError("Invalid DNS name: truncated pointer".to_string())
-            })?;
-            let pointer = (((length as usize) & 0b0011_1111) << 8) | next as usize;
-
-            if !jumped {
-                *offset = cursor + 2;
-            }
-
-            cursor = pointer;
-            jumped = true;
-            jumps += 1;
-            if jumps > 128 {
-                return Err(RhttpError::RhttpUnknownError(
-                    "Invalid DNS name: too many jumps".to_string(),
-                ));
-            }
-            continue;
-        }
-
-        if length == 0 {
-            if !jumped {
-                *offset = cursor + 1;
-            }
-            break;
-        }
-
-        if length & 0b1100_0000 != 0 {
-            return Err(RhttpError::RhttpUnknownError(
-                "Invalid DNS label encoding".to_string(),
-            ));
-        }
-
-        let label_start = cursor + 1;
-        let label_end = label_start
-            .checked_add(length as usize)
-            .filter(|offset| *offset <= message.len())
-            .ok_or_else(|| {
-                RhttpError::RhttpUnknownError("Invalid DNS name: label overflow".to_string())
-            })?;
-
-        let label = std::str::from_utf8(&message[label_start..label_end])
-            .map_err(|e| RhttpError::RhttpUnknownError(format!("Invalid DNS label UTF-8: {e}")))?;
-        labels.push(label.to_string());
-        cursor = label_end;
-    }
-
-    Ok(labels.join("."))
-}
-
-fn read_u16(message: &[u8], offset: &mut usize) -> Result<u16, RhttpError> {
-    let end = offset
-        .checked_add(2)
-        .filter(|offset| *offset <= message.len())
-        .ok_or_else(|| {
-            RhttpError::RhttpUnknownError("Invalid DNS response: truncated u16".to_string())
-        })?;
-    let value = u16::from_be_bytes([message[*offset], message[*offset + 1]]);
-    *offset = end;
-    Ok(value)
-}
-
-fn read_u32(message: &[u8], offset: &mut usize) -> Result<u32, RhttpError> {
-    let end = offset
-        .checked_add(4)
-        .filter(|offset| *offset <= message.len())
-        .ok_or_else(|| {
-            RhttpError::RhttpUnknownError("Invalid DNS response: truncated u32".to_string())
-        })?;
-    let value = u32::from_be_bytes([
-        message[*offset],
-        message[*offset + 1],
-        message[*offset + 2],
-        message[*offset + 3],
-    ]);
-    *offset = end;
-    Ok(value)
-}
-
-fn to_box_error(error: RhttpError) -> Box<dyn std::error::Error + Send + Sync> {
-    Box::new(io::Error::new(io::ErrorKind::Other, error.to_string()))
 }
 
 #[derive(Debug)]
