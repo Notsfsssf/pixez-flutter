@@ -15,7 +15,7 @@ use rustls::pki_types::{CertificateDer, EchConfigListBytes, PrivateKeyDer, Serve
 use rustls::{DigitallySignedStruct, Error as TlsError, RootCertStore, SignatureScheme};
 use serde_json::Value;
 use std::collections::HashMap;
-use std::net::{IpAddr, SocketAddr};
+use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
 use std::str::FromStr;
 use std::sync::Arc;
 use tokio::sync::RwLock;
@@ -558,16 +558,34 @@ fn apply_dns_settings(
 
                 client = client.resolve_to_addrs(hostname, resolved_ips.as_slice());
             }
+
+        if !settings
+                .overrides
+                .keys()
+                .any(|hostname| hostname.eq_ignore_ascii_case(APP_API_PIXIV_NET_HOST))
+            {
+                client = apply_hardcoded_dns_overrides(client);
+            }
         }
         Some(DnsSettings::DynamicDns(settings)) => {
             client = client.dns_resolver(Arc::new(DynamicResolver {
                 resolver: settings.resolver.clone(),
             }));
         }
-        None => {}
+        None => {
+            client = apply_hardcoded_dns_overrides(client);
+        }
     }
 
     Ok(client)
+}
+
+fn apply_hardcoded_dns_overrides(mut client: reqwest::ClientBuilder) -> reqwest::ClientBuilder {
+    if let Some(addrs) = hardcoded_socket_addrs(APP_API_PIXIV_NET_HOST) {
+        client = client.resolve_to_addrs(APP_API_PIXIV_NET_HOST, addrs.as_slice());
+    }
+
+    client
 }
 
 fn collect_pem_certificates(
@@ -716,6 +734,23 @@ impl EchTransport {
 
         parse_alidns_https_ech_response(body.as_ref())
     }
+}
+
+fn hardcoded_ip_addrs(host: &str) -> Option<Vec<IpAddr>> {
+    if !host.eq_ignore_ascii_case(APP_API_PIXIV_NET_HOST) {
+        return None;
+    }
+
+    Some(vec![
+        IpAddr::V4(Ipv4Addr::new(104, 18, 10, 118)),
+        IpAddr::V4(Ipv4Addr::new(104, 18, 11, 118)),
+        IpAddr::V6(Ipv6Addr::new(0x2606, 0x4700, 0, 0, 0, 0, 0x6812, 0x0a76)),
+        IpAddr::V6(Ipv6Addr::new(0x2606, 0x4700, 0, 0, 0, 0, 0x6812, 0x0b76)),
+    ])
+}
+
+fn hardcoded_socket_addrs(host: &str) -> Option<Vec<SocketAddr>> {
+    hardcoded_ip_addrs(host).map(|ips| ips.into_iter().map(|ip| SocketAddr::new(ip, 0)).collect())
 }
 
 fn parse_alidns_https_ech_response(body: &[u8]) -> Result<Vec<u8>, RhttpError> {
