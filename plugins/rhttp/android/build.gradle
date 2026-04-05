@@ -1,0 +1,101 @@
+import groovy.json.JsonSlurper
+
+// The Android Gradle Plugin builds the native code with the Android NDK.
+
+group 'com.flutter_rust_bridge.rhttp'
+version '1.0'
+
+def resolveRustlsPlatformVerifierAndroidSupport() {
+    def metadataOutput = new ByteArrayOutputStream()
+    project.exec {
+        commandLine(
+            'cargo',
+            'metadata',
+            '--format-version',
+            '1',
+            '--filter-platform',
+            'aarch64-linux-android',
+            '--manifest-path',
+            new File(projectDir, '../rust/Cargo.toml').absolutePath,
+        )
+        standardOutput = metadataOutput
+    }
+
+    def metadata = new JsonSlurper().parseText(metadataOutput.toString('UTF-8'))
+    def androidSupport = metadata.packages.find {
+        it.name == 'rustls-platform-verifier-android'
+    }
+
+    if (androidSupport == null) {
+        throw new GradleException(
+            'Failed to locate rustls-platform-verifier-android via cargo metadata.',
+        )
+    }
+
+    return [
+        repo: new File(new File(androidSupport.manifest_path).parentFile, 'maven'),
+        version: androidSupport.version,
+    ]
+}
+
+def rustlsPlatformVerifierAndroidSupport = resolveRustlsPlatformVerifierAndroidSupport()
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        // The Android Gradle Plugin knows how to build native code with the NDK.
+        classpath 'com.android.tools.build:gradle:7.3.0'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url uri(rustlsPlatformVerifierAndroidSupport.repo)
+        }
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    if (project.android.hasProperty("namespace")) {
+        namespace 'com.flutter_rust_bridge.rhttp'
+    }
+
+    // Bumping the plugin compileSdkVersion requires all clients of this plugin
+    // to bump the version in their app.
+    compileSdkVersion 36
+
+    // Use the NDK version
+    // declared in /android/app/build.gradle file of the Flutter project.
+    // Replace it with a version number if this plugin requires a specfic NDK version.
+    // (e.g. ndkVersion "23.1.7779620")
+    ndkVersion android.ndkVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        minSdkVersion 19
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+}
+
+dependencies {
+    implementation "rustls:rustls-platform-verifier:${rustlsPlatformVerifierAndroidSupport.version}"
+}
+
+apply from: "../cargokit/gradle/plugin.gradle"
+cargokit {
+    manifestDir = "../rust"
+    libname = "rhttp"
+}

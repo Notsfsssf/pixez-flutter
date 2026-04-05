@@ -1,0 +1,1 @@
+-keep, includedescriptorclasses class org.rustls.platformverifier.** { *; }

@@ -73,6 +73,7 @@ class ApiClient {
       settings: userSetting.disableBypassSni
           ? null
           : r.ClientSettings(
+              enableEch: true,
               tlsSettings: r.TlsSettings(verifyCertificates: false, sni: true),
               // dnsSettings: r.DnsSettings.dynamic(
               //   resolver: (host) async {

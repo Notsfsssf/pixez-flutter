@@ -1,0 +1,11 @@
+targets:
+  $default:
+    sources:
+      - lib/src/rust/**
+      - $package$
+      - lib/$lib$
+
+    builders:
+      freezed:
+        generate_for:
+          - lib/src/rust/**
