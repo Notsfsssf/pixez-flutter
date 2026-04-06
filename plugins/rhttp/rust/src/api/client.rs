@@ -18,6 +18,7 @@ use std::collections::HashMap;
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
 use std::str::FromStr;
 use std::sync::Arc;
+use std::time::{Duration as StdDuration, Instant};
 use tokio::sync::RwLock;
 pub use tokio_util::sync::CancellationToken;
 
@@ -151,7 +152,23 @@ pub struct RequestClient {
 struct ClientRuntime {
     cookie_jar: Option<Arc<Jar>>,
     ech: Arc<EchTransport>,
-    ech_clients: RwLock<HashMap<String, Option<reqwest::Client>>>,
+    ech_clients: RwLock<HashMap<String, EchClientCacheEntry>>,
+}
+
+#[derive(Clone)]
+struct EchClientCacheEntry {
+    client: Option<reqwest::Client>,
+    expires_at: Instant,
+}
+
+struct EchLookupResult {
+    ech_config: Option<Vec<u8>>,
+    ttl: StdDuration,
+}
+
+struct ParsedAliDnsHttpsEch {
+    ech: Vec<u8>,
+    ttl: StdDuration,
 }
 
 impl RequestClient {
@@ -174,15 +191,17 @@ impl RequestClient {
             .unwrap_or_default();
 
         if let Some(cached) = self.runtime.ech_clients.read().await.get(&host).cloned() {
-            return Ok(cached.unwrap_or_else(|| self.client.clone()));
+            if cached.expires_at > Instant::now() {
+                return Ok(cached.client.unwrap_or_else(|| self.client.clone()));
+            }
         }
 
-        let ech_config = match self.runtime.ech.lookup_ech_config(&host).await {
-            Ok(ech_config) => ech_config,
+        let ech_lookup = match self.runtime.ech.lookup_ech_config(&host).await {
+            Ok(ech_lookup) => ech_lookup,
             Err(_) => return Ok(self.client.clone()),
         };
 
-        let ech_client = match ech_config {
+        let ech_client = match ech_lookup.ech_config {
             Some(ech_config) => match build_reqwest_client(
                 &self.settings,
                 &self.runtime,
@@ -198,7 +217,13 @@ impl RequestClient {
             .ech_clients
             .write()
             .await
-            .insert(host, ech_client.clone());
+            .insert(
+                host,
+                EchClientCacheEntry {
+                    client: ech_client.clone(),
+                    expires_at: Instant::now() + ech_lookup.ttl,
+                },
+            );
 
         Ok(ech_client.unwrap_or_else(|| self.client.clone()))
     }
@@ -698,18 +723,24 @@ impl EchTransport {
         })
     }
 
-    async fn lookup_ech_config(&self, host: &str) -> Result<Option<Vec<u8>>, RhttpError> {
+    async fn lookup_ech_config(&self, host: &str) -> Result<EchLookupResult, RhttpError> {
         if host.eq_ignore_ascii_case(APP_API_PIXIV_NET_HOST) {
-            return self
+            let parsed = self
                 .lookup_alidns_https_ech(APP_API_PIXIV_NET_ECH_BOOTSTRAP_HOST)
-                .await
-                .map(Some);
+                .await?;
+            return Ok(EchLookupResult {
+                ech_config: Some(parsed.ech),
+                ttl: parsed.ttl,
+            });
         }
 
-        Ok(None)
+        Ok(EchLookupResult {
+            ech_config: None,
+            ttl: StdDuration::from_secs(0),
+        })
     }
 
-    async fn lookup_alidns_https_ech(&self, host: &str) -> Result<Vec<u8>, RhttpError> {
+    async fn lookup_alidns_https_ech(&self, host: &str) -> Result<ParsedAliDnsHttpsEch, RhttpError> {
         let response = self
             .client
             .get(self.ech_endpoint.clone())
@@ -753,7 +784,7 @@ fn hardcoded_socket_addrs(host: &str) -> Option<Vec<SocketAddr>> {
     hardcoded_ip_addrs(host).map(|ips| ips.into_iter().map(|ip| SocketAddr::new(ip, 0)).collect())
 }
 
-fn parse_alidns_https_ech_response(body: &[u8]) -> Result<Vec<u8>, RhttpError> {
+fn parse_alidns_https_ech_response(body: &[u8]) -> Result<ParsedAliDnsHttpsEch, RhttpError> {
     let payload: Value = serde_json::from_slice(body)
         .map_err(|e| RhttpError::RhttpUnknownError(format!("Invalid AliDNS ECH JSON: {e}")))?;
 
@@ -777,6 +808,9 @@ fn parse_alidns_https_ech_response(body: &[u8]) -> Result<Vec<u8>, RhttpError> {
         })?;
 
     for answer in answers {
+        let Some(ttl) = answer.get("TTL").and_then(Value::as_u64) else {
+            continue;
+        };
         let Some(data) = answer.get("data").and_then(Value::as_str) else {
             continue;
         };
@@ -789,7 +823,10 @@ fn parse_alidns_https_ech_response(body: &[u8]) -> Result<Vec<u8>, RhttpError> {
             .map_err(|e| {
                 RhttpError::RhttpUnknownError(format!("Invalid AliDNS ECH base64: {e}"))
             })?;
-        return Ok(ech);
+        return Ok(ParsedAliDnsHttpsEch {
+            ech,
+            ttl: StdDuration::from_secs(ttl),
+        });
     }
 
     Err(RhttpError::RhttpUnknownError(
