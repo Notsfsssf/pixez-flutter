@@ -334,4 +334,5 @@
   "input_regexp_hint": "Tag-Namen oder regulären Ausdruck eingeben",
   "ugoira_only": "Nur Ugoira",
   "ugoira_none": "Keine Ugoira"
+  "automatically_tag_when_bookmarking": "Beim Hinzufügen zu Favoriten automatisch taggen"
 }
