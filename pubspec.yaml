@@ -64,10 +64,7 @@ dependencies:
       path: packages/dynamic_color
       ref: main
   # Design Style
-  fluent_ui:
-    git:
-      url: https://github.com/bdlukaa/fluent_ui.git
-      ref: c5a6ccc3fe99b9a91cf584c2dd96024d44cc09eb
+  fluent_ui: ^4.15.1
   # Desktop Support
   flutter_acrylic: ^1.1.4
   window_manager: ^0.5.1
