@@ -43,10 +43,16 @@ jobs:
         uses: actions-rust-lang/setup-rust-toolchain@v1
 
       - name: 还原依赖
-        run: flutter pub get --no-example --enforce-lockfile
+        run: |-
+          flutter pub get --no-example --enforce-lockfile
+          flutter pub get --directory=./plugins/rhttp --no-example --enforce-lockfile
 
       - name: 生成代码
-        run: dart run build_runner build --delete-conflicting-outputs
+        run: |-
+          dart run build_runner build --delete-conflicting-outputs
+          cd plugins/rhttp
+          dart run build_runner build --delete-conflicting-outputs
+          cd ../..
 
       - name: 构建项目
         shell: pwsh
