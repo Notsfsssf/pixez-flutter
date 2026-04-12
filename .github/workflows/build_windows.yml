@@ -42,17 +42,19 @@ jobs:
       - name: 初始化 Rust 工具链
         uses: actions-rust-lang/setup-rust-toolchain@v1
 
-      - name: 还原依赖
-        run: |-
-          flutter pub get --no-example --enforce-lockfile
-          flutter pub get --directory=./plugins/rhttp --no-example --enforce-lockfile
+      - name: 还原依赖 (rhttp)
+        working-directory: plugins/rhttp
+        run: flutter pub get --no-example --enforce-lockfile
 
-      - name: 生成代码
-        run: |-
-          dart run build_runner build --delete-conflicting-outputs
-          cd plugins/rhttp
-          dart run build_runner build --delete-conflicting-outputs
-          cd ../..
+      - name: 还原依赖 (PixEz)
+        run: flutter pub get --no-example --enforce-lockfile
+
+      - name: 生成代码 (rhttp)
+        working-directory: plugins/rhttp
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: 生成代码 (PixEz)
+        run: dart run build_runner build --delete-conflicting-outputs
 
       - name: 构建项目
         shell: pwsh
