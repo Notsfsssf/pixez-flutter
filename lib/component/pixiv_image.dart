@@ -24,6 +24,7 @@ import 'package:flutter_cache_manager_dio/flutter_cache_manager_dio.dart';
 
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/er/illust_cacher.dart';
+import 'package:pixez/exts.dart';
 import 'package:pixez/main.dart';
 import 'package:rhttp/rhttp.dart' as r;
 
@@ -82,10 +83,10 @@ class PixivImage extends StatefulWidget {
               tlsSettings: r.TlsSettings(verifyCertificates: false, sni: false),
               dnsSettings: r.DnsSettings.dynamic(
                 resolver: (host) async {
-                  if (host == 'i.pximg.net') {
+                  if (host == ImageHost) {
                     return [Hoster.iPximgNet()];
                   }
-                  if (host == 's.pximg.net') {
+                  if (host == ImageSHost) {
                     return [Hoster.sPximgNet()];
                   }
                   return await InternetAddress.lookup(
@@ -95,6 +96,14 @@ class PixivImage extends StatefulWidget {
               ),
             ),
     );
+    dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (options, handler) {
+        if (options.uri.host == ImageHost || options.uri.host == ImageSHost) {
+          options.path = options.uri.toTureUri().toString();
+        }
+        handler.next(options);
+      },
+    ));
     dio.httpClientAdapter = ConversionLayerAdapter(client);
     DioCacheManager.initialize(dio);
   }
