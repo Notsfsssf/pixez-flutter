@@ -52,7 +52,7 @@ class _FluentHelloPageState extends State<FluentHelloPage> {
 
   @override
   Widget build(BuildContext context) {
-    final initIndex = userSetting.welcomePageNum;
+    final initIndex = userSetting.fluentWelcomePageIndex;
     return Observer(
       builder: (context) {
         bool isLogin = accountStore.now != null;
