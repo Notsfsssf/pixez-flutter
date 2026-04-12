@@ -20,13 +20,13 @@ jobs:
           fetch-depth: 0
 
       - name: 初始化 GitVersion
-        uses: gittools/actions/gitversion/setup@v4.2.0
+        uses: gittools/actions/gitversion/setup@v4
         with:
           versionSpec: '6.4.x'
 
       - name: 计算版本 Version
         id: gitversion
-        uses: gittools/actions/gitversion/execute@v4.2.0
+        uses: gittools/actions/gitversion/execute@v4
         with:
           overrideConfig: |
             assembly-versioning-scheme=MajorMinorPatchTag
@@ -52,6 +52,7 @@ jobs:
         shell: pwsh
         run: |-
           flutter build windows `
+            --release `
             --no-pub `
             --build-name=${{ steps.gitversion.outputs.majorMinorPatch }} `
             --build-number=${{ steps.gitversion.outputs.buildMetaData }}
@@ -60,7 +61,7 @@ jobs:
         id: binary-artifact
         uses: actions/upload-artifact@v6
         with:
-          name: binary
+          name: windows-x86_64-release
           path: build/windows/x64/runner/Release/**/*
           compression-level: 9
 
@@ -93,14 +94,17 @@ jobs:
             --build-windows false `
             --version '${{ steps.gitversion.outputs.assemblySemVer }}' `
             --publisher '${{ steps.restore-cert.outputs.CERTIFICATE_SUBJECT }}'
+          Move-Item `
+            -LiteralPath build/windows/x64/runner/Release/pixez.msix `
+            -Destination build/windows/x64/runner/Release/windows-x86_64-release.msix
 
       - name: 上传 MSIX
         id: msix-artifact
         if: steps.msix.conclusion == 'success'
         uses: actions/upload-artifact@v6
         with:
-          name: msix
-          path: build/windows/x64/runner/Release/pixez.msix
+          name: windows-x86_64-release.msix
+          path: build/windows/x64/runner/Release/windows-x86_64-release.msix
           compression-level: 9
 
       - name: 生成 MSIX 安装器
@@ -108,14 +112,15 @@ jobs:
         if: steps.msix.conclusion == 'success'
         uses: frg2089/MsixInstaller@v2
         with:
-          msix: build/windows/x64/runner/Release/pixez.msix
+          msix: build/windows/x64/runner/Release/windows-x86_64-release.msix
+          name: windows-x86_64-release.msix
 
       - name: 上传 MSIX 安装器
         id: installer-artifact
         if: steps.installer.conclusion == 'success'
         uses: actions/upload-artifact@v6
         with:
-          name: installer
+          name: windows-x86_64-release.msix.exe
           path: ${{ steps.installer.outputs.path }}
           compression-level: 9
 
@@ -156,24 +161,27 @@ jobs:
       - name: 签出仓库
         uses: actions/checkout@v6
 
+      - name: Download Loose Artifact
+        if: needs.build.outputs.msix-conclusion == 'success'
+        uses: actions/download-artifact@v8
+        with:
+          name: windows-x86_64-release
+          path: artifacts
+          skip-decompress: true
+          
       - name: Download a Msix Artifact
         if: needs.build.outputs.msix-conclusion == 'success'
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
-          name: msix
+          name: windows-x86_64-release.msix
           path: artifacts
 
       - name: Download a Msix Installer Artifact
         if: needs.build.outputs.installer-conclusion == 'success'
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
-          name: installer
+          name: windows-x86_64-release.msix.exe
           path: artifacts
-
-      - shell: pwsh
-        run: |-
-          Move-Item -LiteralPath artifacts/pixez.msix -Destination artifacts/pixez.windows-amd64.msix
-          Move-Item -LiteralPath artifacts/MsixInstaller.exe -Destination artifacts/pixez.windows-amd64.exe
 
       - name: Release
         uses: softprops/action-gh-release@v2
