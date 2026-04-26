@@ -775,8 +775,6 @@ fn hardcoded_ip_addrs(host: &str) -> Option<Vec<IpAddr>> {
     Some(vec![
         IpAddr::V4(Ipv4Addr::new(104, 18, 10, 118)),
         IpAddr::V4(Ipv4Addr::new(104, 18, 11, 118)),
-        IpAddr::V6(Ipv6Addr::new(0x2606, 0x4700, 0, 0, 0, 0, 0x6812, 0x0a76)),
-        IpAddr::V6(Ipv6Addr::new(0x2606, 0x4700, 0, 0, 0, 0, 0x6812, 0x0b76)),
     ])
 }
 
