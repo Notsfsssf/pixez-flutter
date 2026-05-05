@@ -35,13 +35,14 @@ enum AppWidgetDBManager {
     static let ctype = "type"
     
     static func fetch() -> [AppWidgetIllust] {
+        let selectedType = UserDefaults(suiteName: "group.pixez")?.string(forKey: "widget_illust_type") ?? "recom"
         guard let db = groupDB() else {
             return []
         }
         var illusts = [AppWidgetIllust]()
         do {
             db.open()
-            let qSet = try db.executeQuery("select * from \(tableIllustPersist) where type = ? ORDER BY RANDOM() LIMIT 1", values: ["recom"])
+            let qSet = try db.executeQuery("select * from \(tableIllustPersist) where type = ? ORDER BY RANDOM() LIMIT 1", values: [selectedType])
             while qSet.next() {
                 let id = qSet.int(forColumn: cid)
                 let illustId = qSet.int(forColumn: cillust_id)

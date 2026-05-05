@@ -2,6 +2,7 @@ import UIKit
 import Flutter
 import MobileCoreServices
 import Photos
+import WidgetKit
 
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
@@ -28,6 +29,29 @@ import Photos
         })
         DocumentPlugin.bind(engineBridge)
         DeepLinkPlugin.register(with: engineBridge.pluginRegistry.registrar(forPlugin: "DeepLinkPlugin")!)
+        bindAppWidgetChannel(engineBridge)
+    }
+
+    private func bindAppWidgetChannel(_ engineBridge: FlutterImplicitEngineBridge) {
+        let appWidgetChannel = FlutterMethodChannel(name: "com.perol.dev/app_widget",
+                                                    binaryMessenger: engineBridge.applicationRegistrar.messenger())
+        appWidgetChannel.setMethodCallHandler { call, result in
+            guard call.method == "setRecommendType" else {
+                result(FlutterMethodNotImplemented)
+                return
+            }
+            guard let args = call.arguments as? [String: Any],
+                  let type = args["type"] as? String
+            else {
+                result(FlutterError(code: "bad_args", message: "type is required", details: nil))
+                return
+            }
+            UserDefaults(suiteName: "group.pixez")?.set(type, forKey: "widget_illust_type")
+            if #available(iOS 14.0, *) {
+                WidgetCenter.shared.reloadAllTimelines()
+            }
+            result(nil)
+        }
     }
     
     override func application(

@@ -18,6 +18,8 @@ package com.perol.pixez
 
 import android.Manifest
 import android.app.Activity
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -59,6 +61,7 @@ import java.util.*
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.perol.dev/save"
     private val ENCODE_CHANNEL = "samples.flutter.dev/battery"
+    private val APP_WIDGET_CHANNEL = "com.perol.dev/app_widget"
     private var saveMode = 0
     private val OPEN_DOCUMENT_TREE_CODE = 190
     private val PICK_IMAGE_FILE = 2
@@ -249,6 +252,35 @@ class MainActivity : FlutterActivity() {
                     ).show()
                     result.success(true)
                 }
+            }
+        }
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            APP_WIDGET_CHANNEL
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "setRecommendType" -> {
+                    val type = call.argument<String>("type") ?: "recom"
+                    sharedPreferences.edit().putString("flutter.widget_illust_type", type).apply()
+                    refreshAppWidgets()
+                    result.success(null)
+                }
+
+                else -> result.notImplemented()
+            }
+        }
+    }
+
+    private fun refreshAppWidgets() {
+        val appWidgetManager = AppWidgetManager.getInstance(this)
+        listOf(SquareAppWidget::class.java, IllustCardAppWidget::class.java).forEach { widgetClass ->
+            val componentName = ComponentName(this, widgetClass)
+            val widgetIds = appWidgetManager.getAppWidgetIds(componentName)
+            if (widgetIds.isNotEmpty()) {
+                sendBroadcast(Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE).apply {
+                    component = componentName
+                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgetIds)
+                })
             }
         }
     }

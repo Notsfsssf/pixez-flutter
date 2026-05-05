@@ -20,6 +20,7 @@
 		CF18B5682D0EDB4D0096872D /* FMDB in Frameworks */ = {isa = PBXBuildFile; productRef = CF18B5672D0EDB4D0096872D /* FMDB */; };
 		CF725E382ACE7C7600615536 /* DeepLinkPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF725E372ACE7C7600615536 /* DeepLinkPlugin.swift */; };
 		CFB8EE8C28C4437500B8D74E /* AppWidgetDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB8EE8B28C4437500B8D74E /* AppWidgetDBManager.swift */; };
+		CFFFA8242D0F000000800F00 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B5968260F680500098D5C /* WidgetKit.framework */; };
 		CFFFA8252C3B75EC00800F00 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B5968260F680500098D5C /* WidgetKit.framework */; };
 		CFFFA8262C3B75EC00800F00 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B596A260F680500098D5C /* SwiftUI.framework */; };
 		CFFFA8292C3B75EC00800F00 /* TinkerBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFFFA8282C3B75EC00800F00 /* TinkerBundle.swift */; };
@@ -121,6 +122,7 @@
 				78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */,
 				D866EE375373955B58348C31 /* Pods_Runner.framework in Frameworks */,
 				CF18B5662D0EDB1A0096872D /* FMDB in Frameworks */,
+				CFFFA8242D0F000000800F00 /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

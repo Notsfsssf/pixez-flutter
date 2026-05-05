@@ -19,12 +19,12 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/app_widget_plugin.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/prefer.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/models/glance_illust_persist.dart';
 import 'package:pixez/page/about/languages.dart';
 import 'package:pixez/page/hello/setting/copy_text_page.dart';
 import 'package:pixez/page/hello/setting/setting_cross_adapter_page.dart';
@@ -40,10 +40,8 @@ class SettingQualityPage extends StatefulWidget {
 
 class _SettingQualityPageState extends State<SettingQualityPage>
     with TickerProviderStateMixin {
-  final _typeList = ["follow_illust", "recom", "rank"];
+  final _typeList = ["recom", "rank", "follow_illust"];
   int _widgetTypeIndex = -1;
-  GlanceIllustPersistProvider glanceIllustPersistProvider =
-      GlanceIllustPersistProvider();
 
   @override
   void initState() {
@@ -54,6 +52,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
   _initData() async {
     final type = await Prefer.getString("widget_illust_type") ?? "recom";
     int index = _typeList.indexOf(type);
+    final normalizedType = index == -1 ? "recom" : type;
     if (index != -1) {
       setState(() {
         _widgetTypeIndex = index;
@@ -63,6 +62,10 @@ class _SettingQualityPageState extends State<SettingQualityPage>
         _widgetTypeIndex = 0;
       });
     }
+    try {
+      await Prefer.setString("widget_illust_type", normalizedType);
+      await AppWidgetPlugin.setRecommendType(normalizedType);
+    } catch (e) {}
   }
 
   String _welcomePageLabel(BuildContext context, WelcomePageType type) {
@@ -270,7 +273,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     leading: const Icon(Icons.widgets),
                     title: Text(I18n.of(context).appwidget_recommend_type),
                     trailing: SettingSelectMenu(
-                      index: userSetting.zoomQuality,
+                      index: _widgetTypeIndex,
                       items: [
                         I18n.of(context).recommend,
                         I18n.of(context).rank,
@@ -280,8 +283,10 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                         try {
                           final type = _typeList[index];
                           await Prefer.setString("widget_illust_type", type);
-                          await glanceIllustPersistProvider.open();
-                          await glanceIllustPersistProvider.deleteAll();
+                          await AppWidgetPlugin.setRecommendType(type);
+                          setState(() {
+                            _widgetTypeIndex = index;
+                          });
                         } catch (e) {}
                       },
                     ),
