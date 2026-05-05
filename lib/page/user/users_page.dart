@@ -29,6 +29,7 @@ import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/er/hoster.dart';
+import 'package:pixez/er/pixiv_image_source.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
@@ -772,7 +773,12 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
 
   _saveUserBg(String url) async {
     try {
-      final result = await pixivCacheManager!.downloadFile(url, authHeaders: {
+      final sourceUrl = PixivImageSource.resolve(
+        url,
+        disableBypassSni: userSetting.disableBypassSni,
+        pictureSource: userSetting.pictureSource,
+      );
+      final result = await pixivCacheManager!.downloadFile(sourceUrl, authHeaders: {
         'referer': 'https://app-api.pixiv.net/',
       });
       final bytes = await result.file.readAsBytes();
@@ -803,7 +809,12 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
       if (!userSetting.disableBypassSni) {
         dio.httpClientAdapter = await ApiClient.createCompatibleClient();
       }
-      await dio.download(url, tempFile, deleteOnError: true);
+      final sourceUrl = PixivImageSource.resolve(
+        url,
+        disableBypassSni: userSetting.disableBypassSni,
+        pictureSource: userSetting.pictureSource,
+      );
+      await dio.download(sourceUrl, tempFile, deleteOnError: true);
       File file = File(tempFile);
       if (file.existsSync()) {
         await saveStore.saveToGallery(

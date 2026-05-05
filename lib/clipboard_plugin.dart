@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/hoster.dart';
+import 'package:pixez/er/pixiv_image_source.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
@@ -41,11 +42,16 @@ class ClipboardPlugin {
 
   static Future<Uint8List> _downloadImage(String url) async {
     assert(pixivCacheManager != null);
+    final sourceUrl = PixivImageSource.resolve(
+      url,
+      disableBypassSni: userSetting.disableBypassSni,
+      pictureSource: userSetting.pictureSource,
+    );
 
     final image =
-        await pixivCacheManager!.getFileFromCache(url) ??
+        await pixivCacheManager!.getFileFromCache(sourceUrl) ??
         await pixivCacheManager!.downloadFile(
-          url,
+          sourceUrl,
           authHeaders: Hoster.header(),
         );
 

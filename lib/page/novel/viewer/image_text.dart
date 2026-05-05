@@ -23,6 +23,7 @@ import 'package:pixez/er/hoster.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
+import 'package:pixez/er/pixiv_image_source.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
@@ -79,7 +80,12 @@ class UploadedImageSpan extends WidgetSpan {
     String url,
   ) async {
     try {
-      final fileInfo = await pixivCacheManager?.getFileFromCache(url);
+      final sourceUrl = PixivImageSource.resolve(
+        url,
+        disableBypassSni: userSetting.disableBypassSni,
+        pictureSource: userSetting.pictureSource,
+      );
+      final fileInfo = await pixivCacheManager?.getFileFromCache(sourceUrl);
       final bytes = fileInfo?.file.readAsBytesSync();
       final Uint8List data;
       if (bytes != null) {
@@ -87,7 +93,7 @@ class UploadedImageSpan extends WidgetSpan {
       } else {
         final dio = Dio();
         final response = await dio.get<List<int>>(
-          url,
+          sourceUrl,
           options: Options(
             responseType: ResponseType.bytes,
             headers: {...Hoster.header(url: url)},

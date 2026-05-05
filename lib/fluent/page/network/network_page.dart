@@ -140,9 +140,8 @@ class _NetworkPageState extends State<NetworkPage> {
                     );
                     return;
                   }
-                  await userSetting.setPictureSource(
-                    _textEditingController.text.trim(),
-                  );
+                  final host = _textEditingController.text.trim();
+                  await userSetting.setPictureSource(host);
                   FocusScope.of(context).requestFocus(FocusNode());
                 },
                 icon: Icon(FluentIcons.check_mark),

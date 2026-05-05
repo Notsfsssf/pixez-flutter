@@ -27,6 +27,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/er/lprinter.dart';
+import 'package:pixez/er/pixiv_image_source.dart';
 import 'package:pixez/er/toaster.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -253,10 +254,11 @@ class SendMessage {
 
 entryPoint(SendMessage message) async {
   String pictureSource = message.pictureSource;
+  var currentPictureSource = pictureSource;
+  var currentDisableBypassSni = message.disableBypassSni;
   RootIsolateToken rootIsolateToken = message.rootIsolateToken;
   SendPort sendPort = message.sendPort;
   LPrinter.d("entryPoint ====== $pictureSource");
-  String inSource = pictureSource;
   BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
   await r.Rhttp.init();
   await Hoster.initMap();
@@ -282,6 +284,10 @@ entryPoint(SendMessage message) async {
             ),
           ),
   );
+  dio.interceptors.add(PixivImageSourceInterceptor(
+    disableBypassSni: () => currentDisableBypassSni,
+    pictureSource: () => currentPictureSource,
+  ));
   dio.httpClientAdapter = ConversionLayerAdapter(client);
   DioCacheManager.initialize(dio);
   ReceivePort receivePort = ReceivePort();
@@ -298,24 +304,15 @@ entryPoint(SendMessage message) async {
           break;
         case IsoTaskState.APPEND:
           try {
-            inSource = taskBean.source!;
+            currentPictureSource = taskBean.source ?? pictureSource;
+            currentDisableBypassSni = taskBean.byPass == true;
             print("========taskBean.savePath: ${taskBean.savePath}");
             var savePath =
                 taskBean.savePath! +
                 Platform.pathSeparator +
                 taskBean.fileName!;
-            String trueUrl = taskBean.url!;
-            String originHost = Uri.parse(taskBean.url!).host;
-            if (taskBean.byPass == true) {
-            } else {
-              if (originHost == ImageHost) {
-                trueUrl = 'https://${inSource}${Uri.parse(taskBean.url!).path}';
-              } else {
-                trueUrl = taskBean.url!;
-              }
-            }
             await for (final response in pixivCacheManager!.getFileStream(
-              trueUrl,
+              taskBean.url!,
               headers: {
                 "referer": "https://app-api.pixiv.net/",
                 "User-Agent": "PixivIOSApp/5.8.0",

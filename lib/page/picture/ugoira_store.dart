@@ -21,6 +21,7 @@ import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/er/hoster.dart';
+import 'package:pixez/er/pixiv_image_source.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
@@ -130,6 +131,11 @@ abstract class _UgoiraStoreBase with Store {
       ugoiraMetadataResponse = await apiClient.getUgoiraMetadata(id);
       String zipUrl =
           ugoiraMetadataResponse!.ugoiraMetadata.zipUrls.medium;
+      final sourceZipUrl = PixivImageSource.resolve(
+        zipUrl,
+        disableBypassSni: userSetting.disableBypassSni,
+        pictureSource: userSetting.pictureSource,
+      );
       if (!fullPathFile.existsSync()) {
         var dio = Dio(BaseOptions(
             headers: Hoster.header(
@@ -137,7 +143,7 @@ abstract class _UgoiraStoreBase with Store {
         if (!userSetting.disableBypassSni) {
           dio.httpClientAdapter = await ApiClient.createCompatibleClient();
         }
-        dio.download(zipUrl, fullPath,
+        dio.download(sourceZipUrl, fullPath,
             onReceiveProgress: (int count, int total) {
           this.count = count;
           this.total = total;

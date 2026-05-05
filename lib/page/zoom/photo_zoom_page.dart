@@ -8,6 +8,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:pixez/clipboard_plugin.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/er/pixiv_image_source.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/picture/illust_store.dart';
@@ -60,7 +61,7 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
   }
 
   initCache() async {
-    var fileInfo = await pixivCacheManager!.getFileFromCache(nowUrl);
+    var fileInfo = await pixivCacheManager!.getFileFromCache(_sourceUrl(nowUrl));
     if (mounted)
       setState(() {
         shareShow = fileInfo != null;
@@ -119,7 +120,7 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                 _index = index;
                 shareShow = false;
               });
-              var file = await pixivCacheManager!.getFileFromCache(nowUrl);
+              var file = await pixivCacheManager!.getFileFromCache(_sourceUrl(nowUrl));
               if (file != null && mounted)
                 setState(() {
                   shareShow = true;
@@ -133,6 +134,12 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
   }
 
   String nowUrl = "";
+
+  String _sourceUrl(String url) => PixivImageSource.resolve(
+        url,
+        disableBypassSni: userSetting.disableBypassSni,
+        pictureSource: userSetting.pictureSource,
+      );
 
   bool show = false;
   bool shareShow = false;
@@ -253,7 +260,7 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                         ),
                         onPressed: () async {
                           var file =
-                              await pixivCacheManager!.getFileFromCache(nowUrl);
+                              await pixivCacheManager!.getFileFromCache(_sourceUrl(nowUrl));
                           if (file != null) {
                             String targetPath = join(
                                 (await getTemporaryDirectory()).path,

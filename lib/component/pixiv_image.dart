@@ -24,6 +24,7 @@ import 'package:flutter_cache_manager_dio/flutter_cache_manager_dio.dart';
 
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/er/illust_cacher.dart';
+import 'package:pixez/er/pixiv_image_source.dart';
 import 'package:pixez/main.dart';
 import 'package:rhttp/rhttp.dart' as r;
 
@@ -94,6 +95,12 @@ class PixivImage extends StatefulWidget {
                 },
               ),
             ),
+    );
+    dio.interceptors.add(
+      PixivImageSourceInterceptor(
+        disableBypassSni: () => userSetting.disableBypassSni,
+        pictureSource: () => userSetting.pictureSource,
+      ),
     );
     dio.httpClientAdapter = ConversionLayerAdapter(client);
     DioCacheManager.initialize(dio);
