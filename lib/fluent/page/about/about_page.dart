@@ -348,7 +348,7 @@ class _AboutPageState extends State<AboutPage> {
             },
           ),
           ListTile(
-            leading: Icon(FontAwesomeIcons.telegram),
+            leading: FaIcon(FontAwesomeIcons.telegram),
             title: Text("Group"),
             subtitle: Text('t.me/PixEzChannel'),
           ),
@@ -429,7 +429,7 @@ class _AboutPageState extends State<AboutPage> {
               Card(
                 margin: EdgeInsets.all(8.0),
                 child: ListTile(
-                  leading: Icon(FontAwesomeIcons.mugSaucer),
+                  leading: FaIcon(FontAwesomeIcons.mugSaucer),
                   title: Text(i.description),
                   subtitle: Text(i.price),
                   onPressed: () {

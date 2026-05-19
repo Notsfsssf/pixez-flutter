@@ -47,7 +47,7 @@ dependencies:
   flutter_cache_manager: ^3.4.1
   waterfall_flow: ^3.1.1
   animations: ^2.1.0
-  font_awesome_flutter: ^10.6.0
+  font_awesome_flutter: ^11.0.0
   json_annotation: ^4.9.0
   badges: ^3.1.2
   image_picker: ^1.2.0
