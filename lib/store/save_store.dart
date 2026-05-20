@@ -69,6 +69,35 @@ class JobEntity {
   // JobEntity({required this.max, required this.min, required this.status});
 }
 
+/// 根据用户设置的格式模板或 JS 脚本生成文件名。
+/// [memType] 须包含前导点，如 ".jpg"、".png"、".gif"、".zip"。
+Future<String> buildSaveFileName(
+  Illusts illust,
+  int index,
+  String memType,
+) async {
+  if (userSetting.fileNameEval == 1) {
+    if (userSetting.nameEval != null) {
+      final result = await JSEvalPlugin.eval(
+        illust,
+        userSetting.nameEval!,
+        index,
+        memType,
+      );
+      if (result != null && result.isNotEmpty) return result;
+    } else {
+      await userSetting.setFileNameEval(0);
+    }
+  }
+  final result = userSetting.format!
+      .replaceAll("{illust_id}", illust.id.toString())
+      .replaceAll("{user_id}", illust.user.id.toString())
+      .replaceAll("{part}", index.toString())
+      .replaceAll("{user_name}", illust.user.name.toString())
+      .replaceAll("{title}", illust.title);
+  return "$result$memType".toLegal();
+}
+
 class SaveStore = _SaveStoreBase with _$SaveStore;
 
 abstract class _SaveStoreBase with Store {
@@ -384,48 +413,13 @@ abstract class _SaveStoreBase with Store {
     return result ?? "";
   }
 
-  Future<String?> _handleEvalName(
-    String text,
-    Illusts illust,
-    int index,
-    String memType,
-  ) async {
-    if (userSetting.fileNameEval == 1) {
-      if (userSetting.nameEval == null) {
-        await userSetting.setFileNameEval(0);
-        return null;
-      }
-      return await JSEvalPlugin.eval(
-        illust,
-        userSetting.nameEval!,
-        index,
-        memType,
-      );
-    }
-    return null;
-  }
 
   Future<String> _handleFileName(
     Illusts illust,
     int index,
     String memType,
   ) async {
-    if (userSetting.fileNameEval == 1) {
-      final result = await _handleEvalName(
-        userSetting.nameEval!,
-        illust,
-        index,
-        memType,
-      );
-      if (result != null) return result;
-    }
-    final result = userSetting.format!
-        .replaceAll("{illust_id}", illust.id.toString())
-        .replaceAll("{user_id}", illust.user.id.toString())
-        .replaceAll("{part}", index.toString())
-        .replaceAll("{user_name}", illust.user.name.toString())
-        .replaceAll("{title}", illust.title);
-    return "$result$memType".toLegal();
+    return buildSaveFileName(illust, index, memType);
   }
 
   @action

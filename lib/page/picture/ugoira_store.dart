@@ -27,6 +27,9 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/saf_plugin.dart';
+import 'package:pixez/exts.dart';
+import 'package:pixez/models/illust.dart';
+import 'package:pixez/store/save_store.dart';
 
 part 'ugoira_store.g.dart';
 
@@ -49,7 +52,7 @@ abstract class _UgoiraStoreBase with Store {
   List<FileSystemEntity> drawPool = [];
   UgoiraMetadataResponse? ugoiraMetadataResponse;
 
-  export() async {
+  export(Illusts illusts) async {
     try {
       Directory tempDir = await getTemporaryDirectory();
       String tempPath = tempDir.path;
@@ -57,10 +60,15 @@ abstract class _UgoiraStoreBase with Store {
       File fullPathFile = File(fullPath);
       if (fullPathFile.existsSync()) {
         final data = fullPathFile.readAsBytesSync();
+        String zipFileName = await buildSaveFileName(illusts, 0, ".zip");
+        if (userSetting.singleFolder) {
+          zipFileName =
+              "${illusts.user.name.toLegal()}_${illusts.user.id}/$zipFileName";
+        }
         if (Platform.isAndroid) {
           try {
             String? uriString =
-                await SAFPlugin.createFile("${id}.zip", "application/zip");
+                await SAFPlugin.createFile(zipFileName, "application/zip");
             uriString!;
             await SAFPlugin.writeUri(uriString, data);
             BotToast.showText(text: "export success");
@@ -72,7 +80,8 @@ abstract class _UgoiraStoreBase with Store {
         if (!zipFolder.existsSync()) {
           zipFolder.createSync(recursive: true);
         }
-        File targetFile = File("${zipFolder.path}/${id}.zip");
+        File targetFile = File("${zipFolder.path}/$zipFileName");
+        targetFile.parent.createSync(recursive: true);
         fullPathFile.copySync(targetFile.path);
         BotToast.showText(text: "export ${targetFile.path} success");
       }

@@ -25,6 +25,8 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/picture/ugoira_store.dart';
+import 'package:pixez/store/save_store.dart';
+import 'package:pixez/exts.dart';
 
 class UgoiraLoader extends StatefulWidget {
   final int id;
@@ -84,6 +86,13 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                 onPressed: () async {
                   try {
                     isEncoding = true;
+                    final gifBaseName =
+                        (await buildSaveFileName(
+                                    widget.illusts, 0, ".gif"))
+                            .replaceAll(RegExp(r'\.gif$'), '');
+                    final gifName = userSetting.singleFolder
+                        ? "${widget.illusts.user.name.toLegal()}_${widget.illusts.user.id}/$gifBaseName"
+                        : gifBaseName;
                     await platform.invokeMethod('getBatteryLevel', {
                       "path": _store.drawPool.first.parent.path,
                       "delay": _store.ugoiraMetadataResponse!.ugoiraMetadata
@@ -92,9 +101,7 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                           .ugoiraMetadataResponse!.ugoiraMetadata.frames
                           .map((e) => e.delay)
                           .toList(),
-                      "name": userSetting.singleFolder
-                          ? "${widget.illusts.user.name}_${widget.illusts.user.id}/${widget.id}"
-                          : "${widget.id}",
+                      "name": gifName,
                     });
                     BotToast.showCustomText(
                         toastBuilder: (_) => Text("encoding..."));
@@ -106,7 +113,7 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
               MenuFlyoutItem(
                 text: Text(I18n.of(context).export),
                 onPressed: () async {
-                  await _store.export();
+                  await _store.export(widget.illusts);
                 },
               ),
             ],

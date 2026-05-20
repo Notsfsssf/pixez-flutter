@@ -22,6 +22,8 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/ugoira_painter.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/store/save_store.dart';
+import 'package:pixez/exts.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/picture/ugoira_store.dart';
 
@@ -104,6 +106,13 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                   if (result == "OK") {
                     try {
                       isEncoding = true;
+                      final gifBaseName =
+                          (await buildSaveFileName(
+                                      widget.illusts, 0, ".gif"))
+                              .replaceAll(RegExp(r'\.gif$'), '');
+                      final gifName = userSetting.singleFolder
+                          ? "${widget.illusts.user.name.toLegal()}_${widget.illusts.user.id}/$gifBaseName"
+                          : gifBaseName;
                       platform.invokeMethod('getBatteryLevel', {
                         "path": _store.drawPool.first.parent.path,
                         "delay": _store
@@ -118,9 +127,7 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                             .frames
                             .map((e) => e.delay)
                             .toList(),
-                        "name": userSetting.singleFolder
-                            ? "${widget.illusts.user.name}_${widget.illusts.user.id}/${widget.id}"
-                            : "${widget.id}",
+                        "name": gifName,
                       });
                       BotToast.showCustomText(
                         toastBuilder: (_) => Text("encoding..."),
@@ -130,7 +137,7 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                     }
                   } else if (result == "SOURCE") {
                   } else if (result == "EXPORT") {
-                    _store.export();
+                    _store.export(widget.illusts);
                   }
                 },
                 child: UgoiraWidget(
