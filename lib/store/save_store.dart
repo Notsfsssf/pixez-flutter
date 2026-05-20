@@ -98,6 +98,15 @@ Future<String> buildSaveFileName(
   return "$result$memType".toLegal();
 }
 
+/// 如果用户启用了 [singleFolder]，将 [baseName] 包装到作者子目录中。
+String applySingleFolder(Illusts illust, String baseName) {
+  if (userSetting.singleFolder) {
+    return "${illust.user.name.toLegal()}_${illust.user.id}/$baseName";
+  }
+  return baseName;
+}
+
+
 class SaveStore = _SaveStoreBase with _$SaveStore;
 
 abstract class _SaveStoreBase with Store {
@@ -289,11 +298,7 @@ abstract class _SaveStoreBase with Store {
   }) async {
     if (Platform.isAndroid || Platform.isWindows) {
       try {
-        String targetFileName = fileName;
-        if (userSetting.singleFolder) {
-          targetFileName =
-              "${illusts.user.name.toLegal()}_${illusts.user.id}/$fileName";
-        }
+        String targetFileName = applySingleFolder(illusts, fileName);
         final isExist = await DocumentPlugin.exist(targetFileName);
         if (isExist! && !redo) {
           streamController.add(

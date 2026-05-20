@@ -110,9 +110,7 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                           (await buildSaveFileName(
                                       widget.illusts, 0, ".gif"))
                               .replaceAll(RegExp(r'\.gif$'), '');
-                      final gifName = userSetting.singleFolder
-                          ? "${widget.illusts.user.name.toLegal()}_${widget.illusts.user.id}/$gifBaseName"
-                          : gifBaseName;
+                      final gifName = applySingleFolder(widget.illusts, gifBaseName);
                       platform.invokeMethod('getBatteryLevel', {
                         "path": _store.drawPool.first.parent.path,
                         "delay": _store

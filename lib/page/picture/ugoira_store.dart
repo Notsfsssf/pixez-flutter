@@ -61,10 +61,7 @@ abstract class _UgoiraStoreBase with Store {
       if (fullPathFile.existsSync()) {
         final data = fullPathFile.readAsBytesSync();
         String zipFileName = await buildSaveFileName(illusts, 0, ".zip");
-        if (userSetting.singleFolder) {
-          zipFileName =
-              "${illusts.user.name.toLegal()}_${illusts.user.id}/$zipFileName";
-        }
+        zipFileName = applySingleFolder(illusts, zipFileName);
         if (Platform.isAndroid) {
           try {
             String? uriString =
