@@ -52,7 +52,7 @@ abstract class _UgoiraStoreBase with Store {
   List<FileSystemEntity> drawPool = [];
   UgoiraMetadataResponse? ugoiraMetadataResponse;
 
-  export(Illusts illusts) async {
+  Future<void> export(Illusts illusts) async {
     try {
       Directory tempDir = await getTemporaryDirectory();
       String tempPath = tempDir.path;
@@ -78,6 +78,7 @@ abstract class _UgoiraStoreBase with Store {
           zipFolder.createSync(recursive: true);
         }
         File targetFile = File("${zipFolder.path}/$zipFileName");
+        // 当 singleFolder 启用时，targetFile.parent 可能是子目录，需要确保其存在
         targetFile.parent.createSync(recursive: true);
         fullPathFile.copySync(targetFile.path);
         BotToast.showText(text: "export ${targetFile.path} success");

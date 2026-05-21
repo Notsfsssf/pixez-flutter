@@ -86,10 +86,12 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                 onPressed: () async {
                   try {
                     isEncoding = true;
-                    final gifBaseName =
-                        (await buildSaveFileName(
-                                    widget.illusts, 0, ".gif"))
-                            .replaceAll(RegExp(r'\.gif$'), '');
+                    final gifBaseName = await buildSaveFileName(
+                      widget.illusts,
+                      0,
+                      ".gif",
+                      withExtension: false,
+                    );
                     final gifName = applySingleFolder(widget.illusts, gifBaseName);
                     await platform.invokeMethod('getBatteryLevel', {
                       "path": _store.drawPool.first.parent.path,

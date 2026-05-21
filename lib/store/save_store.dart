@@ -71,11 +71,13 @@ class JobEntity {
 
 /// 根据用户设置的格式模板或 JS 脚本生成文件名。
 /// [memType] 须包含前导点，如 ".jpg"、".png"、".gif"、".zip"。
+/// [withExtension] 默认为 true，返回带扩展名的文件名；设为 false 则不带扩展名。
 Future<String> buildSaveFileName(
   Illusts illust,
   int index,
-  String memType,
-) async {
+  String memType, {
+  bool withExtension = true,
+}) async {
   if (userSetting.fileNameEval == 1) {
     if (userSetting.nameEval != null) {
       final result = await JSEvalPlugin.eval(
@@ -95,7 +97,10 @@ Future<String> buildSaveFileName(
       .replaceAll("{part}", index.toString())
       .replaceAll("{user_name}", illust.user.name.toString())
       .replaceAll("{title}", illust.title);
-  return "$result$memType".toLegal();
+  if (withExtension) {
+    return "$result$memType".toLegal();
+  }
+  return result.toLegal();
 }
 
 /// 如果用户启用了 [singleFolder]，将 [baseName] 包装到作者子目录中。
@@ -106,7 +111,7 @@ String applySingleFolder(Illusts illust, String baseName) {
   return baseName;
 }
 
-
+class SaveStore = _SaveStoreBase with _$SaveStore;
 class SaveStore = _SaveStoreBase with _$SaveStore;
 
 abstract class _SaveStoreBase with Store {
