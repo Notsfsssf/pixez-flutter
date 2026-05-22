@@ -14,17 +14,11 @@
  *
  */
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart' hide Image;
-import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/ugoira_painter.dart';
 import 'package:pixez/i18n.dart';
-import 'package:pixez/main.dart';
-import 'package:pixez/store/save_store.dart';
-import 'package:pixez/document_plugin.dart';
-import 'package:pixez/exts.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/picture/ugoira_store.dart';
 
@@ -48,9 +42,6 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
     super.initState();
   }
 
-  bool isEncoding = false;
-  static const platform = const MethodChannel('samples.flutter.dev/battery');
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -65,7 +56,6 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
             if (_store.status == UgoiraStatus.play) {
               return InkWell(
                 onLongPress: () async {
-                  if (isEncoding) return;
                   final result = await showModalBottomSheet(
                     context: context,
                     shape: RoundedRectangleBorder(
@@ -105,41 +95,7 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                     },
                   );
                   if (result == "OK") {
-                    try {
-                      isEncoding = true;
-                      final gifName = await buildSaveFileName(
-                        widget.illusts,
-                        0,
-                        ".gif",
-                      );
-                      BotToast.showText(text: "encoding...");
-                      final gifPath = await platform.invokeMethod('getBatteryLevel', {
-                        "path": _store.drawPool.first.parent.path,
-                        "delay": _store
-                            .ugoiraMetadataResponse!
-                            .ugoiraMetadata
-                            .frames
-                            .first
-                            .delay,
-                        "delay_array": _store
-                            .ugoiraMetadataResponse!
-                            .ugoiraMetadata
-                            .frames
-                            .map((e) => e.delay)
-                            .toList(),
-                      });
-                      if (gifPath != null) {
-                        final targetName = applySingleFolder(widget.illusts, gifName);
-                        await DocumentPlugin.saveFromPath(gifPath, targetName);
-                        BotToast.showText(text: "encode success");
-                      }
-                    } on PlatformException {
-                      isEncoding = false;
-                    }
-                    finally {
-                      isEncoding = false;
-                    }
-                  } else if (result == "SOURCE") {
+                    _store.encodeGif(widget.illusts);
                   } else if (result == "EXPORT") {
                     _store.export(widget.illusts);
                   }

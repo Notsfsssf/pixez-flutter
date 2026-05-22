@@ -17,6 +17,7 @@
 import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
@@ -28,7 +29,6 @@ import 'package:pixez/models/ugoira_metadata_response.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/saf_plugin.dart';
-import 'package:pixez/exts.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/store/save_store.dart';
 
@@ -49,6 +49,11 @@ abstract class _UgoiraStoreBase with Store {
   int count = 0;
   @observable
   int total = 1;
+  @observable
+  bool isEncoding = false;
+
+  static const _platform =
+      const MethodChannel('samples.flutter.dev/battery');
 
   List<FileSystemEntity> drawPool = [];
   UgoiraMetadataResponse? ugoiraMetadataResponse;
@@ -88,6 +93,33 @@ abstract class _UgoiraStoreBase with Store {
     } catch (e) {
       LPrinter.d(e);
       BotToast.showText(text: "export error: ${e.toString()}");
+    }
+  }
+
+  @action
+  Future<void> encodeGif(Illusts illusts) async {
+    if (isEncoding) return;
+    try {
+      isEncoding = true;
+      final gifName = await buildSaveFileName(illusts, 0, ".gif");
+      BotToast.showText(text: "[Encoding] $gifName");
+      final gifPath = await _platform.invokeMethod('getBatteryLevel', {
+        "path": drawPool.first.parent.path,
+        "delay":
+            ugoiraMetadataResponse!.ugoiraMetadata.frames.first.delay,
+        "delay_array": ugoiraMetadataResponse!.ugoiraMetadata.frames
+            .map((e) => e.delay)
+            .toList(),
+      });
+      if (gifPath != null) {
+        final targetName = applySingleFolder(illusts, gifName);
+        await DocumentPlugin.saveFromPath(gifPath, targetName);
+        BotToast.showText(text: "[GifSaved] $gifName");
+      }
+    } on PlatformException {
+      // handled below
+    } finally {
+      isEncoding = false;
     }
   }
 
