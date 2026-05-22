@@ -117,8 +117,12 @@ class MainActivity : FlutterActivity() {
                 }
 
                 "save" -> {
-                    val data = call.argument<ByteArray>("data")!!
-                    val name = call.argument<String>("name")!!
+                    val data = call.argument<ByteArray>("data")
+                    val name = call.argument<String>("name")
+                    if (data == null || name == null) {
+                        result.error("INVALID_ARGS", "data and name are required", null)
+                        return@setMethodCallHandler
+                    }
                     var clearOld = call.argument<Boolean>("clear_old")
                     saveMode = call.argument<Int>("save_mode") ?: 0
                     if (clearOld == null)
@@ -128,19 +132,23 @@ class MainActivity : FlutterActivity() {
                     savingPools.add(name)
                     lifecycleScope.launch {
                         try {
+                            var saved = false
                             when (saveMode) {
                                 0 -> {
                                     val path = withContext(Dispatchers.IO) {
                                         save(data, name)
-                                    } ?: return@launch
-                                    MediaScannerConnection.scanFile(
-                                        this@MainActivity,
-                                        arrayOf(path),
-                                        arrayOf(
-                                            MimeTypeMap.getSingleton()
-                                                .getMimeTypeFromExtension(File(path).extension)
-                                        )
-                                    ) { _, _ ->
+                                    }
+                                    if (path != null) {
+                                        saved = true
+                                        MediaScannerConnection.scanFile(
+                                            this@MainActivity,
+                                            arrayOf(path),
+                                            arrayOf(
+                                                MimeTypeMap.getSingleton()
+                                                    .getMimeTypeFromExtension(File(path).extension)
+                                            )
+                                        ) { _, _ ->
+                                        }
                                     }
                                 }
 
@@ -182,19 +190,105 @@ class MainActivity : FlutterActivity() {
                                     ) { _, _ ->
                                     }
 
+                                    saved = true
                                 }
 
                                 1 -> {
                                     withContext(Dispatchers.IO) {
-                                        writeFileUri(name, clearOld)?.let {
-                                            wr(data, it)
+                                        val uri = writeFileUri(name, clearOld)
+                                        if (uri != null) {
+                                            wr(data, uri)
+                                            saved = true
                                         }
                                     }
                                 }
                             }
-                            result.success(true)
+                            result.success(saved)
                         } catch (e: Throwable) {
-                            Log.d("x=====", "${e.message}")
+                            Log.d("Save", "${e.message}")
+                            result.success(false)
+                        } finally {
+                            savingPools.remove(name)
+                        }
+                    }
+                }
+
+                "saveFromPath" -> {
+                    val sourcePath = call.argument<String>("source_path")
+                    val name = call.argument<String>("name")
+                    if (sourcePath == null || name == null) {
+                        result.error("INVALID_ARGS", "source_path and name are required", null)
+                        return@setMethodCallHandler
+                    }
+                    var clearOld = call.argument<Boolean>("clear_old")
+                    saveMode = call.argument<Int>("save_mode") ?: 0
+                    if (clearOld == null)
+                        clearOld = false
+                    if (savingPools.contains(name))
+                        return@setMethodCallHandler;
+                    savingPools.add(name)
+                    lifecycleScope.launch {
+                        try {
+                            val sourceFile = File(sourcePath)
+                            var saved = false
+                            when (saveMode) {
+                                0 -> {
+                                    val data = withContext(Dispatchers.IO) {
+                                        sourceFile.readBytes()
+                                    }
+                                    val path = save(data, name)
+                                    if (path != null) {
+                                        saved = true
+                                        MediaScannerConnection.scanFile(
+                                            this@MainActivity,
+                                            arrayOf(path),
+                                            arrayOf(
+                                                MimeTypeMap.getSingleton()
+                                                    .getMimeTypeFromExtension(File(path).extension)
+                                            )
+                                        ) { _, _ ->
+                                        }
+                                    }
+                                }
+
+                                2 -> {
+                                    val target = File("$helplessPath/$name")
+                                    withContext(Dispatchers.IO) {
+                                        val dirPath = target.parent
+                                        val dirFile = File(dirPath)
+                                        if (!dirFile.exists()) {
+                                            dirFile.mkdirs()
+                                        }
+                                        sourceFile.copyTo(target, overwrite = true)
+                                    }
+                                    saved = true
+                                    MediaScannerConnection.scanFile(
+                                        this@MainActivity,
+                                        arrayOf(target.path),
+                                        arrayOf(
+                                            MimeTypeMap.getSingleton()
+                                                .getMimeTypeFromExtension(target.extension)
+                                        )
+                                    ) { _, _ ->
+                                    }
+                                }
+
+                                1 -> {
+                                    withContext(Dispatchers.IO) {
+                                        val uri = writeFileUri(name, clearOld)
+                                        if (uri != null) {
+                                            val data = sourceFile.readBytes()
+                                            wr(data, uri)
+                                            saved = true
+                                        }
+                                    }
+                                }
+                            }
+                            sourceFile.delete()
+                            result.success(saved)
+                        } catch (e: Throwable) {
+                            Log.d("SaveFromPath", "${e.message}")
+                            result.success(false)
                         } finally {
                             savingPools.remove(name)
                         }
@@ -237,20 +331,18 @@ class MainActivity : FlutterActivity() {
             ENCODE_CHANNEL
         ).setMethodCallHandler { call, result ->
             if (call.method == "getBatteryLevel") {
-                val name = call.argument<String>("name")!!
                 val path = call.argument<String>("path")!!
                 val delay = call.argument<Int>("delay")!!
                 val delayArray = call.argument<List<Int>>("delay_array")!!
                 lifecycleScope.launch {
-                    withContext(Dispatchers.IO) {
-                        encodeGif(name, path, delay, delayArray)
+                    val gifPath = withContext(Dispatchers.IO) {
+                        encodeGif(path, delay, delayArray)
                     }
-                    Toast.makeText(
-                        this@MainActivity,
-                        getString(R.string.encode_success),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    result.success(true)
+                    if (gifPath != null) {
+                        result.success(gifPath)
+                    } else {
+                        result.error("ENCODE_FAILED", "GIF encoding failed", null)
+                    }
                 }
             }
         }
@@ -359,98 +451,49 @@ class MainActivity : FlutterActivity() {
         return list.first().uri.toString()
     }
 
-    private fun encodeGif(name: String, path: String, delay: Int, delayArray: List<Int>) {
+    private fun encodeGif(path: String, delay: Int, delayArray: List<Int>): String? {
         val file = File(path)
-        file.let {
-            val tempFile = File(
-                applicationContext.cacheDir, "${
-                    if (name.contains("/")) {
-                        name.split("/").last()
-                    } else {
-                        name
-                    }
-                }.gif"
-            )
-            try {
-                val fileName = "${name}.gif"
-                if (saveMode == 0) {
-                    if (exist(fileName))
-                        return
-                }
-                /*                if (!tempFile.exists()) {
-                                    tempFile.createNewFile()
-                                }*/
-                Log.d("tempFile path:", tempFile.path)
-                val listFiles = it.listFiles()
-                if (listFiles == null || listFiles.isEmpty()) {
-                    throw RuntimeException("unzip files not found")
-                }
-                val arrayFile = mutableListOf<File>()
-                for (i in listFiles) {
-                    if (i.name.contains("jpg") || i.name.contains("png")) {
-                        arrayFile.add(i)
-                    }
-                }
-                arrayFile.sortWith { o1, o2 -> o1.name.compareTo(o2.name) }
-                val bitmap: Bitmap = BitmapFactory.decodeFile(arrayFile.first().path)
-                val encoder = GifEncoder()
-                encoder.init(
-                    bitmap.width,
-                    bitmap.height,
-                    tempFile.path,
-                    GifEncoder.EncodingType.ENCODING_TYPE_STABLE_HIGH_MEMORY
-                )
-                for (i in arrayFile.indices) {
-                    val trueDelay = if (i < delayArray.size) {
-                        delayArray[i]
-                    } else {
-                        delay
-                    }
-                    if (i != 0) {
-                        encoder.encodeFrame(BitmapFactory.decodeFile(arrayFile[i].path), trueDelay)
-                    } else encoder.encodeFrame(bitmap, trueDelay)
-                }
-                encoder.close()
-                if (saveMode == 0) {
-                    save(tempFile.readBytes(), fileName)?.let {
-                        MediaScannerConnection.scanFile(
-                            this@MainActivity,
-                            arrayOf(it),
-                            arrayOf(
-                                MimeTypeMap.getSingleton()
-                                    .getMimeTypeFromExtension(File(it).extension)
-                            )
-                        ) { _, _ ->
-                        }
-                    }
-                    return
-                }
-                if (saveMode == 2) {
-                    val target = File("$helplessPath/$fileName")
-                    if (!target.exists()) {
-                        target.createNewFile()
-                    }
-                    tempFile.copyTo(target, overwrite = true)
-                    MediaScannerConnection.scanFile(
-                        this@MainActivity,
-                        arrayOf(target.path),
-                        arrayOf(
-                            MimeTypeMap.getSingleton()
-                                .getMimeTypeFromExtension(target.extension)
-                        )
-                    ) { _, _ ->
-                    }
-                    return
-                }
-                val uri = writeFileUri(fileName)
-                contentResolver.openOutputStream(uri!!, "w")?.use { outputStream ->
-                    outputStream.write(tempFile.inputStream().readBytes())
-                }
-            } catch (e: Throwable) {
-                e.printStackTrace()
-                tempFile.delete()
-                it.deleteRecursively()
+        val tempFile = File.createTempFile("encode_", ".gif", applicationContext.cacheDir)
+        try {
+            val listFiles = file.listFiles()
+            if (listFiles == null || listFiles.isEmpty()) {
+                throw RuntimeException("unzip files not found")
             }
+            val arrayFile = mutableListOf<File>()
+            for (i in listFiles) {
+                val ext = i.extension.lowercase()
+                if (ext == "jpg" || ext == "jpeg" || ext == "png") {
+                    arrayFile.add(i)
+                }
+            }
+            arrayFile.sortWith { o1, o2 -> o1.name.compareTo(o2.name) }
+            val bitmap: Bitmap = BitmapFactory.decodeFile(arrayFile.first().path)
+            val encoder = GifEncoder()
+            encoder.init(
+                bitmap.width,
+                bitmap.height,
+                tempFile.path,
+                GifEncoder.EncodingType.ENCODING_TYPE_STABLE_HIGH_MEMORY
+            )
+            for (i in arrayFile.indices) {
+                val trueDelay = if (i < delayArray.size) {
+                    delayArray[i]
+                } else {
+                    delay
+                }
+                if (i != 0) {
+                    val bmp = BitmapFactory.decodeFile(arrayFile[i].path)
+                    encoder.encodeFrame(bmp, trueDelay)
+                    bmp.recycle()
+                } else encoder.encodeFrame(bitmap, trueDelay)
+            }
+            encoder.close()
+            bitmap.recycle()
+            return tempFile.absolutePath
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            tempFile.delete()
+            return null
         }
     }
 

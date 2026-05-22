@@ -26,6 +26,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/picture/ugoira_store.dart';
 import 'package:pixez/store/save_store.dart';
+import 'package:pixez/document_plugin.dart';
 import 'package:pixez/exts.dart';
 
 class UgoiraLoader extends StatefulWidget {
@@ -86,14 +87,13 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                 onPressed: () async {
                   try {
                     isEncoding = true;
-                    final gifBaseName = await buildSaveFileName(
+                    final gifName = await buildSaveFileName(
                       widget.illusts,
                       0,
                       ".gif",
-                      withExtension: false,
                     );
-                    final gifName = applySingleFolder(widget.illusts, gifBaseName);
-                    await platform.invokeMethod('getBatteryLevel', {
+                    BotToast.showText(text: "encoding...");
+                    final gifPath = await platform.invokeMethod('getBatteryLevel', {
                       "path": _store.drawPool.first.parent.path,
                       "delay": _store.ugoiraMetadataResponse!.ugoiraMetadata
                           .frames.first.delay,
@@ -101,15 +101,20 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                           .ugoiraMetadataResponse!.ugoiraMetadata.frames
                           .map((e) => e.delay)
                           .toList(),
-                      "name": gifName,
                     });
-                    BotToast.showCustomText(
-                        toastBuilder: (_) => Text("encoding..."));
+                    if (gifPath != null) {
+                      final targetName = applySingleFolder(widget.illusts, gifName);
+                      await DocumentPlugin.saveFromPath(gifPath, targetName);
+                      BotToast.showText(text: "encode success");
+                    }
                   } on PlatformException {
                     isEncoding = false;
                   }
+                  finally {
+                    isEncoding = false;
+                  }
                 },
-              ),
+                ),
               MenuFlyoutItem(
                 text: Text(I18n.of(context).export),
                 onPressed: () async {

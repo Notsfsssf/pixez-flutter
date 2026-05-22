@@ -23,6 +23,7 @@ import 'package:pixez/component/ugoira_painter.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/store/save_store.dart';
+import 'package:pixez/document_plugin.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/picture/ugoira_store.dart';
@@ -106,14 +107,13 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                   if (result == "OK") {
                     try {
                       isEncoding = true;
-                      final gifBaseName = await buildSaveFileName(
+                      final gifName = await buildSaveFileName(
                         widget.illusts,
                         0,
                         ".gif",
-                        withExtension: false,
                       );
-                      final gifName = applySingleFolder(widget.illusts, gifBaseName);
-                      platform.invokeMethod('getBatteryLevel', {
+                      BotToast.showText(text: "encoding...");
+                      final gifPath = await platform.invokeMethod('getBatteryLevel', {
                         "path": _store.drawPool.first.parent.path,
                         "delay": _store
                             .ugoiraMetadataResponse!
@@ -127,12 +127,16 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                             .frames
                             .map((e) => e.delay)
                             .toList(),
-                        "name": gifName,
                       });
-                      BotToast.showCustomText(
-                        toastBuilder: (_) => Text("encoding..."),
-                      );
+                      if (gifPath != null) {
+                        final targetName = applySingleFolder(widget.illusts, gifName);
+                        await DocumentPlugin.saveFromPath(gifPath, targetName);
+                        BotToast.showText(text: "encode success");
+                      }
                     } on PlatformException {
+                      isEncoding = false;
+                    }
+                    finally {
                       isEncoding = false;
                     }
                   } else if (result == "SOURCE") {

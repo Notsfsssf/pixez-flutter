@@ -26,6 +26,7 @@ import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/document_plugin.dart';
 import 'package:pixez/saf_plugin.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/models/illust.dart';
@@ -70,21 +71,23 @@ abstract class _UgoiraStoreBase with Store {
             await SAFPlugin.writeUri(uriString, data);
             BotToast.showText(text: "export success");
             return;
-          } catch (e) {}
+          } catch (e) {
+            BotToast.showText(text: "export cancelled");
+            return;
+          }
         }
-        Directory? directory = await getExternalStorageDirectory();
-        Directory zipFolder = Directory("${directory!.path}/ugoira_zip/");
-        if (!zipFolder.existsSync()) {
-          zipFolder.createSync(recursive: true);
+        final success = await DocumentPlugin.save(data, zipFileName);
+        if (success == true) {
+          BotToast.showText(text: "export success");
+        } else {
+          BotToast.showText(text: "export failed");
         }
-        File targetFile = File("${zipFolder.path}/$zipFileName");
-        // 当 singleFolder 启用时，targetFile.parent 可能是子目录，需要确保其存在
-        targetFile.parent.createSync(recursive: true);
-        fullPathFile.copySync(targetFile.path);
-        BotToast.showText(text: "export ${targetFile.path} success");
+      } else {
+        BotToast.showText(text: "zip file not found, please download first");
       }
     } catch (e) {
       LPrinter.d(e);
+      BotToast.showText(text: "export error: ${e.toString()}");
     }
   }
 
