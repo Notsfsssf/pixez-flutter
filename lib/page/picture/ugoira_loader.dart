@@ -95,9 +95,9 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                     },
                   );
                   if (result == "OK") {
-                    _store.encodeGif(widget.illusts);
+                    await _store.encodeGif(widget.illusts);
                   } else if (result == "EXPORT") {
-                    _store.export(widget.illusts);
+                    await _store.export(widget.illusts);
                   }
                 },
                 child: UgoiraWidget(

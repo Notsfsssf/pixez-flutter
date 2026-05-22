@@ -99,12 +99,16 @@ abstract class _UgoiraStoreBase with Store {
   @action
   Future<void> encodeGif(Illusts illusts) async {
     if (isEncoding) return;
+    if (drawPool.isEmpty || ugoiraMetadataResponse == null) {
+      BotToast.showText(text: "not ready");
+      return;
+    }
     try {
       isEncoding = true;
       final gifName = await buildSaveFileName(illusts, 0, ".gif");
       BotToast.showText(text: "[Encoding] $gifName");
       final gifPath = await _platform.invokeMethod('getBatteryLevel', {
-        "path": drawPool.first.parent.path,
+        "path": drawPool.first.parent.path, // guarded by isEmpty check above
         "delay":
             ugoiraMetadataResponse!.ugoiraMetadata.frames.first.delay,
         "delay_array": ugoiraMetadataResponse!.ugoiraMetadata.frames
@@ -116,8 +120,9 @@ abstract class _UgoiraStoreBase with Store {
         await DocumentPlugin.saveFromPath(gifPath, targetName);
         BotToast.showText(text: "[GifSaved] $gifName");
       }
-    } on PlatformException {
-      // handled below
+    } on PlatformException catch (e) {
+      BotToast.showText(
+          text: "encode failed: ${e.message ?? e.toString()}");
     } finally {
       isEncoding = false;
     }
