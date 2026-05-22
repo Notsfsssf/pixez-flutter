@@ -112,7 +112,6 @@ String applySingleFolder(Illusts illust, String baseName) {
 }
 
 class SaveStore = _SaveStoreBase with _$SaveStore;
-class SaveStore = _SaveStoreBase with _$SaveStore;
 
 abstract class _SaveStoreBase with Store {
   _SaveStoreBase() {
