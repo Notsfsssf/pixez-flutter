@@ -29,6 +29,16 @@ class DocumentPlugin {
     });
   }
 
+  static Future<bool?> saveFromPath(String sourcePath, String fileName,
+      {bool clearOld = false, int? saveMode}) async {
+    return platform.invokeMethod<bool>('saveFromPath', {
+      "source_path": sourcePath,
+      "name": fileName,
+      "save_mode": saveMode ?? userSetting.saveMode,
+      "clear_old": clearOld
+    });
+  }
+
   static Future<bool?> openSave(Uint8List uint8list, String fileName) {
     return platform.invokeMethod<bool>('openSave', {
       "data": uint8list,

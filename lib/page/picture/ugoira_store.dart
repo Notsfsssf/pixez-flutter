@@ -17,6 +17,7 @@
 import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
@@ -26,7 +27,10 @@ import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/document_plugin.dart';
 import 'package:pixez/saf_plugin.dart';
+import 'package:pixez/models/illust.dart';
+import 'package:pixez/store/save_store.dart';
 
 part 'ugoira_store.g.dart';
 
@@ -45,11 +49,16 @@ abstract class _UgoiraStoreBase with Store {
   int count = 0;
   @observable
   int total = 1;
+  @observable
+  bool isEncoding = false;
+
+  static const _platform =
+      const MethodChannel('samples.flutter.dev/battery');
 
   List<FileSystemEntity> drawPool = [];
   UgoiraMetadataResponse? ugoiraMetadataResponse;
 
-  export() async {
+  Future<void> export(Illusts illusts) async {
     try {
       Directory tempDir = await getTemporaryDirectory();
       String tempPath = tempDir.path;
@@ -57,27 +66,65 @@ abstract class _UgoiraStoreBase with Store {
       File fullPathFile = File(fullPath);
       if (fullPathFile.existsSync()) {
         final data = fullPathFile.readAsBytesSync();
+        String zipFileName = await buildSaveFileName(illusts, 0, ".zip");
+        zipFileName = applySingleFolder(illusts, zipFileName);
         if (Platform.isAndroid) {
           try {
             String? uriString =
-                await SAFPlugin.createFile("${id}.zip", "application/zip");
+                await SAFPlugin.createFile(zipFileName, "application/zip");
             uriString!;
             await SAFPlugin.writeUri(uriString, data);
             BotToast.showText(text: "export success");
             return;
-          } catch (e) {}
+          } catch (e) {
+            BotToast.showText(text: "export cancelled");
+            return;
+          }
         }
-        Directory? directory = await getExternalStorageDirectory();
-        Directory zipFolder = Directory("${directory!.path}/ugoira_zip/");
-        if (!zipFolder.existsSync()) {
-          zipFolder.createSync(recursive: true);
+        final success = await DocumentPlugin.save(data, zipFileName);
+        if (success == true) {
+          BotToast.showText(text: "export success");
+        } else {
+          BotToast.showText(text: "export failed");
         }
-        File targetFile = File("${zipFolder.path}/${id}.zip");
-        fullPathFile.copySync(targetFile.path);
-        BotToast.showText(text: "export ${targetFile.path} success");
+      } else {
+        BotToast.showText(text: "zip file not found, please download first");
       }
     } catch (e) {
       LPrinter.d(e);
+      BotToast.showText(text: "export error: ${e.toString()}");
+    }
+  }
+
+  @action
+  Future<void> encodeGif(Illusts illusts) async {
+    if (isEncoding) return;
+    if (drawPool.isEmpty || ugoiraMetadataResponse == null) {
+      BotToast.showText(text: "not ready");
+      return;
+    }
+    try {
+      isEncoding = true;
+      final gifName = await buildSaveFileName(illusts, 0, ".gif");
+      BotToast.showText(text: "[Encoding] $gifName");
+      final gifPath = await _platform.invokeMethod('getBatteryLevel', {
+        "path": drawPool.first.parent.path, // guarded by isEmpty check above
+        "delay":
+            ugoiraMetadataResponse!.ugoiraMetadata.frames.first.delay,
+        "delay_array": ugoiraMetadataResponse!.ugoiraMetadata.frames
+            .map((e) => e.delay)
+            .toList(),
+      });
+      if (gifPath != null) {
+        final targetName = applySingleFolder(illusts, gifName);
+        await DocumentPlugin.saveFromPath(gifPath, targetName);
+        BotToast.showText(text: "[GifSaved] $gifName");
+      }
+    } on PlatformException catch (e) {
+      BotToast.showText(
+          text: "encode failed: ${e.message ?? e.toString()}");
+    } finally {
+      isEncoding = false;
     }
   }
 

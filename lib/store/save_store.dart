@@ -69,6 +69,48 @@ class JobEntity {
   // JobEntity({required this.max, required this.min, required this.status});
 }
 
+/// 根据用户设置的格式模板或 JS 脚本生成文件名。
+/// [memType] 须包含前导点，如 ".jpg"、".png"、".gif"、".zip"。
+/// [withExtension] 默认为 true，返回带扩展名的文件名；设为 false 则不带扩展名。
+Future<String> buildSaveFileName(
+  Illusts illust,
+  int index,
+  String memType, {
+  bool withExtension = true,
+}) async {
+  if (userSetting.fileNameEval == 1) {
+    if (userSetting.nameEval != null) {
+      final result = await JSEvalPlugin.eval(
+        illust,
+        userSetting.nameEval!,
+        index,
+        memType,
+      );
+      if (result != null && result.isNotEmpty) return result;
+    } else {
+      await userSetting.setFileNameEval(0);
+    }
+  }
+  final result = userSetting.format!
+      .replaceAll("{illust_id}", illust.id.toString())
+      .replaceAll("{user_id}", illust.user.id.toString())
+      .replaceAll("{part}", index.toString())
+      .replaceAll("{user_name}", illust.user.name.toString())
+      .replaceAll("{title}", illust.title);
+  if (withExtension) {
+    return "$result$memType".toLegal();
+  }
+  return result.toLegal();
+}
+
+/// 如果用户启用了 [singleFolder]，将 [baseName] 包装到作者子目录中。
+String applySingleFolder(Illusts illust, String baseName) {
+  if (userSetting.singleFolder) {
+    return "${illust.user.name.toLegal()}_${illust.user.id}/$baseName";
+  }
+  return baseName;
+}
+
 class SaveStore = _SaveStoreBase with _$SaveStore;
 
 abstract class _SaveStoreBase with Store {
@@ -260,11 +302,7 @@ abstract class _SaveStoreBase with Store {
   }) async {
     if (Platform.isAndroid || Platform.isWindows) {
       try {
-        String targetFileName = fileName;
-        if (userSetting.singleFolder) {
-          targetFileName =
-              "${illusts.user.name.toLegal()}_${illusts.user.id}/$fileName";
-        }
+        String targetFileName = applySingleFolder(illusts, fileName);
         final isExist = await DocumentPlugin.exist(targetFileName);
         if (isExist! && !redo) {
           streamController.add(
@@ -384,48 +422,13 @@ abstract class _SaveStoreBase with Store {
     return result ?? "";
   }
 
-  Future<String?> _handleEvalName(
-    String text,
-    Illusts illust,
-    int index,
-    String memType,
-  ) async {
-    if (userSetting.fileNameEval == 1) {
-      if (userSetting.nameEval == null) {
-        await userSetting.setFileNameEval(0);
-        return null;
-      }
-      return await JSEvalPlugin.eval(
-        illust,
-        userSetting.nameEval!,
-        index,
-        memType,
-      );
-    }
-    return null;
-  }
 
   Future<String> _handleFileName(
     Illusts illust,
     int index,
     String memType,
   ) async {
-    if (userSetting.fileNameEval == 1) {
-      final result = await _handleEvalName(
-        userSetting.nameEval!,
-        illust,
-        index,
-        memType,
-      );
-      if (result != null) return result;
-    }
-    final result = userSetting.format!
-        .replaceAll("{illust_id}", illust.id.toString())
-        .replaceAll("{user_id}", illust.user.id.toString())
-        .replaceAll("{part}", index.toString())
-        .replaceAll("{user_name}", illust.user.name.toString())
-        .replaceAll("{title}", illust.title);
-    return "$result$memType".toLegal();
+    return buildSaveFileName(illust, index, memType);
   }
 
   @action
