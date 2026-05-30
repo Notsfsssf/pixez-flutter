@@ -424,6 +424,9 @@ abstract class _UserSetting with Store {
     isTopMode = prefs.getBool(IS_TOPMODE_KEY) ?? false;
     languageNum = prefs.getInt(LANGUAGE_NUM_KEY) ?? 0;
     await _restoreNetworkMode();
+    pictureSource = networkMode.allowsImageSource
+        ? (prefs.getString(PICTURE_SOURCE_KEY) ?? ImageHost)
+        : ImageHost;
     ApiClient.Accept_Language = languageList[languageNum];
     await PixivImage.generatePixivCache();
     await oAuthClient.createDioClient();
@@ -441,9 +444,6 @@ abstract class _UserSetting with Store {
     hCrossCount = prefs.getInt(H_CROSS_COUNT_KEY) ?? 4;
     feedAIBadge = prefs.getBool(FEED_AI_BADGE_KEY) ?? true;
     padMode = prefs.getInt(PAD_MODE_KEY) ?? 0;
-    pictureSource = networkMode.allowsImageSource
-        ? (prefs.getString(PICTURE_SOURCE_KEY) ?? ImageHost)
-        : ImageHost;
     await Hoster.initMap();
     themeInitState = 1;
     fetcher.start(pictureSource!);
