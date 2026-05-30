@@ -22,7 +22,7 @@ class SAFPlugin {
   static Future<Uint8List?> openFile() async {
     if (Platform.isIOS) {
       try {
-        FilePickerResult? result = await FilePicker.platform.pickFiles();
+        FilePickerResult? result = await FilePicker.pickFiles();
         if (result != null) {
           return File(result.files.single.path!).readAsBytes();
         }

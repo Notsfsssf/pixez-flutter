@@ -19,6 +19,7 @@ import 'package:pixez/er/prefer.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/network/network_mode.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -27,9 +28,7 @@ part 'sauce_notifier.g.dart';
 
 @freezed
 abstract class SauceState with _$SauceState {
-  const factory SauceState({
-    required bool notStart,
-  }) = _SauceState;
+  const factory SauceState({required bool notStart}) = _SauceState;
 }
 
 @riverpod
@@ -144,7 +143,7 @@ class Sauce extends _$Sauce {
     ]);
     try {
       BotToast.showText(text: I18n.ofContext().uploading);
-      if (userSetting.disableBypassSni) {
+      if (userSetting.networkMode == NetworkMode.standard) {
         dio.options.baseUrl = "https://$host";
       } else {
         dio.httpClientAdapter = await ApiClient.createCompatibleClient();

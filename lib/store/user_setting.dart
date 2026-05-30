@@ -28,6 +28,7 @@ import 'package:pixez/er/prefer.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/network/network_mode.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/about/languages.dart';
 import 'package:pixez/secure_plugin.dart';
@@ -58,6 +59,8 @@ abstract class _UserSetting with Store {
   static const String IS_TOPMODE_KEY = "is_top_mode";
   static const String STORE_PATH_KEY = "save_store";
   static const String PICTURE_SOURCE_KEY = "picture_source";
+  static const String NETWORK_MODE_KEY = "network_mode";
+  static const String LEGACY_DISABLE_BYPASS_SNI_KEY = "disable_bypass_sni";
   static const String ISHELPLESSWAY_KEY = "is_helplessway";
   static const String THEME_MODE_KEY = "theme_mode";
   static const String SAVE_MODE_KEY = "save_mode";
@@ -146,7 +149,7 @@ abstract class _UserSetting with Store {
   @observable
   int? displayMode;
   @observable
-  bool disableBypassSni = false;
+  NetworkMode networkMode = NetworkMode.standard;
   @observable
   bool singleFolder = false;
   @observable
@@ -420,7 +423,7 @@ abstract class _UserSetting with Store {
     isAMOLED = prefs.getBool(IS_AMOLED_KEY) ?? false;
     isTopMode = prefs.getBool(IS_TOPMODE_KEY) ?? false;
     languageNum = prefs.getInt(LANGUAGE_NUM_KEY) ?? 0;
-    disableBypassSni = prefs.getBool('disable_bypass_sni') ?? false;
+    await _restoreNetworkMode();
     ApiClient.Accept_Language = languageList[languageNum];
     await PixivImage.generatePixivCache();
     await oAuthClient.createDioClient();
@@ -438,12 +441,28 @@ abstract class _UserSetting with Store {
     hCrossCount = prefs.getInt(H_CROSS_COUNT_KEY) ?? 4;
     feedAIBadge = prefs.getBool(FEED_AI_BADGE_KEY) ?? true;
     padMode = prefs.getInt(PAD_MODE_KEY) ?? 0;
-    pictureSource = disableBypassSni
-        ? ImageHost
-        : (prefs.getString(PICTURE_SOURCE_KEY) ?? ImageHost);
+    pictureSource = networkMode.allowsImageSource
+        ? (prefs.getString(PICTURE_SOURCE_KEY) ?? ImageHost)
+        : ImageHost;
     await Hoster.initMap();
     themeInitState = 1;
     fetcher.start(pictureSource!);
+  }
+
+  Future<void> _restoreNetworkMode() async {
+    final storedMode = prefs.getString(NETWORK_MODE_KEY);
+    if (storedMode != null && storedMode.isNotEmpty) {
+      networkMode = NetworkMode.fromCode(storedMode);
+      await prefs.remove(LEGACY_DISABLE_BYPASS_SNI_KEY);
+      return;
+    }
+
+    final legacyValue = prefs.getBool(LEGACY_DISABLE_BYPASS_SNI_KEY);
+    networkMode = legacyValue == true
+        ? NetworkMode.compat
+        : NetworkMode.standard;
+    await prefs.setString(NETWORK_MODE_KEY, networkMode.code);
+    await prefs.remove(LEGACY_DISABLE_BYPASS_SNI_KEY);
   }
 
   Future<void> _restoreWelcomePageType() async {
@@ -614,9 +633,16 @@ abstract class _UserSetting with Store {
   }
 
   @action
-  setDisableBypassSni(bool value) async {
-    await prefs.setBool('disable_bypass_sni', value);
-    disableBypassSni = value;
+  setNetworkMode(NetworkMode value) async {
+    await prefs.setString(NETWORK_MODE_KEY, value.code);
+    networkMode = value;
+    if (!value.allowsImageSource) {
+      pictureSource = ImageHost;
+      splashStore.setHost(ImageHost);
+    } else {
+      pictureSource = prefs.getString(PICTURE_SOURCE_KEY) ?? ImageHost;
+      splashStore.setHost(pictureSource!);
+    }
   }
 
   @action

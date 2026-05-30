@@ -20,6 +20,7 @@ import 'package:pixez/er/leader.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/network/network_mode.dart';
 import 'package:pixez/network/oauth_client.dart';
 
 class SplashPage extends StatefulWidget {
@@ -35,10 +36,13 @@ class _SplashPageState extends State<SplashPage>
   @override
   void initState() {
     if (accountStore.now != null)
-      lightingStore =
-          LightingStore(ApiSource(futureGet: () => apiClient.getRecommend()));
-    controller =
-        AnimationController(duration: Duration(seconds: 2), vsync: this);
+      lightingStore = LightingStore(
+        ApiSource(futureGet: () => apiClient.getRecommend()),
+      );
+    controller = AnimationController(
+      duration: Duration(seconds: 2),
+      vsync: this,
+    );
     initMethod();
     super.initState();
     controller.forward();
@@ -49,8 +53,8 @@ class _SplashPageState extends State<SplashPage>
   bool isPush = false;
 
   initMethod() {
-    userDisposer = reaction((_) => userSetting.disableBypassSni, (_) {
-      if (userSetting.disableBypassSni) {
+    userDisposer = reaction((_) => userSetting.networkMode, (_) {
+      if (userSetting.networkMode != NetworkMode.compat) {
         apiClient.httpClient.options.baseUrl =
             'https://${ApiClient.BASE_API_URL_HOST}';
         oAuthClient.httpClient.options.baseUrl =
@@ -59,6 +63,16 @@ class _SplashPageState extends State<SplashPage>
         isPush = true;
       }
     });
+    if (userSetting.networkMode != NetworkMode.compat) {
+      Future.delayed(Duration(microseconds: 100), () {
+        apiClient.httpClient.options.baseUrl =
+            'https://${ApiClient.BASE_API_URL_HOST}';
+        oAuthClient.httpClient.options.baseUrl =
+            'https://${OAuthClient.BASE_OAUTH_URL_HOST}';
+        Leader.pushUntilHome(context);
+        isPush = true;
+      });
+    }
     reactionDisposer = reaction((_) => splashStore.helloWord, (_) {
       if (mounted && !isPush) {
         Leader.pushUntilHome(context);
@@ -85,19 +99,13 @@ class _SplashPageState extends State<SplashPage>
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           RotationTransition(
-              child: Image.asset(
-                'assets/images/icon.png',
-                height: 80,
-                width: 80,
-              ),
-              alignment: Alignment.center,
-              turns: controller),
+            child: Image.asset('assets/images/icon.png', height: 80, width: 80),
+            alignment: Alignment.center,
+            turns: controller,
+          ),
           Container(
-            child: Text(
-              splashStore.helloWord,
-              textAlign: TextAlign.center,
-            ),
-          )
+            child: Text(splashStore.helloWord, textAlign: TextAlign.center),
+          ),
         ],
       ),
     );

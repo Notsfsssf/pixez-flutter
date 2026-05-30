@@ -19,6 +19,7 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/onezero_response.dart';
+import 'package:pixez/network/network_mode.dart';
 
 part 'splash_store.g.dart';
 
@@ -43,7 +44,8 @@ abstract class _SplashStoreBase with Store {
   }
 
   maybeFetch() async {
-    if (userSetting.disableBypassSni || helloWord == OK_TEXT) return;
+    if (userSetting.networkMode != NetworkMode.compat || helloWord == OK_TEXT)
+      return;
     fetch();
   }
 
@@ -51,7 +53,9 @@ abstract class _SplashStoreBase with Store {
   fetch() async {
     if (helloWord == OK_TEXT ||
         host != ImageHost ||
-        userSetting.pictureSource != ImageHost) return;
+        !userSetting.networkMode.allowsImageSource ||
+        userSetting.pictureSource != ImageHost)
+      return;
     try {
       await Hoster.dnsQueryAll();
     } catch (e) {}

@@ -36,8 +36,6 @@
   "date_duration": "기간",
   "delete": "삭제",
   "detail": "유저 정보",
-  "disable_sni_bypass": "SNI 바이패스를 비활성화",
-  "disable_sni_bypass_message": "DoH 작업 시간을 단축",
   "display_mode": "새로고침 비율",
   "display_mode_message": "새로고침 비율을 선택 (실험적)",
   "display_mode_warning": "사용 중인 기기가 고주사율을 지원할 때만 활성화시켜 주세요",
@@ -154,8 +152,8 @@
     "description": "A message with a parameter",
     "placeholders": {
       "name": {
-          "type": "String",
-          "example": "Bob"
+        "type": "String",
+        "example": "Bob"
       }
     }
   },
@@ -191,13 +189,13 @@
   "pick_a_color": "색상을 선택",
   "tap_to_show_results": "탭하여 {length}개의 결과를 표시",
   "@tap_to_show_results": {
-      "description": "A message with a single parameter",
-      "placeholders": {
-        "length": {
-          "type": "String",
-          "example": "Bob"
-        }
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "length": {
+        "type": "String",
+        "example": "Bob"
       }
+    }
   },
   "saf_hint": "그림을 저장하기 위해서는 Pixez가 저장소에 접근할 수 있도록 해야합니다. (예시: Picture/Pixez)",
   "what_is_saf": "자세히",
@@ -222,8 +220,8 @@
     "description": "A message with a parameter",
     "placeholders": {
       "part": {
-          "type": "String",
-          "example": "Bob"
+        "type": "String",
+        "example": "Bob"
       }
     }
   },
@@ -235,25 +233,25 @@
   "login_error_message": "아이디, 비밀번호가 틀렸거나 보안에 취약한 비밀번호를 사용할 경우 로그인이 되지 않을 수 있습니다",
   "translate": "번역",
   "retry_seed_task": "시드 작업을 재시도",
-  "manga_detail_page_quality":"자세히 보기 페이지에서의 화질",
-  "follow_after_star":"별표하고 팔로우",
+  "manga_detail_page_quality": "자세히 보기 페이지에서의 화질",
+  "follow_after_star": "별표하고 팔로우",
   "default_title": "기본",
   "image_site": "이미지 사이트",
   "network": "네트워크",
   "select_language": "언어를 선택해주세요",
-  "network_question": "픽시브에 정상적으로 접근할 수 있나요?",
+  "network_question": "Choose a connection mode",
   "media_hint": "일러스트가 갤러리 앨범에 저장됩니다",
   "copy": "복사",
   "view_replies": "댓글 보기",
   "temporarily_visible": "일시적으로 보임",
-  "unclassified":"분류 없음",
+  "unclassified": "분류 없음",
   "max_download_task_running_count": "최대 다운로드 작업 개수",
   "export": "내보내기",
-  "error_400_hint" : "[400] 에러 메시지가 나타날 경우, 다시 로그인할 필요가 있습니다. 이는 API나 비밀번호 변경에 의한 것입니다.",
-  "recent_screen_mask" : "최근 스크린 마스크",
-  "open_by_default":"기본 앱으로 열기",
-  "open_by_default_subtitle":"픽시브 웹페이지를 이 앱에서 열기",
-  "text":"텍스트",
+  "error_400_hint": "[400] 에러 메시지가 나타날 경우, 다시 로그인할 필요가 있습니다. 이는 API나 비밀번호 변경에 의한 것입니다.",
+  "recent_screen_mask": "최근 스크린 마스크",
+  "open_by_default": "기본 앱으로 열기",
+  "open_by_default_subtitle": "픽시브 웹페이지를 이 앱에서 열기",
+  "text": "텍스트",
   "search_word_hint": "제목이나 작가명을 입력하세요",
   "save_effect": "저장 효과",
   "layout_mode": "상세 페이지 레이아웃",
@@ -263,7 +261,7 @@
   "private_like_by_default": "Private like by default",
   "partially_hidden": "partially hidden",
   "show": "show",
-  "ai_work_display_settings" : "AI generated works display settings",
+  "ai_work_display_settings": "AI generated works display settings",
   "make_works_with_ai_generated_flags_invisible": "Make works with AI generated flags invisible",
   "script_page_hint": "This function is designed to handle the file name when saving illustrations by customizing the js script. If you don't know the principle, please don't try it at will. You can restore the default settings by clicking the cross in the upper right corner",
   "long_press_save_confirm": "long press to save confirm",
@@ -311,7 +309,7 @@
   "storage_permission_denied": "Storage permission denied",
   "dont_show_again": "Don't show again",
   "custom_host": "Custom Host",
-  "network_tip": "If you cannot load images, you can try switching image sources, you can return to this page by going to the settings page",
+  "network_tip": "If content does not load correctly, switch the connection mode here.",
   "account": "Account",
   "save_wait_time_warning": "It may cause a long waiting time for saving.",
   "uploading": "Uploading",
@@ -319,8 +317,8 @@
   "no_more": "No more",
   "delete_tag": "Delete this tag?",
   "no_result": "0 result",
-  "pre":"Pre",
-  "next":"Next",
+  "pre": "Pre",
+  "next": "Next",
   "submit": "Submit",
   "thanks_for_your_feedback": "Thanks for your feedback",
   "input": "Input",
@@ -333,5 +331,12 @@
   "ugoira_only": "우고이라만",
   "ugoira_none": "우고이라 없음",
   "popular_male_desc": "남성 인기 순",
-  "popular_female_desc": "여성 인기 순"
+  "popular_female_desc": "여성 인기 순",
+  "network_mode": "Connection mode",
+  "network_mode_compat": "Compatibility mode",
+  "network_mode_compat_message": "Try this when content or images load inconsistently.",
+  "network_mode_ech": "Enhanced connection",
+  "network_mode_ech_message": "Try this when the app opens but service responses fail.",
+  "network_mode_standard": "Standard connection",
+  "network_mode_standard_message": "Recommended for most networks."
 }

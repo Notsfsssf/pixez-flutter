@@ -34,7 +34,7 @@ class _WebViewPageState extends State<WebViewPage> {
           onPageStarted: (String url) {},
           onPageFinished: (String url) async {
             final uri = Uri.parse(url);
-            if (!userSetting.disableBypassSni &&
+            if (userSetting.networkMode.usesCompatibleConnection &&
                 uri.host == "accounts.pixiv.net") {
               _webViewController.runJavaScript("""
 javascript:(function() {

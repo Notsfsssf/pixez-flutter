@@ -1293,22 +1293,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ClientSettings dco_decode_client_settings(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 10)
-      throw Exception('unexpected arr length: expect 10 but see ${arr.length}');
+    if (arr.length != 11)
+      throw Exception('unexpected arr length: expect 11 but see ${arr.length}');
     return ClientSettings(
       cookieSettings: dco_decode_opt_box_autoadd_cookie_settings(arr[0]),
       httpVersionPref: dco_decode_http_version_pref(arr[1]),
       timeoutSettings: dco_decode_opt_box_autoadd_timeout_settings(arr[2]),
       throwOnStatusCode: dco_decode_bool(arr[3]),
       enableEch: dco_decode_bool(arr[4]),
-      proxySettings: dco_decode_opt_box_autoadd_proxy_settings(arr[5]),
-      redirectSettings: dco_decode_opt_box_autoadd_redirect_settings(arr[6]),
-      tlsSettings: dco_decode_opt_box_autoadd_tls_settings(arr[7]),
+      requireEch: dco_decode_bool(arr[5]),
+      proxySettings: dco_decode_opt_box_autoadd_proxy_settings(arr[6]),
+      redirectSettings: dco_decode_opt_box_autoadd_redirect_settings(arr[7]),
+      tlsSettings: dco_decode_opt_box_autoadd_tls_settings(arr[8]),
       dnsSettings:
           dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDnsSettings(
-            arr[8],
+            arr[9],
           ),
-      userAgent: dco_decode_opt_String(arr[9]),
+      userAgent: dco_decode_opt_String(arr[10]),
     );
   }
 
@@ -2273,6 +2274,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     );
     var var_throwOnStatusCode = sse_decode_bool(deserializer);
     var var_enableEch = sse_decode_bool(deserializer);
+    var var_requireEch = sse_decode_bool(deserializer);
     var var_proxySettings = sse_decode_opt_box_autoadd_proxy_settings(
       deserializer,
     );
@@ -2291,6 +2293,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       timeoutSettings: var_timeoutSettings,
       throwOnStatusCode: var_throwOnStatusCode,
       enableEch: var_enableEch,
+      requireEch: var_requireEch,
       proxySettings: var_proxySettings,
       redirectSettings: var_redirectSettings,
       tlsSettings: var_tlsSettings,
@@ -3499,6 +3502,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     );
     sse_encode_bool(self.throwOnStatusCode, serializer);
     sse_encode_bool(self.enableEch, serializer);
+    sse_encode_bool(self.requireEch, serializer);
     sse_encode_opt_box_autoadd_proxy_settings(self.proxySettings, serializer);
     sse_encode_opt_box_autoadd_redirect_settings(
       self.redirectSettings,

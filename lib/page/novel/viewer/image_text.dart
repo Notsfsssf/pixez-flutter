@@ -82,7 +82,7 @@ class UploadedImageSpan extends WidgetSpan {
     try {
       final sourceUrl = PixivImageSource.resolve(
         url,
-        disableBypassSni: userSetting.disableBypassSni,
+        networkMode: userSetting.networkMode,
         pictureSource: userSetting.pictureSource,
       );
       final fileInfo = await pixivCacheManager?.getFileFromCache(sourceUrl);

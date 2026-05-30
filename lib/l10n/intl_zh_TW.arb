@@ -38,8 +38,6 @@
   "date_duration": "日期間隔",
   "delete": "刪除",
   "detail": "資訊",
-  "disable_sni_bypass": "停用略過 SNI 探測",
-  "disable_sni_bypass_message": "可節省冷啟動時 DNS Over HTTPS 的時間",
   "display_mode": "顯示模式",
   "display_mode_message": "選取支援的顯示模式 (實驗性)",
   "display_mode_warning": "意在解決部分支援高更新率裝置的白名單機制問題，若未感受到視覺問題，請不要隨意改動。如果變更導致任何問題，請清除應用程式資料",
@@ -83,7 +81,7 @@
   "manga": "漫畫",
   "medium": "中等",
   "mode_list": "每日 男性向 女性向 原創 新人 每週 每月 AI XVIII_AI XVIII XVIII_WEEK XVIII_G",
-  "novel_mode_list":"每日 男性向 女性向 每週 AI XVIII_AI XVIII XVIII_WEEK XVIII_G",
+  "novel_mode_list": "每日 男性向 女性向 每週 AI XVIII_AI XVIII XVIII_WEEK XVIII_G",
   "more": "更多",
   "more_then_starnum_bookmark": "收藏數超過 {starNum}",
   "@more_then_starnum_bookmark": {
@@ -156,8 +154,8 @@
     "description": "A message with a parameter",
     "placeholders": {
       "name": {
-          "type": "String",
-          "example": "Bob"
+        "type": "String",
+        "example": "Bob"
       }
     }
   },
@@ -193,13 +191,13 @@
   "pick_a_color": "選取色彩",
   "tap_to_show_results": "點按以展示 {length} 個結果",
   "@tap_to_show_results": {
-      "description": "A message with a single parameter",
-      "placeholders": {
-        "length": {
-          "type": "String",
-          "example": "Bob"
-        }
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "length": {
+        "type": "String",
+        "example": "Bob"
       }
+    }
   },
   "saf_hint": "若要使用 SAF 模式，請選取一個資料夾以儲存圖像及其他檔案\n雖然不授權仍然能夠繼續使用本軟體，但是這可能會引起閃退或者導致部分功能損毀\n推薦設定的儲存資料夾為 Picture\\Pixez",
   "what_is_saf": "什麼是 SAF？",
@@ -237,25 +235,25 @@
   "login_error_message": "帳戶或密碼錯誤，密碼過於簡單也可能造成無法登入",
   "translate": "翻譯",
   "retry_seed_task": "重試所有種子任務",
-  "manga_detail_page_quality":"漫畫內容頁圖像品質",
-  "follow_after_star":"收藏後關注繪師",
+  "manga_detail_page_quality": "漫畫內容頁圖像品質",
+  "follow_after_star": "收藏後關注繪師",
   "default_title": "預設",
   "image_site": "圖片來源",
   "network": "網路",
   "select_language": "選取語言",
-  "network_question": "你的網際網路環境能夠正常存取 Pixiv 嗎？",
+  "network_question": "請選擇連線方式",
   "media_hint": "插畫將會被儲存至相簿",
   "copy": "複製",
   "view_replies": "檢視回覆",
   "temporarily_visible": "暫時可見",
-  "unclassified":"未分類",
+  "unclassified": "未分類",
   "max_download_task_running_count": "最大同時下載工作數",
   "export": "匯出",
-  "error_400_hint" : "錯誤代碼為 [400]，可能需要重新登入，此錯誤可能因變更密碼或 Pixiv API 升級所致",
-  "recent_screen_mask" : "最近工作清單遮罩",
-  "open_by_default":"預設開啟",
-  "open_by_default_subtitle":"允許在這個應用程式中開啟網頁連結",
-  "text":"文字",
+  "error_400_hint": "錯誤代碼為 [400]，可能需要重新登入，此錯誤可能因變更密碼或 Pixiv API 升級所致",
+  "recent_screen_mask": "最近工作清單遮罩",
+  "open_by_default": "預設開啟",
+  "open_by_default_subtitle": "允許在這個應用程式中開啟網頁連結",
+  "text": "文字",
   "search_word_hint": "搜尋標題或繪師名稱",
   "save_effect": "儲存效果",
   "layout_mode": "版面配置",
@@ -265,7 +263,7 @@
   "private_like_by_default": "預設非公開收藏",
   "partially_hidden": "部分隱藏",
   "show": "顯示",
-  "ai_work_display_settings" : "AI 生成作品顯示設定",
+  "ai_work_display_settings": "AI 生成作品顯示設定",
   "make_works_with_ai_generated_flags_invisible": "使帶有 AI 生成標識的作品不可見",
   "script_page_hint": "這個功能旨在透過自訂 JavaScript 腳本來處理儲存插畫時的檔名，如果不清楚原理，請不要隨意嘗試；可以透過點按右上角叉號復原預設組態",
   "long_press_save_confirm": "按住儲存時進行確認",
@@ -313,7 +311,7 @@
   "storage_permission_denied": "未取得儲存權限",
   "dont_show_again": "不再顯示",
   "custom_host": "自訂圖床",
-  "network_tip": "tip:如果不能載圖，可以嘗試切換圖床，你可以在設定頁重新回到這裡",
+  "network_tip": "如果內容載入異常，可以在這裡切換連線方式。",
   "account": "帳號",
   "save_wait_time_warning": "可能會造成儲存等待時間過長",
   "uploading": "上傳中",
@@ -321,8 +319,8 @@
   "no_more": "沒有更多了",
   "delete_tag": "刪除標籤？",
   "no_result": "0 結果",
-  "pre":"上一頁",
-  "next":"下一頁",
+  "pre": "上一頁",
+  "next": "下一頁",
   "submit": "提交",
   "thanks_for_your_feedback": "感謝回饋",
   "input": "輸入",
@@ -334,5 +332,12 @@
   "input_regexp_hint": "輸入標籤名或正則表達式",
   "popular_male_desc": "在男性中受歡迎",
   "popular_female_desc": "在女性中受歡迎",
-  "automatically_tag_when_bookmarking": "收藏時自動添加標籤"
+  "automatically_tag_when_bookmarking": "收藏時自動添加標籤",
+  "network_mode": "連線方式",
+  "network_mode_compat": "相容模式",
+  "network_mode_compat_message": "內容或圖片載入不穩定時嘗試。",
+  "network_mode_ech": "增強連線",
+  "network_mode_ech_message": "登入後服務回應異常時嘗試。",
+  "network_mode_standard": "標準連線",
+  "network_mode_standard_message": "建議大多數網路環境使用。"
 }

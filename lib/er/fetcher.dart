@@ -33,6 +33,8 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/task_persist.dart';
+import 'package:pixez/network/network_mode.dart';
+import 'package:pixez/network/pixez_network_settings.dart';
 import 'package:pixez/store/save_store.dart';
 import 'package:quiver/collection.dart';
 import 'package:rhttp/rhttp.dart' as r;
@@ -60,14 +62,14 @@ class TaskBean {
   String? savePath;
   String? source;
   String? host;
-  bool? byPass;
+  NetworkMode? networkMode;
 
   TaskBean({
     required this.url,
     required this.illusts,
     required this.fileName,
     required this.savePath,
-    this.byPass,
+    this.networkMode,
     this.host,
     this.source,
   });
@@ -148,7 +150,7 @@ class Fetcher {
       SendMessage(
         receivePort.sendPort,
         pictureSource,
-        userSetting.disableBypassSni,
+        userSetting.networkMode,
         RootIsolateToken.instance!,
       ),
       debugName: 'childIsolate',
@@ -161,7 +163,7 @@ class Fetcher {
       url: url,
       illusts: illusts,
       fileName: fileName,
-      byPass: userSetting.disableBypassSni,
+      networkMode: userSetting.networkMode,
       source: userSetting.pictureSource,
       host: splashStore.host,
       savePath: (await getTemporaryDirectory()).path,
@@ -182,7 +184,7 @@ class Fetcher {
         }
       }
       if (first == null) return;
-      first.byPass = userSetting.disableBypassSni;
+      first.networkMode = userSetting.networkMode;
       first.source = userSetting.pictureSource;
       first.host = splashStore.host;
       IsoContactBean isoContactBean = IsoContactBean(
@@ -241,13 +243,13 @@ class Fetcher {
 class SendMessage {
   final SendPort sendPort;
   final String pictureSource;
-  final bool disableBypassSni;
+  final NetworkMode networkMode;
   final RootIsolateToken rootIsolateToken;
 
   SendMessage(
     this.sendPort,
     this.pictureSource,
-    this.disableBypassSni,
+    this.networkMode,
     this.rootIsolateToken,
   );
 }
@@ -255,7 +257,7 @@ class SendMessage {
 entryPoint(SendMessage message) async {
   String pictureSource = message.pictureSource;
   var currentPictureSource = pictureSource;
-  var currentDisableBypassSni = message.disableBypassSni;
+  var currentNetworkMode = message.networkMode;
   RootIsolateToken rootIsolateToken = message.rootIsolateToken;
   SendPort sendPort = message.sendPort;
   LPrinter.d("entryPoint ====== $pictureSource");
@@ -265,29 +267,14 @@ entryPoint(SendMessage message) async {
   Hoster.dnsQueryFetcher();
   final dio = Dio();
   final client = await r.RhttpCompatibleClient.createSync(
-    settings: (message.disableBypassSni || pictureSource != ImageHost)
-        ? null
-        : r.ClientSettings(
-            tlsSettings: r.TlsSettings(verifyCertificates: false, sni: false),
-            dnsSettings: r.DnsSettings.dynamic(
-              resolver: (host) async {
-                if (host == 'i.pximg.net') {
-                  return [Hoster.iPximgNet()];
-                }
-                if (host == 's.pximg.net') {
-                  return [Hoster.sPximgNet()];
-                }
-                return await InternetAddress.lookup(
-                  host,
-                ).then((value) => value.map((e) => e.address).toList());
-              },
-            ),
-          ),
+    settings: PixezNetworkSettings.forImages(message.networkMode),
   );
-  dio.interceptors.add(PixivImageSourceInterceptor(
-    disableBypassSni: () => currentDisableBypassSni,
-    pictureSource: () => currentPictureSource,
-  ));
+  dio.interceptors.add(
+    PixivImageSourceInterceptor(
+      networkMode: () => currentNetworkMode,
+      pictureSource: () => currentPictureSource,
+    ),
+  );
   dio.httpClientAdapter = ConversionLayerAdapter(client);
   DioCacheManager.initialize(dio);
   ReceivePort receivePort = ReceivePort();
@@ -305,7 +292,7 @@ entryPoint(SendMessage message) async {
         case IsoTaskState.APPEND:
           try {
             currentPictureSource = taskBean.source ?? pictureSource;
-            currentDisableBypassSni = taskBean.byPass == true;
+            currentNetworkMode = taskBean.networkMode ?? message.networkMode;
             print("========taskBean.savePath: ${taskBean.savePath}");
             var savePath =
                 taskBean.savePath! +

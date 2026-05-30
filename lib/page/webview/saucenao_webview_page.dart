@@ -75,7 +75,7 @@ class _SauncenaoWebviewState extends State<SauncenaoWebview> {
           headers: {HttpHeaders.hostHeader: host},
         ),
       );
-      // if (userSetting.disableBypassSni) {
+      // if (!userSetting.networkMode.usesCompatibleConnection) {
       //   dio.options.baseUrl = "https://$host";
       // } else {
       //   dio.httpClientAdapter = await ApiClient.createCompatibleClient();

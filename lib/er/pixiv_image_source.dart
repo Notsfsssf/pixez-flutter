@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:pixez/network/network_mode.dart';
 
 class PixivImageSource {
   static const String imageHost = 'i.pximg.net';
@@ -6,13 +7,13 @@ class PixivImageSource {
 
   static String resolve(
     String url, {
-    required bool disableBypassSni,
+    required NetworkMode networkMode,
     required String? pictureSource,
   }) {
     try {
       return resolveUri(
         Uri.parse(url),
-        disableBypassSni: disableBypassSni,
+        networkMode: networkMode,
         pictureSource: pictureSource,
       ).toString();
     } catch (e) {
@@ -22,10 +23,10 @@ class PixivImageSource {
 
   static Uri resolveUri(
     Uri uri, {
-    required bool disableBypassSni,
+    required NetworkMode networkMode,
     required String? pictureSource,
   }) {
-    if (disableBypassSni) return uri;
+    if (!networkMode.allowsImageSource) return uri;
     if (uri.host != imageHost && uri.host != imageSHost) return uri;
 
     final source = pictureSource?.trim();
@@ -67,11 +68,11 @@ class PixivImageSource {
 }
 
 class PixivImageSourceInterceptor extends Interceptor {
-  final bool Function() disableBypassSni;
+  final NetworkMode Function() networkMode;
   final String? Function() pictureSource;
 
   PixivImageSourceInterceptor({
-    required this.disableBypassSni,
+    required this.networkMode,
     required this.pictureSource,
   });
 
@@ -79,7 +80,7 @@ class PixivImageSourceInterceptor extends Interceptor {
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     options.path = PixivImageSource.resolveUri(
       options.uri,
-      disableBypassSni: disableBypassSni(),
+      networkMode: networkMode(),
       pictureSource: pictureSource(),
     ).toString();
     options.baseUrl = '';

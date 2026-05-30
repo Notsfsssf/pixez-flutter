@@ -9,6 +9,7 @@ import 'package:pixez/er/hoster.dart';
 import 'package:pixez/er/pixiv_image_source.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/network/network_mode.dart';
 
 class NetworkSettingPage extends StatefulWidget {
   @override
@@ -59,20 +60,25 @@ class _NetworkSettingPageState extends State<NetworkSettingPage> {
       var dio = Dio(BaseOptions(headers: Hoster.header(url: url)));
       String trueUrl = PixivImageSource.resolve(
         url,
-        disableBypassSni: false,
+        networkMode: NetworkMode.compat,
         pictureSource: host,
       );
-      dio.httpClientAdapter = IOHttpClientAdapter(createHttpClient: () {
-        HttpClient httpClient = HttpClient();
-        httpClient.badCertificateCallback =
-            (X509Certificate cert, String host, int port) => true;
-        return httpClient;
-      });
-      await dio
-          .download(trueUrl, (await getTemporaryDirectory()).path + "/s.png",
-              onReceiveProgress: (min, max) {
-        throw ok();
-      }, deleteOnError: true);
+      dio.httpClientAdapter = IOHttpClientAdapter(
+        createHttpClient: () {
+          HttpClient httpClient = HttpClient();
+          httpClient.badCertificateCallback =
+              (X509Certificate cert, String host, int port) => true;
+          return httpClient;
+        },
+      );
+      await dio.download(
+        trueUrl,
+        (await getTemporaryDirectory()).path + "/s.png",
+        onReceiveProgress: (min, max) {
+          throw ok();
+        },
+        deleteOnError: true,
+      );
     } catch (e) {
       if (e is ok) {
         setState(() {
@@ -101,15 +107,14 @@ class _NetworkSettingPageState extends State<NetworkSettingPage> {
             subtitle: Text("Host:" + splashStore.host),
             trailing: _buildCheckIcon(imgStatus),
           ),
-          TextField(
-            controller: editingController,
-          ),
+          TextField(controller: editingController),
           TextButton(
-              onPressed: () {
-                host = editingController.text;
-                _imgCheck();
-              },
-              child: Text("apply")),
+            onPressed: () {
+              host = editingController.text;
+              _imgCheck();
+            },
+            child: Text("apply"),
+          ),
           Text(message),
         ],
       ),

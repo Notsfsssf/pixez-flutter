@@ -58,7 +58,7 @@ class UsersPage extends StatefulWidget {
   final String? heroTag;
 
   const UsersPage({Key? key, required this.id, this.userStore, this.heroTag})
-      : super(key: key);
+    : super(key: key);
 
   @override
   _UsersPageState createState() => _UsersPageState();
@@ -79,12 +79,18 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    _workStore = LightingStore(ApiForceSource(
+    _workStore = LightingStore(
+      ApiForceSource(
         futureGet: (bool e) =>
-            apiClient.getUserIllusts(widget.id, _userWorkType)));
-    _bookmarkStore = LightingStore(ApiForceSource(
+            apiClient.getUserIllusts(widget.id, _userWorkType),
+      ),
+    );
+    _bookmarkStore = LightingStore(
+      ApiForceSource(
         futureGet: (e) =>
-            apiClient.getBookmarksIllust(widget.id, restrict, null)));
+            apiClient.getBookmarksIllust(widget.id, restrict, null),
+      ),
+    );
     userStore = widget.userStore ?? UserStore(widget.id, null, null);
     _tabController = TabController(length: 3, vsync: this);
     _scrollController = ScrollController();
@@ -121,94 +127,98 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (_) {
-      if (muteStore.banUserIds.isNotEmpty) {
-        if (muteStore.banUserIds
-            .map((element) => int.parse(element.userId!))
-            .contains(widget.id)) {
+    return Observer(
+      builder: (_) {
+        if (muteStore.banUserIds.isNotEmpty) {
+          if (muteStore.banUserIds
+              .map((element) => int.parse(element.userId!))
+              .contains(widget.id)) {
+            return Scaffold(
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0.0,
+              ),
+              extendBodyBehindAppBar: true,
+              extendBody: true,
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text('X_X'),
+                    Text('${widget.id}'),
+                    MaterialButton(
+                      color: Theme.of(context).colorScheme.secondary,
+                      textColor: Colors.white,
+                      child: Text(I18n.of(context).shielding_settings),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => ShieldPage(),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+        }
+
+        if (userStore.errorMessage != null && userStore.user == null) {
+          if (userStore.errorMessage!.contains("404"))
+            return Scaffold(
+              appBar: AppBar(),
+              body: Container(child: Center(child: Text('404 not found'))),
+            );
           return Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0.0,
-            ),
-            extendBodyBehindAppBar: true,
-            extendBody: true,
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text('X_X'),
-                  Text('${widget.id}'),
-                  MaterialButton(
-                    color: Theme.of(context).colorScheme.secondary,
-                    textColor: Colors.white,
-                    child: Text(I18n.of(context).shielding_settings),
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) => ShieldPage()));
-                    },
-                  )
-                ],
+            appBar: AppBar(),
+            body: Container(
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Http error\n${userStore.errorMessage}',
+                        maxLines: 5,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: MaterialButton(
+                        color: Theme.of(context).colorScheme.primary,
+                        onPressed: () {
+                          userStore.errorMessage = null;
+                          userStore.firstFetch();
+                        },
+                        child: Text(I18n.of(context).refresh),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           );
         }
-      }
-
-      if (userStore.errorMessage != null && userStore.user == null) {
-        if (userStore.errorMessage!.contains("404"))
+        if (userStore.user == null) {
           return Scaffold(
             appBar: AppBar(),
             body: Container(
-                child: Center(
-              child: Text('404 not found'),
-            )),
-          );
-        return Scaffold(
-          appBar: AppBar(),
-          body: Container(
               child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Http error\n${userStore.errorMessage}',
-                    maxLines: 5,
-                  ),
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.primary,
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: MaterialButton(
-                    color: Theme.of(context).colorScheme.primary,
-                    onPressed: () {
-                      userStore.errorMessage = null;
-                      userStore.firstFetch();
-                    },
-                    child: Text(I18n.of(context).refresh),
-                  ),
-                )
-              ],
+              ),
             ),
-          )),
-        );
-      }
-      if (userStore.user == null) {
-        return Scaffold(
-          appBar: AppBar(),
-          body: Container(
-              child: Center(
-            child: CircularProgressIndicator(
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          )),
-        );
-      }
-      return _buildBody(context);
-    });
+          );
+        }
+        return _buildBody(context);
+      },
+    );
   }
 
   Widget _buildBody(BuildContext context) {
@@ -216,33 +226,36 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
       child: Scaffold(
         body: NestedScrollView(
           controller: _scrollController,
-          body: TabBarView(controller: _tabController, children: [
-            WorksPage(
-              id: widget.id,
-              store: _workStore,
-              portal: "Work",
-              workType: _userWorkType,
-              onWorkTypeChange: (String newType) {
-                setState(() {
-                  _userWorkType = newType;
-                });
-              },
-            ),
-            BookMarkNestedPage(
-              id: widget.id,
-              store: _bookmarkStore,
-              portal: "Book",
-            ),
-            UserDetailPage(
-              key: PageStorageKey('Tab2'),
-              userDetail: userStore.userDetail,
-              isNewNested: true,
-            ),
-          ]),
+          body: TabBarView(
+            controller: _tabController,
+            children: [
+              WorksPage(
+                id: widget.id,
+                store: _workStore,
+                portal: "Work",
+                workType: _userWorkType,
+                onWorkTypeChange: (String newType) {
+                  setState(() {
+                    _userWorkType = newType;
+                  });
+                },
+              ),
+              BookMarkNestedPage(
+                id: widget.id,
+                store: _bookmarkStore,
+                portal: "Book",
+              ),
+              UserDetailPage(
+                key: PageStorageKey('Tab2'),
+                userDetail: userStore.userDetail,
+                isNewNested: true,
+              ),
+            ],
+          ),
           headerSliverBuilder:
               (BuildContext context, bool? innerBoxIsScrolled) {
-            return _HeaderSlivers(innerBoxIsScrolled, context);
-          },
+                return _HeaderSlivers(innerBoxIsScrolled, context);
+              },
         ),
       ),
     );
@@ -258,14 +271,15 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
           forceElevated: innerBoxIsScrolled ?? false,
           expandedHeight:
               userStore.userDetail?.profile.background_image_url != null
-                  ? MediaQuery.of(context).size.width / 2 +
-                      205 -
-                      MediaQuery.of(context).padding.top
-                  : 300,
+              ? MediaQuery.of(context).size.width / 2 +
+                    205 -
+                    MediaQuery.of(context).padding.top
+              : 300,
           leading: CommonBackArea(),
           actions: <Widget>[
-            Builder(builder: (context) {
-              return IconButton(
+            Builder(
+              builder: (context) {
+                return IconButton(
                   icon: Icon(Icons.share),
                   onPressed: () {
                     final box = context.findRenderObject() as RenderBox?;
@@ -274,10 +288,13 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
                         : null;
                     final link = "https://www.pixiv.net/users/${widget.id}";
                     SharePlus.instance.share(
-                        ShareParams(text: link, sharePositionOrigin: pos));
-                  });
-            }),
-            _buildPopMenu(context)
+                      ShareParams(text: link, sharePositionOrigin: pos),
+                    );
+                  },
+                );
+              },
+            ),
+            _buildPopMenu(context),
           ],
           flexibleSpace: FlexibleSpaceBar(
             collapseMode: CollapseMode.pin,
@@ -300,15 +317,13 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
                             children: <Widget>[
                               _buildNameFollow(context),
                               _buildComment(context),
-                              Tab(
-                                text: " ",
-                              )
+                              Tab(text: " "),
                             ],
                           ),
                         ),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -327,25 +342,19 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
                   onDoubleTap: () {
                     if (_tabIndex == 0) _scrollController.position.jumpTo(0);
                   },
-                  child: Tab(
-                    text: I18n.of(context).works,
-                  ),
+                  child: Tab(text: I18n.of(context).works),
                 ),
                 GestureDetector(
                   onDoubleTap: () {
                     if (_tabIndex == 1) _scrollController.position.jumpTo(0);
                   },
-                  child: Tab(
-                    text: I18n.of(context).bookmark,
-                  ),
+                  child: Tab(text: I18n.of(context).bookmark),
                 ),
                 GestureDetector(
                   onDoubleTap: () {
                     if (_tabIndex == 2) _scrollController.position.jumpTo(0);
                   },
-                  child: Tab(
-                    text: I18n.of(context).user_page_info_title,
-                  ),
+                  child: Tab(text: I18n.of(context).user_page_info_title),
                 ),
               ],
             ),
@@ -406,21 +415,14 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Container(
-            height: 55,
-            color: Theme.of(context).cardColor,
-          ),
+          Container(height: 55, color: Theme.of(context).cardColor),
           Container(
             color: Theme.of(context).cardColor,
             child: Column(
               children: <Widget>[
                 _buildFakeNameFollow(context),
-                Container(
-                  height: 60,
-                ),
-                Tab(
-                  text: " ",
-                )
+                Container(height: 60),
+                Tab(text: " "),
               ],
             ),
           ),
@@ -432,47 +434,59 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
 
   Widget _buildBackground(BuildContext context) {
     return Container(
-        width: MediaQuery.of(context).size.width,
-        height: userStore.userDetail?.profile.background_image_url != null
-            ? MediaQuery.of(context).size.width / 2
-            : MediaQuery.of(context).padding.top + 160,
-        child: userStore.userDetail != null
-            ? userStore.userDetail!.profile.background_image_url != null
+      width: MediaQuery.of(context).size.width,
+      height: userStore.userDetail?.profile.background_image_url != null
+          ? MediaQuery.of(context).size.width / 2
+          : MediaQuery.of(context).padding.top + 160,
+      child: userStore.userDetail != null
+          ? userStore.userDetail!.profile.background_image_url != null
                 ? InkWell(
                     onLongPress: () {
                       showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text(I18n.of(context).save),
-                              content: ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: CachedNetworkImage(
-                                  imageUrl: userStore.userDetail!.profile
-                                      .background_image_url!,
-                                  fit: BoxFit.cover,
-                                  cacheManager: pixivCacheManager,
-                                  httpHeaders: Hoster.header(
-                                      url: userStore.userDetail!.profile
-                                          .background_image_url),
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text(I18n.of(context).save),
+                            content: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: CachedNetworkImage(
+                                imageUrl: userStore
+                                    .userDetail!
+                                    .profile
+                                    .background_image_url!,
+                                fit: BoxFit.cover,
+                                cacheManager: pixivCacheManager,
+                                httpHeaders: Hoster.header(
+                                  url: userStore
+                                      .userDetail!
+                                      .profile
+                                      .background_image_url,
                                 ),
                               ),
-                              actions: [
-                                TextButton(
-                                    onPressed: () async {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text(I18n.of(context).cancel)),
-                                TextButton(
-                                    onPressed: () async {
-                                      Navigator.of(context).pop();
-                                      await _saveUserBg(userStore.userDetail!
-                                          .profile.background_image_url!);
-                                    },
-                                    child: Text(I18n.of(context).ok)),
-                              ],
-                            );
-                          });
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text(I18n.of(context).cancel),
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+                                  await _saveUserBg(
+                                    userStore
+                                        .userDetail!
+                                        .profile
+                                        .background_image_url!,
+                                  );
+                                },
+                                child: Text(I18n.of(context).ok),
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     },
                     child: CachedNetworkImage(
                       imageUrl:
@@ -480,14 +494,13 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
                       fit: BoxFit.fitWidth,
                       cacheManager: pixivCacheManager,
                       httpHeaders: Hoster.header(
-                          url: userStore
-                              .userDetail!.profile.background_image_url),
+                        url: userStore.userDetail!.profile.background_image_url,
+                      ),
                     ),
                   )
-                : Container(
-                    color: Theme.of(context).colorScheme.secondary,
-                  )
-            : Container());
+                : Container(color: Theme.of(context).colorScheme.secondary)
+          : Container(),
+    );
   }
 
   PopupMenuButton<int> _buildPopMenu(BuildContext context) {
@@ -500,56 +513,66 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
           case 1:
             {
               final result = await showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Text('${I18n.of(context).block_user}?'),
-                      actions: <Widget>[
-                        TextButton(
-                          child: Text("OK"),
-                          onPressed: () {
-                            Navigator.of(context).pop("OK");
-                          },
-                        ),
-                        TextButton(
-                          child: Text("CANCEL"),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        )
-                      ],
-                    );
-                  });
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text('${I18n.of(context).block_user}?'),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text("OK"),
+                        onPressed: () {
+                          Navigator.of(context).pop("OK");
+                        },
+                      ),
+                      TextButton(
+                        child: Text("CANCEL"),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
               if (result == "OK") {
                 await muteStore.insertBanUserId(
-                    widget.id.toString(), userStore.userDetail!.user.name);
+                  widget.id.toString(),
+                  userStore.userDetail!.user.name,
+                );
                 Navigator.of(context).pop();
               }
             }
             break;
           case 2:
             {
-              Clipboard.setData(ClipboardData(
+              Clipboard.setData(
+                ClipboardData(
                   text:
-                      'painter:${userStore.userDetail?.user.name ?? ''}\npid:${widget.id}'));
+                      'painter:${userStore.userDetail?.user.name ?? ''}\npid:${widget.id}',
+                ),
+              );
               BotToast.showText(text: I18n.of(context).copied_to_clipboard);
               break;
             }
           case 3:
             {
               Reporter.show(
-                  context,
-                  () async => await muteStore.insertBanUserId(
-                      widget.id.toString(), userStore.userDetail!.user.name));
+                context,
+                () async => await muteStore.insertBanUserId(
+                  widget.id.toString(),
+                  userStore.userDetail!.user.name,
+                ),
+              );
               break;
             }
           case 4:
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (BuildContext context) {
-              return NovelUsersPage(
-                id: widget.id,
-              );
-            }));
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return NovelUsersPage(id: widget.id);
+                },
+              ),
+            );
           default:
         }
       },
@@ -568,10 +591,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
             value: 2,
             child: Text(I18n.of(context).copymessage),
           ),
-          PopupMenuItem<int>(
-            value: 3,
-            child: Text(I18n.of(context).report),
-          ),
+          PopupMenuItem<int>(value: 3, child: Text(I18n.of(context).report)),
           PopupMenuItem<int>(
             value: 4,
             child: Text(I18n.of(context).novel_page),
@@ -587,19 +607,20 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                userStore.user?.name ?? "",
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              Text(
-                userStore.userDetail == null
-                    ? ""
-                    : '${userStore.userDetail!.profile.total_follow_users} ${I18n.of(context).follow}',
-                style: Theme.of(context).textTheme.bodySmall,
-              )
-            ]),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              userStore.user?.name ?? "",
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            Text(
+              userStore.userDetail == null
+                  ? ""
+                  : '${userStore.userDetail!.profile.total_follow_users} ${I18n.of(context).follow}',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -611,35 +632,37 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              NullHero(
-                tag: userStore.user?.name ?? "" + widget.heroTag.toString(),
-                child: Text(
-                  userStore.user?.name ?? "",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            NullHero(
+              tag: userStore.user?.name ?? "" + widget.heroTag.toString(),
+              child: Text(
+                userStore.user?.name ?? "",
+                style: Theme.of(context).textTheme.titleLarge,
               ),
-              InkWell(
-                onTap: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (BuildContext context) {
-                    return Scaffold(
-                      appBar: AppBar(
-                        title: Text(I18n.of(context).followed),
-                      ),
-                      body: FollowList(id: widget.id),
-                    );
-                  }));
-                },
-                child: Text(
-                  userStore.userDetail == null
-                      ? ""
-                      : '${userStore.userDetail!.profile.total_follow_users} ${I18n.of(context).follow}',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              )
-            ]),
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) {
+                      return Scaffold(
+                        appBar: AppBar(title: Text(I18n.of(context).followed)),
+                        body: FollowList(id: widget.id),
+                      );
+                    },
+                  ),
+                );
+              },
+              child: Text(
+                userStore.userDetail == null
+                    ? ""
+                    : '${userStore.userDetail!.profile.total_follow_users} ${I18n.of(context).follow}',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -675,15 +698,10 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
           alignment: Alignment.bottomCenter,
           child: SizedBox(
             height: 55.0,
-            child: Container(
-              color: Theme.of(context).cardColor,
-            ),
+            child: Container(color: Theme.of(context).cardColor),
           ),
         ),
-        Align(
-          child: w,
-          alignment: Alignment.bottomCenter,
-        )
+        Align(child: w, alignment: Alignment.bottomCenter),
       ],
     );
   }
@@ -697,47 +715,52 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 0.0,
+              ),
               child: NullHero(
-                tag: userStore.user!.profileImageUrls.medium +
+                tag:
+                    userStore.user!.profileImageUrls.medium +
                     widget.heroTag.toString(),
                 child: PainterAvatar(
                   url: userStore.user!.profileImageUrls.medium,
                   size: Size(80, 80),
                   onTap: () {
                     showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text(I18n.of(context).save_painter_avatar),
-                            content: ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: CachedNetworkImage(
-                                imageUrl:
-                                    userStore.user!.profileImageUrls.medium,
-                                fit: BoxFit.cover,
-                                cacheManager: pixivCacheManager,
-                                httpHeaders: Hoster.header(
-                                    url: userStore
-                                        .user!.profileImageUrls.medium),
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text(I18n.of(context).save_painter_avatar),
+                          content: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: CachedNetworkImage(
+                              imageUrl: userStore.user!.profileImageUrls.medium,
+                              fit: BoxFit.cover,
+                              cacheManager: pixivCacheManager,
+                              httpHeaders: Hoster.header(
+                                url: userStore.user!.profileImageUrls.medium,
                               ),
                             ),
-                            actions: [
-                              TextButton(
-                                  onPressed: () async {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text(I18n.of(context).cancel)),
-                              TextButton(
-                                  onPressed: () async {
-                                    Navigator.of(context).pop();
-                                    await _saveUserC();
-                                  },
-                                  child: Text(I18n.of(context).ok)),
-                            ],
-                          );
-                        });
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text(I18n.of(context).cancel),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                                await _saveUserC();
+                              },
+                              child: Text(I18n.of(context).ok),
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   },
                   id: userStore.user!.id,
                 ),
@@ -764,7 +787,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
                         },
                       ),
                     ),
-            )
+            ),
           ],
         ),
       ),
@@ -775,12 +798,13 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
     try {
       final sourceUrl = PixivImageSource.resolve(
         url,
-        disableBypassSni: userSetting.disableBypassSni,
+        networkMode: userSetting.networkMode,
         pictureSource: userSetting.pictureSource,
       );
-      final result = await pixivCacheManager!.downloadFile(sourceUrl, authHeaders: {
-        'referer': 'https://app-api.pixiv.net/',
-      });
+      final result = await pixivCacheManager!.downloadFile(
+        sourceUrl,
+        authHeaders: {'referer': 'https://app-api.pixiv.net/'},
+      );
       final bytes = await result.file.readAsBytes();
       await DocumentPlugin.save(bytes, "${widget.id}_bg.jpg");
       BotToast.showText(text: I18n.of(context).saved);
@@ -806,54 +830,55 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
     try {
       String tempFile = (await getTemporaryDirectory()).path + "/$fileName";
       final dio = Dio(BaseOptions(headers: Hoster.header(url: url)));
-      if (!userSetting.disableBypassSni) {
+      if (userSetting.networkMode.usesCompatibleConnection) {
         dio.httpClientAdapter = await ApiClient.createCompatibleClient();
       }
       final sourceUrl = PixivImageSource.resolve(
         url,
-        disableBypassSni: userSetting.disableBypassSni,
+        networkMode: userSetting.networkMode,
         pictureSource: userSetting.pictureSource,
       );
       await dio.download(sourceUrl, tempFile, deleteOnError: true);
       File file = File(tempFile);
       if (file.existsSync()) {
         await saveStore.saveToGallery(
-            file.readAsBytesSync(),
-            Illusts(
-              user: User(
-                id: userStore.userDetail!.user.id,
-                name: replaceAll,
-                profileImageUrls: userStore.userDetail!.user.profileImageUrls,
-                isFollowed: userStore.userDetail!.user.isFollowed,
-                account: userStore.userDetail!.user.account,
-                comment: userStore.userDetail!.user.comment,
-              ),
-              metaPages: [],
-              type: '',
-              width: 0,
-              series: null,
-              totalComments: 0,
-              totalBookmarks: 0,
-              visible: false,
-              isMuted: false,
-              sanityLevel: 0,
-              tags: [],
-              caption: '',
-              pageCount: 0,
-              metaSinglePage: MetaSinglePage(originalImageUrl: ''),
-              tools: [],
-              height: 0,
-              restrict: 0,
-              createDate: '',
-              id: 0,
-              xRestrict: 0,
-              imageUrls: ImageUrls(squareMedium: '', medium: '', large: ''),
-              title: '',
-              isBookmarked: false,
-              totalView: 0,
-              illustAIType: 1,
+          file.readAsBytesSync(),
+          Illusts(
+            user: User(
+              id: userStore.userDetail!.user.id,
+              name: replaceAll,
+              profileImageUrls: userStore.userDetail!.user.profileImageUrls,
+              isFollowed: userStore.userDetail!.user.isFollowed,
+              account: userStore.userDetail!.user.account,
+              comment: userStore.userDetail!.user.comment,
             ),
-            fileName);
+            metaPages: [],
+            type: '',
+            width: 0,
+            series: null,
+            totalComments: 0,
+            totalBookmarks: 0,
+            visible: false,
+            isMuted: false,
+            sanityLevel: 0,
+            tags: [],
+            caption: '',
+            pageCount: 0,
+            metaSinglePage: MetaSinglePage(originalImageUrl: ''),
+            tools: [],
+            height: 0,
+            restrict: 0,
+            createDate: '',
+            id: 0,
+            xRestrict: 0,
+            imageUrls: ImageUrls(squareMedium: '', medium: '', large: ''),
+            title: '',
+            isBookmarked: false,
+            totalView: 0,
+            illustAIType: 1,
+          ),
+          fileName,
+        );
         BotToast.showText(text: I18n.of(context).complete);
       } else
         BotToast.showText(text: I18n.of(context).failed);
@@ -870,11 +895,11 @@ class StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-      child: this.child,
-      color: Theme.of(context).cardColor,
-    );
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return Container(child: this.child, color: Theme.of(context).cardColor);
   }
 
   @override
@@ -899,8 +924,5 @@ class ColoredTabBar extends Container implements PreferredSizeWidget {
   Size get preferredSize => tabBar.preferredSize;
 
   @override
-  Widget build(BuildContext context) => Container(
-        color: color,
-        child: tabBar,
-      );
+  Widget build(BuildContext context) => Container(color: color, child: tabBar);
 }

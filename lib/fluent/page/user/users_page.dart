@@ -51,7 +51,7 @@ class UsersPage extends StatefulWidget {
   final String? heroTag;
 
   const UsersPage({Key? key, required this.id, this.userStore, this.heroTag})
-      : super(key: key);
+    : super(key: key);
 
   @override
   _UsersPageState createState() => _UsersPageState();
@@ -101,187 +101,191 @@ class _UsersPageState extends State<UsersPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Observer(builder: (_) {
-      if (muteStore.banUserIds.isNotEmpty) {
-        if (muteStore.banUserIds
-            .map((element) => int.parse(element.userId!))
-            .contains(widget.id)) {
+    return Observer(
+      builder: (_) {
+        if (muteStore.banUserIds.isNotEmpty) {
+          if (muteStore.banUserIds
+              .map((element) => int.parse(element.userId!))
+              .contains(widget.id)) {
+            return ScaffoldPage(
+              content: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text('X_X'),
+                    Text('${widget.id}'),
+                    FilledButton(
+                      child: Text(I18n.of(context).shielding_settings),
+                      onPressed: () {
+                        Leader.push(
+                          context,
+                          ShieldPage(),
+                          icon: Icon(FluentIcons.settings),
+                          title: Text(I18n.of(context).shielding_settings),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+        }
+
+        if (userStore.errorMessage != null) {
+          if (userStore.errorMessage!.contains("404"))
+            return ScaffoldPage(
+              content: Container(child: Center(child: Text('404 not found'))),
+            );
           return ScaffoldPage(
-            content: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text('X_X'),
-                  Text('${widget.id}'),
-                  FilledButton(
-                    child: Text(I18n.of(context).shielding_settings),
-                    onPressed: () {
-                      Leader.push(
-                        context,
-                        ShieldPage(),
-                        icon: Icon(FluentIcons.settings),
-                        title: Text(I18n.of(context).shielding_settings),
-                      );
-                    },
-                  )
-                ],
+            content: Container(
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Http error\n${userStore.errorMessage}',
+                        maxLines: 5,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: FilledButton(
+                        onPressed: () {
+                          userStore.errorMessage = null;
+                          userStore.firstFetch();
+                        },
+                        child: Text(I18n.of(context).refresh),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           );
         }
-      }
-
-      if (userStore.errorMessage != null) {
-        if (userStore.errorMessage!.contains("404"))
+        if (userStore.user == null) {
           return ScaffoldPage(
-            content: Container(
-                child: Center(
-              child: Text('404 not found'),
-            )),
+            content: Container(child: Center(child: ProgressRing())),
           );
-        return ScaffoldPage(
-          content: Container(
-              child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Http error\n${userStore.errorMessage}',
-                    maxLines: 5,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: FilledButton(
-                    onPressed: () {
-                      userStore.errorMessage = null;
-                      userStore.firstFetch();
-                    },
-                    child: Text(I18n.of(context).refresh),
-                  ),
-                )
-              ],
-            ),
-          )),
-        );
-      }
-      if (userStore.user == null) {
-        return ScaffoldPage(
-          content: Container(
-              child: Center(
-            child: ProgressRing(),
-          )),
-        );
-      }
-      return NavigationView(
-        pane: NavigationPane(
-          displayMode: PaneDisplayMode.top,
-          selected: _tabIndex,
-          onChanged: (value) {
-            if (value > 2) return;
-            _tabIndex = value;
-            setState(() {});
-          },
-          items: [
-            PaneItem(
+        }
+        return NavigationView(
+          pane: NavigationPane(
+            displayMode: PaneDisplayMode.top,
+            selected: _tabIndex,
+            onChanged: (value) {
+              if (value > 2) return;
+              _tabIndex = value;
+              setState(() {});
+            },
+            items: [
+              PaneItem(
                 icon: Icon(FluentIcons.info),
                 title: Text(I18n.of(context).detail),
-                body: _buildDetail(context)),
-            PaneItem(
-              icon: Icon(FluentIcons.picture_library),
-              title: Text(I18n.of(context).works),
-              body: WorksPage(
-                id: widget.id,
+                body: _buildDetail(context),
               ),
-            ),
-            PaneItem(
-              icon: Icon(FluentIcons.bookmarks),
-              title: Text(I18n.of(context).bookmark),
-              body: BookmarkPage(
-                isNested: true,
-                id: widget.id,
-                relay: _bookmarkPageMethodRelay,
+              PaneItem(
+                icon: Icon(FluentIcons.picture_library),
+                title: Text(I18n.of(context).works),
+                body: WorksPage(id: widget.id),
               ),
-            ),
-          ],
-          footerItems: [
-            PaneItemAction(
-              icon: Icon(FluentIcons.share),
-              onTap: () => SharePlus.instance.share(ShareParams(
-                  text: 'https://www.pixiv.net/users/${widget.id}')),
-            ),
-            PaneItemExpander(
-              icon: Container(),
-              body: Container(),
-              items: [
-                PaneItemAction(
-                  icon: Container(),
-                  title: Text(I18n.of(context).quietly_follow),
-                  onTap: () {
-                    userStore.follow(needPrivate: true);
-                  },
+              PaneItem(
+                icon: Icon(FluentIcons.bookmarks),
+                title: Text(I18n.of(context).bookmark),
+                body: BookmarkPage(
+                  isNested: true,
+                  id: widget.id,
+                  relay: _bookmarkPageMethodRelay,
                 ),
-                PaneItemAction(
-                  icon: Container(),
-                  title: Text(I18n.of(context).block_user),
-                  onTap: () async {
-                    await showDialog(
-                      context: context,
-                      builder: (context) => ContentDialog(
-                        title: Text('${I18n.of(context).block_user}?'),
-                        actions: <Widget>[
-                          FilledButton(
-                            child: Text(I18n.of(context).ok),
-                            onPressed: () async {
-                              await muteStore.insertBanUserId(
+              ),
+            ],
+            footerItems: [
+              PaneItemAction(
+                icon: Icon(FluentIcons.share),
+                onTap: () => SharePlus.instance.share(
+                  ShareParams(text: 'https://www.pixiv.net/users/${widget.id}'),
+                ),
+              ),
+              PaneItemExpander(
+                icon: Container(),
+                body: Container(),
+                items: [
+                  PaneItemAction(
+                    icon: Container(),
+                    title: Text(I18n.of(context).quietly_follow),
+                    onTap: () {
+                      userStore.follow(needPrivate: true);
+                    },
+                  ),
+                  PaneItemAction(
+                    icon: Container(),
+                    title: Text(I18n.of(context).block_user),
+                    onTap: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (context) => ContentDialog(
+                          title: Text('${I18n.of(context).block_user}?'),
+                          actions: <Widget>[
+                            FilledButton(
+                              child: Text(I18n.of(context).ok),
+                              onPressed: () async {
+                                await muteStore.insertBanUserId(
                                   widget.id.toString(),
-                                  userStore.userDetail!.user.name);
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          Button(
-                            child: Text(I18n.of(context).cancel),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          )
-                        ],
-                      ),
-                    );
-                  },
-                ),
-                PaneItemAction(
-                  icon: Container(),
-                  title: Text(I18n.of(context).copymessage),
-                  onTap: () {
-                    Clipboard.setData(ClipboardData(
-                        text:
-                            'painter:${userStore.userDetail?.user.name ?? ''}\npid:${widget.id}'));
-                    BotToast.showText(
-                        text: I18n.of(context).copied_to_clipboard);
-                  },
-                ),
-                PaneItemAction(
-                  icon: Container(),
-                  title: Text(I18n.of(context).report),
-                  onTap: () {
-                    Reporter.show(
+                                  userStore.userDetail!.user.name,
+                                );
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            Button(
+                              child: Text(I18n.of(context).cancel),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                  PaneItemAction(
+                    icon: Container(),
+                    title: Text(I18n.of(context).copymessage),
+                    onTap: () {
+                      Clipboard.setData(
+                        ClipboardData(
+                          text:
+                              'painter:${userStore.userDetail?.user.name ?? ''}\npid:${widget.id}',
+                        ),
+                      );
+                      BotToast.showText(
+                        text: I18n.of(context).copied_to_clipboard,
+                      );
+                    },
+                  ),
+                  PaneItemAction(
+                    icon: Container(),
+                    title: Text(I18n.of(context).report),
+                    onTap: () {
+                      Reporter.show(
                         context,
                         () async => await muteStore.insertBanUserId(
-                            widget.id.toString(),
-                            userStore.userDetail!.user.name));
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-    });
+                          widget.id.toString(),
+                          userStore.userDetail!.user.name,
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildNameFollow(BuildContext context) {
@@ -321,7 +325,7 @@ class _UsersPageState extends State<UsersPage>
                       : '${userStore.userDetail!.profile.total_follow_users} ${I18n.of(context).follow}',
                   style: FluentTheme.of(context).typography.caption,
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -336,10 +340,12 @@ class _UsersPageState extends State<UsersPage>
       if (int.parse(accountStore.now!.userId) != widget.id) {
         userStore.follow(needPrivate: false);
       } else {
-        displayInfoBar(context,
-            builder: (context, VoidCallback) => InfoBar(
-                  title: Text('Who is the most beautiful person in the world?'),
-                ));
+        displayInfoBar(
+          context,
+          builder: (context, VoidCallback) => InfoBar(
+            title: Text('Who is the most beautiful person in the world?'),
+          ),
+        );
       }
     };
 
@@ -351,35 +357,41 @@ class _UsersPageState extends State<UsersPage>
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 0.0,
+              ),
               child: NullHero(
-                tag: userStore.user!.profileImageUrls.medium +
+                tag:
+                    userStore.user!.profileImageUrls.medium +
                     widget.heroTag.toString(),
                 child: PainterAvatar(
                   url: userStore.user!.profileImageUrls.medium,
                   size: Size(80, 80),
                   onTap: () {
                     showDialog(
-                        context: context,
-                        builder: (context) {
-                          return ContentDialog(
-                            title: Text(I18n.of(context).save_painter_avatar),
-                            actions: [
-                              Button(
-                                  onPressed: () async {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text(I18n.of(context).cancel)),
-                              FilledButton(
-                                  onPressed: () async {
-                                    Navigator.of(context).pop();
-                                    await _saveUserC();
-                                  },
-                                  child: Text(I18n.of(context).ok)),
-                            ],
-                          );
-                        });
+                      context: context,
+                      builder: (context) {
+                        return ContentDialog(
+                          title: Text(I18n.of(context).save_painter_avatar),
+                          actions: [
+                            Button(
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text(I18n.of(context).cancel),
+                            ),
+                            FilledButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                                await _saveUserC();
+                              },
+                              child: Text(I18n.of(context).ok),
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   },
                   id: userStore.user!.id,
                 ),
@@ -403,7 +415,7 @@ class _UsersPageState extends State<UsersPage>
                               child: Text(I18n.of(context).follow),
                             ),
                     ),
-            )
+            ),
           ],
         ),
       ),
@@ -416,16 +428,13 @@ class _UsersPageState extends State<UsersPage>
           child: SizedBox(
             height: 60.0,
             child: Container(
-              color: FluentTheme.of(context)
-                  .acrylicBackgroundColor
-                  .withValues(alpha: 255 * .5),
+              color: FluentTheme.of(
+                context,
+              ).acrylicBackgroundColor.withValues(alpha: 255 * .5),
             ),
           ),
         ),
-        Align(
-          child: w,
-          alignment: Alignment.bottomCenter,
-        )
+        Align(child: w, alignment: Alignment.bottomCenter),
       ],
     );
   }
@@ -434,12 +443,13 @@ class _UsersPageState extends State<UsersPage>
     try {
       final sourceUrl = PixivImageSource.resolve(
         url,
-        disableBypassSni: userSetting.disableBypassSni,
+        networkMode: userSetting.networkMode,
         pictureSource: userSetting.pictureSource,
       );
-      final result = await pixivCacheManager!.downloadFile(sourceUrl, authHeaders: {
-        'referer': 'https://app-api.pixiv.net/',
-      });
+      final result = await pixivCacheManager!.downloadFile(
+        sourceUrl,
+        authHeaders: {'referer': 'https://app-api.pixiv.net/'},
+      );
       final bytes = await result.file.readAsBytes();
       await DocumentPlugin.save(bytes, "${widget.id}_bg.jpg");
       BotToast.showText(text: I18n.of(context).saved);
@@ -465,54 +475,55 @@ class _UsersPageState extends State<UsersPage>
     try {
       String tempFile = (await getTemporaryDirectory()).path + "/$fileName";
       final dio = Dio(BaseOptions(headers: Hoster.header(url: url)));
-      if (!userSetting.disableBypassSni) {
+      if (userSetting.networkMode.usesCompatibleConnection) {
         dio.httpClientAdapter = await ApiClient.createCompatibleClient();
       }
       final sourceUrl = PixivImageSource.resolve(
         url,
-        disableBypassSni: userSetting.disableBypassSni,
+        networkMode: userSetting.networkMode,
         pictureSource: userSetting.pictureSource,
       );
       await dio.download(sourceUrl, tempFile, deleteOnError: true);
       File file = File(tempFile);
       if (file.existsSync()) {
         await saveStore.saveToGallery(
-            file.readAsBytesSync(),
-            Illusts(
-              user: User(
-                id: userStore.userDetail!.user.id,
-                name: replaceAll,
-                profileImageUrls: userStore.userDetail!.user.profileImageUrls,
-                isFollowed: userStore.userDetail!.user.isFollowed,
-                account: userStore.userDetail!.user.account,
-                comment: userStore.userDetail!.user.comment,
-              ),
-              metaPages: [],
-              type: '',
-              width: 0,
-              series: null,
-              totalComments: 0,
-              totalBookmarks: 0,
-              visible: false,
-              isMuted: false,
-              sanityLevel: 0,
-              tags: [],
-              caption: '',
-              pageCount: 0,
-              metaSinglePage: MetaSinglePage(originalImageUrl: ''),
-              tools: [],
-              height: 0,
-              restrict: 0,
-              createDate: '',
-              id: 0,
-              xRestrict: 0,
-              imageUrls: ImageUrls(squareMedium: '', medium: '', large: ''),
-              title: '',
-              isBookmarked: false,
-              totalView: 0,
-              illustAIType: 1,
+          file.readAsBytesSync(),
+          Illusts(
+            user: User(
+              id: userStore.userDetail!.user.id,
+              name: replaceAll,
+              profileImageUrls: userStore.userDetail!.user.profileImageUrls,
+              isFollowed: userStore.userDetail!.user.isFollowed,
+              account: userStore.userDetail!.user.account,
+              comment: userStore.userDetail!.user.comment,
             ),
-            fileName);
+            metaPages: [],
+            type: '',
+            width: 0,
+            series: null,
+            totalComments: 0,
+            totalBookmarks: 0,
+            visible: false,
+            isMuted: false,
+            sanityLevel: 0,
+            tags: [],
+            caption: '',
+            pageCount: 0,
+            metaSinglePage: MetaSinglePage(originalImageUrl: ''),
+            tools: [],
+            height: 0,
+            restrict: 0,
+            createDate: '',
+            id: 0,
+            xRestrict: 0,
+            imageUrls: ImageUrls(squareMedium: '', medium: '', large: ''),
+            title: '',
+            isBookmarked: false,
+            totalView: 0,
+            illustAIType: 1,
+          ),
+          fileName,
+        );
         BotToast.showText(text: I18n.of(context).complete);
       } else
         BotToast.showText(text: I18n.of(context).failed);
@@ -536,19 +547,24 @@ class _UsersPageState extends State<UsersPage>
           text: Text(I18n.of(context).show),
           onPressed: () async {
             await Leader.push(
-                context,
-                ZoomPage(
-                    url: userStore.userDetail!.profile.background_image_url!),
-                icon: Icon(FluentIcons.picture),
-                title: Text(I18n.of(context).painter +
-                    (userStore.userDetail?.user.id.toString() ?? '')));
+              context,
+              ZoomPage(
+                url: userStore.userDetail!.profile.background_image_url!,
+              ),
+              icon: Icon(FluentIcons.picture),
+              title: Text(
+                I18n.of(context).painter +
+                    (userStore.userDetail?.user.id.toString() ?? ''),
+              ),
+            );
           },
         ),
         MenuFlyoutItem(
           text: Text(I18n.of(context).save),
           onPressed: () async {
             await _saveUserBg(
-                userStore.userDetail!.profile.background_image_url!);
+              userStore.userDetail!.profile.background_image_url!,
+            );
           },
         ),
       ],
@@ -556,53 +572,52 @@ class _UsersPageState extends State<UsersPage>
   }
 
   _buildDetail(BuildContext context) => LayoutBuilder(
-        builder: (context, constraints) {
-          final width = constraints.maxWidth;
-          const height = 300.0;
-          final nobg =
-              userStore.userDetail?.profile.background_image_url == null;
+    builder: (context, constraints) {
+      final width = constraints.maxWidth;
+      const height = 300.0;
+      final nobg = userStore.userDetail?.profile.background_image_url == null;
 
-          final background = nobg
-              ? Container(color: FluentTheme.of(context).accentColor)
-              : _buildBackground(context);
+      final background = nobg
+          ? Container(color: FluentTheme.of(context).accentColor)
+          : _buildBackground(context);
 
-          return ListView(
-            children: [
-              Container(
-                height: height * (nobg ? .55 : 1),
-                color: FluentTheme.of(context).cardColor,
-                child: Stack(
-                  children: <Widget>[
-                    Container(
-                      width: width,
-                      height: height * (nobg ? .3 : .75),
-                      child: background,
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          _buildHeader(context),
-                          Container(
-                            height: height * .25,
-                            color: FluentTheme.of(context).cardColor,
-                            child: _buildNameFollow(context),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+      return ListView(
+        children: [
+          Container(
+            height: height * (nobg ? .55 : 1),
+            color: FluentTheme.of(context).cardColor,
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  width: width,
+                  height: height * (nobg ? .3 : .75),
+                  child: background,
                 ),
-              ),
-              userStore.userDetail != null
-                  ? UserDetailPage(userDetail: userStore.userDetail!)
-                  : Container()
-            ],
-          );
-        },
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      _buildHeader(context),
+                      Container(
+                        height: height * .25,
+                        color: FluentTheme.of(context).cardColor,
+                        child: _buildNameFollow(context),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          userStore.userDetail != null
+              ? UserDetailPage(userDetail: userStore.userDetail!)
+              : Container(),
+        ],
       );
+    },
+  );
 
   @override
   bool get wantKeepAlive => true;

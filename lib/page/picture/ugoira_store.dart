@@ -52,8 +52,7 @@ abstract class _UgoiraStoreBase with Store {
   @observable
   bool isEncoding = false;
 
-  static const _platform =
-      const MethodChannel('samples.flutter.dev/battery');
+  static const _platform = const MethodChannel('samples.flutter.dev/battery');
 
   List<FileSystemEntity> drawPool = [];
   UgoiraMetadataResponse? ugoiraMetadataResponse;
@@ -70,8 +69,10 @@ abstract class _UgoiraStoreBase with Store {
         zipFileName = applySingleFolder(illusts, zipFileName);
         if (Platform.isAndroid) {
           try {
-            String? uriString =
-                await SAFPlugin.createFile(zipFileName, "application/zip");
+            String? uriString = await SAFPlugin.createFile(
+              zipFileName,
+              "application/zip",
+            );
             uriString!;
             await SAFPlugin.writeUri(uriString, data);
             BotToast.showText(text: "export success");
@@ -109,8 +110,7 @@ abstract class _UgoiraStoreBase with Store {
       BotToast.showText(text: "[Encoding] $gifName");
       final gifPath = await _platform.invokeMethod('getBatteryLevel', {
         "path": drawPool.first.parent.path, // guarded by isEmpty check above
-        "delay":
-            ugoiraMetadataResponse!.ugoiraMetadata.frames.first.delay,
+        "delay": ugoiraMetadataResponse!.ugoiraMetadata.frames.first.delay,
         "delay_array": ugoiraMetadataResponse!.ugoiraMetadata.frames
             .map((e) => e.delay)
             .toList(),
@@ -121,8 +121,7 @@ abstract class _UgoiraStoreBase with Store {
         BotToast.showText(text: "[GifSaved] $gifName");
       }
     } on PlatformException catch (e) {
-      BotToast.showText(
-          text: "encode failed: ${e.message ?? e.toString()}");
+      BotToast.showText(text: "encode failed: ${e.message ?? e.toString()}");
     } finally {
       isEncoding = false;
     }
@@ -176,28 +175,35 @@ abstract class _UgoiraStoreBase with Store {
     File fullPathFile = File(fullPath);
     try {
       ugoiraMetadataResponse = await apiClient.getUgoiraMetadata(id);
-      String zipUrl =
-          ugoiraMetadataResponse!.ugoiraMetadata.zipUrls.medium;
+      String zipUrl = ugoiraMetadataResponse!.ugoiraMetadata.zipUrls.medium;
       final sourceZipUrl = PixivImageSource.resolve(
         zipUrl,
-        disableBypassSni: userSetting.disableBypassSni,
+        networkMode: userSetting.networkMode,
         pictureSource: userSetting.pictureSource,
       );
       if (!fullPathFile.existsSync()) {
-        var dio = Dio(BaseOptions(
+        var dio = Dio(
+          BaseOptions(
             headers: Hoster.header(
-                url: ugoiraMetadataResponse!.ugoiraMetadata.zipUrls.medium)));
-        if (!userSetting.disableBypassSni) {
+              url: ugoiraMetadataResponse!.ugoiraMetadata.zipUrls.medium,
+            ),
+          ),
+        );
+        if (userSetting.networkMode.usesCompatibleConnection) {
           dio.httpClientAdapter = await ApiClient.createCompatibleClient();
         }
-        dio.download(sourceZipUrl, fullPath,
-            onReceiveProgress: (int count, int total) {
-          this.count = count;
-          this.total = total;
-          if (count / total == 1) {
-            unZip();
-          }
-        }, deleteOnError: true);
+        dio.download(
+          sourceZipUrl,
+          fullPath,
+          onReceiveProgress: (int count, int total) {
+            this.count = count;
+            this.total = total;
+            if (count / total == 1) {
+              unZip();
+            }
+          },
+          deleteOnError: true,
+        );
       } else {
         unZip();
       }

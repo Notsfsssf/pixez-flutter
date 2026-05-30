@@ -57,6 +57,7 @@ class ClientSettings {
   final TimeoutSettings? timeoutSettings;
   final bool throwOnStatusCode;
   final bool enableEch;
+  final bool requireEch;
   final ProxySettings? proxySettings;
   final RedirectSettings? redirectSettings;
   final TlsSettings? tlsSettings;
@@ -69,6 +70,7 @@ class ClientSettings {
     this.timeoutSettings,
     required this.throwOnStatusCode,
     required this.enableEch,
+    required this.requireEch,
     this.proxySettings,
     this.redirectSettings,
     this.tlsSettings,
@@ -86,6 +88,7 @@ class ClientSettings {
       timeoutSettings.hashCode ^
       throwOnStatusCode.hashCode ^
       enableEch.hashCode ^
+      requireEch.hashCode ^
       proxySettings.hashCode ^
       redirectSettings.hashCode ^
       tlsSettings.hashCode ^
@@ -102,6 +105,7 @@ class ClientSettings {
           timeoutSettings == other.timeoutSettings &&
           throwOnStatusCode == other.throwOnStatusCode &&
           enableEch == other.enableEch &&
+          requireEch == other.requireEch &&
           proxySettings == other.proxySettings &&
           redirectSettings == other.redirectSettings &&
           tlsSettings == other.tlsSettings &&

@@ -36,8 +36,6 @@
   "date_duration": "Rango de fechas",
   "delete": "Borrar",
   "detail": "Información de usuario",
-  "disable_sni_bypass": "Desactivar SNI Bderivación",
-  "disable_sni_bypass_message": "Disminuye DoH tiempo de inicio",
   "display_mode": "Mostrar frecuencia de pantalla",
   "display_mode_message": "Seleccione frecuencia de pantalla (experimental)",
   "display_mode_warning": "No lo cambie a menos que su aparato lo admita.",
@@ -81,7 +79,7 @@
   "manga": "Manga",
   "medium": "Medio",
   "mode_list": "Daily For_male For_female Original Rookie Weekly Monthly AI XVIII_AI XVIII XVIII_WEEKLY XVIII_G",
-  "novel_mode_list":"Daily For_male For_female Weekly AI XVIII_AI XVIII XVIII_WEEKLY XVIII_G",
+  "novel_mode_list": "Daily For_male For_female Weekly AI XVIII_AI XVIII XVIII_WEEKLY XVIII_G",
   "more": "Más",
   "more_then_starnum_bookmark": "Más que {starNum} gusto(s)",
   "@more_then_starnum_bookmark": {
@@ -154,8 +152,8 @@
     "description": "Un mensaje con un parámetro",
     "placeholders": {
       "name": {
-          "type": "String",
-          "example": "Bob"
+        "type": "String",
+        "example": "Bob"
       }
     }
   },
@@ -191,15 +189,15 @@
   "pick_a_color": "Elige un color",
   "tap_to_show_results": "Toca para mostrar {length} resultados",
   "@tap_to_show_results": {
-      "description": "Un mensaje con un parámetro",
-      "placeholders": {
-        "length": {
-          "type": "String",
-          "example": "Bob"
-        }
+    "description": "Un mensaje con un parámetro",
+    "placeholders": {
+      "length": {
+        "type": "String",
+        "example": "Bob"
       }
+    }
   },
-  "saf_hint": "Para usar SAF necesitarás otorgar SAF acceso a Pixiv(e.g. Fotos\/Pixez). Esto le permite almacenar ilustraciones en tarjetas SD en aparatos modernos.",
+  "saf_hint": "Para usar SAF necesitarás otorgar SAF acceso a Pixiv(e.g. Fotos/Pixez). Esto le permite almacenar ilustraciones en tarjetas SD en aparatos modernos.",
   "what_is_saf": "Por qué?",
   "not_the_correct_link": "No es un valido Pixiv enlace >_<",
   "start": "Comenzar",
@@ -226,25 +224,25 @@
   "login_error_message": "Una cuenta o contraseña incorrecta, o el uso de una contraseña débil, puede provocar un error de inicio de sesión",
   "translate": "Traducir",
   "retry_seed_task": "Reintentar la tarea inicial",
-  "manga_detail_page_quality":"Calidad de Manga (Página de detalles)",
-  "follow_after_star":"Sigue después de la estrella ",
+  "manga_detail_page_quality": "Calidad de Manga (Página de detalles)",
+  "follow_after_star": "Sigue después de la estrella ",
   "default_title": "Defecto",
   "image_site": "Sitio de imágen",
   "network": "La red",
   "select_language": "Seleccione la idioma",
-  "network_question": "¿Su entorno de red puede acceder normalmente a pixiv?",
+  "network_question": "Choose a connection mode",
   "media_hint": "Ilustraciones se guardarán en el álbum",
   "copy": "copiar",
   "view_replies": "View reply",
   "temporarily_visible": "temporarily visible",
-  "unclassified":"Unclassified",
+  "unclassified": "Unclassified",
   "max_download_task_running_count": "Max download task running count",
   "export": "Export",
-  "error_400_hint" : "If the error message is [400] error, you may need to log in again, which may be caused by changing the password or api upgrade",
-  "recent_screen_mask" : "Recent screen mask",
-  "open_by_default":"Open by default",
-  "open_by_default_subtitle":"Allow web links to open this app",
-  "text":"text",
+  "error_400_hint": "If the error message is [400] error, you may need to log in again, which may be caused by changing the password or api upgrade",
+  "recent_screen_mask": "Recent screen mask",
+  "open_by_default": "Open by default",
+  "open_by_default_subtitle": "Allow web links to open this app",
+  "text": "text",
   "search_word_hint": "Search title or name like",
   "save_effect": "Save effect",
   "layout_mode": "Layout mode",
@@ -254,7 +252,7 @@
   "private_like_by_default": "Private like by default",
   "partially_hidden": "partially hidden",
   "show": "show",
-  "ai_work_display_settings" : "AI generated works display settings",
+  "ai_work_display_settings": "AI generated works display settings",
   "make_works_with_ai_generated_flags_invisible": "Make works with AI generated flags invisible",
   "script_page_hint": "This function is designed to handle the file name when saving illustrations by customizing the js script. If you don't know the principle, please don't try it at will. You can restore the default settings by clicking the cross in the upper right corner",
   "long_press_save_confirm": "long press to save confirm",
@@ -302,7 +300,7 @@
   "storage_permission_denied": "Storage permission denied",
   "dont_show_again": "Don't show again",
   "custom_host": "Custom Host",
-  "network_tip": "If you cannot load images, you can try switching image sources, you can return to this page by going to the settings page",
+  "network_tip": "If content does not load correctly, switch the connection mode here.",
   "account": "Account",
   "save_wait_time_warning": "It may cause a long waiting time for saving.",
   "uploading": "Uploading",
@@ -310,8 +308,8 @@
   "no_more": "No more",
   "delete_tag": "Delete this tag?",
   "no_result": "0 result",
-  "pre":"Pre",
-  "next":"Next",
+  "pre": "Pre",
+  "next": "Next",
   "submit": "Submit",
   "thanks_for_your_feedback": "Thanks for your feedback",
   "input": "Input",
@@ -324,5 +322,12 @@
   "ugoira_only": "Solo Ugoira",
   "ugoira_none": "Sin Ugoira",
   "popular_male_desc": "Popular entre los hombres",
-  "popular_female_desc": "Popular entre las mujeres"
+  "popular_female_desc": "Popular entre las mujeres",
+  "network_mode": "Connection mode",
+  "network_mode_compat": "Compatibility mode",
+  "network_mode_compat_message": "Try this when content or images load inconsistently.",
+  "network_mode_ech": "Enhanced connection",
+  "network_mode_ech_message": "Try this when the app opens but service responses fail.",
+  "network_mode_standard": "Standard connection",
+  "network_mode_standard_message": "Recommended for most networks."
 }

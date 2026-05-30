@@ -36,8 +36,6 @@
   "date_duration": "Hanay ng petsa",
   "delete": "Burahin",
   "detail": "Impormasyon ng user",
-  "disable_sni_bypass": "I-disable ang pag-bypass ng SNI",
-  "disable_sni_bypass_message": "Binababa ang oras ng DoH sa pagsimula",
   "display_mode": "Ipakita ang refresh rate",
   "display_mode_message": "Pumili ng refresh rate (pang-eksperimento)",
   "display_mode_warning": "Huwag baguhin maliban kung sinusuportahan ng iyong device",
@@ -154,8 +152,8 @@
     "description": "A message with a parameter",
     "placeholders": {
       "name": {
-          "type": "String",
-          "example": "Bob"
+        "type": "String",
+        "example": "Bob"
       }
     }
   },
@@ -191,15 +189,15 @@
   "pick_a_color": "Pumili ng kulay",
   "tap_to_show_results": "I-tap para ipakita ang {length} mga resulta",
   "@tap_to_show_results": {
-      "description": "A message with a single parameter",
-      "placeholders": {
-        "length": {
-          "type": "String",
-          "example": "Bob"
-        }
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "length": {
+        "type": "String",
+        "example": "Bob"
       }
+    }
   },
-  "saf_hint": "Upang gamitin ang SAF kailangan mong ibigay ang SAF access sa pixiv (hal. Pictures\/PixEz). Nagbibigay-daan ito na iimbak ang mga larawan sa SD card sa mga modern na device.",
+  "saf_hint": "Upang gamitin ang SAF kailangan mong ibigay ang SAF access sa pixiv (hal. Pictures/PixEz). Nagbibigay-daan ito na iimbak ang mga larawan sa SD card sa mga modern na device.",
   "what_is_saf": "Bakit?",
   "not_the_correct_link": "Hindi wastong pixiv link >_<",
   "start": "Magsimula",
@@ -241,7 +239,7 @@
   "image_site": "Site ng Larawan",
   "network": "Network",
   "select_language": "Pumili ng Wika",
-  "network_question": "Naa-access ba ng iyong kapaligiran ng network ang pixiv?",
+  "network_question": "Choose a connection mode",
   "media_hint": "Ang mga illustration ay masa-save sa album",
   "copy": "Kopyahin",
   "view_replies": "Tignan ang tugon",
@@ -249,7 +247,7 @@
   "unclassified": "Unclassified",
   "max_download_task_running_count": "Pinakamataas na bilang ng mga tumatakbong download task",
   "export": "I-export",
-  "error_400_hint" : "Kung ang error message ay isang [400] error, baka kailangan mong mag-log in muli, na maaring sanhi ng pagpalit ng password o pag-upgrade ng API",
+  "error_400_hint": "Kung ang error message ay isang [400] error, baka kailangan mong mag-log in muli, na maaring sanhi ng pagpalit ng password o pag-upgrade ng API",
   "recent_screen_mask": "Mask ng recents screen",
   "open_by_default": "Buksan bilang default",
   "open_by_default_subtitle": "Payagan ang mga web link na buksan ang app",
@@ -263,7 +261,7 @@
   "private_like_by_default": "Pribadong pag-like bliang default",
   "partially_hidden": "Bahagyang nakatago",
   "show": "Ipakita",
-  "ai_work_display_settings" : "Mga setting ng pag-display ng mga gawang binuo ng AI",
+  "ai_work_display_settings": "Mga setting ng pag-display ng mga gawang binuo ng AI",
   "make_works_with_ai_generated_flags_invisible": "Gawing invisible ang mga gawang may AI generated na flag",
   "script_page_hint": "Naka-disenyo ang function na ito na ipamahala ang file kapag nagsa-save ng mga larawan sa pamamagitan ng pag-customize ng js script. Kung hindi mo alam ang prinsipyo, mangyaring huwag itong subukan sa kalooban. Maari mong ibalik ang mga default na setting sa pamamagitan ng pag-click sa cross sa itaas kanang bahagi ng sulok",
   "long_press_save_confirm": "Pindutin nang matagal para kumpirmahin ang pag-save",
@@ -286,7 +284,7 @@
   "automatically_bookmark_when_downloading": "Awtomatikong i-bookmark kapag nagda-download",
   "footer_loading": "Naglo-load...",
   "successed": "Matagumpay",
-  "reply_to": "Tumugon kay/sa", 
+  "reply_to": "Tumugon kay/sa",
   "show_feed_ai_badge": "Ipakita ang AI badge sa feed",
   "illust_detail_save_skip_confirm": "I-skip ang kumpirmasyon kapag nagsa-save sa pahina ng mga detalye",
   "secure_window": "Secure na window",
@@ -311,7 +309,7 @@
   "storage_permission_denied": "Tinanggihan ang pahintulot ng storage",
   "dont_show_again": "Huwag ipakita muli",
   "custom_host": "Custom na Host",
-  "network_tip": "Kung hindi ka maka-load ng mga larawan, maari mong subukang palitan ang mga source ng larawan. Maari kang bumalik sa pahinang ito sa pamamgitan ng pagpunta sa pahina ng mga setting",
+  "network_tip": "If content does not load correctly, switch the connection mode here.",
   "account": "Account",
   "save_wait_time_warning": "Maari itong magdulot ng matagal na paghihintay para sa pag-save",
   "uploading": "Naga-upload",
@@ -319,8 +317,8 @@
   "no_more": "Wala na",
   "delete_tag": "Burahin ang tag na ito?",
   "no_result": "0 resulta",
-  "pre":"Nakaraan",
-  "next":"Susunod",
+  "pre": "Nakaraan",
+  "next": "Susunod",
   "submit": "Isumite",
   "thanks_for_your_feedback": "Salamat sa iyong feedback",
   "input": "Input",
@@ -333,5 +331,12 @@
   "ugoira_only": "Ugoira lang",
   "ugoira_none": "Walang Ugoira",
   "export_novel_history": "I-export ang history ng novel",
-  "import_novel_history": "I-import ang history ng novel"
+  "import_novel_history": "I-import ang history ng novel",
+  "network_mode": "Connection mode",
+  "network_mode_compat": "Compatibility mode",
+  "network_mode_compat_message": "Try this when content or images load inconsistently.",
+  "network_mode_ech": "Enhanced connection",
+  "network_mode_ech_message": "Try this when the app opens but service responses fail.",
+  "network_mode_standard": "Standard connection",
+  "network_mode_standard_message": "Recommended for most networks."
 }

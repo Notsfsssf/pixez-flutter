@@ -54,34 +54,38 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: BottomAppBar(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              IconButton(
-                  icon: Icon(Icons.settings),
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => SettingQualityPage()));
-                  }),
-              IconButton(
-                  icon: Icon(Icons.message),
-                  onPressed: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => AboutPage()));
-                  })
-            ],
-          ),
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.settings),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => SettingQualityPage()),
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.message),
+              onPressed: () {
+                Navigator.of(
+                  context,
+                ).push(MaterialPageRoute(builder: (context) => AboutPage()));
+              },
+            ),
+          ],
         ),
-        appBar: AppBar(
-          elevation: 0.0,
-          backgroundColor: Colors.transparent,
-        ),
-        extendBody: true,
-        extendBodyBehindAppBar: true,
-        body: Builder(builder: (context) {
+      ),
+      appBar: AppBar(elevation: 0.0, backgroundColor: Colors.transparent),
+      extendBody: true,
+      extendBodyBehindAppBar: true,
+      body: Builder(
+        builder: (context) {
           return _buildBody(context);
-        }));
+        },
+      ),
+    );
   }
 
   Widget _buildBody(BuildContext context) {
@@ -89,89 +93,77 @@ class _LoginPageState extends State<LoginPage> {
       child: Padding(
         padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
         child: SingleChildScrollView(
-            padding: EdgeInsets.all(0),
-            child: Column(
-              children: <Widget>[
-                Container(
-                  height: 20,
-                ),
-                Image.asset(
-                  'assets/images/icon.png',
-                  height: 80,
-                  width: 80,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 20),
+          padding: EdgeInsets.all(0),
+          child: Column(
+            children: <Widget>[
+              Container(height: 20),
+              Image.asset('assets/images/icon.png', height: 80, width: 80),
+              Padding(
+                padding: EdgeInsets.only(bottom: 20),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Container(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          SizedBox(height: 10),
-                          FilledButton(
-                              child: Text(
-                                I18n.of(context).login,
-                              ),
-                              onPressed: () async {
-                                try {
-                                  String url =
-                                      await OAuthClient.generateWebviewUrl();
-                                  _launch(url);
-                                } catch (e) {}
-                              }),
-                          SizedBox(height: 4),
-                          FilledButton(
-                            onPressed: () async {
-                              try {
-                                String url =
-                                    await OAuthClient.generateWebviewUrl(
-                                        create: true);
-                                _launch(url);
-                              } catch (e) {}
-                            },
-                            child: Text(I18n.of(context).dont_have_account),
-                          ),
-                          SizedBox(height: 4),
-                          OutlinedButton(
-                            onPressed: () async {
-                              Leader.push(context, TokenPage());
-                            },
-                            child: Text("Token"),
-                          ),
-                          SizedBox(height: 4),
-                          TextButton(
-                            child: Text(
-                              I18n.of(context).terms,
-                            ),
-                            onPressed: () async {
-                              final url =
-                                  'https://www.pixiv.net/terms/?page=term';
-                              try {
-                                await launchUrlString(url);
-                              } catch (e) {}
-                            },
-                          ),
-                        ],
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                      ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        SizedBox(height: 10),
+                        FilledButton(
+                          child: Text(I18n.of(context).login),
+                          onPressed: () async {
+                            try {
+                              String url =
+                                  await OAuthClient.generateWebviewUrl();
+                              _launch(url);
+                            } catch (e) {}
+                          },
+                        ),
+                        SizedBox(height: 4),
+                        FilledButton(
+                          onPressed: () async {
+                            try {
+                              String url = await OAuthClient.generateWebviewUrl(
+                                create: true,
+                              );
+                              _launch(url);
+                            } catch (e) {}
+                          },
+                          child: Text(I18n.of(context).dont_have_account),
+                        ),
+                        SizedBox(height: 4),
+                        OutlinedButton(
+                          onPressed: () async {
+                            Leader.push(context, TokenPage());
+                          },
+                          child: Text("Token"),
+                        ),
+                        SizedBox(height: 4),
+                        TextButton(
+                          child: Text(I18n.of(context).terms),
+                          onPressed: () async {
+                            final url =
+                                'https://www.pixiv.net/terms/?page=term';
+                            try {
+                              await launchUrlString(url);
+                            } catch (e) {}
+                          },
+                        ),
+                      ],
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                     ),
                   ),
                 ),
-              ],
-            )),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 
   _launch(url) async {
     if (Platform.isIOS) {
-      final result = await Leader.push(
-          context,
-          WebViewPage(
-            url: url,
-          ));
+      final result = await Leader.push(context, WebViewPage(url: url));
       if (result == "OK") {
         Leader.pushUntilHome(context);
       }
@@ -185,15 +177,11 @@ class _LoginPageState extends State<LoginPage> {
       }
       return;
     }
-    if (!userSetting.disableBypassSni) {
+    if (userSetting.networkMode.usesCompatibleConnection) {
       // await WeissServer.listener();
       await WeissPlugin.start();
       await WeissPlugin.proxy();
-      Leader.push(
-          context,
-          WebViewPage(
-            url: url,
-          ));
+      Leader.push(context, WebViewPage(url: url));
     } else {
       try {
         CustomTabPlugin.launch(url);

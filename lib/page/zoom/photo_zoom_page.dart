@@ -20,12 +20,12 @@ class PhotoZoomPage extends StatefulWidget {
   final Illusts illusts;
   final IllustStore illustStore;
 
-  const PhotoZoomPage(
-      {Key? key,
-      required this.index,
-      required this.illusts,
-      required this.illustStore})
-      : super(key: key);
+  const PhotoZoomPage({
+    Key? key,
+    required this.index,
+    required this.illusts,
+    required this.illustStore,
+  }) : super(key: key);
 
   @override
   _PhotoZoomPageState createState() => _PhotoZoomPageState();
@@ -42,11 +42,11 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
     _index = widget.index;
     nowUrl = _illusts.pageCount == 1
         ? (_loadSource
-            ? _illusts.metaSinglePage!.originalImageUrl!
-            : _illusts.imageUrls.large)
+              ? _illusts.metaSinglePage!.originalImageUrl!
+              : _illusts.imageUrls.large)
         : (_loadSource
-            ? _illusts.metaPages[_index].imageUrls!.original
-            : _illusts.metaPages[_index].imageUrls!.large);
+              ? _illusts.metaPages[_index].imageUrls!.original
+              : _illusts.metaPages[_index].imageUrls!.large);
 
     super.initState();
     initCache();
@@ -55,13 +55,17 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
   @override
   void dispose() {
     if (_fullScreen)
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-          overlays: SystemUiOverlay.values);
+      SystemChrome.setEnabledSystemUIMode(
+        SystemUiMode.manual,
+        overlays: SystemUiOverlay.values,
+      );
     super.dispose();
   }
 
   initCache() async {
-    var fileInfo = await pixivCacheManager!.getFileFromCache(_sourceUrl(nowUrl));
+    var fileInfo = await pixivCacheManager!.getFileFromCache(
+      _sourceUrl(nowUrl),
+    );
     if (mounted)
       setState(() {
         shareShow = fileInfo != null;
@@ -70,76 +74,81 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Builder(builder: (context) {
-      if (_illusts.pageCount == 1) {
-        final url = _loadSource
-            ? _illusts.metaSinglePage!.originalImageUrl!
-            : _illusts.imageUrls.large;
-        return Scaffold(
-          extendBody: true,
-          extendBodyBehindAppBar: true,
-          backgroundColor: Colors.black,
-          bottomNavigationBar: _buildBottom(context),
-          body: Container(
-            child: PhotoView(
-              filterQuality: FilterQuality.high,
-              initialScale: PhotoViewComputedScale.contained,
-              heroAttributes: PhotoViewHeroAttributes(tag: url),
-              imageProvider: PixivProvider.url(url),
-              loadingBuilder: (context, event) => _buildLoading(event),
-            ),
-          ),
-        );
-      } else {
-        return Scaffold(
-          extendBody: true,
-          bottomNavigationBar: _buildBottom(context),
-          extendBodyBehindAppBar: true,
-          backgroundColor: Colors.black,
-          body: Container(
-              child: PhotoViewGallery.builder(
-            scrollPhysics: const BouncingScrollPhysics(),
-            pageController: PageController(initialPage: _index),
-            builder: (BuildContext context, int index) {
-              final url = _loadSource
-                  ? _illusts.metaPages[index].imageUrls!.original
-                  : _illusts.metaPages[index].imageUrls!.large;
-              return PhotoViewGalleryPageOptions(
-                imageProvider: PixivProvider.url(url),
+    return Builder(
+      builder: (context) {
+        if (_illusts.pageCount == 1) {
+          final url = _loadSource
+              ? _illusts.metaSinglePage!.originalImageUrl!
+              : _illusts.imageUrls.large;
+          return Scaffold(
+            extendBody: true,
+            extendBodyBehindAppBar: true,
+            backgroundColor: Colors.black,
+            bottomNavigationBar: _buildBottom(context),
+            body: Container(
+              child: PhotoView(
+                filterQuality: FilterQuality.high,
                 initialScale: PhotoViewComputedScale.contained,
                 heroAttributes: PhotoViewHeroAttributes(tag: url),
-                filterQuality: FilterQuality.high,
-              );
-            },
-            itemCount: _illusts.metaPages.length,
-            onPageChanged: (index) async {
-              nowUrl = _loadSource
-                  ? _illusts.metaPages[index].imageUrls!.original
-                  : _illusts.metaPages[index].imageUrls!.large;
-              setState(() {
-                _index = index;
-                shareShow = false;
-              });
-              var file = await pixivCacheManager!.getFileFromCache(_sourceUrl(nowUrl));
-              if (file != null && mounted)
-                setState(() {
-                  shareShow = true;
-                });
-            },
-            loadingBuilder: (context, event) => _buildLoading(event),
-          )),
-        );
-      }
-    });
+                imageProvider: PixivProvider.url(url),
+                loadingBuilder: (context, event) => _buildLoading(event),
+              ),
+            ),
+          );
+        } else {
+          return Scaffold(
+            extendBody: true,
+            bottomNavigationBar: _buildBottom(context),
+            extendBodyBehindAppBar: true,
+            backgroundColor: Colors.black,
+            body: Container(
+              child: PhotoViewGallery.builder(
+                scrollPhysics: const BouncingScrollPhysics(),
+                pageController: PageController(initialPage: _index),
+                builder: (BuildContext context, int index) {
+                  final url = _loadSource
+                      ? _illusts.metaPages[index].imageUrls!.original
+                      : _illusts.metaPages[index].imageUrls!.large;
+                  return PhotoViewGalleryPageOptions(
+                    imageProvider: PixivProvider.url(url),
+                    initialScale: PhotoViewComputedScale.contained,
+                    heroAttributes: PhotoViewHeroAttributes(tag: url),
+                    filterQuality: FilterQuality.high,
+                  );
+                },
+                itemCount: _illusts.metaPages.length,
+                onPageChanged: (index) async {
+                  nowUrl = _loadSource
+                      ? _illusts.metaPages[index].imageUrls!.original
+                      : _illusts.metaPages[index].imageUrls!.large;
+                  setState(() {
+                    _index = index;
+                    shareShow = false;
+                  });
+                  var file = await pixivCacheManager!.getFileFromCache(
+                    _sourceUrl(nowUrl),
+                  );
+                  if (file != null && mounted)
+                    setState(() {
+                      shareShow = true;
+                    });
+                },
+                loadingBuilder: (context, event) => _buildLoading(event),
+              ),
+            ),
+          );
+        }
+      },
+    );
   }
 
   String nowUrl = "";
 
   String _sourceUrl(String url) => PixivImageSource.resolve(
-        url,
-        disableBypassSni: userSetting.disableBypassSni,
-        pictureSource: userSetting.pictureSource,
-      );
+    url,
+    networkMode: userSetting.networkMode,
+    pictureSource: userSetting.pictureSource,
+  );
 
   bool show = false;
   bool shareShow = false;
@@ -153,17 +162,20 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
         child: Row(
           children: [
             IconButton(
-                onPressed: () {
-                  setState(() {
-                    _fullScreen = false;
-                  });
-                  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-                      overlays: SystemUiOverlay.values);
-                },
-                icon: Icon(
-                  Icons.fullscreen_exit,
-                  color: Colors.white.withValues(alpha: 0.5),
-                ))
+              onPressed: () {
+                setState(() {
+                  _fullScreen = false;
+                });
+                SystemChrome.setEnabledSystemUIMode(
+                  SystemUiMode.manual,
+                  overlays: SystemUiOverlay.values,
+                );
+              },
+              icon: Icon(
+                Icons.fullscreen_exit,
+                color: Colors.white.withValues(alpha: 0.5),
+              ),
+            ),
           ],
         ),
       );
@@ -180,18 +192,14 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
               children: [
                 IconButton(
                   iconSize: 16,
-                  icon: Icon(
-                    Icons.photo_library_outlined,
-                    color: Colors.white,
-                  ),
+                  icon: Icon(Icons.photo_library_outlined, color: Colors.white),
                   onPressed: () {},
                 ),
                 Text(
                   "${_index + 1}/${widget.illusts.pageCount}",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyLarge!
-                      .copyWith(color: Colors.white),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge!.copyWith(color: Colors.white),
                 ),
               ],
             ),
@@ -199,76 +207,72 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: Colors.white,
-                    ),
-                    onPressed: () async {
-                      Navigator.of(context).pop();
-                    }),
+                  icon: Icon(Icons.arrow_back, color: Colors.white),
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                  },
+                ),
                 IconButton(
                   icon: Icon(Icons.fullscreen, color: Colors.white),
                   onPressed: () {
                     setState(() {
                       _fullScreen = true;
                     });
-                    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-                        overlays: []);
+                    SystemChrome.setEnabledSystemUIMode(
+                      SystemUiMode.manual,
+                      overlays: [],
+                    );
                   },
                 ),
                 if (ClipboardPlugin.supported)
                   IconButton(
-                    icon: Icon(
-                      Icons.copy,
-                      color: Colors.white,
-                    ),
-                    onPressed: () => ClipboardPlugin.copy(context, _illusts, _index),
+                    icon: Icon(Icons.copy, color: Colors.white),
+                    onPressed: () =>
+                        ClipboardPlugin.copy(context, _illusts, _index),
                   ),
                 GestureDetector(
-                    child: IconButton(
-                        icon: Icon(
-                          Icons.save_alt,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          if (_illusts.metaPages.isNotEmpty)
-                            saveStore.saveImage(widget.illusts, index: _index);
-                          else
-                            saveStore.saveImage(widget.illusts);
-                          if (userSetting.starAfterSave &&
-                              (widget.illustStore.state == 0)) {
-                            widget.illustStore.star(
-                                restrict: userSetting.defaultPrivateLike
-                                    ? "private"
-                                    : "public");
-                          }
-                        }),
-                    onLongPress: () async {
+                  child: IconButton(
+                    icon: Icon(Icons.save_alt, color: Colors.white),
+                    onPressed: () {
                       if (_illusts.metaPages.isNotEmpty)
                         saveStore.saveImage(widget.illusts, index: _index);
                       else
                         saveStore.saveImage(widget.illusts);
-                    }),
+                      if (userSetting.starAfterSave &&
+                          (widget.illustStore.state == 0)) {
+                        widget.illustStore.star(
+                          restrict: userSetting.defaultPrivateLike
+                              ? "private"
+                              : "public",
+                        );
+                      }
+                    },
+                  ),
+                  onLongPress: () async {
+                    if (_illusts.metaPages.isNotEmpty)
+                      saveStore.saveImage(widget.illusts, index: _index);
+                    else
+                      saveStore.saveImage(widget.illusts);
+                  },
+                ),
                 AnimatedOpacity(
                   opacity: shareShow ? 1 : 0.5,
                   duration: Duration(milliseconds: 500),
-                  child: Builder(builder: (context) {
-                    return IconButton(
-                        icon: Icon(
-                          Icons.share,
-                          color: Colors.white,
-                        ),
+                  child: Builder(
+                    builder: (context) {
+                      return IconButton(
+                        icon: Icon(Icons.share, color: Colors.white),
                         onPressed: () async {
-                          var file =
-                              await pixivCacheManager!.getFileFromCache(_sourceUrl(nowUrl));
+                          var file = await pixivCacheManager!.getFileFromCache(
+                            _sourceUrl(nowUrl),
+                          );
                           if (file != null) {
                             String targetPath = join(
-                                (await getTemporaryDirectory()).path,
-                                "share_cache",
-                                basenameWithoutExtension(file.file.path) +
-                                    (nowUrl.endsWith(".png")
-                                        ? ".png"
-                                        : ".jpg"));
+                              (await getTemporaryDirectory()).path,
+                              "share_cache",
+                              basenameWithoutExtension(file.file.path) +
+                                  (nowUrl.endsWith(".png") ? ".png" : ".jpg"),
+                            );
                             File targetFile = new File(targetPath);
                             if (!targetFile.existsSync()) {
                               targetFile.createSync(recursive: true);
@@ -276,27 +280,32 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                             file.file.copySync(targetPath);
                             final box =
                                 context.findRenderObject() as RenderBox?;
-                            SharePlus.instance.share(ShareParams(
+                            SharePlus.instance.share(
+                              ShareParams(
                                 files: [XFile(targetPath)],
                                 sharePositionOrigin:
-                                    box!.localToGlobal(Offset.zero) &
-                                        box.size));
+                                    box!.localToGlobal(Offset.zero) & box.size,
+                              ),
+                            );
                           } else {
                             BotToast.showText(text: "can not find image cache");
                           }
-                        });
-                  }),
+                        },
+                      );
+                    },
+                  ),
                 ),
                 IconButton(
-                    icon: Icon(
-                      !_loadSource ? Icons.hd_outlined : Icons.hd,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _loadSource = !_loadSource;
-                      });
-                    }),
+                  icon: Icon(
+                    !_loadSource ? Icons.hd_outlined : Icons.hd,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _loadSource = !_loadSource;
+                    });
+                  },
+                ),
               ],
             ),
           ],
@@ -322,9 +331,7 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
       child: Container(
         width: 20.0,
         height: 20.0,
-        child: CircularProgressIndicator(
-          value: value,
-        ),
+        child: CircularProgressIndicator(value: value),
       ),
     );
   }

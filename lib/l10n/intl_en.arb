@@ -38,8 +38,6 @@
   "date_duration": "Date range",
   "delete": "Delete",
   "detail": "User info",
-  "disable_sni_bypass": "Disable SNI Bypassing",
-  "disable_sni_bypass_message": "Decreases DoH time on startup",
   "display_mode": "Display refresh rate",
   "display_mode_message": "Select refresh rate (experimental)",
   "display_mode_warning": "Do not change it unless your device supports it.",
@@ -156,8 +154,8 @@
     "description": "A message with a parameter",
     "placeholders": {
       "name": {
-          "type": "String",
-          "example": "Bob"
+        "type": "String",
+        "example": "Bob"
       }
     }
   },
@@ -193,15 +191,15 @@
   "pick_a_color": "Pick a color",
   "tap_to_show_results": "Tap to show {length} results",
   "@tap_to_show_results": {
-      "description": "A message with a single parameter",
-      "placeholders": {
-        "length": {
-          "type": "String",
-          "example": "Bob"
-        }
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "length": {
+        "type": "String",
+        "example": "Bob"
       }
+    }
   },
-  "saf_hint": "In order to use SAF you will need to grant SAF access to Pixiv(e.g. Picture\/Pixez). This allows you to store illusts to SD cards in modern devices.",
+  "saf_hint": "In order to use SAF you will need to grant SAF access to Pixiv(e.g. Picture/Pixez). This allows you to store illusts to SD cards in modern devices.",
   "what_is_saf": "Why?",
   "not_the_correct_link": "Not a valid Pixiv link >_<",
   "start": "Start",
@@ -243,7 +241,7 @@
   "image_site": "Image Site",
   "network": "Network",
   "select_language": "Select Language",
-  "network_question": "Is your network environment able to access pixiv normally?",
+  "network_question": "Choose a connection mode",
   "media_hint": "Illustrations will be saved to the album",
   "copy": "Copy",
   "view_replies": "View reply",
@@ -251,11 +249,11 @@
   "unclassified": "Unclassified",
   "max_download_task_running_count": "Max download task running count",
   "export": "Export",
-  "error_400_hint" : "If the error message is [400] error, you may need to log in again, which may be caused by changing the password or api upgrade",
+  "error_400_hint": "If the error message is [400] error, you may need to log in again, which may be caused by changing the password or api upgrade",
   "recent_screen_mask": "Recent screen mask",
   "open_by_default": "Open by default",
   "open_by_default_subtitle": "Allow web links to open this app",
-  "text":"Text",
+  "text": "Text",
   "search_word_hint": "Search title or name like",
   "save_effect": "Save effect",
   "layout_mode": "Layout mode",
@@ -265,7 +263,7 @@
   "private_like_by_default": "Private like by default",
   "partially_hidden": "Partially hidden",
   "show": "Show",
-  "ai_work_display_settings" : "AI generated works display settings",
+  "ai_work_display_settings": "AI generated works display settings",
   "make_works_with_ai_generated_flags_invisible": "Make works with AI generated flags invisible",
   "script_page_hint": "This function is designed to handle the file name when saving illustrations by customizing the js script. If you don't know the principle, please don't try it at will. You can restore the default settings by clicking the cross in the upper right corner",
   "long_press_save_confirm": "Long press to save confirm",
@@ -290,7 +288,7 @@
   "automatically_bookmark_when_downloading": "Automatically bookmark when downloading",
   "footer_loading": "Loading...",
   "successed": "Successed",
-  "reply_to": "Reply to", 
+  "reply_to": "Reply to",
   "show_feed_ai_badge": "Show feed AI badge",
   "illust_detail_save_skip_confirm": "Skip confirmation when saving on details page",
   "secure_window": "Secure window",
@@ -315,7 +313,7 @@
   "storage_permission_denied": "Storage permission denied",
   "dont_show_again": "Don't show again",
   "custom_host": "Custom Host",
-  "network_tip": "If you cannot load images, you can try switching image sources, you can return to this page by going to the settings page",
+  "network_tip": "If content does not load correctly, switch the connection mode here.",
   "account": "Account",
   "save_wait_time_warning": "It may cause a long waiting time for saving.",
   "uploading": "Uploading",
@@ -323,8 +321,8 @@
   "no_more": "No more",
   "delete_tag": "Delete this tag?",
   "no_result": "0 result",
-  "pre":"Pre",
-  "next":"Next",
+  "pre": "Pre",
+  "next": "Next",
   "submit": "Submit",
   "thanks_for_your_feedback": "Thanks for your feedback",
   "input": "Input",
@@ -333,5 +331,12 @@
   "start_follow": "Start follow",
   "news_follow_title": "Following",
   "user_page_info_title": "User info",
-  "input_regexp_hint": "Enter regexp"
+  "input_regexp_hint": "Enter regexp",
+  "network_mode": "Connection mode",
+  "network_mode_compat": "Compatibility mode",
+  "network_mode_compat_message": "Try this when content or images load inconsistently.",
+  "network_mode_ech": "Enhanced connection",
+  "network_mode_ech_message": "Try this when the app opens but service responses fail.",
+  "network_mode_standard": "Standard connection",
+  "network_mode_standard_message": "Recommended for most networks."
 }

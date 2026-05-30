@@ -14,8 +14,6 @@
  *
  */
 
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_compatibility_layer/dio_compatibility_layer.dart';
@@ -26,6 +24,7 @@ import 'package:pixez/er/hoster.dart';
 import 'package:pixez/er/illust_cacher.dart';
 import 'package:pixez/er/pixiv_image_source.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/network/pixez_network_settings.dart';
 import 'package:rhttp/rhttp.dart' as r;
 
 const ImageHost = "i.pximg.net";
@@ -75,30 +74,11 @@ class PixivImage extends StatefulWidget {
   static Future<void> generatePixivCache() async {
     final dio = Dio();
     final client = await r.RhttpCompatibleClient.createSync(
-      settings:
-          (userSetting.disableBypassSni ||
-              userSetting.pictureSource != ImageHost)
-          ? null
-          : r.ClientSettings(
-              tlsSettings: r.TlsSettings(verifyCertificates: false, sni: false),
-              dnsSettings: r.DnsSettings.dynamic(
-                resolver: (host) async {
-                  if (host == 'i.pximg.net') {
-                    return [Hoster.iPximgNet()];
-                  }
-                  if (host == 's.pximg.net') {
-                    return [Hoster.sPximgNet()];
-                  }
-                  return await InternetAddress.lookup(
-                    host,
-                  ).then((value) => value.map((e) => e.address).toList());
-                },
-              ),
-            ),
+      settings: PixezNetworkSettings.forImages(userSetting.networkMode),
     );
     dio.interceptors.add(
       PixivImageSourceInterceptor(
-        disableBypassSni: () => userSetting.disableBypassSni,
+        networkMode: () => userSetting.networkMode,
         pictureSource: () => userSetting.pictureSource,
       ),
     );

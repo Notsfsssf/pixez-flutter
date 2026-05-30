@@ -137,11 +137,9 @@ abstract class SauceStoreBase with Store {
     try {
       BotToast.showText(text: I18n.ofContext().uploading);
 
-      // if (!userSetting.disableBypassSni) {
+      // if (userSetting.networkMode.usesCompatibleConnection) {
       //   final compatibleClient = await RhttpCompatibleClient.create(
-      //     settings: userSetting.disableBypassSni
-      //         ? null
-      //         : ClientSettings(
+      //     settings: ClientSettings(
       //             tlsSettings: TlsSettings(
       //               verifyCertificates: false,
       //               sni: false,

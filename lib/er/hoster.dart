@@ -6,6 +6,7 @@ import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/er/prefer.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/onezero_response.dart';
+import 'package:pixez/network/pixez_network_settings.dart';
 import 'package:rhttp/rhttp.dart' as r;
 
 class Hoster {
@@ -28,11 +29,7 @@ class Hoster {
     'oauth.secure.pixiv.net',
   ];
 
-  static Dio httpClient = Dio(
-    BaseOptions(
-      baseUrl: 'https://1.1.1.1',
-    ),
-  );
+  static Dio httpClient = Dio(BaseOptions(baseUrl: 'https://1.1.1.1'));
   static r.RhttpCompatibleClient? compatibleClient;
 
   static Future<Dio> createDioClient() async {
@@ -40,12 +37,10 @@ class Hoster {
       return httpClient;
     }
     compatibleClient ??= await r.RhttpCompatibleClient.create(
-        settings: userSetting.disableBypassSni
-            ? null
-            : r.ClientSettings(
-                tlsSettings:
-                    r.TlsSettings(verifyCertificates: false, sni: false),
-              ));
+      settings: userSetting.networkMode.usesCompatibleConnection
+          ? PixezNetworkSettings.compatible()
+          : null,
+    );
     httpClient.httpClientAdapter = ConversionLayerAdapter(compatibleClient!);
     return httpClient;
   }
@@ -78,15 +73,14 @@ class Hoster {
   static Future<void> dnsQuery(String name) async {
     try {
       await createDioClient();
-      Response response = await httpClient.get('/dns-query',
-          options: Options(
-            headers: {
-              'accept': 'application/dns-json',
-            },
-          ),
-          queryParameters: {'name': name});
-      OnezeroResponse model =
-          OnezeroResponse.fromJson(jsonDecode(response.data));
+      Response response = await httpClient.get(
+        '/dns-query',
+        options: Options(headers: {'accept': 'application/dns-json'}),
+        queryParameters: {'name': name},
+      );
+      OnezeroResponse model = OnezeroResponse.fromJson(
+        jsonDecode(response.data),
+      );
       final answer = model.answer.toList();
       answer.sort((l, r) => r.ttl.compareTo(l.ttl));
       final host = answer.first.data;

@@ -44,7 +44,7 @@ class ClipboardPlugin {
     assert(pixivCacheManager != null);
     final sourceUrl = PixivImageSource.resolve(
       url,
-      disableBypassSni: userSetting.disableBypassSni,
+      networkMode: userSetting.networkMode,
       pictureSource: userSetting.pictureSource,
     );
 
