@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:pixez/er/hoster.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/network/network_mode.dart';
 import 'package:rhttp/rhttp.dart' as r;
 
@@ -30,6 +31,7 @@ class PixezNetworkSettings {
 
   static r.ClientSettings? forImages(NetworkMode mode) {
     if (mode == NetworkMode.standard) return null;
+    if (userSetting.pictureSource != imageHost) return null;
     return compatible();
   }
 
