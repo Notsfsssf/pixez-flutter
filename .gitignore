@@ -22,12 +22,14 @@
 # Flutter/Dart/Pub related
 **/doc/api/
 .dart_tool/
+**/.dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
 .packages
 .pub-cache/
 .pub/
 /build/
+**/build/
 **/*.g.dart
 **/*.freezed.dart
 /lib/generated/
@@ -69,6 +71,38 @@ local.properties
 **/ios/Flutter/flutter_export_environment.sh
 **/ios/ServiceDefinitions.json
 **/ios/Runner/GeneratedPluginRegistrant.*
+**/ios/Flutter/ephemeral/
+**/ios/Flutter/flutter_native_integration.env
+
+# macOS/XCode related
+**/macos/**/*.mode1v3
+**/macos/**/*.mode2v3
+**/macos/**/*.moved-aside
+**/macos/**/*.pbxuser
+**/macos/**/*.perspectivev3
+**/macos/**/*sync/
+**/macos/**/.sconsign.dblite
+**/macos/**/.tags*
+**/macos/**/.vagrant/
+**/macos/**/DerivedData/
+**/macos/**/Icon?
+**/macos/**/Pods/
+**/macos/**/.symlinks/
+**/macos/**/profile
+**/macos/**/xcuserdata
+**/macos/Flutter/ephemeral/
+**/macos/Flutter/GeneratedPluginRegistrant.swift
+**/macos/Flutter/Flutter-Debug.xcconfig
+**/macos/Flutter/Flutter-Release.xcconfig
+
+# Windows related
+**/windows/flutter/ephemeral/
+**/windows/flutter/generated_plugin_registrant.*
+**/windows/flutter/generated_plugins.cmake
+
+# Rust (rhttp plugin) related
+**/rust/target/
+**/rust/.cargo/
 
 # Exceptions to above rules.
 !**/ios/**/default.mode1v3
