@@ -428,9 +428,7 @@ abstract class _UserSetting with Store {
         ? (prefs.getString(PICTURE_SOURCE_KEY) ?? ImageHost)
         : ImageHost;
     ApiClient.Accept_Language = languageList[languageNum];
-    await PixivImage.generatePixivCache();
-    await oAuthClient.createDioClient();
-    await apiClient.createDioClient();
+    await _applyNetworkClients();
     apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader] =
         ApiClient.Accept_Language;
     locale = iSupportedLocales[languageNum];
@@ -447,6 +445,12 @@ abstract class _UserSetting with Store {
     await Hoster.initMap();
     themeInitState = 1;
     fetcher.start(pictureSource!);
+  }
+
+  Future<void> _applyNetworkClients() async {
+    await PixivImage.generatePixivCache();
+    await oAuthClient.createDioClient();
+    await apiClient.createDioClient();
   }
 
   Future<void> _restoreNetworkMode() async {
@@ -643,6 +647,8 @@ abstract class _UserSetting with Store {
       pictureSource = prefs.getString(PICTURE_SOURCE_KEY) ?? ImageHost;
       splashStore.setHost(pictureSource!);
     }
+    await _applyNetworkClients();
+    fetcher.reloadNetwork();
   }
 
   @action

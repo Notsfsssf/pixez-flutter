@@ -39,7 +39,7 @@ import 'package:pixez/store/save_store.dart';
 import 'package:quiver/collection.dart';
 import 'package:rhttp/rhttp.dart' as r;
 
-enum IsoTaskState { INIT, APPEND, PROGRESS, ERROR, COMPLETE }
+enum IsoTaskState { INIT, APPEND, PROGRESS, ERROR, COMPLETE, RELOAD }
 
 class IsoContactBean {
   final IsoTaskState state;
@@ -200,6 +200,15 @@ class Fetcher {
     isolate?.kill(priority: Isolate.immediate);
   }
 
+  void reloadNetwork() {
+    sendPortToChild?.send(
+      IsoContactBean(
+        state: IsoTaskState.RELOAD,
+        data: userSetting.networkMode,
+      ),
+    );
+  }
+
   Future<void> _complete(
     String url,
     String savePath,
@@ -285,6 +294,15 @@ entryPoint(SendMessage message) async {
   receivePort.listen((message) async {
     try {
       IsoContactBean isoContactBean = message;
+      if (isoContactBean.state == IsoTaskState.RELOAD) {
+        final mode = isoContactBean.data as NetworkMode;
+        currentNetworkMode = mode;
+        final newClient = await r.RhttpCompatibleClient.createSync(
+          settings: PixezNetworkSettings.forImages(mode),
+        );
+        dio.httpClientAdapter = ConversionLayerAdapter(newClient);
+        return;
+      }
       TaskBean taskBean = isoContactBean.data;
       switch (isoContactBean.state) {
         case IsoTaskState.ERROR:

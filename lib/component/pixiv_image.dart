@@ -71,11 +71,18 @@ class PixivImage extends StatefulWidget {
   @override
   _PixivImageState createState() => _PixivImageState();
 
+  static Dio? _cacheDio;
+
   static Future<void> generatePixivCache() async {
-    final dio = Dio();
     final client = await r.RhttpCompatibleClient.createSync(
       settings: PixezNetworkSettings.forImages(userSetting.networkMode),
     );
+    final existing = _cacheDio;
+    if (existing != null) {
+      existing.httpClientAdapter = ConversionLayerAdapter(client);
+      return;
+    }
+    final dio = Dio();
     dio.interceptors.add(
       PixivImageSourceInterceptor(
         networkMode: () => userSetting.networkMode,
@@ -83,6 +90,7 @@ class PixivImage extends StatefulWidget {
       ),
     );
     dio.httpClientAdapter = ConversionLayerAdapter(client);
+    _cacheDio = dio;
     DioCacheManager.initialize(dio);
   }
 }
