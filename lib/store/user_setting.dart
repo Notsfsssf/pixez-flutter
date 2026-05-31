@@ -463,8 +463,8 @@ abstract class _UserSetting with Store {
 
     final legacyValue = prefs.getBool(LEGACY_DISABLE_BYPASS_SNI_KEY);
     networkMode = legacyValue == true
-        ? NetworkMode.compat
-        : NetworkMode.standard;
+        ? NetworkMode.standard
+        : NetworkMode.compat;
     await prefs.setString(NETWORK_MODE_KEY, networkMode.code);
     await prefs.remove(LEGACY_DISABLE_BYPASS_SNI_KEY);
   }
