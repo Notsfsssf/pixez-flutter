@@ -333,11 +333,11 @@
   "ugoira_only": "Nur Ugoira",
   "ugoira_none": "Keine Ugoira",
   "automatically_tag_when_bookmarking": "Beim Hinzufügen zu Favoriten automatisch taggen",
-  "network_mode": "Connection mode",
-  "network_mode_compat": "Compatibility mode",
-  "network_mode_compat_message": "Try this when content or images load inconsistently.",
-  "network_mode_ech": "Enhanced connection",
-  "network_mode_ech_message": "Try this when the app opens but service responses fail.",
-  "network_mode_standard": "Standard connection",
-  "network_mode_standard_message": "Recommended for most networks."
+  "network_mode": "Verbindungsmodus",
+  "network_mode_compat": "Kompatibilitätsmodus",
+  "network_mode_compat_message": "Versuche dies, wenn Inhalte oder Bilder unzuverlässig geladen werden.",
+  "network_mode_ech": "Erweiterte Verbindung",
+  "network_mode_ech_message": "Versuche dies, wenn die App geöffnet wird, aber keine Antworten vom Dienst erhält.",
+  "network_mode_standard": "Standardverbindung",
+  "network_mode_standard_message": "Für die meisten Netzwerke empfohlen."
 }
