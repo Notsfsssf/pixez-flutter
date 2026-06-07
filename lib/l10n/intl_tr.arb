@@ -333,11 +333,11 @@
   "popular_male_desc": "Erkekler arasında popüler",
   "popular_female_desc": "Kadınlar arasında popüler",
   "automatically_tag_when_bookmarking": "Yer işaretlerine eklerken otomatik olarak etiketle",
-  "network_mode": "Connection mode",
-  "network_mode_compat": "Compatibility mode",
-  "network_mode_compat_message": "Try this when content or images load inconsistently.",
-  "network_mode_ech": "Enhanced connection",
-  "network_mode_ech_message": "Try this when the app opens but service responses fail.",
-  "network_mode_standard": "Standard connection",
-  "network_mode_standard_message": "Recommended for most networks."
+  "network_mode": "Bağlantı modu",
+  "network_mode_compat": "Uyumluluk modu",
+  "network_mode_compat_message": "İçerik veya görseller düzensiz yüklendiğinde bunu dene.",
+  "network_mode_ech": "Gelişmiş bağlantı",
+  "network_mode_ech_message": "Uygulama açıldığı halde hizmet yanıtları başarısız olduğunda bunu dene.",
+  "network_mode_standard": "Standart bağlantı",
+  "network_mode_standard_message": "Çoğu ağ için önerilir."
 }
