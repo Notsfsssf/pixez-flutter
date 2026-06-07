@@ -138,9 +138,10 @@ import WidgetKit
             if isSuccess {
                 DispatchQueue.main.async {
                     let alertController = UIAlertController(title: "encode success", message: nil, preferredStyle: UIAlertController.Style.alert)
-                    UIApplication.shared.keyWindow?.rootViewController?.self.present(alertController, animated: true, completion: nil)
+                    self.visibleViewController()?.present(alertController, animated: true, completion: nil)
                     DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
-                        UIApplication.shared.keyWindow?.rootViewController?.dismiss(animated: true, completion: nil)}
+                        alertController.dismiss(animated: true, completion: nil)
+                    }
                 }
                 print("Your image was successfully saved")
             } else{
@@ -193,5 +194,26 @@ import WidgetKit
             print("kkkkkkkk\(images.count)")
         }
         return CGImageDestinationFinalize(destion!)
+    }
+    
+    private func visibleViewController() -> UIViewController? {
+        let window = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first { $0.isKeyWindow }
+        return visibleViewController(from: window?.rootViewController)
+    }
+    
+    private func visibleViewController(from viewController: UIViewController?) -> UIViewController? {
+        if let navigationController = viewController as? UINavigationController {
+            return visibleViewController(from: navigationController.visibleViewController)
+        }
+        if let tabBarController = viewController as? UITabBarController {
+            return visibleViewController(from: tabBarController.selectedViewController)
+        }
+        if let presentedViewController = viewController?.presentedViewController {
+            return visibleViewController(from: presentedViewController)
+        }
+        return viewController
     }
 }

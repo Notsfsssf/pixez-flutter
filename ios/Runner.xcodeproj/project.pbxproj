@@ -20,6 +20,7 @@
 		CF18B5682D0EDB4D0096872D /* FMDB in Frameworks */ = {isa = PBXBuildFile; productRef = CF18B5672D0EDB4D0096872D /* FMDB */; };
 		CF725E382ACE7C7600615536 /* DeepLinkPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF725E372ACE7C7600615536 /* DeepLinkPlugin.swift */; };
 		CFB8EE8C28C4437500B8D74E /* AppWidgetDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB8EE8B28C4437500B8D74E /* AppWidgetDBManager.swift */; };
+		CFC7D9302FCE8606004A2613 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC7D92F2FCE8604004A2613 /* SceneDelegate.swift */; };
 		CFFFA8242D0F000000800F00 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B5968260F680500098D5C /* WidgetKit.framework */; };
 		CFFFA8252C3B75EC00800F00 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B5968260F680500098D5C /* WidgetKit.framework */; };
 		CFFFA8262C3B75EC00800F00 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B596A260F680500098D5C /* SwiftUI.framework */; };
@@ -106,6 +107,7 @@
 		CFB8EEAA28C4B34400B8D74E /* sqflite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = sqflite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFB8EEAE28C4B50800B8D74E /* FMDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FMDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFB8EEB228C4B86B00B8D74E /* FMDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FMDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CFC7D92F2FCE8604004A2613 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		CFFFA8242C3B75EC00800F00 /* TinkerExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TinkerExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFFFA8282C3B75EC00800F00 /* TinkerBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TinkerBundle.swift; sourceTree = "<group>"; };
 		CFFFA82A2C3B75EC00800F00 /* Tinker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tinker.swift; sourceTree = "<group>"; };
@@ -208,6 +210,7 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				CFC7D92F2FCE8604004A2613 /* SceneDelegate.swift */,
 				7CC54C3726103351009033DF /* Runner.entitlements */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
@@ -252,7 +255,6 @@
 				97C146EC1CF9000F007C117D /* Resources */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				5AD1FD42E9F53D5652535AF0 /* [CP] Embed Pods Frameworks */,
-				0789FC6C335E0E67A944BE85 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -355,23 +357,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0789FC6C335E0E67A944BE85 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		3B06AD1E1E4923F5004D2608 /* Thin Binary */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -450,6 +435,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CFB8EE8C28C4437500B8D74E /* AppWidgetDBManager.swift in Sources */,
+				CFC7D9302FCE8606004A2613 /* SceneDelegate.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				CF725E382ACE7C7600615536 /* DeepLinkPlugin.swift in Sources */,
 				7C2A716D2765CF9A00B6BA48 /* DocumentPlugin.swift in Sources */,

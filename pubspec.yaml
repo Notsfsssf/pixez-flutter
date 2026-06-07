@@ -28,7 +28,7 @@ dependencies:
   path_provider: ^2.1.5
   shared_preferences: ^2.5.5
   share_plus: ^13.1.0
-  permission_handler: ^12.0.2
+  permission_handler: ^12.0.3
   archive: ^4.0.9
   url_launcher: ^6.3.2
   bot_toast: ^4.1.3
@@ -58,11 +58,7 @@ dependencies:
   image: ^4.7.2
   easy_refresh: ^3.5.0
   sqflite: ^2.4.2+1
-  dynamic_color:
-    git:
-      url: https://github.com/hasali19/material-foundation-flutter-packages.git
-      path: packages/dynamic_color
-      ref: main
+  dynamic_color: ^1.8.1
   # Design Style
   fluent_ui: ^4.15.1
   # Desktop Support
@@ -103,6 +99,8 @@ flutter:
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
+  config:
+    enable-lldb-debugging: false
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:

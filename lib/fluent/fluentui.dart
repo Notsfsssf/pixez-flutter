@@ -66,6 +66,7 @@ Widget buildFluentUI(BuildContext context) {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     systemNavigationBarColor: Colors.transparent,
     systemNavigationBarDividerColor: Colors.transparent,
+    systemNavigationBarContrastEnforced: false,
     statusBarColor: Colors.transparent,
   ));
   final botToastBuilder = BotToastInit();
@@ -125,6 +126,7 @@ Widget buildFluentUI(BuildContext context) {
             value: SystemUiOverlayStyle(
               systemNavigationBarColor: Colors.transparent,
               systemNavigationBarDividerColor: Colors.transparent,
+              systemNavigationBarContrastEnforced: false,
               statusBarColor: Colors.transparent,
             ),
             child: SplashPage(),
