@@ -276,7 +276,7 @@ entryPoint(SendMessage message) async {
   Hoster.dnsQueryFetcher();
   final dio = Dio();
   final client = await r.RhttpCompatibleClient.createSync(
-    settings: PixezNetworkSettings.forImages(message.networkMode),
+    settings: PixezNetworkSettings.forImages(currentPictureSource, currentNetworkMode),
   );
   dio.interceptors.add(
     PixivImageSourceInterceptor(
@@ -295,10 +295,10 @@ entryPoint(SendMessage message) async {
     try {
       IsoContactBean isoContactBean = message;
       if (isoContactBean.state == IsoTaskState.RELOAD) {
-        final mode = isoContactBean.data as NetworkMode;
-        currentNetworkMode = mode;
+        currentNetworkMode = isoContactBean.data.NetworkMode;
+        currentPictureSource = isoContactBean.data.source;
         final newClient = await r.RhttpCompatibleClient.createSync(
-          settings: PixezNetworkSettings.forImages(mode),
+          settings: PixezNetworkSettings.forImages(currentPictureSource, currentNetworkMode),
         );
         dio.httpClientAdapter = ConversionLayerAdapter(newClient);
         return;

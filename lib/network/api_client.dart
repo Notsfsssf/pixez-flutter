@@ -90,13 +90,9 @@ class ApiClient {
     return httpClient;
   }
 
-  static Future<ConversionLayerAdapter> createCompatibleClient({
-    NetworkMode? networkMode,
-  }) async {
+  static Future<ConversionLayerAdapter> createCompatibleClient() async {
     final compatibleClient = await r.RhttpCompatibleClient.create(
-      settings: PixezNetworkSettings.forImages(
-        networkMode ?? userSetting.networkMode,
-      ),
+      settings: PixezNetworkSettings.compatible(),
     );
     return ConversionLayerAdapter(compatibleClient);
   }

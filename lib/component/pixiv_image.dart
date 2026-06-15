@@ -75,7 +75,7 @@ class PixivImage extends StatefulWidget {
 
   static Future<void> generatePixivCache() async {
     final client = await r.RhttpCompatibleClient.createSync(
-      settings: PixezNetworkSettings.forImages(userSetting.networkMode),
+      settings: PixezNetworkSettings.forImages(userSetting.pictureSource, userSetting.networkMode),
     );
     final existing = _cacheDio;
     if (existing != null) {
