@@ -3,7 +3,6 @@ import 'package:pixez/network/network_mode.dart';
 
 class PixivImageSource {
   static const String imageHost = 'i.pximg.net';
-  static const String imageSHost = 's.pximg.net';
 
   static String resolve(
     String url, {
@@ -27,7 +26,7 @@ class PixivImageSource {
     required String? pictureSource,
   }) {
     if (!networkMode.allowsImageSource) return uri;
-    if (uri.host != imageHost && uri.host != imageSHost) return uri;
+    if (uri.host != imageHost) return uri;
 
     final source = pictureSource?.trim();
     if (source == null || source.isEmpty) return uri;
