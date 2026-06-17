@@ -99,10 +99,13 @@ class ApiClient {
 
   ApiClient({bool isBookmark = false}) {
     String time = getIsoDate();
+    final String baseUrl = userSetting.networkMode == NetworkMode.compat
+        ? 'https://pixiv.me'
+        : 'https://${BASE_API_URL_HOST}';
     httpClient =
         Dio(
             BaseOptions(
-              baseUrl: 'https://${BASE_API_URL_HOST}',
+              baseUrl: baseUrl,
               headers: {
                 "X-Client-Time": time,
                 "X-Client-Hash": getHash(time + hashSalt),

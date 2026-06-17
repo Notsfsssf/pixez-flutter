@@ -26,6 +26,7 @@ import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/account.dart';
+import 'package:pixez/network/network_mode.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/network/pixez_network_settings.dart';
 import 'package:rhttp/rhttp.dart' as r;
@@ -107,9 +108,12 @@ class AccountClient {
 
   Future<Dio> createDioClient() async {
     String time = getIsoDate();
+    final String baseUrl = userSetting.networkMode == NetworkMode.compat
+        ? 'https://pixiv.me'
+        : 'https://${BASE_API_URL_HOST}';
     final dio = Dio(
       BaseOptions(
-        baseUrl: 'https://${BASE_API_URL_HOST}',
+        baseUrl: baseUrl,
         headers: {
           "X-Client-Time": time,
           "X-Client-Hash": getHash(time + hashSalt),

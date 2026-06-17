@@ -12,8 +12,7 @@ import 'package:rhttp/rhttp.dart' as r;
 class Hoster {
   static Map<String, dynamic> _map = Map();
   static Map<String, dynamic> _constMap = {
-    "app-api.pixiv.net": "210.140.139.155",
-    "oauth.secure.pixiv.net": "210.140.139.155",
+    "pixiv.net": "210.140.139.155",
     "i.pximg.net": "210.140.139.133",
     "s.pximg.net": "210.140.139.133",
     "doh": "doh.dns.sb",
@@ -25,8 +24,7 @@ class Hoster {
   static final List<String> QUERY_HOST = [
     ImageHost,
     ImageSHost,
-    'app-api.pixiv.net',
-    'oauth.secure.pixiv.net',
+    'pixiv.net',
   ];
 
   static Dio httpClient = Dio(BaseOptions(baseUrl: 'https://1.1.1.1'));
@@ -119,15 +117,8 @@ class Hoster {
     return result;
   }
 
-  static String oauth() {
-    final key = "oauth.secure.pixiv.net";
-    final result = _map[key];
-    if (result == null) return _constMap[key];
-    return result;
-  }
-
-  static String api() {
-    final key = "app-api.pixiv.net";
+  static String pixiv() {
+    final key = "pixiv.net";
     final result = _map[key];
     if (result == null) return _constMap[key];
     return result;

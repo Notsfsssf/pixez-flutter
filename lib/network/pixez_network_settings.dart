@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:pixez/er/hoster.dart';
-import 'package:pixez/main.dart';
 import 'package:pixez/network/network_mode.dart';
 import 'package:rhttp/rhttp.dart' as r;
 
@@ -39,7 +38,7 @@ class PixezNetworkSettings {
 
   static r.ClientSettings compatible() {
     return r.ClientSettings(
-      tlsSettings: r.TlsSettings(verifyCertificates: false, sni: false),
+      tlsSettings: r.TlsSettings(verifyCertificates: true, sni: true),
       dnsSettings: r.DnsSettings.dynamic(
         resolver: (host) async {
           final ip = _compatibleIp(host);
@@ -53,8 +52,7 @@ class PixezNetworkSettings {
   }
 
   static String? _compatibleIp(String host) {
-    if (host == appApiHost) return Hoster.api();
-    if (host == oauthHost) return Hoster.oauth();
+    if (host.endsWith("pixiv.net") || host == "pixiv.me") return Hoster.pixiv();
     if (host == imageHost) return Hoster.iPximgNet();
     if (host == imageStaticHost) return Hoster.sPximgNet();
     return null;
