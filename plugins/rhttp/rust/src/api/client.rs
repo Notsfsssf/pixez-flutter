@@ -23,8 +23,7 @@ use tokio::sync::RwLock;
 pub use tokio_util::sync::CancellationToken;
 
 const ALIDNS_RESOLVE_ENDPOINT: &str = "https://dns.alidns.com/resolve";
-const APP_API_PIXIV_NET_HOST: &str = "app-api.pixiv.net";
-const APP_API_PIXIV_NET_ECH_BOOTSTRAP_HOST: &str = "cloudflare-ech.com";
+const ECH_BOOTSTRAP_HOST: &str = "cloudflare-ech.com";
 
 #[derive(Clone)]
 pub struct ClientSettings {
@@ -259,10 +258,6 @@ impl RequestClient {
         let Some(host) = url.host_str() else {
             return false;
         };
-
-        if !host.eq_ignore_ascii_case(APP_API_PIXIV_NET_HOST) {
-            return false;
-        }
 
         if host.parse::<IpAddr>().is_ok() {
             return false;
@@ -726,15 +721,13 @@ impl EchTransport {
     }
 
     async fn lookup_ech_config(&self, host: &str) -> Result<EchLookupResult, RhttpError> {
-        if host.eq_ignore_ascii_case(APP_API_PIXIV_NET_HOST) {
-            let parsed = self
-                .lookup_alidns_https_ech(APP_API_PIXIV_NET_ECH_BOOTSTRAP_HOST)
-                .await?;
-            return Ok(EchLookupResult {
-                ech_config: Some(parsed.ech),
-                ttl: parsed.ttl,
-            });
-        }
+        let parsed = self
+            .lookup_alidns_https_ech(ECH_BOOTSTRAP_HOST)
+            .await?;
+        return Ok(EchLookupResult {
+            ech_config: Some(parsed.ech),
+            ttl: parsed.ttl,
+        });
 
         Ok(EchLookupResult {
             ech_config: None,
