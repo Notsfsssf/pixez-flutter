@@ -31,9 +31,9 @@ class PixezNetworkSettings {
     return compatible();
   }
 
-  static r.ClientSettings? forImages(NetworkMode mode) {
+  static r.ClientSettings? forImages(String? host, NetworkMode mode) {
     if (mode == NetworkMode.standard) return null;
-    if (userSetting.pictureSource != imageHost) return null;
+    if (host != imageHost) return null;
     return compatible();
   }
 
