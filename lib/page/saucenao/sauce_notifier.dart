@@ -18,8 +18,6 @@ import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/er/prefer.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
-import 'package:pixez/network/api_client.dart';
-import 'package:pixez/network/network_mode.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -33,11 +31,9 @@ abstract class SauceState with _$SauceState {
 
 @riverpod
 class Sauce extends _$Sauce {
-  static String host = "saucenao.com";
   Dio dio = Dio(
     BaseOptions(
       baseUrl: "https://saucenao.com",
-      headers: {HttpHeaders.hostHeader: host},
     ),
   );
   List<int> results = [];
@@ -143,11 +139,6 @@ class Sauce extends _$Sauce {
     ]);
     try {
       BotToast.showText(text: I18n.ofContext().uploading);
-      if (userSetting.networkMode == NetworkMode.standard) {
-        dio.options.baseUrl = "https://$host";
-      } else {
-        dio.httpClientAdapter = await ApiClient.createCompatibleClient();
-      }
       Response response = await dio.post('/search.php', data: formData);
       BotToast.showText(text: I18n.ofContext().parsing);
       var document = parse(response.data);
