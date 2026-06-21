@@ -6,7 +6,6 @@ import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/er/prefer.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/onezero_response.dart';
-import 'package:pixez/network/pixez_network_settings.dart';
 import 'package:rhttp/rhttp.dart' as r;
 
 class Hoster {
@@ -29,17 +28,17 @@ class Hoster {
     'oauth.secure.pixiv.net',
   ];
 
-  static Dio httpClient = Dio(BaseOptions(baseUrl: 'https://1.1.1.1'));
-  static r.RhttpCompatibleClient? compatibleClient;
+  static Dio httpClient = Dio(BaseOptions(baseUrl: 'https://1dot1dot1dot1.cloudflare-dns.com'));
 
   static Future<Dio> createDioClient() async {
-    if (compatibleClient == null) {
-      return httpClient;
-    }
-    compatibleClient ??= await r.RhttpCompatibleClient.create(
-      settings: userSetting.networkMode.usesCompatibleConnection
-          ? PixezNetworkSettings.compatible()
-          : null,
+    final compatibleClient = await r.RhttpCompatibleClient.create(
+      settings: r.ClientSettings(
+        dnsSettings: r.DnsSettings.static(
+          overrides: {
+            "1dot1dot1dot1.cloudflare-dns.com": ['104.16.248.249', '104.16.249.249'],
+          },
+        ),
+      )
     );
     httpClient.httpClientAdapter = ConversionLayerAdapter(compatibleClient!);
     return httpClient;
