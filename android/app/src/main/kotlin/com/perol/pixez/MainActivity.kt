@@ -108,6 +108,10 @@ class MainActivity : FlutterActivity() {
 
                 "permissionStatus" -> {
                     if (Build.VERSION.SDK_INT >= 33) {
+                        if (BuildConfig.IS_GOOGLEPLAY) {
+                            result.success(true)
+                            return@setMethodCallHandler
+                        }
                         val checkSelfPermission = ContextCompat.checkSelfPermission(
                             this,
                             Manifest.permission.READ_MEDIA_IMAGES

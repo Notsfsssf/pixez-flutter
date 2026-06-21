@@ -22,7 +22,7 @@ let package = Package(
         .package(name: "in_app_purchase_storekit", path: "../.packages/in_app_purchase_storekit-0.4.9"),
         .package(name: "just_audio", path: "../.packages/just_audio-0.10.5"),
         .package(name: "package_info_plus", path: "../.packages/package_info_plus-10.1.0"),
-        .package(name: "permission_handler_apple", path: "../.packages/permission_handler_apple-9.4.9"),
+        .package(name: "permission_handler_apple", path: "../.packages/permission_handler_apple-9.4.10"),
         .package(name: "share_plus", path: "../.packages/share_plus-13.1.0"),
         .package(name: "shared_preferences_foundation", path: "../.packages/shared_preferences_foundation-2.5.6"),
         .package(name: "sqflite_darwin", path: "../.packages/sqflite_darwin-2.4.2"),

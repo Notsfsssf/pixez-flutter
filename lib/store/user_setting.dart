@@ -457,6 +457,10 @@ abstract class _UserSetting with Store {
     final storedMode = prefs.getString(NETWORK_MODE_KEY);
     if (storedMode != null && storedMode.isNotEmpty) {
       networkMode = NetworkMode.fromCode(storedMode);
+      // Persist migration away from the now-hidden compatibility mode.
+      if (storedMode != networkMode.code) {
+        await prefs.setString(NETWORK_MODE_KEY, networkMode.code);
+      }
       await prefs.remove(LEGACY_DISABLE_BYPASS_SNI_KEY);
       return;
     }
@@ -464,7 +468,7 @@ abstract class _UserSetting with Store {
     final legacyValue = prefs.getBool(LEGACY_DISABLE_BYPASS_SNI_KEY);
     networkMode = legacyValue == true
         ? NetworkMode.standard
-        : NetworkMode.compat;
+        : NetworkMode.ech;
     await prefs.setString(NETWORK_MODE_KEY, networkMode.code);
     await prefs.remove(LEGACY_DISABLE_BYPASS_SNI_KEY);
   }

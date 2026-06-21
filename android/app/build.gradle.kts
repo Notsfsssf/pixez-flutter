@@ -54,7 +54,9 @@ if (keystorePropertiesFile.exists()) {
     keystorePropertiesFile.inputStream().use { keystoreProperties.load(it) }
 }
 
-val packageName = if (dartEnvironmentVariables["IS_GOOGLEPLAY"] as Boolean) {
+val isGooglePlay = dartEnvironmentVariables["IS_GOOGLEPLAY"] as Boolean
+
+val packageName = if (isGooglePlay) {
     "com.perol.play.pixez"
 } else {
     "com.perol.pixez"
@@ -70,12 +72,17 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = packageName
         minSdk = flutter.minSdkVersion
         targetSdk = 35
-        versionCode = 10010010
-        versionName = "0.9.101 mode"
+        versionCode = 10010021
+        versionName = "0.9.102 cloud"
+        buildConfigField("boolean", "IS_GOOGLEPLAY", isGooglePlay.toString())
         ndk {
             abiFilters.addAll(arrayOf("armeabi-v7a", "arm64-v8a", "x86_64"))
         }
@@ -105,6 +112,14 @@ android {
         if (keystorePropertiesFile.exists()) {
             getByName("release") {
                 signingConfig = signingConfigs.getByName("release")
+            }
+        }
+    }
+
+    if (isGooglePlay) {
+        sourceSets {
+            getByName("release") {
+                manifest.srcFile("src/googlePlayRelease/AndroidManifest.xml")
             }
         }
     }

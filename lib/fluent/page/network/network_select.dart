@@ -39,7 +39,7 @@ class _NetworkSelectPageState extends State<NetworkSelectPage> {
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: NetworkMode.values.map((mode) {
+                          children: NetworkMode.selectableValues.map((mode) {
                             return RadioButton<NetworkMode>(
                               value: mode,
                               content: Column(

@@ -450,6 +450,9 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     try {
       if (Platform.isAndroid && userSetting.saveMode != 1) {
         final info = await DeviceInfoPlugin().androidInfo;
+        if (Constants.isGooglePlay && info.version.sdkInt >= 33) {
+          return;
+        }
         Permission permission = (info.version.sdkInt >= 33)
             ? Permission.photos
             : Permission.storage;

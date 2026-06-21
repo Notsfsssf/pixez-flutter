@@ -207,7 +207,7 @@ class _NetworkPageState extends State<NetworkPage> {
               await userSetting.setNetworkMode(value);
             },
             child: Column(
-              children: NetworkMode.values.map((mode) {
+              children: NetworkMode.selectableValues.map((mode) {
                 return RadioListTile<NetworkMode>(
                   value: mode,
                   title: Text(_networkModeTitle(context, mode)),
