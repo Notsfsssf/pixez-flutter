@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: Build Windows
-    runs-on: windows-latest
+    runs-on: windows-2022
     outputs:
       binary-artifact: ${{ steps.binary-artifact.outputs.artifact-url }}
       msix-conclusion: ${{ steps.msix.conclusion }}
