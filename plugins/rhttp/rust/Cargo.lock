@@ -1549,6 +1549,7 @@ dependencies = [
  "serde_json",
  "tokio",
  "tokio-util",
+ "webpki-root-certs",
 ]
 
 [[package]]

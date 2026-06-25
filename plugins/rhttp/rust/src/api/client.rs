@@ -401,7 +401,7 @@ fn apply_reqwest_tls_settings(
     tls_settings: Option<&TlsSettings>,
 ) -> Result<reqwest::ClientBuilder, RhttpError> {
     let Some(tls_settings) = tls_settings else {
-        return Ok(client);
+        return Ok(client.tls_certs_only(webpki_root_certs()?));
     };
 
     let root_certificates = tls_settings
@@ -416,8 +416,10 @@ fn apply_reqwest_tls_settings(
 
     if !tls_settings.trust_root_certificates {
         client = client.tls_certs_only(root_certificates);
-    } else if !root_certificates.is_empty() {
-        client = client.tls_certs_merge(root_certificates);
+    } else {
+        let mut certs = root_certificates;
+        certs.extend(webpki_root_certs()?);
+        client = client.tls_certs_only(certs);
     }
 
     if tls_settings.verify_certificates {
@@ -658,6 +660,18 @@ fn parse_private_key(private_key: &[u8]) -> Result<PrivateKeyDer<'static>, Rhttp
                 .map_err(|_| "Invalid private key".to_string())
         })
         .map_err(|e| RhttpError::RhttpUnknownError(format!("{e:?}")))
+}
+
+/// The webpki (Mozilla) root certificates bundled with the crate.
+fn webpki_root_certs() -> Result<Vec<Certificate>, RhttpError> {
+    webpki_root_certs::TLS_SERVER_ROOT_CERTS
+        .iter()
+        .map(|der| {
+            Certificate::from_der(der.as_ref()).map_err(|e| {
+                RhttpError::RhttpUnknownError(format!("Error adding webpki root: {e:?}"))
+            })
+        })
+        .collect()
 }
 
 struct StaticResolver {
