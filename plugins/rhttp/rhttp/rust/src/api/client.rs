@@ -763,6 +763,11 @@ impl EchTransport {
         let client = reqwest::Client::builder()
             .no_proxy()
             .redirect(reqwest::redirect::Policy::none())
+            // Use the bundled Mozilla (webpki) roots instead of the platform
+            // verifier. AliDNS is signed by a public CA in that bundle, and this
+            // avoids depending on the Android JNI platform-verifier init, which
+            // is why the bootstrap query failed on Android but not iOS.
+            .tls_certs_only(webpki_root_certs()?)
             .build()
             .map_err(|e| RhttpError::RhttpUnknownError(e.to_string()))?;
 
@@ -790,7 +795,12 @@ impl EchTransport {
             .header("accept", "application/json")
             .send()
             .await
-            .map_err(|e| RhttpError::RhttpUnknownError(format!("AliDNS ECH request failed: {e}")))?;
+            .map_err(|e| {
+                RhttpError::RhttpUnknownError(format!(
+                    "AliDNS ECH request failed: {}",
+                    full_error_chain(&e)
+                ))
+            })?;
 
         let status = response.status();
         if !status.is_success() {
@@ -805,6 +815,16 @@ impl EchTransport {
 
         parse_alidns_https_ech_response(body.as_ref())
     }
+}
+
+fn full_error_chain(err: &(dyn std::error::Error + 'static)) -> String {
+    let mut parts = vec![err.to_string()];
+    let mut source = err.source();
+    while let Some(inner) = source {
+        parts.push(inner.to_string());
+        source = inner.source();
+    }
+    parts.join(" -> ")
 }
 
 fn parse_alidns_https_ech_response(body: &[u8]) -> Result<ParsedAliDnsHttpsEch, RhttpError> {
