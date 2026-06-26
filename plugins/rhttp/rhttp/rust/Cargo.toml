@@ -1,0 +1,61 @@
+[package]
+name = "rhttp"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "staticlib"]
+
+[dependencies]
+base64 = "0.22"
+chrono = "0.4.45"
+flutter_rust_bridge = { version = "=2.12.0", features = ["chrono"] }
+futures-util = "0.3.32"
+log = "0.4.32"
+rustls = "0.23"
+rustls-platform-verifier = "0.7"
+serde_json = "1.0"
+webpki-root-certs = "1.0"
+tokio = { version = "1.52", features = ["full"] }
+tokio-util = "0.7.18"
+
+[target.'cfg(target_os = "android")'.dependencies]
+jni = "0.22"
+ndk-context = "0.1"
+
+[dependencies.reqwest]
+version = "0.13.4"
+default-features = false
+features = [
+    "charset",
+    "cookies",
+    "form",
+    "http2",
+    "http3",
+    "query",
+    "rustls",
+    "stream",
+    "multipart",
+    "socks",
+
+    # Compression
+    "brotli",
+    "deflate",
+    "gzip",
+    "zstd",
+]
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
+
+[profile.release]
+opt-level = 3
+strip = true
+panic = "abort"
+lto = true
+codegen-units = 1
+
+[profile.dev]
+debug-assertions = false # Set to true for Trace logging during development.
+opt-level = 3
+panic = "abort"

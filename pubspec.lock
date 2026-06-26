@@ -1385,10 +1385,10 @@ packages:
   rhttp:
     dependency: "direct main"
     description:
-      path: "plugins/rhttp"
+      path: "plugins/rhttp/rhttp"
       relative: true
     source: path
-    version: "0.16.0"
+    version: "0.18.0"
   riverpod:
     dependency: transitive
     description:

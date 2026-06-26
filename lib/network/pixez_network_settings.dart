@@ -18,7 +18,11 @@ class PixezNetworkSettings {
       return r.ClientSettings(
         enableEch: true,
         requireEch: true,
-        tlsSettings: r.TlsSettings(verifyCertificates: false, sni: true),
+        tlsSettings: r.TlsSettings(
+          verifyCertificates: true,
+          rootCertSource: r.RootCertSource.webpki,
+          sni: true,
+        ),
         dnsSettings: r.DnsSettings.static(
           overrides: {
             appApiHost: ['104.18.10.118', '104.18.11.118'],

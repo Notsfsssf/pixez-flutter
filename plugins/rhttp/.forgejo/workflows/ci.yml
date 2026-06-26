@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  FLUTTER_VERSION_OLDEST: "3.35.7"
+  FLUTTER_VERSION_NEWEST: "3.41.9"
+
+defaults:
+  run:
+    working-directory: rhttp
+
+jobs:
+  test:
+    name: Test (newest Flutter version)
+    runs-on: self-hosted
+
+    container:
+      image: ghcr.io/cirruslabs/flutter:${{ env.FLUTTER_VERSION_NEWEST }}
+
+    steps:
+      - uses: https://codeberg.org/Tienisto/checkout@v0.1.0
+
+      - name: Dependencies
+        run: flutter pub get
+
+      - name: Check format
+        run: dart format --set-exit-if-changed lib bin test
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Test
+        run: flutter test
+
+  test_legacy:
+    name: Test (oldest Flutter version)
+    runs-on: self-hosted
+
+    container:
+      image: ghcr.io/cirruslabs/flutter:${{ env.FLUTTER_VERSION_OLDEST }}
+
+    steps:
+      - uses: https://codeberg.org/Tienisto/checkout@v0.1.0
+
+      - name: Remove example
+        run: rm -rf example
+
+      - name: Downgrade
+        run: flutter pub downgrade
+
+      - name: Test
+        run: flutter test

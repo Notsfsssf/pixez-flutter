@@ -1,0 +1,41 @@
+PODS:
+  - cupertino_http (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - Flutter (1.0.0)
+  - integration_test (0.0.1):
+    - Flutter
+  - objective_c (0.0.1):
+    - Flutter
+  - rhttp (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - cupertino_http (from `.symlinks/plugins/cupertino_http/darwin`)
+  - Flutter (from `Flutter`)
+  - integration_test (from `.symlinks/plugins/integration_test/ios`)
+  - objective_c (from `.symlinks/plugins/objective_c/ios`)
+  - rhttp (from `.symlinks/plugins/rhttp/ios`)
+
+EXTERNAL SOURCES:
+  cupertino_http:
+    :path: ".symlinks/plugins/cupertino_http/darwin"
+  Flutter:
+    :path: Flutter
+  integration_test:
+    :path: ".symlinks/plugins/integration_test/ios"
+  objective_c:
+    :path: ".symlinks/plugins/objective_c/ios"
+  rhttp:
+    :path: ".symlinks/plugins/rhttp/ios"
+
+SPEC CHECKSUMS:
+  cupertino_http: 947a233f40cfea55167a49f2facc18434ea117ba
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
+  objective_c: 77e887b5ba1827970907e10e832eec1683f3431d
+  rhttp: 367a8162e63311c6dde543169b591cc04454dcd6
+
+PODFILE CHECKSUM: a57f30d18f102dd3ce366b1d62a55ecbef2158e5
+
+COCOAPODS: 1.16.2
