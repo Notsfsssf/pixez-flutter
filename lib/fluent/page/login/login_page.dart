@@ -164,7 +164,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _launch(url) async {
-    if (userSetting.networkMode.usesCompatibleConnection) {
+    if (userSetting.oauthNetworkMode.usesCompatibleConnection) {
       // await WeissServer.listener();
       // await WeissPlugin.start();
       // await WeissPlugin.proxy();

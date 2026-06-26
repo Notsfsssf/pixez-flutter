@@ -199,25 +199,54 @@ class _NetworkPageState extends State<NetworkPage> {
     return Card(
       child: Column(
         children: [
-          ListTile(title: Text(I18n.of(context).network_mode)),
-          RadioGroup<NetworkMode>(
+          ListTile(
+            title: Text(I18n.of(context).network_mode),
+            subtitle: Text(I18n.of(context).network_mode_restart_may_required),
+          ),
+          _buildModeGroup(
+            context,
+            title: I18n.of(context).network_mode_oauth,
+            groupValue: userSetting.oauthNetworkMode,
+            onChanged: userSetting.setOAuthNetworkMode,
+          ),
+          Divider(height: 1),
+          _buildModeGroup(
+            context,
+            title: I18n.of(context).network_mode_api_service,
             groupValue: userSetting.networkMode,
-            onChanged: (value) async {
-              if (value == null) return;
-              await userSetting.setNetworkMode(value);
-            },
-            child: Column(
-              children: NetworkMode.selectableValues.map((mode) {
-                return RadioListTile<NetworkMode>(
-                  value: mode,
-                  title: Text(_networkModeTitle(context, mode)),
-                  subtitle: Text(_networkModeMessage(context, mode)),
-                );
-              }).toList(),
-            ),
+            onChanged: userSetting.setNetworkMode,
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildModeGroup(
+    BuildContext context, {
+    required String title,
+    required NetworkMode groupValue,
+    required Future Function(NetworkMode value) onChanged,
+  }) {
+    return Column(
+      children: [
+        ListTile(title: Text(title)),
+        RadioGroup<NetworkMode>(
+          groupValue: groupValue,
+          onChanged: (value) async {
+            if (value == null || value == groupValue) return;
+            await onChanged(value);
+          },
+          child: Column(
+            children: NetworkMode.selectableValues.map((mode) {
+              return RadioListTile<NetworkMode>(
+                value: mode,
+                title: Text(_networkModeTitle(context, mode)),
+                subtitle: Text(_networkModeMessage(context, mode)),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
     );
   }
 

@@ -35,7 +35,7 @@ dependencies:
   package_info_plus: ^10.1.0
   mobx: ^2.3.3+2
   flutter_mobx: ^2.2.1+1
-  in_app_purchase: ^3.2.3
+  in_app_purchase: ^3.3.0
   flutter_widget_from_html: ^0.17.2
   device_info_plus: ^13.1.0
   flutter_displaymode: ^0.7.0

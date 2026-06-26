@@ -60,6 +60,9 @@ abstract class _UserSetting with Store {
   static const String STORE_PATH_KEY = "save_store";
   static const String PICTURE_SOURCE_KEY = "picture_source";
   static const String NETWORK_MODE_KEY = "network_mode";
+  static const String API_NETWORK_MODE_KEY = "network_mode_app_api_pixiv_net";
+  static const String OAUTH_NETWORK_MODE_KEY =
+      "network_mode_oauth_secure_pixiv_net";
   static const String LEGACY_DISABLE_BYPASS_SNI_KEY = "disable_bypass_sni";
   static const String ISHELPLESSWAY_KEY = "is_helplessway";
   static const String THEME_MODE_KEY = "theme_mode";
@@ -149,7 +152,9 @@ abstract class _UserSetting with Store {
   @observable
   int? displayMode;
   @observable
-  NetworkMode networkMode = NetworkMode.standard;
+  NetworkMode networkMode = NetworkMode.ech;
+  @observable
+  NetworkMode oauthNetworkMode = NetworkMode.ech;
   @observable
   bool singleFolder = false;
   @observable
@@ -160,6 +165,8 @@ abstract class _UserSetting with Store {
   bool followAfterStar = false;
   @observable
   String? pictureSource = ImageHost;
+
+  bool get needsCompatibleDnsFetch => networkMode == NetworkMode.compat;
   @observable
   double novelFontsize = 16.0;
   @observable
@@ -454,23 +461,34 @@ abstract class _UserSetting with Store {
   }
 
   Future<void> _restoreNetworkMode() async {
+    final migratedMode = _migratedNetworkModeFromLegacy();
+    networkMode = _restoreMode(API_NETWORK_MODE_KEY, migratedMode);
+    oauthNetworkMode = _restoreMode(OAUTH_NETWORK_MODE_KEY, migratedMode);
+    await prefs.setString(API_NETWORK_MODE_KEY, networkMode.code);
+    await prefs.setString(OAUTH_NETWORK_MODE_KEY, oauthNetworkMode.code);
+    await prefs.remove(NETWORK_MODE_KEY);
+    await prefs.remove(LEGACY_DISABLE_BYPASS_SNI_KEY);
+  }
+
+  NetworkMode _restoreMode(String key, NetworkMode fallback) {
+    final storedMode = prefs.getString(key);
+    if (storedMode != null && storedMode.isNotEmpty) {
+      return NetworkMode.fromCode(storedMode);
+    }
+    return fallback;
+  }
+
+  NetworkMode _migratedNetworkModeFromLegacy() {
     final storedMode = prefs.getString(NETWORK_MODE_KEY);
     if (storedMode != null && storedMode.isNotEmpty) {
-      networkMode = NetworkMode.fromCode(storedMode);
-      // Persist migration away from the now-hidden compatibility mode.
-      if (storedMode != networkMode.code) {
-        await prefs.setString(NETWORK_MODE_KEY, networkMode.code);
-      }
-      await prefs.remove(LEGACY_DISABLE_BYPASS_SNI_KEY);
-      return;
+      final legacyMode = NetworkMode.fromCode(storedMode);
+      return legacyMode == NetworkMode.standard
+          ? NetworkMode.standard
+          : NetworkMode.ech;
     }
 
     final legacyValue = prefs.getBool(LEGACY_DISABLE_BYPASS_SNI_KEY);
-    networkMode = legacyValue == true
-        ? NetworkMode.standard
-        : NetworkMode.ech;
-    await prefs.setString(NETWORK_MODE_KEY, networkMode.code);
-    await prefs.remove(LEGACY_DISABLE_BYPASS_SNI_KEY);
+    return legacyValue == true ? NetworkMode.standard : NetworkMode.ech;
   }
 
   Future<void> _restoreWelcomePageType() async {
@@ -642,7 +660,7 @@ abstract class _UserSetting with Store {
 
   @action
   setNetworkMode(NetworkMode value) async {
-    await prefs.setString(NETWORK_MODE_KEY, value.code);
+    await prefs.setString(API_NETWORK_MODE_KEY, value.code);
     networkMode = value;
     if (!value.allowsImageSource) {
       pictureSource = ImageHost;
@@ -653,6 +671,13 @@ abstract class _UserSetting with Store {
     }
     await _applyNetworkClients();
     fetcher.reloadNetwork();
+  }
+
+  @action
+  setOAuthNetworkMode(NetworkMode value) async {
+    await prefs.setString(OAUTH_NETWORK_MODE_KEY, value.code);
+    oauthNetworkMode = value;
+    await _applyNetworkClients();
   }
 
   @action

@@ -75,6 +75,13 @@ class TaskBean {
   });
 }
 
+class NetworkReloadMessage {
+  final NetworkMode networkMode;
+  final String? source;
+
+  NetworkReloadMessage({required this.networkMode, required this.source});
+}
+
 class Fetcher {
   BuildContext? context;
   List<TaskBean> queue = [];
@@ -204,7 +211,10 @@ class Fetcher {
     sendPortToChild?.send(
       IsoContactBean(
         state: IsoTaskState.RELOAD,
-        data: userSetting.networkMode,
+        data: NetworkReloadMessage(
+          networkMode: userSetting.networkMode,
+          source: userSetting.pictureSource,
+        ),
       ),
     );
   }
@@ -276,7 +286,10 @@ entryPoint(SendMessage message) async {
   Hoster.dnsQueryFetcher();
   final dio = Dio();
   final client = await r.RhttpCompatibleClient.createSync(
-    settings: PixezNetworkSettings.forImages(currentPictureSource, currentNetworkMode),
+    settings: PixezNetworkSettings.forImages(
+      currentPictureSource,
+      currentNetworkMode,
+    ),
   );
   dio.interceptors.add(
     PixivImageSourceInterceptor(
@@ -295,10 +308,14 @@ entryPoint(SendMessage message) async {
     try {
       IsoContactBean isoContactBean = message;
       if (isoContactBean.state == IsoTaskState.RELOAD) {
-        currentNetworkMode = isoContactBean.data.NetworkMode;
-        currentPictureSource = isoContactBean.data.source;
+        final reload = isoContactBean.data as NetworkReloadMessage;
+        currentNetworkMode = reload.networkMode;
+        currentPictureSource = reload.source ?? PixezNetworkSettings.imageHost;
         final newClient = await r.RhttpCompatibleClient.createSync(
-          settings: PixezNetworkSettings.forImages(currentPictureSource, currentNetworkMode),
+          settings: PixezNetworkSettings.forImages(
+            currentPictureSource,
+            currentNetworkMode,
+          ),
         );
         dio.httpClientAdapter = ConversionLayerAdapter(newClient);
         return;

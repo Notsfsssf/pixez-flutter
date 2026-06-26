@@ -31,7 +31,6 @@ import 'package:pixez/models/follow_detail.dart';
 import 'package:pixez/models/illust_bookmark_tags_response.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
-import 'package:pixez/network/network_mode.dart';
 import 'package:pixez/network/pixez_network_settings.dart';
 import 'package:pixez/network/refresh_token_interceptor.dart';
 import 'package:rhttp/rhttp.dart' as r;
@@ -95,7 +94,7 @@ class ApiClient {
       settings: PixezNetworkSettings.forImages(
         userSetting.pictureSource,
         userSetting.networkMode,
-    ),
+      ),
     );
     return ConversionLayerAdapter(compatibleClient);
   }

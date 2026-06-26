@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:pixez/er/hoster.dart';
-import 'package:pixez/main.dart';
 import 'package:pixez/network/network_mode.dart';
 import 'package:rhttp/rhttp.dart' as r;
 

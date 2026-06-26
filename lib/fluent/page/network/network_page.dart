@@ -54,31 +54,23 @@ class _NetworkPageState extends State<NetworkPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(I18n.of(context).network_mode),
+          Text(
+            I18n.of(context).network_mode_restart_may_required,
+            style: FluentTheme.of(context).typography.caption,
+          ),
           const SizedBox(height: 8),
-          RadioGroup<NetworkMode>(
+          _buildModeGroup(
+            context,
+            title: I18n.of(context).network_mode_oauth,
+            groupValue: userSetting.oauthNetworkMode,
+            onChanged: userSetting.setOAuthNetworkMode,
+          ),
+          const SizedBox(height: 12),
+          _buildModeGroup(
+            context,
+            title: I18n.of(context).network_mode_api_service,
             groupValue: userSetting.networkMode,
-            onChanged: (value) async {
-              if (value == null) return;
-              await userSetting.setNetworkMode(value);
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: NetworkMode.selectableValues.map((mode) {
-                return RadioButton<NetworkMode>(
-                  value: mode,
-                  content: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(_networkModeTitle(context, mode)),
-                      Text(
-                        _networkModeMessage(context, mode),
-                        style: FluentTheme.of(context).typography.caption,
-                      ),
-                    ],
-                  ),
-                );
-              }).toList(),
-            ),
+            onChanged: userSetting.setNetworkMode,
           ),
         ],
       ),
@@ -155,6 +147,46 @@ class _NetworkPageState extends State<NetworkPage> {
           : const SizedBox.shrink(),
     );
     return widget;
+  }
+
+  Widget _buildModeGroup(
+    BuildContext context, {
+    required String title,
+    required NetworkMode groupValue,
+    required Future Function(NetworkMode value) onChanged,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title),
+        const SizedBox(height: 6),
+        RadioGroup<NetworkMode>(
+          groupValue: groupValue,
+          onChanged: (value) async {
+            if (value == null || value == groupValue) return;
+            await onChanged(value);
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: NetworkMode.selectableValues.map((mode) {
+              return RadioButton<NetworkMode>(
+                value: mode,
+                content: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(_networkModeTitle(context, mode)),
+                    Text(
+                      _networkModeMessage(context, mode),
+                      style: FluentTheme.of(context).typography.caption,
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
+    );
   }
 
   String _networkModeTitle(BuildContext context, NetworkMode mode) {

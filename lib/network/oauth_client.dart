@@ -57,7 +57,7 @@ class OAuthClient {
     final compatibleClient = await r.RhttpCompatibleClient.create(
       settings: PixezNetworkSettings.forHost(
         BASE_OAUTH_URL_HOST,
-        userSetting.networkMode,
+        userSetting.oauthNetworkMode,
       ),
     );
     httpClient.httpClientAdapter = ConversionLayerAdapter(compatibleClient);

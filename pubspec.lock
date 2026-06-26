@@ -881,18 +881,18 @@ packages:
     dependency: "direct main"
     description:
       name: in_app_purchase
-      sha256: "5cddd7f463f3bddb1d37a72b95066e840d5822d66291331d7f8f05ce32c24b6c"
+      sha256: "0e9510b80b0074e89ab0a8e0fc901439b779dc9ae575ab8d419253c6e1627716"
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.3"
+    version: "3.3.0"
   in_app_purchase_android:
     dependency: transitive
     description:
       name: in_app_purchase_android
-      sha256: "518b48a385dfc1aa278080472969c6cee0c3d41ef8b9511b0071dd015473ecf1"
+      sha256: eb8f551039481d1b265f12fa54f5ab5dd4f13ec5444a468b85a3793517a37fda
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.0+11"
+    version: "0.5.1"
   in_app_purchase_platform_interface:
     dependency: transitive
     description:

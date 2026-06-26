@@ -21,7 +21,6 @@ import 'package:pixez/er/leader.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
-import 'package:pixez/network/network_mode.dart';
 import 'package:pixez/network/oauth_client.dart';
 
 class SplashPage extends StatefulWidget {
@@ -54,10 +53,10 @@ class _SplashPageState extends State<SplashPage>
   bool isPush = false;
 
   initMethod() {
-    if (userSetting.networkMode == NetworkMode.compat) {
+    if (userSetting.needsCompatibleDnsFetch) {
       //ugly,consider refactor with other state management
-      userDisposer = reaction((_) => userSetting.networkMode, (_) {
-        if (userSetting.networkMode != NetworkMode.compat) {
+      userDisposer = reaction((_) => userSetting.needsCompatibleDnsFetch, (_) {
+        if (!userSetting.needsCompatibleDnsFetch) {
           apiClient.httpClient.options.baseUrl =
               'https://${ApiClient.BASE_API_URL_HOST}';
           oAuthClient.httpClient.options.baseUrl =

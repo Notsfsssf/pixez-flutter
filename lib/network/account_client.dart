@@ -135,7 +135,7 @@ class AccountClient {
     final compatibleClient = await r.RhttpCompatibleClient.create(
       settings: PixezNetworkSettings.forHost(
         BASE_API_URL_HOST,
-        userSetting.networkMode,
+        userSetting.oauthNetworkMode,
       ),
     );
     dio.httpClientAdapter = ConversionLayerAdapter(compatibleClient);
