@@ -26,6 +26,7 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/about/languages.dart';
 import 'package:pixez/fluent/page/hello/setting/copy_text_page.dart';
+import 'package:pixez/fluent/page/hello/setting/detail_favorite_button_preview_page.dart';
 import 'package:pixez/fluent/page/hello/setting/setting_cross_adapter_page.dart';
 import 'package:pixez/fluent/page/network/network_page.dart';
 import 'package:pixez/fluent/page/platform/platform_page.dart';
@@ -205,6 +206,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
               },
             ),
           ),
+          ..._buildDetailFavoriteButtonPositionSetting(),
           ListTile(
             leading: const Icon(Icons.zoom_out_map),
             title: Text(I18n.of(context).large_preview_zoom_quality),
@@ -469,6 +471,74 @@ class _SettingQualityPageState extends State<SettingQualityPage>
           ),
         ],
       ),
+    );
+  }
+
+  List<Widget> _buildDetailFavoriteButtonPositionSetting() {
+    final positions = userSetting.detailFavoriteButtonPositions;
+    final selectedPosition =
+        positions.contains(userSetting.detailFavoriteButtonPosition)
+        ? userSetting.detailFavoriteButtonPosition
+        : positions[0];
+    return [
+      ListTile(
+        title: Text(I18n.of(context).detail_favorite_button_position("title")),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ComboBox<int>(
+              value: selectedPosition,
+              items: positions
+                  .map(
+                    (position) => ComboBoxItem(
+                      child: Text(
+                        I18n.of(context).detail_favorite_button_position(
+                          userSetting.detailFavoriteButtonPositionCode(
+                            position,
+                          ),
+                        ),
+                      ),
+                      value: position,
+                    ),
+                  )
+                  .toList(),
+              onChanged: (index) {
+                final position = index ?? positions[0];
+                userSetting.setDetailFavoriteButtonPosition(position);
+                if (_isDetailFavoriteButtonCustomPosition(position)) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (mounted) _openDetailFavoriteButtonPreview();
+                  });
+                }
+              },
+            ),
+            if (userSetting.detailFavoriteButtonCustom)
+              Tooltip(
+                message: I18n.of(
+                  context,
+                ).detail_favorite_button_position("custom"),
+                child: IconButton(
+                  icon: const Icon(FluentIcons.open_in_new_window),
+                  onPressed: _openDetailFavoriteButtonPreview,
+                ),
+              ),
+          ],
+        ),
+      ),
+    ];
+  }
+
+  bool _isDetailFavoriteButtonCustomPosition(int position) {
+    return userSetting.detailFavoriteButtonPositionCode(position) == "custom";
+  }
+
+  void _openDetailFavoriteButtonPreview() {
+    Leader.push(
+      context,
+      const DetailFavoriteButtonPreviewPage(),
+      icon: const Icon(FluentIcons.favorite_star),
+      title: Text(I18n.of(context).detail_favorite_button_position("title")),
+      forceSkipWrap: true,
     );
   }
 

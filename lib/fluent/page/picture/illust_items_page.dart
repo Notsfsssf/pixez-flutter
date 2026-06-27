@@ -4,6 +4,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/clipboard_plugin.dart';
+import 'package:pixez/component/detail_favorite_button_location.dart';
 import 'package:pixez/fluent/component/ban_page.dart';
 import 'package:pixez/fluent/component/context_menu.dart';
 import 'package:pixez/fluent/component/painter_avatar.dart';
@@ -143,41 +144,72 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
               }
             }
           }
+          final favoriteButton = SizedBox(
+            width: detailFavoriteButtonPreviewSize,
+            height: detailFavoriteButtonPreviewSize,
+            child: Center(
+              child: ContextMenu(
+                child: ButtonTheme(
+                  child: IconButton(
+                    icon: Observer(
+                      builder: (_) => StarIcon(state: illustStore.state),
+                    ),
+                    onPressed: star,
+                  ),
+                  data: ButtonThemeData(
+                    iconButtonStyle: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(
+                        FluentTheme.of(context).inactiveBackgroundColor,
+                      ),
+                      shadowColor: WidgetStateProperty.all(
+                        FluentTheme.of(context).shadowColor,
+                      ),
+                      shape: WidgetStateProperty.all(CircleBorder()),
+                    ),
+                  ),
+                ),
+                items: [
+                  MenuFlyoutItem(
+                    text: Text(I18n.of(context).favorited_tag),
+                    onPressed: () async {
+                      await showBookMarkTag();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+          if (userSetting.detailFavoriteButtonCustom) {
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                final offset = detailFavoriteStackOffset(
+                  userSetting,
+                  Size(constraints.maxWidth, constraints.maxHeight),
+                  const Size(
+                    detailFavoriteButtonPreviewSize,
+                    detailFavoriteButtonPreviewSize,
+                  ),
+                );
+                return Stack(
+                  children: [
+                    buildContent(context, illustStore.illusts),
+                    Positioned(
+                      left: offset.dx,
+                      top: offset.dy,
+                      child: favoriteButton,
+                    ),
+                  ],
+                );
+              },
+            );
+          }
           return Stack(
-            alignment: AlignmentDirectional.bottomEnd,
+            alignment: detailFavoriteStackAlignment(userSetting),
             children: [
               buildContent(context, illustStore.illusts),
               Container(
-                margin: EdgeInsets.only(right: 8.0, bottom: 8.0),
-                child: ContextMenu(
-                  child: ButtonTheme(
-                    child: IconButton(
-                      icon: Observer(
-                        builder: (_) => StarIcon(state: illustStore.state),
-                      ),
-                      onPressed: star,
-                    ),
-                    data: ButtonThemeData(
-                      iconButtonStyle: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(
-                          FluentTheme.of(context).inactiveBackgroundColor,
-                        ),
-                        shadowColor: WidgetStateProperty.all(
-                          FluentTheme.of(context).shadowColor,
-                        ),
-                        shape: WidgetStateProperty.all(CircleBorder()),
-                      ),
-                    ),
-                  ),
-                  items: [
-                    MenuFlyoutItem(
-                      text: Text(I18n.of(context).favorited_tag),
-                      onPressed: () async {
-                        await showBookMarkTag();
-                      },
-                    ),
-                  ],
-                ),
+                margin: detailFavoriteStackMargin(userSetting),
+                child: favoriteButton,
               ),
             ],
           );

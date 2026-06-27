@@ -24,6 +24,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/ban_page.dart';
 import 'package:pixez/component/common_back_area.dart';
+import 'package:pixez/component/detail_favorite_button_location.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixez_default_header.dart';
@@ -266,6 +267,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
         child: Scaffold(
           extendBody: true,
           extendBodyBehindAppBar: true,
+          floatingActionButtonLocation: detailFavoriteFabLocation(userSetting),
           floatingActionButton: GestureDetector(
             onLongPress: () {
               _showBookMarkTag();

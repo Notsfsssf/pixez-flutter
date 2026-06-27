@@ -291,6 +291,7 @@
   "reply_to": "返信先: ",
   "show_feed_ai_badge": "AI バッジを表示",
   "illust_detail_save_skip_confirm": "詳細ページで保存するときの確認をスキップする",
+  "detail_favorite_button_position": "{position, select, title{お気に入りボタンの位置} right{右側} left{左側} custom{カスタム} horizontal{水平} vertical{垂直} other{右側}}",
   "secure_window": "セキュアなウインドウ",
   "open_saucenao_using_webview": "WebView を使用して SauceNao を開く",
   "appwidget_recommend_type": "アプリウィジェットで表示する種類",

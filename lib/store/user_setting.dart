@@ -96,11 +96,26 @@ abstract class _UserSetting with Store {
   static const String FEED_AI_BADGE_KEY = "feed_ai_badge";
   static const String ILLUST_DETAIL_SAVE_SKIP_LONG_PRESS_KEY =
       "illust_detail_save_skip_long_press";
+  static const String DETAIL_FAVORITE_BUTTON_POSITION_KEY =
+      "detail_favorite_button_position";
+  static const String DETAIL_FAVORITE_BUTTON_CUSTOM_X_KEY =
+      "detail_favorite_button_custom_x";
+  static const String DETAIL_FAVORITE_BUTTON_CUSTOM_Y_KEY =
+      "detail_favorite_button_custom_y";
   static const String DRAG_START_X_KEY = "drag_start_x";
   static const String AUTO_TAG_WHEN_STAR_KEY = "auto_tag_when_star";
+  static const int DETAIL_FAVORITE_BUTTON_POSITION_RIGHT = 0;
+  static const int DETAIL_FAVORITE_BUTTON_POSITION_LEFT = 1;
+  static const int DETAIL_FAVORITE_BUTTON_POSITION_CUSTOM = 2;
 
   @observable
   double dragStartX = 0;
+  @observable
+  int detailFavoriteButtonPosition = DETAIL_FAVORITE_BUTTON_POSITION_RIGHT;
+  @observable
+  double detailFavoriteButtonCustomX = 1.0;
+  @observable
+  double detailFavoriteButtonCustomY = 1.0;
   @observable
   bool illustDetailSaveSkipLongPress = false;
   @observable
@@ -383,6 +398,84 @@ abstract class _UserSetting with Store {
     illustDetailSaveSkipLongPress = v;
   }
 
+  List<int> get detailFavoriteButtonPositions => const [
+    DETAIL_FAVORITE_BUTTON_POSITION_RIGHT,
+    DETAIL_FAVORITE_BUTTON_POSITION_LEFT,
+    DETAIL_FAVORITE_BUTTON_POSITION_CUSTOM,
+  ];
+
+  bool get detailFavoriteButtonLeft =>
+      detailFavoriteButtonPosition == DETAIL_FAVORITE_BUTTON_POSITION_LEFT;
+
+  bool get detailFavoriteButtonCustom =>
+      detailFavoriteButtonPosition == DETAIL_FAVORITE_BUTTON_POSITION_CUSTOM;
+
+  double get detailFavoriteButtonX {
+    switch (detailFavoriteButtonPosition) {
+      case DETAIL_FAVORITE_BUTTON_POSITION_LEFT:
+        return 0.0;
+      case DETAIL_FAVORITE_BUTTON_POSITION_CUSTOM:
+        return detailFavoriteButtonCustomX;
+      case DETAIL_FAVORITE_BUTTON_POSITION_RIGHT:
+      default:
+        return 1.0;
+    }
+  }
+
+  double get detailFavoriteButtonY {
+    switch (detailFavoriteButtonPosition) {
+      case DETAIL_FAVORITE_BUTTON_POSITION_CUSTOM:
+        return detailFavoriteButtonCustomY;
+      case DETAIL_FAVORITE_BUTTON_POSITION_LEFT:
+      case DETAIL_FAVORITE_BUTTON_POSITION_RIGHT:
+      default:
+        return 1.0;
+    }
+  }
+
+  String detailFavoriteButtonPositionCode(int value) {
+    switch (value) {
+      case DETAIL_FAVORITE_BUTTON_POSITION_LEFT:
+        return "left";
+      case DETAIL_FAVORITE_BUTTON_POSITION_CUSTOM:
+        return "custom";
+      case DETAIL_FAVORITE_BUTTON_POSITION_RIGHT:
+      default:
+        return "right";
+    }
+  }
+
+  int _normalizeDetailFavoriteButtonPosition(int? value) {
+    return detailFavoriteButtonPositions.contains(value)
+        ? value!
+        : DETAIL_FAVORITE_BUTTON_POSITION_RIGHT;
+  }
+
+  double _normalizePercent(double? value, {double fallback = 1.0}) {
+    return min(1.0, max(0.0, value ?? fallback));
+  }
+
+  @action
+  setDetailFavoriteButtonPosition(int value) async {
+    final position = _normalizeDetailFavoriteButtonPosition(value);
+    await prefs.setInt(DETAIL_FAVORITE_BUTTON_POSITION_KEY, position);
+    detailFavoriteButtonPosition = position;
+  }
+
+  @action
+  setDetailFavoriteButtonCustomX(double value) async {
+    final position = _normalizePercent(value);
+    await prefs.setDouble(DETAIL_FAVORITE_BUTTON_CUSTOM_X_KEY, position);
+    detailFavoriteButtonCustomX = position;
+  }
+
+  @action
+  setDetailFavoriteButtonCustomY(double value) async {
+    final position = _normalizePercent(value);
+    await prefs.setDouble(DETAIL_FAVORITE_BUTTON_CUSTOM_Y_KEY, position);
+    detailFavoriteButtonCustomY = position;
+  }
+
   @action
   setAutoTagWhenStar(bool v) async {
     await prefs.setBool(AUTO_TAG_WHEN_STAR_KEY, v);
@@ -562,6 +655,15 @@ abstract class _UserSetting with Store {
     useSaunceNaoWebview = prefs.getBool(USE_SAUNCE_NAO_WEBVIEW) ?? false;
     dragStartX = prefs.getDouble(DRAG_START_X_KEY) ?? 0;
     autoTagWhenStar = prefs.getBool(AUTO_TAG_WHEN_STAR_KEY) ?? false;
+    detailFavoriteButtonPosition = _normalizeDetailFavoriteButtonPosition(
+      prefs.getInt(DETAIL_FAVORITE_BUTTON_POSITION_KEY),
+    );
+    detailFavoriteButtonCustomX = _normalizePercent(
+      prefs.getDouble(DETAIL_FAVORITE_BUTTON_CUSTOM_X_KEY),
+    );
+    detailFavoriteButtonCustomY = _normalizePercent(
+      prefs.getDouble(DETAIL_FAVORITE_BUTTON_CUSTOM_Y_KEY),
+    );
     illustDetailSaveSkipLongPress =
         prefs.getBool(ILLUST_DETAIL_SAVE_SKIP_LONG_PRESS_KEY) ?? false;
     if (Platform.isAndroid) {

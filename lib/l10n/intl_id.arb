@@ -289,6 +289,7 @@
   "reply_to": "Balas ke",
   "show_feed_ai_badge": "Tampilkan lencana AI umpan",
   "illust_detail_save_skip_confirm": "Lewati konfirmasi saat menyimpan pada halaman detail",
+  "detail_favorite_button_position": "{position, select, title{Posisi tombol favorit} right{Kanan} left{Kiri} custom{Kustom} horizontal{Horizontal} vertical{Vertikal} other{Kanan}}",
   "secure_window": "Jendela aman",
   "open_saucenao_using_webview": "Buka SauceNao menggunakan WebView",
   "appwidget_recommend_type": "Jenis rekomendasi Appwidget",

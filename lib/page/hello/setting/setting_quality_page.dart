@@ -27,6 +27,7 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/about/languages.dart';
 import 'package:pixez/page/hello/setting/copy_text_page.dart';
+import 'package:pixez/page/hello/setting/detail_favorite_button_preview_page.dart';
 import 'package:pixez/page/hello/setting/setting_cross_adapter_page.dart';
 import 'package:pixez/page/network/network_page.dart';
 import 'package:pixez/page/platform/platform_page.dart';
@@ -177,6 +178,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     },
                   ),
                 ),
+                ..._buildDetailFavoriteButtonPositionSetting(),
                 ListTile(
                   leading: const Icon(Icons.zoom_out_map),
                   title: Text(I18n.of(context).large_preview_zoom_quality),
@@ -409,6 +411,66 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             ),
           );
         },
+      ),
+    );
+  }
+
+  List<Widget> _buildDetailFavoriteButtonPositionSetting() {
+    final positions = userSetting.detailFavoriteButtonPositions;
+    final selectedIndex = positions.indexOf(
+      userSetting.detailFavoriteButtonPosition,
+    );
+    return [
+      ListTile(
+        leading: const Icon(Icons.favorite),
+        title: Text(I18n.of(context).detail_favorite_button_position("title")),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SettingSelectMenu(
+              index: selectedIndex == -1 ? 0 : selectedIndex,
+              items: positions
+                  .map(
+                    (position) =>
+                        I18n.of(context).detail_favorite_button_position(
+                          userSetting.detailFavoriteButtonPositionCode(
+                            position,
+                          ),
+                        ),
+                  )
+                  .toList(),
+              onChange: (index) {
+                final position = positions[index];
+                userSetting.setDetailFavoriteButtonPosition(position);
+                if (_isDetailFavoriteButtonCustomPosition(position)) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (mounted) _openDetailFavoriteButtonPreview();
+                  });
+                }
+              },
+            ),
+            if (userSetting.detailFavoriteButtonCustom)
+              IconButton(
+                tooltip: I18n.of(
+                  context,
+                ).detail_favorite_button_position("custom"),
+                icon: const Icon(Icons.open_in_full),
+                onPressed: _openDetailFavoriteButtonPreview,
+              ),
+          ],
+        ),
+      ),
+    ];
+  }
+
+  bool _isDetailFavoriteButtonCustomPosition(int position) {
+    return userSetting.detailFavoriteButtonPositionCode(position) == "custom";
+  }
+
+  void _openDetailFavoriteButtonPreview() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const DetailFavoriteButtonPreviewPage(),
       ),
     );
   }
