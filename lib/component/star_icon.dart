@@ -64,7 +64,7 @@ class _StarIconState extends State<StarIcon> {
       case 0:
         return Icon(
           Constants.isFluent
-              ? fluentui.FluentIcons.favorite_star
+              ? fluentui.FluentIcons.heart
               : material.Icons.favorite_border,
           color: Constants.isFluent
               ? fluentui.FluentTheme.of(context).inactiveColor
@@ -73,7 +73,7 @@ class _StarIconState extends State<StarIcon> {
       case 1:
         return Icon(
           Constants.isFluent
-              ? fluentui.FluentIcons.favorite_star_fill
+              ? fluentui.FluentIcons.heart_fill
               : material.Icons.favorite,
           color: Constants.isFluent
               ? fluentui.FluentTheme.of(context).inactiveColor
@@ -82,7 +82,7 @@ class _StarIconState extends State<StarIcon> {
       default:
         return Icon(
           Constants.isFluent
-              ? fluentui.FluentIcons.favorite_star_fill
+              ? fluentui.FluentIcons.heart_fill
               : material.Icons.favorite,
           color: Constants.isFluent ? fluentui.Colors.red : material.Colors.red,
         );
