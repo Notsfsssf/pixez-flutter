@@ -458,22 +458,22 @@ abstract class _UserSetting with Store {
   @action
   setDetailFavoriteButtonPosition(int value) async {
     final position = _normalizeDetailFavoriteButtonPosition(value);
-    await prefs.setInt(DETAIL_FAVORITE_BUTTON_POSITION_KEY, position);
     detailFavoriteButtonPosition = position;
+    await prefs.setInt(DETAIL_FAVORITE_BUTTON_POSITION_KEY, position);
   }
 
   @action
   setDetailFavoriteButtonCustomX(double value) async {
     final position = _normalizePercent(value);
-    await prefs.setDouble(DETAIL_FAVORITE_BUTTON_CUSTOM_X_KEY, position);
     detailFavoriteButtonCustomX = position;
+    await prefs.setDouble(DETAIL_FAVORITE_BUTTON_CUSTOM_X_KEY, position);
   }
 
   @action
   setDetailFavoriteButtonCustomY(double value) async {
     final position = _normalizePercent(value);
-    await prefs.setDouble(DETAIL_FAVORITE_BUTTON_CUSTOM_Y_KEY, position);
     detailFavoriteButtonCustomY = position;
+    await prefs.setDouble(DETAIL_FAVORITE_BUTTON_CUSTOM_Y_KEY, position);
   }
 
   @action

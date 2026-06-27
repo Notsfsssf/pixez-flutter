@@ -167,101 +167,105 @@ class _IllustRowPageState extends State<IllustRowPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Scaffold(
-      extendBody: true,
-      // appBar: AppBar(
-      //   elevation: 0.0,
-      //   // iconTheme: IconTheme.of(context).copyWith(color: Theme.of(context).textTheme!.bodyText1!.color),
-      //   backgroundColor: Colors.transparent,
-      //   actions: [
-      //     IconButton(
-      //         icon: Icon(Icons.more_vert),
-      //         onPressed: () {
-      //           buildShowModalBottomSheet(context, _illustStore.illusts!);
-      //         })
-      //   ],
-      // ),
-      extendBodyBehindAppBar: true,
-      floatingActionButtonLocation: detailFavoriteFabLocation(userSetting),
-      floatingActionButton: GestureDetector(
-        onLongPress: () {
-          _showBookMarkTag();
-        },
-        onHorizontalDragEnd: (details) {
-          if (widget.onHorizontalDragEnd != null) {
-            widget.onHorizontalDragEnd!(details);
-          }
-        },
-        child: Observer(
-          builder: (context) {
-            return Visibility(
-              visible: _illustStore.errorMessage == null,
-              child: FloatingActionButton(
-                heroTag: widget.id,
-                backgroundColor: Colors.white,
-                onPressed: () => _illustStore.star(),
-                child: Observer(
-                  builder: (_) {
-                    return StarIcon(state: _illustStore.state);
-                  },
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-      body: Observer(
-        builder: (_) {
-          if (!tempView)
-            for (var i in muteStore.banillusts) {
-              if (i.illustId == widget.id.toString()) {
-                return BanPage(
-                  name: "${I18n.of(context).illust}\n${i.name}\n",
-                  onPressed: () {
-                    setState(() {
-                      tempView = true;
-                    });
-                  },
+    return Observer(
+      builder: (_) {
+        return Scaffold(
+          extendBody: true,
+          // appBar: AppBar(
+          //   elevation: 0.0,
+          //   // iconTheme: IconTheme.of(context).copyWith(color: Theme.of(context).textTheme!.bodyText1!.color),
+          //   backgroundColor: Colors.transparent,
+          //   actions: [
+          //     IconButton(
+          //         icon: Icon(Icons.more_vert),
+          //         onPressed: () {
+          //           buildShowModalBottomSheet(context, _illustStore.illusts!);
+          //         })
+          //   ],
+          // ),
+          extendBodyBehindAppBar: true,
+          floatingActionButtonLocation: detailFavoriteFabLocation(userSetting),
+          floatingActionButton: GestureDetector(
+            onLongPress: () {
+              _showBookMarkTag();
+            },
+            onHorizontalDragEnd: (details) {
+              if (widget.onHorizontalDragEnd != null) {
+                widget.onHorizontalDragEnd!(details);
+              }
+            },
+            child: Observer(
+              builder: (context) {
+                return Visibility(
+                  visible: _illustStore.errorMessage == null,
+                  child: FloatingActionButton(
+                    heroTag: widget.id,
+                    backgroundColor: Colors.white,
+                    onPressed: () => _illustStore.star(),
+                    child: Observer(
+                      builder: (_) {
+                        return StarIcon(state: _illustStore.state);
+                      },
+                    ),
+                  ),
                 );
-              }
-            }
-          if (!tempView && _illustStore.illusts != null) {
-            for (var j in muteStore.banUserIds) {
-              if (j.userId == _illustStore.illusts!.user.id.toString()) {
-                return BanPage(
-                  name: "${I18n.of(context).painter}\n${j.name}\n",
-                  onPressed: () {
-                    setState(() {
-                      tempView = true;
-                    });
-                  },
-                );
-              }
-            }
-            for (var t in muteStore.banTags) {
-              for (var t1 in _illustStore.illusts!.tags) {
-                if (t.name == t1.name)
-                  return BanPage(
-                    name: "${I18n.of(context).tag}\n${t.name}\n",
-                    onPressed: () {
-                      setState(() {
-                        tempView = true;
-                      });
-                    },
-                  );
-              }
-            }
-          }
-          return Container(
-            child: Stack(
-              children: [
-                _buildContent(context, _illustStore.illusts),
-                _buildAppbar(),
-              ],
+              },
             ),
-          );
-        },
-      ),
+          ),
+          body: Observer(
+            builder: (_) {
+              if (!tempView)
+                for (var i in muteStore.banillusts) {
+                  if (i.illustId == widget.id.toString()) {
+                    return BanPage(
+                      name: "${I18n.of(context).illust}\n${i.name}\n",
+                      onPressed: () {
+                        setState(() {
+                          tempView = true;
+                        });
+                      },
+                    );
+                  }
+                }
+              if (!tempView && _illustStore.illusts != null) {
+                for (var j in muteStore.banUserIds) {
+                  if (j.userId == _illustStore.illusts!.user.id.toString()) {
+                    return BanPage(
+                      name: "${I18n.of(context).painter}\n${j.name}\n",
+                      onPressed: () {
+                        setState(() {
+                          tempView = true;
+                        });
+                      },
+                    );
+                  }
+                }
+                for (var t in muteStore.banTags) {
+                  for (var t1 in _illustStore.illusts!.tags) {
+                    if (t.name == t1.name)
+                      return BanPage(
+                        name: "${I18n.of(context).tag}\n${t.name}\n",
+                        onPressed: () {
+                          setState(() {
+                            tempView = true;
+                          });
+                        },
+                      );
+                  }
+                }
+              }
+              return Container(
+                child: Stack(
+                  children: [
+                    _buildContent(context, _illustStore.illusts),
+                    _buildAppbar(),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 

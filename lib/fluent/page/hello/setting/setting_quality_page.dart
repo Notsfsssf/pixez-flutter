@@ -476,10 +476,10 @@ class _SettingQualityPageState extends State<SettingQualityPage>
 
   List<Widget> _buildDetailFavoriteButtonPositionSetting() {
     final positions = userSetting.detailFavoriteButtonPositions;
-    final selectedPosition =
-        positions.contains(userSetting.detailFavoriteButtonPosition)
-        ? userSetting.detailFavoriteButtonPosition
-        : positions[0];
+    var selectedPosition = userSetting.detailFavoriteButtonPosition;
+    if (!positions.contains(selectedPosition)) {
+      selectedPosition = positions[0];
+    }
     return [
       ListTile(
         title: Text(I18n.of(context).detail_favorite_button_position("title")),
