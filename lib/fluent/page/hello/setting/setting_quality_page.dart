@@ -18,7 +18,6 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/material.dart' show Icons;
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/fluent/component/pixez_button.dart';
 import 'package:pixez/er/leader.dart';
@@ -77,7 +76,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
         children: [
           if (Platform.isWindows)
             ListTile(
-              leading: const Icon(Icons.window),
+              leading: const Icon(FluentIcons.back_to_window),
               title: Text(I18n.of(context).platform_special_setting),
               subtitle: Text(
                 "For Windows",
@@ -208,7 +207,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
           ),
           ..._buildDetailFavoriteButtonPositionSetting(),
           ListTile(
-            leading: const Icon(Icons.zoom_out_map),
+            leading: const Icon(FluentIcons.full_screen),
             title: Text(I18n.of(context).large_preview_zoom_quality),
             trailing: Observer(
               builder: (_) {

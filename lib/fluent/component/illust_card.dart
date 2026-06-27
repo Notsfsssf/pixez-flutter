@@ -21,10 +21,10 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/clipboard_plugin.dart';
 import 'package:pixez/component/null_hero.dart';
-import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
+import 'package:pixez/fluent/component/fluent_star_icon.dart';
 import 'package:pixez/fluent/component/pixez_button.dart';
 import 'package:pixez/fluent/component/pixiv_image.dart';
 import 'package:pixez/i18n.dart';
@@ -379,7 +379,7 @@ class _IllustCardState extends State<IllustCard> {
             child: GestureDetector(
               child: Observer(
                 builder: (_) {
-                  return StarIcon(state: store.state);
+                  return FluentStarIcon(state: store.state);
                 },
               ),
               onTap: _onStar,

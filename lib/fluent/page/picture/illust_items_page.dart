@@ -4,14 +4,14 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/clipboard_plugin.dart';
-import 'package:pixez/component/detail_favorite_button_location.dart';
+import 'package:pixez/component/detail_favorite_button_geometry.dart';
 import 'package:pixez/fluent/component/ban_page.dart';
 import 'package:pixez/fluent/component/context_menu.dart';
+import 'package:pixez/fluent/component/fluent_star_icon.dart';
 import 'package:pixez/fluent/component/painter_avatar.dart';
 import 'package:pixez/fluent/component/pixiv_image.dart';
 import 'package:pixez/fluent/component/selectable_html.dart';
 import 'package:pixez/component/null_hero.dart';
-import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/exts.dart';
@@ -152,7 +152,7 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
                 child: ButtonTheme(
                   child: IconButton(
                     icon: Observer(
-                      builder: (_) => StarIcon(state: illustStore.state),
+                      builder: (_) => FluentStarIcon(state: illustStore.state),
                     ),
                     onPressed: star,
                   ),
