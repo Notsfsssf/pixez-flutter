@@ -9,7 +9,6 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:pixez/clipboard_plugin.dart';
 import 'package:pixez/er/pixiv_image_source.dart';
-import 'package:pixez/fluent/component/context_menu.dart';
 import 'package:pixez/fluent/component/pixiv_image.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -28,6 +27,7 @@ class PhotoZoomPage extends StatefulWidget {
 }
 
 class _PhotoZoomPageState extends State<PhotoZoomPage> {
+  // PageController? _pageController;
   late Illusts _illusts;
   int _index = 0;
 
@@ -67,15 +67,16 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (context) {
-        if (_illusts.pageCount == 1) {
-          final url = _loadSource
-              ? _illusts.metaSinglePage!.originalImageUrl!
-              : _illusts.imageUrls.large;
-          return ScaffoldPage(
-            bottomBar: _buildBottom(context),
-            content: Listener(
+    return ScaffoldPage(
+      padding: const EdgeInsets.all(0),
+      header: _buildCommandBar(context),
+      content: Builder(
+        builder: (context) {
+          if (_illusts.pageCount == 1) {
+            final url = _loadSource
+                ? _illusts.metaSinglePage!.originalImageUrl!
+                : _illusts.imageUrls.large;
+            return Listener(
               onPointerSignal: (event) {
                 if (event is PointerScrollEvent) {
                   _photoViewController.scale =
@@ -91,12 +92,9 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                 loadingBuilder: (context, event) => _buildLoading(event),
                 controller: _photoViewController,
               ),
-            ),
-          );
-        } else {
-          return ScaffoldPage(
-            bottomBar: _buildBottom(context),
-            content: Container(
+            );
+          } else {
+            return Container(
               child: PhotoViewGallery.builder(
                 scrollPhysics: const BouncingScrollPhysics(),
                 pageController: PageController(initialPage: _index),
@@ -130,10 +128,10 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                 },
                 loadingBuilder: (context, event) => _buildLoading(event),
               ),
-            ),
-          );
-        }
-      },
+            );
+          }
+        },
+      ),
     );
   }
 
@@ -149,115 +147,85 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
   bool shareShow = false;
   bool _loadSource = false;
 
-  Widget _buildBottom(BuildContext context) {
-    return Container(
-      child: Visibility(
-        visible: true,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
-              children: [
-                IconButton(
-                  icon: Icon(FluentIcons.picture_library, color: Colors.white),
-                  onPressed: () {},
-                ),
-                Text(
-                  "${_index + 1}/${widget.illusts.pageCount}",
-                  style: FluentTheme.of(
-                    context,
-                  ).typography.body!.copyWith(color: Colors.white),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                IconButton(
-                  icon: Icon(FluentIcons.back, color: Colors.white),
-                  onPressed: () async {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                IconButton(
-                  icon: Icon(FluentIcons.copy, color: Colors.white),
-                  onPressed: () =>
-                      ClipboardPlugin.copy(context, _illusts, _index),
-                ),
-                ContextMenu(
-                  child: IconButton(
-                    icon: Icon(FluentIcons.save, color: Colors.white),
-                    onPressed: () {
-                      if (_illusts.metaPages.isNotEmpty)
-                        saveStore.saveImage(widget.illusts, index: _index);
-                      else
-                        saveStore.saveImage(widget.illusts);
-                    },
-                  ),
-                  items: [
-                    MenuFlyoutItem(
-                      text: Text(I18n.of(context).save),
-                      onPressed: () async {
-                        if (_illusts.metaPages.isNotEmpty)
-                          await saveStore.saveImage(
-                            widget.illusts,
-                            index: _index,
-                          );
-                        else
-                          await saveStore.saveImage(widget.illusts);
-                      },
-                    ),
-                  ],
-                ),
-                AnimatedOpacity(
-                  opacity: shareShow ? 1 : 0.5,
-                  duration: Duration(milliseconds: 500),
-                  child: IconButton(
-                    icon: Icon(FluentIcons.share, color: Colors.white),
-                    onPressed: () async {
-                      var file = await pixivCacheManager!.getFileFromCache(
-                        _sourceUrl(nowUrl),
-                      );
-                      if (file != null) {
-                        String targetPath = join(
-                          (await getTemporaryDirectory()).path,
-                          "share_cache",
-                          basenameWithoutExtension(file.file.path) +
-                              (nowUrl.endsWith(".png") ? ".png" : ".jpg"),
-                        );
-                        File targetFile = new File(targetPath);
-                        if (!targetFile.existsSync()) {
-                          targetFile.createSync(recursive: true);
-                        }
-                        file.file.copySync(targetPath);
-                        SharePlus.instance.share(
-                          ShareParams(files: [XFile(targetPath)]),
-                        );
-                      } else {
-                        BotToast.showText(text: "can not find image cache");
-                      }
-                    },
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(
-                    !_loadSource
-                        ? FluentIcons.picture_fill
-                        : FluentIcons.picture,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _loadSource = !_loadSource;
-                    });
-                  },
-                ),
-              ],
-            ),
-          ],
+  Widget _buildCommandBar(BuildContext context) {
+    return CommandBar(
+      mainAxisAlignment: MainAxisAlignment.end,
+      primaryItems: [
+        // CommandBarButton(
+        //   icon: Icon(FluentIcons.previous),
+        //   label: Text(I18n.of(context).pre),
+        //   onPressed: () {
+        //     if (_index - 1 > 0) _pageController?.jumpToPage(_index - 1);
+        //   },
+        // ),
+        CommandBarButton(
+          icon: Icon(FluentIcons.picture_library),
+          label: Text("${_index + 1}/${widget.illusts.pageCount}"),
+          onPressed: () {},
         ),
-      ),
+        // CommandBarButton(
+        //   icon: Icon(FluentIcons.next),
+        //   label: Text(I18n.of(context).next),
+        //   onPressed: () {
+        //     if (_index + 1 <= widget.illusts.pageCount)
+        //       _pageController?.jumpToPage(_index + 1);
+        //   },
+        // ),
+        CommandBarSeparator(),
+        CommandBarButton(
+          icon: Icon(FluentIcons.copy),
+          label: Text(I18n.of(context).copy),
+          onPressed: () => ClipboardPlugin.copy(context, _illusts, _index),
+        ),
+        CommandBarButton(
+          icon: Icon(FluentIcons.save),
+          label: Text(I18n.of(context).save),
+          onPressed: () {
+            if (_illusts.metaPages.isNotEmpty)
+              saveStore.saveImage(widget.illusts, index: _index);
+            else
+              saveStore.saveImage(widget.illusts);
+          },
+        ),
+        CommandBarButton(
+          icon: Icon(FluentIcons.share),
+          label: Text(I18n.of(context).share),
+          onPressed: () async {
+            var file = await pixivCacheManager!.getFileFromCache(
+              _sourceUrl(nowUrl),
+            );
+            if (file != null) {
+              String targetPath = join(
+                (await getTemporaryDirectory()).path,
+                "share_cache",
+                basenameWithoutExtension(file.file.path) +
+                    (nowUrl.endsWith(".png") ? ".png" : ".jpg"),
+              );
+              File targetFile = new File(targetPath);
+              if (!targetFile.existsSync()) {
+                targetFile.createSync(recursive: true);
+              }
+              file.file.copySync(targetPath);
+              SharePlus.instance.share(ShareParams(files: [XFile(targetPath)]));
+            } else {
+              BotToast.showText(text: "can not find image cache");
+            }
+          },
+        ),
+        CommandBarButton(
+          icon: Icon(
+            _loadSource ? FluentIcons.picture : FluentIcons.picture_fill,
+          ),
+          label: Text(
+            _loadSource ? I18n.of(context).source : I18n.of(context).large,
+          ),
+          onPressed: () {
+            setState(() {
+              _loadSource = !_loadSource;
+            });
+          },
+        ),
+      ],
     );
   }
 
