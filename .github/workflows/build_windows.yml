@@ -15,14 +15,14 @@ jobs:
       installer-conclusion: ${{ steps.installer.conclusion }}
     steps:
       - name: 签出仓库
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: 初始化 GitVersion
         uses: gittools/actions/gitversion/setup@v4
         with:
-          versionSpec: '6.4.x'
+          versionSpec: '6.7.x'
 
       - name: 计算版本 Version
         id: gitversion
@@ -35,26 +35,21 @@ jobs:
       - name: 初始化 Flutter 环境
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          flutter-version-file: .fvmrc
           cache: true
-          architecture: x64
 
       - name: 初始化 Rust 工具链
         uses: actions-rust-lang/setup-rust-toolchain@v1
 
-      - name: 还原依赖 (rhttp)
-        working-directory: plugins/rhttp
-        run: flutter pub get --no-example --enforce-lockfile
-
-      - name: 还原依赖 (PixEz)
+      - name: 还原依赖
         run: flutter pub get --no-example --enforce-lockfile
 
       - name: 生成代码 (rhttp)
-        working-directory: plugins/rhttp
-        run: dart run build_runner build --delete-conflicting-outputs
+        working-directory: plugins/rhttp/rhttp
+        run: dart run build_runner build
 
       - name: 生成代码 (PixEz)
-        run: dart run build_runner build --delete-conflicting-outputs
+        run: dart run build_runner build
 
       - name: 构建项目
         shell: pwsh
@@ -67,7 +62,7 @@ jobs:
 
       - name: 上传产物
         id: binary-artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: windows-x86_64-release
           path: build/windows/x64/runner/Release/**/*
@@ -76,7 +71,7 @@ jobs:
       - name: 还原证书
         id: restore-cert
         shell: pwsh
-        if: env.CERTIFICATE != ''
+        if: env.CERTIFICATE != '' && github.event_name != 'pull_request'
         env:
           CERTIFICATE: ${{ secrets.CERTIFICATE }}
           CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
@@ -109,7 +104,7 @@ jobs:
       - name: 上传 MSIX
         id: msix-artifact
         if: steps.msix.conclusion == 'success'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: windows-x86_64-release.msix
           path: build/windows/x64/runner/Release/windows-x86_64-release.msix
@@ -126,7 +121,7 @@ jobs:
       - name: 上传 MSIX 安装器
         id: installer-artifact
         if: steps.installer.conclusion == 'success'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: windows-x86_64-release.msix.exe
           path: ${{ steps.installer.outputs.path }}
@@ -167,7 +162,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 签出仓库
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Download Loose Artifact
         if: needs.build.outputs.msix-conclusion == 'success'
@@ -192,6 +187,6 @@ jobs:
           path: artifacts
 
       - name: Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: artifacts/*
