@@ -289,6 +289,7 @@
   "reply_to": "Antwort an",
   "show_feed_ai_badge": "KI-Badge im Feed anzeigen",
   "illust_detail_save_skip_confirm": "Bestätigung beim Speichern auf Detailseite überspringen",
+  "detail_favorite_button_position": "{position, select, title{Position der Favoriten-Schaltfläche} right{Rechts} left{Links} custom{Benutzerdefiniert} horizontal{Horizontal} vertical{Vertikal} other{Rechts}}",
   "secure_window": "Sicheres Fenster",
   "open_saucenao_using_webview": "SauceNao im WebView öffnen",
   "appwidget_recommend_type": "Widget-Empfehlungstyp",

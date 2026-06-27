@@ -289,6 +289,7 @@
   "reply_to": "Phản hồi",
   "show_feed_ai_badge": "Hiện thị nhãn dãn sản phẩm làm từ AI (nên bật để đỡ tốn mắt)",
   "illust_detail_save_skip_confirm": "Bỏ quả bước xác nhận khi lưu trong khi xem chi tiết",
+  "detail_favorite_button_position": "{position, select, title{Vị trí nút yêu thích} right{Bên phải} left{Bên trái} custom{Tùy chỉnh} horizontal{Ngang} vertical{Dọc} other{Bên phải}}",
   "secure_window": "Màn hình bảo mật",
   "open_saucenao_using_webview": "Open SauceNao sử dụng webview",
   "appwidget_recommend_type": "Kiểu widget được khuyến khích",

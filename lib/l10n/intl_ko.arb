@@ -289,6 +289,7 @@
   "reply_to": "Reply to",
   "show_feed_ai_badge": "Show feed AI badge",
   "illust_detail_save_skip_confirm": "Skip confirmation when saving on details page",
+  "detail_favorite_button_position": "{position, select, title{즐겨찾기 버튼 위치} right{오른쪽} left{왼쪽} custom{사용자 지정} horizontal{가로} vertical{세로} other{오른쪽}}",
   "secure_window": "Secure window",
   "open_saucenao_using_webview": "Open SauceNao using webview",
   "appwidget_recommend_type": "Appwidget recommend type",

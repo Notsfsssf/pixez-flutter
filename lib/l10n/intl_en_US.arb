@@ -291,6 +291,16 @@
   "reply_to": "Reply to",
   "show_feed_ai_badge": "Show feed AI badge",
   "illust_detail_save_skip_confirm": "Skip confirmation when saving on details page",
+  "detail_favorite_button_position": "{position, select, title{Favorite button position} right{Right} left{Left} custom{Custom} horizontal{Horizontal} vertical{Vertical} other{Right}}",
+  "@detail_favorite_button_position": {
+    "description": "Labels for the detail page favorite button position setting, presets, and custom sliders.",
+    "placeholders": {
+      "position": {
+        "type": "String",
+        "example": "custom"
+      }
+    }
+  },
   "secure_window": "Secure window",
   "open_saucenao_using_webview": "Open SauceNao using webview",
   "appwidget_recommend_type": "Appwidget recommend type",

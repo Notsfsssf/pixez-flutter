@@ -291,6 +291,7 @@
   "reply_to": "回覆給",
   "show_feed_ai_badge": "顯示動態清單中的AI生成標記",
   "illust_detail_save_skip_confirm": "插畫作品頁儲存時跳過確認",
+  "detail_favorite_button_position": "{position, select, title{收藏按鈕位置} right{右側} left{左側} custom{自訂} horizontal{水平} vertical{垂直} other{右側}}",
   "secure_window": "停用螢幕擷取",
   "open_saucenao_using_webview": "使用 WebView 開啟 SauceNAO",
   "appwidget_recommend_type": "小工具推薦內容類型",

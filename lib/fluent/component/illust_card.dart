@@ -27,13 +27,14 @@ import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/fluent/component/pixez_button.dart';
 import 'package:pixez/fluent/component/pixiv_image.dart';
-import 'package:pixez/i18n.dart';
-import 'package:pixez/lighting/lighting_store.dart';
-import 'package:pixez/main.dart';
 import 'package:pixez/fluent/page/picture/illust_lighting_page.dart';
 import 'package:pixez/fluent/page/picture/picture_list_page.dart';
 import 'package:pixez/fluent/page/picture/tag_for_illust_page.dart';
+import 'package:pixez/i18n.dart';
+import 'package:pixez/lighting/lighting_store.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/page/picture/illust_store.dart';
+
 import 'context_menu.dart';
 
 class IllustCard extends StatefulWidget {
