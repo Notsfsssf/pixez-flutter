@@ -5,21 +5,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/clipboard_plugin.dart';
 import 'package:pixez/component/detail_favorite_button_geometry.dart';
-import 'package:pixez/fluent/component/ban_page.dart';
-import 'package:pixez/fluent/component/context_menu.dart';
-import 'package:pixez/fluent/component/fluent_star_icon.dart';
-import 'package:pixez/fluent/component/painter_avatar.dart';
-import 'package:pixez/fluent/component/pixiv_image.dart';
-import 'package:pixez/fluent/component/selectable_html.dart';
 import 'package:pixez/component/null_hero.dart';
+import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/exts.dart';
-import 'package:pixez/utils.dart';
-import 'package:pixez/i18n.dart';
-import 'package:pixez/main.dart';
-import 'package:pixez/models/ban_illust_id.dart';
-import 'package:pixez/models/illust.dart';
+import 'package:pixez/fluent/component/ban_page.dart';
+import 'package:pixez/fluent/component/context_menu.dart';
+import 'package:pixez/fluent/component/painter_avatar.dart';
+import 'package:pixez/fluent/component/pixiv_image.dart';
+import 'package:pixez/fluent/component/selectable_html.dart';
 import 'package:pixez/fluent/page/comment/comment_page.dart';
 import 'package:pixez/fluent/page/picture/picture_list_page.dart';
 import 'package:pixez/fluent/page/picture/row_card.dart';
@@ -27,9 +22,14 @@ import 'package:pixez/fluent/page/picture/tag_for_illust_page.dart';
 import 'package:pixez/fluent/page/picture/ugoira_loader.dart';
 import 'package:pixez/fluent/page/user/users_page.dart';
 import 'package:pixez/fluent/page/zoom/photo_zoom_page.dart';
+import 'package:pixez/i18n.dart';
+import 'package:pixez/main.dart';
+import 'package:pixez/models/ban_illust_id.dart';
+import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/picture/illust_about_store.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/user/user_store.dart';
+import 'package:pixez/utils.dart';
 import 'package:share_plus/share_plus.dart';
 
 abstract class IllustItemsPage extends StatefulWidget {
@@ -152,7 +152,7 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
                 child: ButtonTheme(
                   child: IconButton(
                     icon: Observer(
-                      builder: (_) => FluentStarIcon(state: illustStore.state),
+                      builder: (_) => StarIcon(state: illustStore.state),
                     ),
                     onPressed: star,
                   ),

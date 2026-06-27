@@ -21,19 +21,20 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/clipboard_plugin.dart';
 import 'package:pixez/component/null_hero.dart';
+import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
-import 'package:pixez/fluent/component/fluent_star_icon.dart';
 import 'package:pixez/fluent/component/pixez_button.dart';
 import 'package:pixez/fluent/component/pixiv_image.dart';
-import 'package:pixez/i18n.dart';
-import 'package:pixez/lighting/lighting_store.dart';
-import 'package:pixez/main.dart';
 import 'package:pixez/fluent/page/picture/illust_lighting_page.dart';
 import 'package:pixez/fluent/page/picture/picture_list_page.dart';
 import 'package:pixez/fluent/page/picture/tag_for_illust_page.dart';
+import 'package:pixez/i18n.dart';
+import 'package:pixez/lighting/lighting_store.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/page/picture/illust_store.dart';
+
 import 'context_menu.dart';
 
 class IllustCard extends StatefulWidget {
@@ -379,7 +380,7 @@ class _IllustCardState extends State<IllustCard> {
             child: GestureDetector(
               child: Observer(
                 builder: (_) {
-                  return FluentStarIcon(state: store.state);
+                  return StarIcon(state: store.state);
                 },
               ),
               onTap: _onStar,

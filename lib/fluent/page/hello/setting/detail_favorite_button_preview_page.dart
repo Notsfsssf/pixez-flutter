@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/detail_favorite_button_geometry.dart';
-import 'package:pixez/fluent/component/fluent_star_icon.dart';
+import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 
@@ -65,7 +65,7 @@ class _FavoriteButtonPreview extends StatelessWidget {
                         ),
                       ),
                       child: IconButton(
-                        icon: const FluentStarIcon(state: 0),
+                        icon: const StarIcon(state: 0),
                         onPressed: () {},
                       ),
                     ),
