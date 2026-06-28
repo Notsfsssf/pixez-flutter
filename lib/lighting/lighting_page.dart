@@ -22,6 +22,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/pixez_default_header.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
@@ -207,6 +208,7 @@ class _LightingListState extends State<LightingList> {
   }
 
   Widget _buildErrorContent(context) {
+    final errorText = _buildErrorText(context);
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -229,13 +231,19 @@ class _LightingListState extends State<LightingList> {
           Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                (_store.errorMessage?.contains("400") == true
-                    ? '${I18n.of(context).error_400_hint}\n ${_store.errorMessage}'
-                    : '${_store.errorMessage}'),
+                errorText,
               ))
         ],
       ),
     );
+  }
+
+  String _buildErrorText(BuildContext context) {
+    final errorMessage = _store.errorMessage;
+    final message = errorMessage?.contains("400") == true
+        ? '${I18n.of(context).error_400_hint}\n $errorMessage'
+        : '$errorMessage';
+    return '(${Constants.tagName}) $message';
   }
 
   Widget _buildWithHeader(BuildContext context) {
