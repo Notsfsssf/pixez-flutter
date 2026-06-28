@@ -59,8 +59,9 @@ abstract class _NovelStoreBase with Store {
   bookPosition(double offset) async {
     LPrinter.d("bookPosition $offset");
     await _novelViewerPersistProvider.open();
-    await _novelViewerPersistProvider
-        .insert(NovelViewerPersist(novelId: id, offset: offset));
+    await _novelViewerPersistProvider.insert(
+      NovelViewerPersist(novelId: id, offset: offset),
+    );
     positionBooked = true;
   }
 
@@ -78,7 +79,10 @@ abstract class _NovelStoreBase with Store {
     try {
       bookedOffset = 0.0;
       final response = await apiClient.webviewNovel(id);
-      String json = _parseHtml(response.data)!;
+      final json = parseNovelJsonFromHtml(response.data);
+      if (json == null) {
+        throw FormatException('Unable to parse novel data from Pixiv HTML');
+      }
       novelTextResponse = NovelWebResponse.fromJson(jsonDecode(json));
       spans = await compute(buildSpans, novelTextResponse!);
       if (novel == null) {
@@ -91,19 +95,6 @@ abstract class _NovelStoreBase with Store {
       print(e);
       errorMessage = e.toString();
     }
-  }
-
-  String? _parseHtml(String html) {
-    var document = parse(html);
-    final scriptElement = document.querySelector('script')!;
-    String scriptContent = scriptElement.innerHtml;
-    final novelRegex = RegExp(r'novel: ({.*?}),\n\s*isOwnWork');
-    final match = novelRegex.firstMatch(scriptContent);
-    if (match != null) {
-      final novelJsonString = match.group(1);
-      return novelJsonString;
-    }
-    return null;
   }
 
   @action
@@ -132,4 +123,53 @@ Future<List<NovelSpansData>> buildSpans(NovelWebResponse webResponse) {
     NovelSpansGenerator novelSpansGenerator = NovelSpansGenerator();
     return novelSpansGenerator.buildSpans(webResponse);
   });
+}
+
+String? parseNovelJsonFromHtml(String html) {
+  final document = parse(html);
+  for (final scriptElement in document.querySelectorAll('script')) {
+    final scriptContent = scriptElement.innerHtml;
+    final novelIndex = scriptContent.indexOf('novel:');
+    if (novelIndex == -1) {
+      continue;
+    }
+    final objectStart = scriptContent.indexOf('{', novelIndex);
+    if (objectStart == -1) {
+      continue;
+    }
+    return _readBalancedJsonObject(scriptContent, objectStart);
+  }
+  return null;
+}
+
+String? _readBalancedJsonObject(String source, int start) {
+  var depth = 0;
+  var inString = false;
+  var escaped = false;
+
+  for (var i = start; i < source.length; i++) {
+    final char = source[i];
+    if (inString) {
+      if (escaped) {
+        escaped = false;
+      } else if (char == '\\') {
+        escaped = true;
+      } else if (char == '"') {
+        inString = false;
+      }
+      continue;
+    }
+
+    if (char == '"') {
+      inString = true;
+    } else if (char == '{') {
+      depth++;
+    } else if (char == '}') {
+      depth--;
+      if (depth == 0) {
+        return source.substring(start, i + 1);
+      }
+    }
+  }
+  return null;
 }

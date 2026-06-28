@@ -679,17 +679,24 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
   Widget buildListTile(PrevNovel? series) {
     if (series == null) return ListTile(title: Text("no more"));
     return ListTile(
-      title: Text(series.title, maxLines: 2, overflow: TextOverflow.ellipsis),
-      onTap: () {
-        Navigator.of(context, rootNavigator: true).pushReplacement(
-          MaterialPageRoute(
-            builder: (BuildContext context) => NovelViewerPage(
-              id: series.id,
-              novelStore: NovelStore(series.id, null),
-            ),
-          ),
-        );
-      },
+      title: Text(
+        series.title ?? series.contentOrder,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
+      enabled: series.viewable,
+      onTap: series.viewable
+          ? () {
+              Navigator.of(context, rootNavigator: true).pushReplacement(
+                MaterialPageRoute(
+                  builder: (BuildContext context) => NovelViewerPage(
+                    id: series.id,
+                    novelStore: NovelStore(series.id, null),
+                  ),
+                ),
+              );
+            }
+          : null,
     );
   }
 
