@@ -14,6 +14,7 @@
  *
  */
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
@@ -62,9 +63,13 @@ class _SettingQualityPageState extends State<SettingQualityPage>
         _widgetTypeIndex = 0;
       });
     }
+    await _saveWidgetIllustType(normalizedType);
+  }
+
+  Future<void> _saveWidgetIllustType(String type) async {
+    await Prefer.setString("widget_illust_type", type);
     try {
-      await Prefer.setString("widget_illust_type", normalizedType);
-      await AppWidgetPlugin.setRecommendType(normalizedType);
+      await AppWidgetPlugin.setRecommendType(type);
     } catch (e) {}
   }
 
@@ -280,14 +285,11 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                         I18n.of(context).news,
                       ],
                       onChange: (index) async {
-                        try {
-                          final type = _typeList[index];
-                          await Prefer.setString("widget_illust_type", type);
-                          await AppWidgetPlugin.setRecommendType(type);
-                          setState(() {
-                            _widgetTypeIndex = index;
-                          });
-                        } catch (e) {}
+                        final type = _typeList[index];
+                        setState(() {
+                          _widgetTypeIndex = index;
+                        });
+                        await _saveWidgetIllustType(type);
                       },
                     ),
                   ),
@@ -488,7 +490,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
 class SettingSelectMenu extends StatefulWidget {
   final int index;
   final List<String> items;
-  final Function(int) onChange;
+  final FutureOr<void> Function(int) onChange;
   const SettingSelectMenu({
     super.key,
     required this.index,
@@ -529,11 +531,11 @@ class _SettingSelectMenuState extends State<SettingSelectMenu> {
       elevation: 0.0,
       color: Theme.of(context).colorScheme.secondaryContainer,
       child: InkWell(
-        onTap: () {
+        onTap: () async {
           final renderBox = context.findRenderObject() as RenderBox;
           var local = renderBox.localToGlobal(Offset.zero);
           var size = MediaQuery.of(context).size;
-          showMenu(
+          final selected = await showMenu<int>(
             context: context,
             position: RelativeRect.fromLTRB(
               local.dx - 20,
@@ -541,21 +543,19 @@ class _SettingSelectMenuState extends State<SettingSelectMenu> {
               local.dx + size.width - 20,
               size.height + local.dy,
             ),
-            items: <PopupMenuEntry>[
+            items: <PopupMenuEntry<int>>[
               for (int i = 0; i < _items.length; i++)
-                if (!_items.contains(i))
-                  PopupMenuItem(
-                    value: i,
-                    onTap: () {
-                      setState(() {
-                        _index = i;
-                        widget.onChange(i);
-                      });
-                    },
-                    child: Text(_items[i]),
-                  ),
+                if (i != _index)
+                  PopupMenuItem(value: i, child: Text(_items[i])),
             ],
           );
+          if (selected == null || selected == _index) {
+            return;
+          }
+          setState(() {
+            _index = selected;
+          });
+          await widget.onChange(selected);
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),

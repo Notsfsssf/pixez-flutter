@@ -40,7 +40,6 @@ import coil3.request.transformations
 import coil3.toBitmap
 import coil3.transform.RoundedCornersTransformation
 import com.perol.pixez.glance.GlanceDBManager
-import com.perol.pixez.glance.GlanceIllust
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -63,16 +62,7 @@ class SquareAppWidget : AppWidgetProvider() {
             val sharedPreferences =
                 context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
             val glanceDBManager = GlanceDBManager()
-            val type = sharedPreferences.getString("flutter.widget_illust_type", "recom") ?: "recom"
-            val typeArray = mutableSetOf(type)
-            typeArray.addAll(arrayOf("recom", "rank", "follow_illust"))
-            var illust: GlanceIllust? = null
-            for (i in typeArray) {
-                illust = kotlin.runCatching { glanceDBManager.fetch(context, i) }.getOrNull()
-                    ?.randomOrNull()
-                if (illust != null)
-                    break
-            }
+            val illust = selectAppWidgetIllust(context, glanceDBManager)
             if (illust != null) {
                 illust.let {
                     val host = sharedPreferences.getString("flutter.picture_source", null)

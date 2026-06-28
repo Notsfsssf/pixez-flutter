@@ -14,7 +14,6 @@
  *
  */
 
-
 import 'package:dio/dio.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:mobx/mobx.dart';
@@ -53,7 +52,7 @@ class ApiForceSource extends LightSource {
   FutureRefreshGet futureGet;
 
   ApiForceSource({required this.futureGet, String? glanceKey = null})
-      : super() {
+    : super() {
     this.glanceKey = glanceKey;
   }
 
@@ -138,12 +137,14 @@ abstract class _LightingStoreBase with Store {
       refreshing = false;
       if (glanceKey != null && glanceKey.isNotEmpty) {
         await glanceIllustPersistProvider.open();
-        Future.microtask(() async {
-          await glanceIllustPersistProvider.insertAll(recommend.illusts
+        await glanceIllustPersistProvider.insertAll(
+          recommend.illusts
               .where((element) => !element.hateByUser(includeR18Setting: true))
               .toGlancePersist(
-                  glanceKey, DateTime.now().microsecondsSinceEpoch));
-        });
+                glanceKey,
+                DateTime.now().microsecondsSinceEpoch,
+              ),
+        );
       }
       easyRefreshController?.finishRefresh(IndicatorResult.success);
       return true;

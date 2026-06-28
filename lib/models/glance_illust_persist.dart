@@ -35,16 +35,18 @@ extension ListGlanceIllustExt on Iterable<Illusts> {
 extension GlanceIllustExt on Illusts {
   GlanceIllustPersist toGlanceIllustPersist(String type, int time) {
     return GlanceIllustPersist(
-        illustId: id,
-        userId: user.id,
-        pictureUrl: imageUrls.medium,
-        originalUrl: metaSinglePage?.originalImageUrl ??
-            metaPages.firstOrNull?.imageUrls?.original,
-        largeUrl: imageUrls.large,
-        title: title,
-        userName: user.name,
-        time: time,
-        type: type);
+      illustId: id,
+      userId: user.id,
+      pictureUrl: imageUrls.medium,
+      originalUrl:
+          metaSinglePage?.originalImageUrl ??
+          metaPages.firstOrNull?.imageUrls?.original,
+      largeUrl: imageUrls.large,
+      title: title,
+      userName: user.name,
+      time: time,
+      type: type,
+    );
   }
 }
 
@@ -69,17 +71,18 @@ class GlanceIllustPersist {
   String type;
   int time;
 
-  GlanceIllustPersist(
-      {this.id,
-      required this.illustId,
-      required this.userId,
-      required this.pictureUrl,
-      required this.originalUrl,
-      required this.largeUrl,
-      required this.time,
-      required this.title,
-      required this.userName,
-      required this.type});
+  GlanceIllustPersist({
+    this.id,
+    required this.illustId,
+    required this.userId,
+    required this.pictureUrl,
+    required this.originalUrl,
+    required this.largeUrl,
+    required this.time,
+    required this.title,
+    required this.userName,
+    required this.type,
+  });
 
   factory GlanceIllustPersist.fromJson(Map<String, dynamic> json) =>
       _$GlanceIllustPersistFromJson(json);
@@ -125,7 +128,8 @@ create table $tableIllustPersist (
         final PathProviderFoundation providerFoundation =
             PathProviderFoundation();
         final path = await providerFoundation.getContainerPath(
-            appGroupIdentifier: "group.pixez");
+          appGroupIdentifier: "group.pixez",
+        );
         final directory = Directory(Path.join(path!, "DB"));
         if (!(await directory.exists())) {
           await directory.create(recursive: true);
@@ -171,26 +175,34 @@ create table $tableIllustPersist (
     if (result != null) {
       todo.id = result.id;
     }
-    todo.id = await db.insert(tableIllustPersist, todo.toJson(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    todo.id = await db.insert(
+      tableIllustPersist,
+      todo.toJson(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
     return todo;
   }
 
   Future<int> insertAll(List<GlanceIllustPersist> todo) async {
     final batch = db.batch();
     for (var i in todo) {
-      batch.insert(tableIllustPersist, i.toJson(),
-          conflictAlgorithm: ConflictAlgorithm.replace);
+      batch.insert(
+        tableIllustPersist,
+        i.toJson(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
     }
-    batch.commit();
+    await batch.commit();
     return 0;
   }
 
   Future<GlanceIllustPersist?> getAccount(int illust_id) async {
-    List<Map<String, dynamic>> maps = await db.query(tableIllustPersist,
-        columns: [cid, cillust_id, cuser_id, cpicture_url, ctime, ctype],
-        where: '$cillust_id = ?',
-        whereArgs: [illust_id]);
+    List<Map<String, dynamic>> maps = await db.query(
+      tableIllustPersist,
+      columns: [cid, cillust_id, cuser_id, cpicture_url, ctime, ctype],
+      where: '$cillust_id = ?',
+      whereArgs: [illust_id],
+    );
     if (maps.length > 0) {
       return GlanceIllustPersist.fromJson(maps.first);
     }
@@ -199,20 +211,22 @@ create table $tableIllustPersist (
 
   Future<List<GlanceIllustPersist>> getLikeIllusts(String type) async {
     List<GlanceIllustPersist> result = [];
-    List<Map<String, dynamic>> maps = await db.query(tableIllustPersist,
-        columns: [
-          cid,
-          cillust_id,
-          cuser_id,
-          cpicture_url,
-          ctime,
-          ctype,
-          cuser_name,
-          ctitle
-        ],
-        where: '$ctype = ?',
-        whereArgs: ["${type}"],
-        orderBy: ctime);
+    List<Map<String, dynamic>> maps = await db.query(
+      tableIllustPersist,
+      columns: [
+        cid,
+        cillust_id,
+        cuser_id,
+        cpicture_url,
+        ctime,
+        ctype,
+        cuser_name,
+        ctitle,
+      ],
+      where: '$ctype = ?',
+      whereArgs: ["${type}"],
+      orderBy: ctime,
+    );
 
     if (maps.length > 0) {
       maps.forEach((f) {
@@ -224,18 +238,20 @@ create table $tableIllustPersist (
 
   Future<List<GlanceIllustPersist>> getAllAccount() async {
     List<GlanceIllustPersist> result = [];
-    List<Map<String, dynamic>> maps = await db.query(tableIllustPersist,
-        columns: [
-          cid,
-          cillust_id,
-          cuser_id,
-          cpicture_url,
-          ctime,
-          ctype,
-          cuser_name,
-          ctitle
-        ],
-        orderBy: ctime);
+    List<Map<String, dynamic>> maps = await db.query(
+      tableIllustPersist,
+      columns: [
+        cid,
+        cillust_id,
+        cuser_id,
+        cpicture_url,
+        ctime,
+        ctype,
+        cuser_name,
+        ctitle,
+      ],
+      orderBy: ctime,
+    );
 
     if (maps.length > 0) {
       maps.forEach((f) {
@@ -246,13 +262,20 @@ create table $tableIllustPersist (
   }
 
   Future<int> delete(int id) async {
-    return await db
-        .delete(tableIllustPersist, where: '$cillust_id = ?', whereArgs: [id]);
+    return await db.delete(
+      tableIllustPersist,
+      where: '$cillust_id = ?',
+      whereArgs: [id],
+    );
   }
 
   Future<int> update(GlanceIllustPersist todo) async {
-    return await db.update(tableIllustPersist, todo.toJson(),
-        where: '$cid = ?', whereArgs: [todo.id]);
+    return await db.update(
+      tableIllustPersist,
+      todo.toJson(),
+      where: '$cid = ?',
+      whereArgs: [todo.id],
+    );
   }
 
   Future close() async => db.close();
