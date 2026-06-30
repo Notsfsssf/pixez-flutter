@@ -342,5 +342,9 @@
   "network_mode_ech": "Erweiterte Verbindung",
   "network_mode_ech_message": "Versuche dies, wenn die App geöffnet wird, aber keine Antworten vom Dienst erhält.",
   "network_mode_standard": "Standardverbindung",
-  "network_mode_standard_message": "Für die meisten Netzwerke empfohlen."
+  "network_mode_standard_message": "Für die meisten Netzwerke empfohlen.",
+  "detail_favorite_button_position_title": "Position der Favoriten-Schaltfläche",
+  "detail_favorite_button_position_right": "Rechts",
+  "detail_favorite_button_position_left": "Links",
+  "detail_favorite_button_position_custom": "Benutzerdefiniert"
 }

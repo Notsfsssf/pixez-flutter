@@ -341,5 +341,9 @@
   "network_mode_ech": "Enhanced connection",
   "network_mode_ech_message": "Try this when the app opens but service responses fail.",
   "network_mode_standard": "Standard connection",
-  "network_mode_standard_message": "Recommended for most networks."
+  "network_mode_standard_message": "Recommended for most networks.",
+  "detail_favorite_button_position_title": "즐겨찾기 버튼 위치",
+  "detail_favorite_button_position_right": "오른쪽",
+  "detail_favorite_button_position_left": "왼쪽",
+  "detail_favorite_button_position_custom": "사용자 지정"
 }

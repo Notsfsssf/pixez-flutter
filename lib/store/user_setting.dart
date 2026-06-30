@@ -32,6 +32,7 @@ import 'package:pixez/network/network_mode.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/about/languages.dart';
 import 'package:pixez/secure_plugin.dart';
+import 'package:pixez/store/detail_favorite_button_position.dart';
 import 'package:pixez/store/welcome_page_type.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -96,11 +97,23 @@ abstract class _UserSetting with Store {
   static const String FEED_AI_BADGE_KEY = "feed_ai_badge";
   static const String ILLUST_DETAIL_SAVE_SKIP_LONG_PRESS_KEY =
       "illust_detail_save_skip_long_press";
+  static const String DETAIL_FAVORITE_BUTTON_POSITION_KEY =
+      "detail_favorite_button_position";
+  static const String DETAIL_FAVORITE_BUTTON_CUSTOM_X_KEY =
+      "detail_favorite_button_custom_x";
+  static const String DETAIL_FAVORITE_BUTTON_CUSTOM_Y_KEY =
+      "detail_favorite_button_custom_y";
   static const String DRAG_START_X_KEY = "drag_start_x";
   static const String AUTO_TAG_WHEN_STAR_KEY = "auto_tag_when_star";
-
   @observable
   double dragStartX = 0;
+  @observable
+  DetailFavoriteButtonPosition detailFavoriteButtonPosition =
+      DetailFavoriteButtonPosition.right;
+  @observable
+  double detailFavoriteButtonCustomX = 1.0;
+  @observable
+  double detailFavoriteButtonCustomY = 1.0;
   @observable
   bool illustDetailSaveSkipLongPress = false;
   @observable
@@ -383,6 +396,57 @@ abstract class _UserSetting with Store {
     illustDetailSaveSkipLongPress = v;
   }
 
+  bool get detailFavoriteButtonLeft =>
+      detailFavoriteButtonPosition == DetailFavoriteButtonPosition.left;
+
+  bool get detailFavoriteButtonCustom =>
+      detailFavoriteButtonPosition == DetailFavoriteButtonPosition.custom;
+
+  double get detailFavoriteButtonX {
+    switch (detailFavoriteButtonPosition) {
+      case DetailFavoriteButtonPosition.left:
+        return 0.0;
+      case DetailFavoriteButtonPosition.custom:
+        return detailFavoriteButtonCustomX;
+      case DetailFavoriteButtonPosition.right:
+        return 1.0;
+    }
+  }
+
+  double get detailFavoriteButtonY {
+    switch (detailFavoriteButtonPosition) {
+      case DetailFavoriteButtonPosition.custom:
+        return detailFavoriteButtonCustomY;
+      case DetailFavoriteButtonPosition.left:
+      case DetailFavoriteButtonPosition.right:
+        return 1.0;
+    }
+  }
+
+  double _normalizePercent(double? value, {double fallback = 1.0}) {
+    return min(1.0, max(0.0, value ?? fallback));
+  }
+
+  @action
+  setDetailFavoriteButtonPosition(DetailFavoriteButtonPosition position) async {
+    detailFavoriteButtonPosition = position;
+    await prefs.setInt(DETAIL_FAVORITE_BUTTON_POSITION_KEY, position.value);
+  }
+
+  @action
+  setDetailFavoriteButtonCustomX(double value) async {
+    final position = _normalizePercent(value);
+    detailFavoriteButtonCustomX = position;
+    await prefs.setDouble(DETAIL_FAVORITE_BUTTON_CUSTOM_X_KEY, position);
+  }
+
+  @action
+  setDetailFavoriteButtonCustomY(double value) async {
+    final position = _normalizePercent(value);
+    detailFavoriteButtonCustomY = position;
+    await prefs.setDouble(DETAIL_FAVORITE_BUTTON_CUSTOM_Y_KEY, position);
+  }
+
   @action
   setAutoTagWhenStar(bool v) async {
     await prefs.setBool(AUTO_TAG_WHEN_STAR_KEY, v);
@@ -562,6 +626,15 @@ abstract class _UserSetting with Store {
     useSaunceNaoWebview = prefs.getBool(USE_SAUNCE_NAO_WEBVIEW) ?? false;
     dragStartX = prefs.getDouble(DRAG_START_X_KEY) ?? 0;
     autoTagWhenStar = prefs.getBool(AUTO_TAG_WHEN_STAR_KEY) ?? false;
+    detailFavoriteButtonPosition = DetailFavoriteButtonPosition.fromValue(
+      prefs.getInt(DETAIL_FAVORITE_BUTTON_POSITION_KEY),
+    );
+    detailFavoriteButtonCustomX = _normalizePercent(
+      prefs.getDouble(DETAIL_FAVORITE_BUTTON_CUSTOM_X_KEY),
+    );
+    detailFavoriteButtonCustomY = _normalizePercent(
+      prefs.getDouble(DETAIL_FAVORITE_BUTTON_CUSTOM_Y_KEY),
+    );
     illustDetailSaveSkipLongPress =
         prefs.getBool(ILLUST_DETAIL_SAVE_SKIP_LONG_PRESS_KEY) ?? false;
     if (Platform.isAndroid) {

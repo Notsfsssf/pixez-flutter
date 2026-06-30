@@ -341,5 +341,9 @@
   "network_mode_ech": "Enhanced connection",
   "network_mode_ech_message": "Try this when the app opens but service responses fail.",
   "network_mode_standard": "Standard connection",
-  "network_mode_standard_message": "Recommended for most networks."
+  "network_mode_standard_message": "Recommended for most networks.",
+  "detail_favorite_button_position_title": "Posisyon ng button ng bookmark",
+  "detail_favorite_button_position_right": "Kanan",
+  "detail_favorite_button_position_left": "Kaliwa",
+  "detail_favorite_button_position_custom": "Custom"
 }
