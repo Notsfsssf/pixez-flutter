@@ -107,7 +107,7 @@ class _AccountEditPageState extends State<AccountEditPage> {
               onPressed: () async {
                 Clipboard.setData(
                     ClipboardData(text: accountStore.now!.refreshToken));
-                BotToast.showText(text: "Copied to clipboard");
+                BotToast.showText(text: I18n.of(context).copied_to_clipboard);
               },
               title: Text("Token export"),
             ),
