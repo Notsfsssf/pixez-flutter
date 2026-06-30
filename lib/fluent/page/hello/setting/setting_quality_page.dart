@@ -211,36 +211,41 @@ class _SettingQualityPageState extends State<SettingQualityPage>
           ListTile(
             leading: const StarIcon(state: 0, boxSize: 18),
             title: Text(I18n.of(context).detail_favorite_button_position_title),
-            trailing: ComboBox<DetailFavoriteButtonPosition>(
-              value: userSetting.detailFavoriteButtonPosition,
-              items: [
-                ComboBoxItem<DetailFavoriteButtonPosition>(
-                  child: Text(
-                    I18n.of(context).detail_favorite_button_position_right,
-                  ),
-                  value: DetailFavoriteButtonPosition.right,
+            trailing: Row(
+              children: [
+                ComboBox<DetailFavoriteButtonPosition>(
+                  value: userSetting.detailFavoriteButtonPosition,
+                  items: [
+                    ComboBoxItem<DetailFavoriteButtonPosition>(
+                      child: Text(
+                        I18n.of(context).detail_favorite_button_position_right,
+                      ),
+                      value: DetailFavoriteButtonPosition.right,
+                    ),
+                    ComboBoxItem<DetailFavoriteButtonPosition>(
+                      child: Text(
+                        I18n.of(context).detail_favorite_button_position_left,
+                      ),
+                      value: DetailFavoriteButtonPosition.left,
+                    ),
+                    ComboBoxItem<DetailFavoriteButtonPosition>(
+                      child: Text(
+                        I18n.of(context).detail_favorite_button_position_custom,
+                      ),
+                      value: DetailFavoriteButtonPosition.custom,
+                    ),
+                  ],
+                  onChanged: (selected) {
+                    userSetting.setDetailFavoriteButtonPosition(selected!);
+                    if (selected == DetailFavoriteButtonPosition.custom) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        if (mounted) _openDetailFavoriteButtonPreview();
+                      });
+                    }
+                  },
                 ),
-                ComboBoxItem<DetailFavoriteButtonPosition>(
-                  child: Text(
-                    I18n.of(context).detail_favorite_button_position_left,
-                  ),
-                  value: DetailFavoriteButtonPosition.left,
-                ),
-                ComboBoxItem<DetailFavoriteButtonPosition>(
-                  child: Text(
-                    I18n.of(context).detail_favorite_button_position_custom,
-                  ),
-                  value: DetailFavoriteButtonPosition.custom,
-                ),
+                const Icon(FluentIcons.chevron_right),
               ],
-              onChanged: (selected) {
-                userSetting.setDetailFavoriteButtonPosition(selected!);
-                if (selected == DetailFavoriteButtonPosition.custom) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    if (mounted) _openDetailFavoriteButtonPreview();
-                  });
-                }
-              },
             ),
             onPressed: userSetting.detailFavoriteButtonCustom
                 ? _openDetailFavoriteButtonPreview
