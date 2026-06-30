@@ -140,7 +140,7 @@ class _HistoryItem extends HookConsumerWidget {
       items: [
         MenuFlyoutItem(
           text: Text("Open"), // TODO: I18n
-          leading: Icon(FluentIcons.open_in_new_window),
+          leading: Icon(WindowsIcons.open_in_new_window),
           onPressed: () => _navigateTo(context),
         ),
         MenuFlyoutItem(
