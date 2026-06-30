@@ -257,7 +257,7 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
           if (data.type == "manga") {
             url = data.managaDetailUrl;
           }
-          Widget placeWidget = Container(height: height);
+
           return LayoutBuilder(
             builder: (context, constraints) => IllustItem(
               0,
@@ -269,14 +269,15 @@ abstract class IllustItemsPageState extends State<IllustItemsPage>
                   url,
                   fade: false,
                   width: constraints.maxWidth,
+                  height: height,
                   placeWidget: (url != data.imageUrls.medium)
                       ? PixivImage(
                           data.imageUrls.medium,
-                          width: constraints.maxWidth,
-                          placeWidget: placeWidget,
                           fade: false,
+                          width: constraints.maxWidth,
+                          height: height,
                         )
-                      : placeWidget,
+                      : null,
                 ),
               ),
               onMultiSavePressed: () async {

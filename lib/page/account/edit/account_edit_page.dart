@@ -166,7 +166,7 @@ class _AccountEditPageState extends State<AccountEditPage> {
                   onTap: () async {
                     Clipboard.setData(
                         ClipboardData(text: accountStore.now!.refreshToken));
-                    BotToast.showText(text: "Copied to clipboard");
+                    BotToast.showText(text: I18n.of(context).copied_to_clipboard);
                   },
                   child: Padding(
                     padding: EdgeInsets.all(16.0),

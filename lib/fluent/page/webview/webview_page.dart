@@ -78,7 +78,7 @@ javascript:(function() {
       header: Row(
         children: [
           IconButton(
-            icon: Icon(FluentIcons.open_in_new_window),
+            icon: Icon(WindowsIcons.open_in_new_window),
             onPressed: () {
               try {
                 CustomTabPlugin.launch(widget.url);

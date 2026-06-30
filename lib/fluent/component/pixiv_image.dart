@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_compatibility_layer/dio_compatibility_layer.dart';
@@ -63,7 +65,10 @@ class PixivImage extends StatefulWidget {
 
   static Future<void> generatePixivCache() async {
     final client = await r.RhttpCompatibleClient.createSync(
-      settings: PixezNetworkSettings.forImages(userSetting.pictureSource, userSetting.networkMode),
+      settings: PixezNetworkSettings.forImages(
+        userSetting.pictureSource,
+        userSetting.networkMode,
+      ),
     );
     final existing = _cacheDio;
     if (existing != null) {
@@ -120,9 +125,40 @@ class _PixivImageState extends State<PixivImage> {
 
   @override
   Widget build(BuildContext context) {
+    final size = min(min(width ?? 60, height ?? 60), 60.0);
     return CachedNetworkImage(
-      placeholder: (context, url) =>
-          widget.placeWidget ?? Container(height: height),
+      placeholder: widget.placeWidget == null
+          ? null
+          : (context, url) =>
+                widget.placeWidget ??
+                Container(
+                  height: height,
+                  child: Center(
+                    child: SizedBox(
+                      width: size,
+                      height: size,
+                      child: const Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: const ProgressRing(),
+                      ),
+                    ),
+                  ),
+                ),
+      progressIndicatorBuilder: widget.placeWidget == null
+          ? (context, url, progress) => Container(
+              height: height,
+              child: Center(
+                child: SizedBox(
+                  width: size,
+                  height: size,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ProgressRing(value: progress.progress),
+                  ),
+                ),
+              ),
+            )
+          : null,
       errorWidget: (context, url, _) => Container(
         height: height,
         child: Center(

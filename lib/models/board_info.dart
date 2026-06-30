@@ -41,6 +41,8 @@ class BoardInfo {
       return "android.json";
     } else if (Platform.isIOS) {
       return "ios.json";
+    } else if (Platform.isWindows) {
+      return "windows.json";
     }
     return "";
   }

@@ -107,13 +107,13 @@ class _AccountEditPageState extends State<AccountEditPage> {
               onPressed: () async {
                 Clipboard.setData(
                     ClipboardData(text: accountStore.now!.refreshToken));
-                BotToast.showText(text: "Copied to clipboard");
+                BotToast.showText(text: I18n.of(context).copied_to_clipboard);
               },
               title: Text("Token export"),
             ),
           ListTile(
             title: Text(I18n.of(context).account_deletion),
-            trailing: Icon(FluentIcons.open_in_new_window),
+            trailing: Icon(WindowsIcons.open_in_new_window),
             onPressed: () => showDialog(
               context: context,
               useRootNavigator: false,

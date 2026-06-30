@@ -31,8 +31,9 @@ class _CopyTextPageState extends State<CopyTextPage> {
 
   @override
   void initState() {
-    _textEditingController =
-        TextEditingController(text: userSetting.copyInfoText);
+    _textEditingController = TextEditingController(
+      text: userSetting.copyInfoText,
+    );
     super.initState();
   }
 
@@ -43,73 +44,75 @@ class _CopyTextPageState extends State<CopyTextPage> {
   }
 
   _buildActionNormalText(String text) => Button(
-        child: Text("$text"),
-        onPressed: () {
-          if (_textEditingController.selection.end == -1) return;
-          var insertText = text;
-          if (text == "_") insertText = "_";
-          final textSelection = _textEditingController.selection;
-          _textEditingController.text = _textEditingController.text
-              .replaceRange(textSelection.start, textSelection.end, insertText);
-          _textEditingController.selection = textSelection.copyWith(
-              baseOffset: textSelection.start + insertText.length,
-              extentOffset: textSelection.start + insertText.length);
-        },
+    child: Text("$text"),
+    onPressed: () {
+      if (_textEditingController.selection.end == -1) return;
+      var insertText = text;
+      if (text == "_") insertText = "_";
+      final textSelection = _textEditingController.selection;
+      _textEditingController.text = _textEditingController.text.replaceRange(
+        textSelection.start,
+        textSelection.end,
+        insertText,
       );
+      _textEditingController.selection = textSelection.copyWith(
+        baseOffset: textSelection.start + insertText.length,
+        extentOffset: textSelection.start + insertText.length,
+      );
+    },
+  );
 
   _buildActionText(String text) => Button(
-        child: Text("$text"),
-        onPressed: () {
-          if (_textEditingController.selection.end == -1) return;
-          var insertText = "{$text}";
-          if (text == "_") insertText = "_";
-          final textSelection = _textEditingController.selection;
-          _textEditingController.text = _textEditingController.text
-              .replaceRange(textSelection.start, textSelection.end, insertText);
-          _textEditingController.selection = textSelection.copyWith(
-              baseOffset: textSelection.start + insertText.length,
-              extentOffset: textSelection.start + insertText.length);
-        },
+    child: Text("$text"),
+    onPressed: () {
+      if (_textEditingController.selection.end == -1) return;
+      var insertText = "{$text}";
+      if (text == "_") insertText = "_";
+      final textSelection = _textEditingController.selection;
+      _textEditingController.text = _textEditingController.text.replaceRange(
+        textSelection.start,
+        textSelection.end,
+        insertText,
       );
+      _textEditingController.selection = textSelection.copyWith(
+        baseOffset: textSelection.start + insertText.length,
+        extentOffset: textSelection.start + insertText.length,
+      );
+    },
+  );
 
   String intialFormat =
       "title:{title}\npainter:{user_name}\nillust id:{illust_id}";
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldPage(
-      header: PageHeader(
-        title: Text(I18n.of(context).share_info_format),
-        commandBar: CommandBar(primaryItems: [
-          CommandBarButton(
-              icon: Icon(FluentIcons.refresh),
-              onPressed: () async {
-                _textEditingController.text = intialFormat;
-                await userSetting.setCopyInfoText(intialFormat);
-              }),
-          CommandBarButton(
-              icon: Icon(FluentIcons.save),
-              onPressed: () async {
-                final text = _textEditingController.text;
-                await userSetting.setCopyInfoText(text);
-                Navigator.of(context).pop();
-              }),
-        ]),
-      ),
-      content: Container(
-        child: ListView(children: [
-          Padding(
-            padding: EdgeInsets.all(12),
-            child: InfoLabel(
-              label: I18n.of(context).share_info_format,
-              child: TextBox(
-                controller: _textEditingController,
-                maxLines: null,
-              ),
-            ),
+    return ContentDialog(
+      title: Text(I18n.of(context).share_info_format),
+      actions: [
+        Button(
+          child: Text(I18n.of(context).refresh),
+          onPressed: () async {
+            _textEditingController.text = intialFormat;
+            await userSetting.setCopyInfoText(intialFormat);
+          },
+        ),
+        FilledButton(
+          child: Text(I18n.of(context).save),
+          onPressed: () async {
+            final text = _textEditingController.text;
+            await userSetting.setCopyInfoText(text);
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+      content: ListView(
+        children: [
+          InfoLabel(
+            label: I18n.of(context).share_info_format,
+            child: TextBox(controller: _textEditingController, maxLines: null),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(top: 8.0),
             child: Wrap(
               spacing: 6.0,
               children: <Widget>[
@@ -119,12 +122,13 @@ class _CopyTextPageState extends State<CopyTextPage> {
                 _buildActionText("user_name"),
                 _buildActionText("tags"),
                 _buildActionNormalText(
-                    "https://www.pixiv.net/artworks/{illust_id}"),
+                  "https://www.pixiv.net/artworks/{illust_id}",
+                ),
                 _buildActionNormalText("https://www.pixiv.net/users/{user_id}"),
               ],
             ),
           ),
-        ]),
+        ],
       ),
     );
   }

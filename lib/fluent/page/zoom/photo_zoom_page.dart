@@ -243,7 +243,7 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
       });
     }
     return Center(
-      child: Container(width: 20.0, height: 20.0, child: ProgressRing()),
+      child: Container(width: 60.0, height: 60.0, child: ProgressRing()),
     );
   }
 }
