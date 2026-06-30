@@ -17,17 +17,16 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pixez/fluent/component/new_version_chip.dart';
-import 'package:pixez/fluent/component/painter_avatar.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/er/updater.dart';
-import 'package:pixez/i18n.dart';
-import 'package:pixez/main.dart';
+import 'package:pixez/fluent/component/new_version_chip.dart';
+import 'package:pixez/fluent/component/painter_avatar.dart';
 import 'package:pixez/fluent/page/about/about_page.dart';
 import 'package:pixez/fluent/page/account/edit/account_edit_page.dart';
 import 'package:pixez/fluent/page/account/select/account_select_page.dart';
+import 'package:pixez/fluent/page/board/board_page.dart';
 import 'package:pixez/fluent/page/book/tag/book_tag_page.dart';
 import 'package:pixez/fluent/page/hello/recom/recom_manga_page.dart';
 import 'package:pixez/fluent/page/hello/setting/data_export_page.dart';
@@ -38,7 +37,10 @@ import 'package:pixez/fluent/page/network/network_setting_page.dart';
 import 'package:pixez/fluent/page/shield/shield_page.dart';
 import 'package:pixez/fluent/page/task/job_page.dart';
 import 'package:pixez/fluent/page/theme/theme_page.dart';
+import 'package:pixez/i18n.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/models/account.dart';
+import 'package:pixez/models/board_info.dart';
 import 'package:pixez/page/novel/history/novel_history_page.dart';
 import 'package:pixez/page/novel/novel_rail.dart';
 
@@ -54,6 +56,7 @@ class _SettingPageState extends State<SettingPage> {
   void initState() {
     super.initState();
     initMethod();
+    fetchBoard();
   }
 
   bool hasNewVersion = false;
@@ -96,10 +99,11 @@ class _SettingPageState extends State<SettingPage> {
           primaryItems: [
             if (kDebugMode)
               CommandBarButton(
-                  icon: Icon(FluentIcons.code),
-                  onPressed: () {
-                    _showSavedLogDialog(context);
-                  }),
+                icon: Icon(FluentIcons.code),
+                onPressed: () {
+                  _showSavedLogDialog(context);
+                },
+              ),
             CommandBarButton(
               icon: Icon(
                 FluentIcons.color,
@@ -115,67 +119,69 @@ class _SettingPageState extends State<SettingPage> {
         ),
       ),
       children: [
-        Observer(builder: (context) {
-          if (accountStore.now == null) return Container();
-          return SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListTile(
-                    leading: PainterAvatar(
-                      url: accountStore.now!.userImage,
-                      id: int.parse(accountStore.now!.userId),
-                    ),
-                    title: Text(accountStore.now!.name,
-                        style: FluentTheme.of(context).typography.title),
-                    subtitle: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          hideEmail
-                              ? accountStore.now!.hiddenEmail()
-                              : accountStore.now!.mailAddress,
-                          style: FluentTheme.of(context).typography.caption,
-                        ),
-                        SizedBox(
-                          width: 6,
-                        ),
-                        HyperlinkButton(
-                          onPressed: () =>
-                              setState(() => hideEmail = !hideEmail),
-                          child: Text(
+        Observer(
+          builder: (context) {
+            if (accountStore.now == null) return Container();
+            return SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ListTile(
+                      leading: PainterAvatar(
+                        url: accountStore.now!.userImage,
+                        id: int.parse(accountStore.now!.userId),
+                      ),
+                      title: Text(
+                        accountStore.now!.name,
+                        style: FluentTheme.of(context).typography.title,
+                      ),
+                      subtitle: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
                             hideEmail
-                                ? I18n.of(context).reveal
-                                : I18n.of(context).hide,
+                                ? accountStore.now!.hiddenEmail()
+                                : accountStore.now!.mailAddress,
+                            style: FluentTheme.of(context).typography.caption,
                           ),
-                        ),
-                      ],
+                          SizedBox(width: 6),
+                          HyperlinkButton(
+                            onPressed: () =>
+                                setState(() => hideEmail = !hideEmail),
+                            child: Text(
+                              hideEmail
+                                  ? I18n.of(context).reveal
+                                  : I18n.of(context).hide,
+                            ),
+                          ),
+                        ],
+                      ),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AccountSelectPage(),
+                          useRootNavigator: false,
+                        );
+                      },
                     ),
+                  ),
+                  ListTile(
+                    leading: Icon(FluentIcons.account_management),
+                    title: Text(I18n.of(context).account_message),
                     onPressed: () {
                       showDialog(
                         context: context,
-                        builder: (context) => AccountSelectPage(),
+                        builder: (context) => AccountEditPage(),
                         useRootNavigator: false,
                       );
                     },
                   ),
-                ),
-                ListTile(
-                  leading: Icon(FluentIcons.account_management),
-                  title: Text(I18n.of(context).account_message),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AccountEditPage(),
-                      useRootNavigator: false,
-                    );
-                  },
-                )
-              ],
-            ),
-          );
-        }),
+                ],
+              ),
+            );
+          },
+        ),
         Divider(),
         Column(
           children: <Widget>[
@@ -252,23 +258,23 @@ class _SettingPageState extends State<SettingPage> {
           children: <Widget>[
             ListTile(
               leading: Icon(FluentIcons.library),
-              title: Text('Manga'),
+              title: Text(I18n.of(context).manga),
               trailing: Icon(FluentIcons.chevron_right),
               onPressed: () => Leader.push(
                 context,
                 RecomMangaPage(),
-                title: Text('Manga'),
+                title: Text(I18n.of(context).manga),
                 icon: Icon(FluentIcons.library),
               ),
             ),
             ListTile(
               leading: Icon(FluentIcons.plain_text),
-              title: Text('Novel'),
+              title: Text(I18n.of(context).novel),
               trailing: Icon(FluentIcons.chevron_right),
               onPressed: () => Leader.push(
                 context,
                 NovelRail(),
-                title: Text('Novel'),
+                title: Text(I18n.of(context).novel),
                 icon: Icon(FluentIcons.plain_text),
               ),
             ),
@@ -294,36 +300,47 @@ class _SettingPageState extends State<SettingPage> {
               ),
               trailing: Row(
                 children: [
-                  Visibility(
-                    child: NewVersionChip(),
-                    visible: hasNewVersion,
-                  ),
+                  Visibility(child: NewVersionChip(), visible: hasNewVersion),
                   Icon(FluentIcons.chevron_right),
                 ],
               ),
             ),
-            Observer(builder: (context) {
-              if (accountStore.now != null)
-                return ListTile(
-                  leading: Icon(FluentIcons.sign_out),
-                  title: Text(I18n.of(context).logout),
-                  onPressed: () => _showLogoutDialog(context),
-                );
-              else
-                return ListTile(
-                  leading: Icon(FluentIcons.signin),
-                  title: Text(I18n.of(context).login),
-                  trailing: Icon(FluentIcons.chevron_right),
-                  onPressed: () => Leader.push(
-                    context,
-                    LoginPage(),
-                    icon: Icon(FluentIcons.signin),
+            if (_needBoardSection)
+              ListTile(
+                leading: Icon(FluentIcons.boards),
+                title: Text(I18n.of(context).bulletin_board),
+                trailing: Icon(FluentIcons.chevron_right),
+                onPressed: () => Leader.push(
+                  context,
+                  BoardPage(boardList: _boardList),
+                  icon: Icon(FluentIcons.boards),
+                  title: Text(I18n.of(context).bulletin_board),
+                ),
+              ),
+            Observer(
+              builder: (context) {
+                if (accountStore.now != null)
+                  return ListTile(
+                    leading: Icon(FluentIcons.sign_out),
+                    title: Text(I18n.of(context).logout),
+                    onPressed: () => _showLogoutDialog(context),
+                  );
+                else
+                  return ListTile(
+                    leading: Icon(FluentIcons.signin),
                     title: Text(I18n.of(context).login),
-                  ),
-                );
-            })
+                    trailing: Icon(FluentIcons.chevron_right),
+                    onPressed: () => Leader.push(
+                      context,
+                      LoginPage(),
+                      icon: Icon(FluentIcons.signin),
+                      title: Text(I18n.of(context).login),
+                    ),
+                  );
+              },
+            ),
           ],
-        )
+        ),
       ],
     );
   }
@@ -332,30 +349,28 @@ class _SettingPageState extends State<SettingPage> {
     var savedLogFile = await LPrinter.savedLogFile();
     var content = savedLogFile.readAsStringSync();
     final result = await showDialog(
-        context: context,
-        builder: (context) {
-          return ContentDialog(
-            title: Text("Log"),
-            content: Container(
-              child: Text(content),
-              height: 400,
+      context: context,
+      builder: (context) {
+        return ContentDialog(
+          title: Text("Log"),
+          content: Container(child: Text(content), height: 400),
+          actions: <Widget>[
+            Button(
+              child: Text(I18n.of(context).cancel),
+              onPressed: () {
+                Navigator.of(context).pop("CANCEL");
+              },
             ),
-            actions: <Widget>[
-              Button(
-                child: Text(I18n.of(context).cancel),
-                onPressed: () {
-                  Navigator.of(context).pop("CANCEL");
-                },
-              ),
-              FilledButton(
-                child: Text(I18n.of(context).ok),
-                onPressed: () {
-                  Navigator.of(context).pop("OK");
-                },
-              ),
-            ],
-          );
-        });
+            FilledButton(
+              child: Text(I18n.of(context).ok),
+              onPressed: () {
+                Navigator.of(context).pop("OK");
+              },
+            ),
+          ],
+        );
+      },
+    );
     switch (result) {
       case "OK":
         {}
@@ -368,26 +383,27 @@ class _SettingPageState extends State<SettingPage> {
 
   Future _showLogoutDialog(BuildContext context) async {
     final result = await showDialog(
-        context: context,
-        builder: (context) {
-          return ContentDialog(
-            title: Text(I18n.of(context).logout),
-            actions: <Widget>[
-              Button(
-                child: Text(I18n.of(context).cancel),
-                onPressed: () {
-                  Navigator.of(context).pop("CANCEL");
-                },
-              ),
-              FilledButton(
-                child: Text(I18n.of(context).ok),
-                onPressed: () {
-                  Navigator.of(context).pop("OK");
-                },
-              ),
-            ],
-          );
-        });
+      context: context,
+      builder: (context) {
+        return ContentDialog(
+          title: Text(I18n.of(context).logout),
+          actions: <Widget>[
+            Button(
+              child: Text(I18n.of(context).cancel),
+              onPressed: () {
+                Navigator.of(context).pop("CANCEL");
+              },
+            ),
+            FilledButton(
+              child: Text(I18n.of(context).ok),
+              onPressed: () {
+                Navigator.of(context).pop("OK");
+              },
+            ),
+          ],
+        );
+      },
+    );
     switch (result) {
       case "OK":
         {
@@ -398,5 +414,26 @@ class _SettingPageState extends State<SettingPage> {
         {}
         break;
     }
+  }
+
+  bool _needBoardSection = false;
+  List<BoardInfo> _boardList = [];
+
+  fetchBoard() async {
+    try {
+      if (BoardInfo.boardDataLoaded) {
+        setState(() {
+          _boardList = BoardInfo.boardList;
+          _needBoardSection = _boardList.isNotEmpty;
+        });
+        return;
+      }
+      final list = await BoardInfo.load();
+      setState(() {
+        BoardInfo.boardDataLoaded = true;
+        _boardList = list;
+        _needBoardSection = _boardList.isNotEmpty;
+      });
+    } catch (e) {}
   }
 }
