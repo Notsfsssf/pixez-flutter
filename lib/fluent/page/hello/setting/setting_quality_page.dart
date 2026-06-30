@@ -20,15 +20,18 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' show Icons;
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/fluent/component/pixez_button.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/about/languages.dart';
 import 'package:pixez/fluent/page/hello/setting/copy_text_page.dart';
+import 'package:pixez/fluent/page/hello/setting/detail_favorite_button_preview_page.dart';
 import 'package:pixez/fluent/page/hello/setting/setting_cross_adapter_page.dart';
 import 'package:pixez/fluent/page/network/network_page.dart';
 import 'package:pixez/fluent/page/platform/platform_page.dart';
+import 'package:pixez/store/detail_favorite_button_position.dart';
 import 'package:pixez/store/welcome_page_type.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -206,7 +209,50 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.zoom_out_map),
+            leading: const StarIcon(state: 0, boxSize: 18),
+            title: Text(I18n.of(context).detail_favorite_button_position_title),
+            trailing: Row(
+              children: [
+                ComboBox<DetailFavoriteButtonPosition>(
+                  value: userSetting.detailFavoriteButtonPosition,
+                  items: [
+                    ComboBoxItem<DetailFavoriteButtonPosition>(
+                      child: Text(
+                        I18n.of(context).detail_favorite_button_position_right,
+                      ),
+                      value: DetailFavoriteButtonPosition.right,
+                    ),
+                    ComboBoxItem<DetailFavoriteButtonPosition>(
+                      child: Text(
+                        I18n.of(context).detail_favorite_button_position_left,
+                      ),
+                      value: DetailFavoriteButtonPosition.left,
+                    ),
+                    ComboBoxItem<DetailFavoriteButtonPosition>(
+                      child: Text(
+                        I18n.of(context).detail_favorite_button_position_custom,
+                      ),
+                      value: DetailFavoriteButtonPosition.custom,
+                    ),
+                  ],
+                  onChanged: (selected) {
+                    userSetting.setDetailFavoriteButtonPosition(selected!);
+                    if (selected == DetailFavoriteButtonPosition.custom) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        if (mounted) _openDetailFavoriteButtonPreview();
+                      });
+                    }
+                  },
+                ),
+                const Icon(FluentIcons.chevron_right),
+              ],
+            ),
+            onPressed: userSetting.detailFavoriteButtonCustom
+                ? _openDetailFavoriteButtonPreview
+                : null,
+          ),
+          ListTile(
+            leading: const Icon(FluentIcons.full_view),
             title: Text(I18n.of(context).large_preview_zoom_quality),
             trailing: Observer(
               builder: (_) {
@@ -469,6 +515,16 @@ class _SettingQualityPageState extends State<SettingQualityPage>
           ),
         ],
       ),
+    );
+  }
+
+  void _openDetailFavoriteButtonPreview() {
+    Leader.push(
+      context,
+      const DetailFavoriteButtonPreviewPage(),
+      icon: const StarIcon(state: 1, boxSize: 24),
+      title: const Text(""),
+      forceSkipWrap: true,
     );
   }
 

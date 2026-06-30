@@ -14,15 +14,17 @@
  *
  */
 
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart' as fluentui;
+import 'package:flutter/material.dart' as material;
+import 'package:flutter/widgets.dart';
+import 'package:pixez/constants.dart';
 
 class StarIcon extends StatefulWidget {
   final int state;
+  final double boxSize;
 
-  const StarIcon({
-    Key? key,
-    required this.state,
-  }) : super(key: key);
+  const StarIcon({Key? key, required this.state, this.boxSize = 40})
+    : super(key: key);
 
   @override
   _StarIconState createState() => _StarIconState();
@@ -50,9 +52,11 @@ class _StarIconState extends State<StarIcon> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 40,
-      height: 40,
-      color: Colors.transparent,
+      width: widget.boxSize,
+      height: widget.boxSize,
+      color: Constants.isFluent
+          ? fluentui.Colors.transparent
+          : material.Colors.transparent,
       child: _buildData(state),
     );
   }
@@ -61,16 +65,28 @@ class _StarIconState extends State<StarIcon> {
     switch (state) {
       case 0:
         return Icon(
-          Icons.favorite_border,
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
+          Constants.isFluent
+              ? fluentui.FluentIcons.heart
+              : material.Icons.favorite_border,
+          color: Constants.isFluent
+              ? fluentui.FluentTheme.of(context).inactiveColor
+              : material.Theme.of(context).colorScheme.onSurfaceVariant,
         );
       case 1:
-        return Icon(Icons.favorite,
-            color: Theme.of(context).colorScheme.onSurfaceVariant);
+        return Icon(
+          Constants.isFluent
+              ? fluentui.FluentIcons.heart_fill
+              : material.Icons.favorite,
+          color: Constants.isFluent
+              ? fluentui.FluentTheme.of(context).inactiveColor
+              : material.Theme.of(context).colorScheme.onSurfaceVariant,
+        );
       default:
         return Icon(
-          Icons.favorite,
-          color: Colors.red,
+          Constants.isFluent
+              ? fluentui.FluentIcons.heart_fill
+              : material.Icons.favorite,
+          color: Constants.isFluent ? fluentui.Colors.red : material.Colors.red,
         );
     }
   }

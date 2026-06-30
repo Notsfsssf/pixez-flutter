@@ -342,5 +342,9 @@
   "network_mode_ech": "增强连接",
   "network_mode_ech_message": "登录后接口返回异常时尝试。",
   "network_mode_standard": "标准连接",
-  "network_mode_standard_message": "大多数网络环境推荐使用。"
+  "network_mode_standard_message": "大多数网络环境推荐使用。",
+  "detail_favorite_button_position_title": "收藏按钮位置",
+  "detail_favorite_button_position_right": "右侧",
+  "detail_favorite_button_position_left": "左侧",
+  "detail_favorite_button_position_custom": "自定义"
 }

@@ -21,6 +21,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/app_widget_plugin.dart';
+import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/prefer.dart';
@@ -28,9 +29,11 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/about/languages.dart';
 import 'package:pixez/page/hello/setting/copy_text_page.dart';
+import 'package:pixez/page/hello/setting/detail_favorite_button_preview_page.dart';
 import 'package:pixez/page/hello/setting/setting_cross_adapter_page.dart';
 import 'package:pixez/page/network/network_page.dart';
 import 'package:pixez/page/platform/platform_page.dart';
+import 'package:pixez/store/detail_favorite_button_position.dart';
 import 'package:pixez/store/welcome_page_type.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -181,6 +184,33 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                       userSetting.setMangaQuality(index);
                     },
                   ),
+                ),
+                ListTile(
+                  leading: const StarIcon(state: 1, boxSize: 24),
+                  title: Text(
+                    I18n.of(context).detail_favorite_button_position_title,
+                  ),
+                  trailing: SettingSelectMenu(
+                    index: userSetting.detailFavoriteButtonPosition.index,
+                    items: [
+                      I18n.of(context).detail_favorite_button_position_right,
+                      I18n.of(context).detail_favorite_button_position_left,
+                      I18n.of(context).detail_favorite_button_position_custom,
+                    ],
+                    onChange: (index) {
+                      final position =
+                          DetailFavoriteButtonPosition.values[index];
+                      userSetting.setDetailFavoriteButtonPosition(position);
+                      if (position == DetailFavoriteButtonPosition.custom) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          if (mounted) _openDetailFavoriteButtonPreview();
+                        });
+                      }
+                    },
+                  ),
+                  onTap: userSetting.detailFavoriteButtonCustom
+                      ? _openDetailFavoriteButtonPreview
+                      : null,
                 ),
                 ListTile(
                   leading: const Icon(Icons.zoom_out_map),
@@ -411,6 +441,14 @@ class _SettingQualityPageState extends State<SettingQualityPage>
             ),
           );
         },
+      ),
+    );
+  }
+
+  void _openDetailFavoriteButtonPreview() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const DetailFavoriteButtonPreviewPage(),
       ),
     );
   }

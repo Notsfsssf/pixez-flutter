@@ -342,5 +342,9 @@
   "network_mode_ech": "Gelişmiş bağlantı",
   "network_mode_ech_message": "Uygulama açıldığı halde hizmet yanıtları başarısız olduğunda bunu dene.",
   "network_mode_standard": "Standart bağlantı",
-  "network_mode_standard_message": "Çoğu ağ için önerilir."
+  "network_mode_standard_message": "Çoğu ağ için önerilir.",
+  "detail_favorite_button_position_title": "Favori düğmesi konumu",
+  "detail_favorite_button_position_right": "Sağ",
+  "detail_favorite_button_position_left": "Sol",
+  "detail_favorite_button_position_custom": "Özel"
 }

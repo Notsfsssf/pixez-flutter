@@ -342,5 +342,9 @@
   "network_mode_ech": "增強連線",
   "network_mode_ech_message": "登入後服務回應異常時嘗試。",
   "network_mode_standard": "標準連線",
-  "network_mode_standard_message": "建議大多數網路環境使用。"
+  "network_mode_standard_message": "建議大多數網路環境使用。",
+  "detail_favorite_button_position_title": "收藏按鈕位置",
+  "detail_favorite_button_position_right": "右側",
+  "detail_favorite_button_position_left": "左側",
+  "detail_favorite_button_position_custom": "自訂"
 }
