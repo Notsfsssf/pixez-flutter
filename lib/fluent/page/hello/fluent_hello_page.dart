@@ -55,89 +55,67 @@ class _FluentHelloPageState extends State<FluentHelloPage> {
     final initIndex = userSetting.fluentWelcomePageIndex;
     return Observer(
       builder: (context) {
-        bool isLogin = accountStore.now != null;
         // Pixiv UWP 样式
         bool isTop = userSetting.isTopMode;
         return NavigationFramework(
           initIndex: initIndex,
           defaultTitle: const Text('PixEz'),
           displayMode: isTop ? PaneDisplayMode.top : PaneDisplayMode.auto,
-          header: isTop ? null : _buildHeader(isLogin),
+          header: isTop ? null : _buildHeader(accountStore.now != null),
           autoSuggestBox: PixEzSearchBox(),
-          items: isLogin
-              ? [
-                  PaneItem(
-                    icon: const Icon(FluentIcons.home),
-                    title: Text(I18n.of(context).home),
-                    body: RecomSpolightPage(),
+          items: [
+            PaneItem(
+              icon: const Icon(FluentIcons.home),
+              title: Text(I18n.of(context).home),
+              body: Observer(
+                builder: (context) => accountStore.now != null
+                    ? RecomSpolightPage()
+                    : PreviewPage(),
+              ),
+            ),
+            PaneItem(
+              icon: const Icon(CustomIcons.leaderboard),
+              title: Text(I18n.of(context).rank),
+              body: RankPage(),
+            ),
+            PaneItemExpander(
+              icon: const Icon(FluentIcons.bookmarks),
+              title: Text(I18n.of(context).quick_view),
+              items: [
+                PaneItem(
+                  icon: const Icon(FluentIcons.news),
+                  title: Text(I18n.of(context).news),
+                  body: Observer(
+                    builder: (context) => accountStore.now != null
+                        ? const NewIllustPage()
+                        : PreviewPage(),
                   ),
-                  PaneItem(
-                    icon: const Icon(CustomIcons.leaderboard),
-                    title: Text(I18n.of(context).rank),
-                    body: RankPage(),
+                ),
+                PaneItem(
+                  icon: const Icon(FluentIcons.bookmarks),
+                  title: Text(I18n.of(context).bookmark),
+                  body: Observer(
+                    builder: (context) => accountStore.now != null
+                        ? BookmarkPage(
+                            relay: relay,
+                            isNested: false,
+                            id: int.parse(accountStore.now!.userId),
+                          )
+                        : PreviewPage(),
                   ),
-                  PaneItemExpander(
-                    icon: const Icon(FluentIcons.bookmarks),
-                    title: Text(I18n.of(context).quick_view),
-                    items: [
-                      PaneItem(
-                        icon: const Icon(FluentIcons.news),
-                        title: Text(I18n.of(context).news),
-                        body: const NewIllustPage(),
-                      ),
-                      PaneItem(
-                        icon: const Icon(FluentIcons.bookmarks),
-                        title: Text(I18n.of(context).bookmark),
-                        body: BookmarkPage(
-                          relay: relay,
-                          isNested: false,
-                          id: int.parse(accountStore.now!.userId),
-                        ),
-                      ),
-                      PaneItem(
-                        icon: const Icon(FluentIcons.follow_user),
-                        title: Text(I18n.of(context).followed),
-                        body: FollowList(
-                          id: int.parse(accountStore.now!.userId),
-                        ),
-                      ),
-                    ],
+                ),
+                PaneItem(
+                  icon: const Icon(FluentIcons.follow_user),
+                  title: Text(I18n.of(context).followed),
+                  body: Observer(
+                    builder: (context) => accountStore.now != null
+                        ? FollowList(id: int.parse(accountStore.now!.userId))
+                        : PreviewPage(),
                   ),
-                ]
-              : [
-                  PaneItem(
-                    icon: const Icon(FluentIcons.home),
-                    title: Text(I18n.of(context).home),
-                    body: PreviewPage(),
-                  ),
-                  PaneItem(
-                    icon: const Icon(CustomIcons.leaderboard),
-                    title: Text(I18n.of(context).rank),
-                    body: RankPage(),
-                  ),
-                  PaneItemExpander(
-                    icon: const Icon(FluentIcons.bookmarks),
-                    title: Text(I18n.of(context).quick_view),
-                    body: const SizedBox.shrink(),
-                    items: [
-                      PaneItem(
-                        icon: const Icon(FluentIcons.news),
-                        title: Text(I18n.of(context).news),
-                        body: PreviewPage(),
-                      ),
-                      PaneItem(
-                        icon: const Icon(FluentIcons.bookmarks),
-                        title: Text(I18n.of(context).bookmark),
-                        body: PreviewPage(),
-                      ),
-                      PaneItem(
-                        icon: const Icon(FluentIcons.follow_user),
-                        title: Text(I18n.of(context).followed),
-                        body: PreviewPage(),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
+              ],
+            ),
+          ],
           footerItems: [
             PaneItem(
               icon: const Icon(FluentIcons.settings),
@@ -161,9 +139,11 @@ class _FluentHelloPageState extends State<FluentHelloPage> {
                   ),
                 ),
                 title: Text(accountStore.now?.name ?? 'Account'),
-                body: isLogin
-                    ? UsersPage(id: int.parse(accountStore.now!.userId))
-                    : LoginPage(),
+                body: Observer(
+                  builder: (context) => accountStore.now != null
+                      ? UsersPage(id: int.parse(accountStore.now!.userId))
+                      : LoginPage(),
+                ),
               ),
           ],
         );
