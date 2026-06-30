@@ -33,7 +33,6 @@ import 'package:pixez/fluent/page/hello/setting/data_export_page.dart';
 import 'package:pixez/fluent/page/hello/setting/setting_quality_page.dart';
 import 'package:pixez/fluent/page/history/history_page.dart';
 import 'package:pixez/fluent/page/login/login_page.dart';
-import 'package:pixez/fluent/page/network/network_setting_page.dart';
 import 'package:pixez/fluent/page/shield/shield_page.dart';
 import 'package:pixez/fluent/page/task/job_page.dart';
 import 'package:pixez/fluent/page/theme/theme_page.dart';
@@ -278,17 +277,6 @@ class _SettingPageState extends State<SettingPage> {
                 icon: Icon(FluentIcons.plain_text),
               ),
             ),
-            if (kDebugMode)
-              ListTile(
-                title: Text("网络诊断"),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => NetworkSettingPage(),
-                    useRootNavigator: false,
-                  );
-                },
-              ),
             ListTile(
               leading: Icon(FluentIcons.message),
               title: Text(I18n.of(context).about),
