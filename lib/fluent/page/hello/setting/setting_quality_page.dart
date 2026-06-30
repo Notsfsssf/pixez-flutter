@@ -106,13 +106,14 @@ class _SettingQualityPageState extends State<SettingQualityPage>
           ListTile(
             leading: const Icon(FluentIcons.info),
             title: Text(I18n.of(context).share_info_format),
-            trailing: const Icon(FluentIcons.chevron_right),
-            onPressed: () => Leader.push(
-              context,
-              CopyTextPage(),
-              icon: Icon(FluentIcons.info),
-              title: Text(I18n.of(context).share_info_format),
-            ),
+            trailing: const Icon(WindowsIcons.open_in_new_window),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => CopyTextPage(),
+                useRootNavigator: false,
+              );
+            },
           ),
           ListTile(
             leading: const Icon(FluentIcons.translate),
