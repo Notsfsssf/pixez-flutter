@@ -1,26 +1,20 @@
 PODS:
   - Flutter (1.0.0)
-  - receive_sharing_intent (1.8.1):
-    - Flutter
   - rhttp (0.0.1):
     - Flutter
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
-  - receive_sharing_intent (from `.symlinks/plugins/receive_sharing_intent/ios`)
   - rhttp (from `.symlinks/plugins/rhttp/ios`)
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
-  receive_sharing_intent:
-    :path: ".symlinks/plugins/receive_sharing_intent/ios"
   rhttp:
     :path: ".symlinks/plugins/rhttp/ios"
 
 SPEC CHECKSUMS:
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
-  receive_sharing_intent: 222384f00ffe7e952bbfabaa9e3967cb87e5fe00
   rhttp: 359daed992674fc912552df3106bfbc746bcc929
 
 PODFILE CHECKSUM: 49ca39788a39cb895ae41a80d513ca4e228e7c68

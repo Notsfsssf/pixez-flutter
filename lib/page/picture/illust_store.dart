@@ -19,6 +19,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pixez/models/error_message.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/illust_series_detail.dart';
 import 'package:pixez/network/api_client.dart';
@@ -119,6 +120,17 @@ abstract class _IllustStoreBase with Store {
     return false;
   }
 
+  List<String>? _autoTagsWhenStar() {
+    if (!userSetting.autoTagWhenStar || illusts == null) {
+      return null;
+    }
+    final filters = [RegExp(r"\d+users入り")];
+    return illusts!.tags
+        .map((tag) => tag.name)
+        .where((tag) => !filters.any((regex) => regex.hasMatch(tag)))
+        .toList();
+  }
+
   @action
   Future<bool> star(
       {String restrict = 'public',
@@ -127,7 +139,8 @@ abstract class _IllustStoreBase with Store {
     state = 1;
     if (force || !illusts!.isBookmarked) {
       try {
-        await apiClient.postLikeIllust(illusts!.id, restrict, tags);
+        await apiClient.postLikeIllust(
+            illusts!.id, restrict, tags ?? _autoTagsWhenStar());
         illusts!.isBookmarked = true;
         isBookmark = true;
         state = 2;
