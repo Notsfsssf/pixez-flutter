@@ -64,7 +64,7 @@ val packageName = if (isGooglePlay) {
 
 android {
     namespace = "com.perol.pixez"
-    compileSdk = 36
+    compileSdk = 37
     ndkVersion = "28.2.13676358"
 
     compileOptions {
@@ -79,9 +79,9 @@ android {
     defaultConfig {
         applicationId = packageName
         minSdk = flutter.minSdkVersion
-        targetSdk = 35
-        versionCode = 10010048
-        versionName = "0.9.105 X"
+        targetSdk = 37
+        versionCode = 10010050
+        versionName = "0.9.105 lun"
         buildConfigField("boolean", "IS_GOOGLEPLAY", isGooglePlay.toString())
         ndk {
             abiFilters.addAll(arrayOf("armeabi-v7a", "arm64-v8a", "x86_64"))

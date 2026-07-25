@@ -40,7 +40,7 @@ apply(plugin = "org.jetbrains.kotlin.android")
 android {
     namespace = "com.flutter_rust_bridge.rhttp"
 
-    compileSdk = 36
+    compileSdk = 37
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
