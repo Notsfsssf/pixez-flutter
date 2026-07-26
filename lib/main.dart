@@ -90,25 +90,13 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  AppLifecycleState? _appState;
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (Platform.isIOS) {
-      setState(() {
-        _appState = state;
-      });
-    }
-  }
-
+class _MyAppState extends State<MyApp> {
   @override
   void dispose() {
     saveStore.dispose();
     topStore.dispose();
     fetcher.stop();
     subscription.cancel();
-    if (Platform.isIOS) WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -128,7 +116,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     muteStore.init();
 
     super.initState();
-    if (Platform.isIOS) WidgetsBinding.instance.addObserver(this);
     Future.delayed(Duration.zero, () {
       SingleInstancePlugin.argsParser(widget.arguments);
     });
@@ -201,7 +188,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               ),
               title: 'PixEz',
               builder: (context, child) {
-                if (Platform.isIOS) child = _buildMaskBuilder(context, child);
                 child = botToastBuilder(context, child);
                 I18n.context = context;
                 return child;
@@ -253,25 +239,4 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     );
   }
 
-  Widget? _buildMaskBuilder(BuildContext context, Widget? widget) {
-    if (!userSetting.nsfwMask) return widget;
-    final needShowMask = _appState == AppLifecycleState.inactive;
-    return Stack(
-      children: [
-        widget ?? const SizedBox.shrink(),
-        AnimatedSwitcher(
-          duration: const Duration(milliseconds: 500),
-          child: needShowMask
-              ? Container(
-                  key: const ValueKey('recent_screen_mask'),
-                  color: Theme.of(context).canvasColor,
-                  child: const Center(
-                    child: Icon(Icons.privacy_tip_outlined),
-                  ),
-                )
-              : const SizedBox.shrink(key: ValueKey('recent_screen_unmask')),
-        ),
-      ],
-    );
-  }
 }
