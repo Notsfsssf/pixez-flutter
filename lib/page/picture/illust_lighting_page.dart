@@ -24,6 +24,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/ban_page.dart';
 import 'package:pixez/component/common_back_area.dart';
+import 'package:pixez/component/detail_favorite_button.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixez_default_header.dart';
@@ -263,86 +264,94 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
         onTap: () {
           FocusManager.instance.primaryFocus?.unfocus();
         },
-        child: Scaffold(
-          extendBody: true,
-          extendBodyBehindAppBar: true,
-          floatingActionButton: GestureDetector(
-            onLongPress: () {
-              _showBookMarkTag();
-            },
-            onHorizontalDragEnd: (DragEndDetails detail) {
-              if (widget.onHorizontalDragEnd != null) {
-                widget.onHorizontalDragEnd!(detail);
-              }
-            },
-            child: Observer(
-              builder: (context) {
-                return Visibility(
-                  visible: _illustStore.errorMessage == null,
-                  child: FloatingActionButton(
-                    heroTag: widget.id,
-                    onPressed: () async {
-                      if (userSetting.saveAfterStar &&
-                          (_illustStore.state == 0)) {
-                        saveStore.saveImage(_illustStore.illusts!);
-                      }
-                      // TODO: 添加配置项 开关和过滤器
-                      final List<String>? tags;
-                      if (userSetting.autoTagWhenStar) {
-                        final filters = [RegExp(r"\d+users入り")];
-                        tags = _illustStore.illusts!.tags
-                            .map((tag) => tag.name)
-                            .where(
-                              (tag) =>
-                                  !filters.any((regex) => regex.hasMatch(tag)),
-                            )
-                            .toList();
-                      } else {
-                        tags = null;
-                      }
-                      bool success = await _illustStore.star(
-                        restrict: userSetting.defaultPrivateLike
-                            ? "private"
-                            : "public",
-                        tags: tags,
-                      );
-                      if (success && userSetting.followAfterStar) {
-                        bool followSuccess = await _illustStore.followAfterStar();
-                        if (followSuccess) {
-                          userStore?.isFollow = true;
-                          BotToast.showText(
-                            text:
-                                "${_illustStore.illusts!.user.name} ${I18n.of(context).followed}",
+        child: Observer(
+          builder: (_) {
+            return Scaffold(
+              extendBody: true,
+              extendBodyBehindAppBar: true,
+              floatingActionButtonLocation: userSetting
+                  .detailFavoriteFabLocation(),
+              floatingActionButton: GestureDetector(
+                onLongPress: () {
+                  _showBookMarkTag();
+                },
+                onHorizontalDragEnd: (DragEndDetails detail) {
+                  if (widget.onHorizontalDragEnd != null) {
+                    widget.onHorizontalDragEnd!(detail);
+                  }
+                },
+                child: Observer(
+                  builder: (context) {
+                    return Visibility(
+                      visible: _illustStore.errorMessage == null,
+                      child: DetailFavoriteButton(
+                        heroTag: widget.id,
+                        onPressed: () async {
+                          if (userSetting.saveAfterStar &&
+                              (_illustStore.state == 0)) {
+                            saveStore.saveImage(_illustStore.illusts!);
+                          }
+                          // TODO: 添加配置项 开关和过滤器
+                          final List<String>? tags;
+                          if (userSetting.autoTagWhenStar) {
+                            final filters = [RegExp(r"\d+users入り")];
+                            tags = _illustStore.illusts!.tags
+                                .map((tag) => tag.name)
+                                .where(
+                                  (tag) => !filters.any(
+                                    (regex) => regex.hasMatch(tag),
+                                  ),
+                                )
+                                .toList();
+                          } else {
+                            tags = null;
+                          }
+                          bool success = await _illustStore.star(
+                            restrict: userSetting.defaultPrivateLike
+                                ? "private"
+                                : "public",
+                            tags: tags,
                           );
-                        }
-                      }
-                    },
-                    child: Observer(
-                      builder: (_) {
-                        return StarIcon(state: _illustStore.state);
-                      },
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          body: Observer(
-            builder: (_) {
-              final banWidget = banLogic(context);
-              if (banWidget != null) {
-                return banWidget;
-              }
-              return Container(
-                child: Stack(
-                  children: [
-                    _buildContent(context, _illustStore.illusts),
-                    _buildAppbar(),
-                  ],
+                          if (success && userSetting.followAfterStar) {
+                            bool followSuccess = await _illustStore
+                                .followAfterStar();
+                            if (followSuccess) {
+                              userStore?.isFollow = true;
+                              BotToast.showText(
+                                text:
+                                    "${_illustStore.illusts!.user.name} ${I18n.of(context).followed}",
+                              );
+                            }
+                          }
+                        },
+                        icon: Observer(
+                          builder: (_) {
+                            return StarIcon(state: _illustStore.state);
+                          },
+                        ),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
+              ),
+              body: Observer(
+                builder: (_) {
+                  final banWidget = banLogic(context);
+                  if (banWidget != null) {
+                    return banWidget;
+                  }
+                  return Container(
+                    child: Stack(
+                      children: [
+                        _buildContent(context, _illustStore.illusts),
+                        _buildAppbar(),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            );
+          },
         ),
       ),
     );
@@ -1326,7 +1335,11 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
       if (userSetting.saveAfterStar && (_illustStore.state == 0)) {
         saveStore.saveImage(_illustStore.illusts!);
       }
-      bool success = await _illustStore.star(restrict: restrict, tags: tags, force: true);
+      bool success = await _illustStore.star(
+        restrict: restrict,
+        tags: tags,
+        force: true,
+      );
       if (success && userSetting.followAfterStar) {
         await _illustStore.followAfterStar();
       }

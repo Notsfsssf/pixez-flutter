@@ -342,5 +342,9 @@
   "network_mode_ech_message": "Try this when the app opens but service responses fail.",
   "network_mode_standard": "Standard connection",
   "network_mode_standard_message": "Recommended for most networks.",
-  "ignore_current_version_update": "Ignore current version update"
+  "ignore_current_version_update": "Ignore current version update",
+  "detail_favorite_button_position_title": "お気に入りボタンの位置",
+  "detail_favorite_button_position_right": "右側",
+  "detail_favorite_button_position_left": "左側",
+  "detail_favorite_button_position_custom": "カスタム"
 }
