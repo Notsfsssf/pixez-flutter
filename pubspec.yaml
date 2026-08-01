@@ -13,7 +13,7 @@ publish_to: none
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.9.84+504
+version: 1.9.84+508
 
 environment:
   sdk: ">=3.11.5"
@@ -75,8 +75,12 @@ dependencies:
   # sqlite3: 3.1.6
   sqflite_common_ffi: ^2.4.2
 
-dependency_overrides: 
-  permission_handler_apple: 9.4.10
+dependency_overrides:
+  # Local override of permission_handler_apple with location code removed
+  # to avoid App Store rejection ITMS-90683
+  # See https://github.com/Baseflow/flutter-permission-handler/issues/1543
+  permission_handler_apple:
+    path: ios/permission_handler_apple_override
 
 dev_dependencies:
   flutter_test:

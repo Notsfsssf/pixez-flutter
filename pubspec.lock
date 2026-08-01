@@ -1248,10 +1248,9 @@ packages:
   permission_handler_apple:
     dependency: "direct overridden"
     description:
-      name: permission_handler_apple
-      sha256: "79dfa1df734798aa3cfdad166d3a3698c206d8813de13516ea1071b5d7e2f420"
-      url: "https://pub.dev"
-    source: hosted
+      path: "ios/permission_handler_apple_override"
+      relative: true
+    source: path
     version: "9.4.10"
   permission_handler_html:
     dependency: transitive
