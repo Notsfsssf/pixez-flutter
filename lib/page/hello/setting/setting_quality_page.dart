@@ -33,6 +33,7 @@ import 'package:pixez/page/hello/setting/setting_cross_adapter_page.dart';
 import 'package:pixez/page/network/network_page.dart';
 import 'package:pixez/page/platform/platform_page.dart';
 import 'package:pixez/store/welcome_page_type.dart';
+import 'package:pixez/utils/haptic_util.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class SettingQualityPage extends StatefulWidget {
@@ -331,6 +332,17 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     userSetting.setSwipeChangeArtwork(value);
                   },
                 ),
+                if (Platform.isAndroid || Platform.isIOS)
+                  SwitchListTile(
+                    value: userSetting.hapticFeedback,
+                    title: Text(I18n.of(context).haptic_feedback),
+                    onChanged: (value) async {
+                      userSetting.setHapticFeedback(value);
+                      if (value) {
+                        HapticUtil.medium();
+                      }
+                    },
+                  ),
                 if (Platform.isAndroid || Platform.isIOS)
                   SwitchListTile(
                     value: userSetting.nsfwMask,

@@ -26,6 +26,7 @@ import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/search/suggest/suggestion_store.dart';
 import 'package:pixez/page/soup/soup_page.dart';
 import 'package:pixez/page/user/users_page.dart';
+import 'package:pixez/utils/haptic_util.dart';
 
 class SearchSuggestionPage extends StatefulWidget {
   final String? preword;
@@ -169,6 +170,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                         final tags = _suggestionStore.autoWords!.tags;
                         return GestureDetector(
                           onLongPress: () {
+                            HapticUtil.heavy();
                             Clipboard.setData(
                                 ClipboardData(text: tags[index].name));
                             BotToast.showText(

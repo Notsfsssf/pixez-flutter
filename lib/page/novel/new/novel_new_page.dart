@@ -24,6 +24,7 @@ import 'package:pixez/page/novel/bookmark/novel_bookmark_page.dart';
 import 'package:pixez/page/novel/new/novel_new_list.dart';
 import 'package:pixez/page/novel/new/novel_watch_list.dart';
 import 'package:pixez/page/novel/user/novel_users_page.dart';
+import 'package:pixez/utils/haptic_util.dart';
 
 class NovelNewPage extends StatefulWidget {
   @override
@@ -54,6 +55,9 @@ class _NovelNewPageState extends State<NovelNewPage>
         children: [
           AppBar(
             title: TabBar(
+              onTap: (i) {
+                HapticUtil.selectionClick();
+              },
               controller: _tabController,
               isScrollable: true,
               tabs: [

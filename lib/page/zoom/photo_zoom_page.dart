@@ -12,6 +12,7 @@ import 'package:pixez/er/pixiv_image_source.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/picture/illust_store.dart';
+import 'package:pixez/utils/haptic_util.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path/path.dart';
 
@@ -249,6 +250,7 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                     },
                   ),
                   onLongPress: () async {
+                    HapticUtil.heavy();
                     if (_illusts.metaPages.isNotEmpty)
                       saveStore.saveImage(widget.illusts, index: _index);
                     else

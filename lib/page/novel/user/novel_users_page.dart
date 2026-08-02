@@ -26,6 +26,7 @@ import 'package:pixez/page/report/report_items_page.dart';
 import 'package:pixez/page/user/detail/user_detail.dart';
 import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/users_page.dart';
+import 'package:pixez/utils/haptic_util.dart';
 import 'package:share_plus/share_plus.dart';
 
 class NovelUsersPage extends StatefulWidget {
@@ -178,6 +179,7 @@ class _NovelUsersPageState extends State<NovelUsersPage>
             TabBar(
               controller: _tabController,
               onTap: (index) {
+                HapticUtil.selectionClick();
                 setState(() {
                   _tabIndex = index;
                 });

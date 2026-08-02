@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/utils/haptic_util.dart';
 
 class NovelBookmarkButton extends StatefulWidget {
   final Novel novel;
@@ -35,6 +36,7 @@ class _NovelBookmarkButtonState extends State<NovelBookmarkButton> {
         if (!widget.novel.isBookmarked) {
           try {
             await apiClient.postNovelBookmarkAdd(widget.novel.id, "private");
+            HapticUtil.heavy();
             setState(() {
               widget.novel.isBookmarked = true;
             });
@@ -42,6 +44,7 @@ class _NovelBookmarkButtonState extends State<NovelBookmarkButton> {
         } else {
           try {
             await apiClient.postNovelBookmarkDelete(widget.novel.id);
+            HapticUtil.light();
             setState(() {
               widget.novel.isBookmarked = false;
             });
@@ -58,6 +61,7 @@ class _NovelBookmarkButtonState extends State<NovelBookmarkButton> {
           if (!widget.novel.isBookmarked) {
             try {
               await apiClient.postNovelBookmarkAdd(widget.novel.id, "public");
+              HapticUtil.medium();
               setState(() {
                 widget.novel.isBookmarked = true;
               });
@@ -65,6 +69,7 @@ class _NovelBookmarkButtonState extends State<NovelBookmarkButton> {
           } else {
             try {
               await apiClient.postNovelBookmarkDelete(widget.novel.id);
+              HapticUtil.light();
               setState(() {
                 widget.novel.isBookmarked = false;
               });

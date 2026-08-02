@@ -343,5 +343,6 @@
   "network_mode_ech_message": "登入後服務回應異常時嘗試。",
   "network_mode_standard": "標準連線",
   "network_mode_standard_message": "建議大多數網路環境使用。",
-  "ignore_current_version_update": "忽略当前版本更新"
+  "ignore_current_version_update": "忽略当前版本更新",
+  "haptic_feedback": "觸感回饋"
 }

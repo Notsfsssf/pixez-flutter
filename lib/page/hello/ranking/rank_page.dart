@@ -23,6 +23,7 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/hello/ranking/rank_store.dart';
 import 'package:pixez/page/hello/ranking/ranking_mode/rank_mode_page.dart';
+import 'package:pixez/utils/haptic_util.dart';
 
 class RankPage extends StatefulWidget {
   RankPage({Key? key});
@@ -110,9 +111,12 @@ class _RankPageState extends State<RankPage>
                     : 0,
                 child: AppBar(
                   title: TabBar(
-                    onTap: (i) => setState(() {
-                      this.index = i;
-                    }),
+                    onTap: (i) {
+                      HapticUtil.selectionClick();
+                      setState(() {
+                        this.index = i;
+                      });
+                    },
                     tabAlignment: TabAlignment.start,
                     indicatorSize: TabBarIndicatorSize.label,
                     isScrollable: true,

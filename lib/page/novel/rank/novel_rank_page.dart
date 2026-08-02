@@ -4,6 +4,7 @@ import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/component/novel_lighting_list.dart';
+import 'package:pixez/utils/haptic_util.dart';
 
 class NovelRankPage extends StatefulWidget {
   @override
@@ -49,6 +50,9 @@ class _NovelRankPageState extends State<NovelRankPage>
       child: Scaffold(
         appBar: AppBar(
           title: TabBar(
+              onTap: (i) {
+                HapticUtil.selectionClick();
+              },
               indicatorSize: TabBarIndicatorSize.label,
               isScrollable: true,
               tabs: [

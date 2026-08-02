@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pixez/utils/haptic_util.dart';
 
 class SortGroup extends StatefulWidget {
   final List<String> children;
@@ -44,6 +45,7 @@ class _SortGroupState extends State<SortGroup> {
       ],
       selected: {this.index},
       onSelectionChanged: (p0) {
+        HapticUtil.selectionClick();
         widget.onChange(p0.first);
         if (mounted)
           setState(() {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pixez/component/follow_detail_alert.dart';
 import 'package:pixez/i18n.dart';
+import 'package:pixez/utils/haptic_util.dart';
 
 class UserFollowButton extends StatefulWidget {
   final int id;
@@ -66,6 +67,7 @@ class _UserFollowButtonState extends State<UserFollowButton> {
     if (_followed) {
       return GestureDetector(
         onTap: () async {
+          HapticUtil.light();
           setState(() {
             _loading = true;
             _onPressed().then((value) {
@@ -102,6 +104,7 @@ class _UserFollowButtonState extends State<UserFollowButton> {
     }
     return GestureDetector(
       onTap: () {
+        HapticUtil.medium();
         _onPressed();
       },
       onLongPress: () {
@@ -131,6 +134,7 @@ class _UserFollowButtonState extends State<UserFollowButton> {
   }
 
   _longPressAction() {
+    HapticUtil.heavy();
     showDialog(
         context: context,
         builder: (context) {

@@ -33,6 +33,7 @@ import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
 import 'package:pixez/page/search/search_page.dart';
+import 'package:pixez/utils/haptic_util.dart';
 
 class HelloPage extends StatefulWidget {
   @override
@@ -259,6 +260,7 @@ class _HelloPageState extends State<HelloPage> {
           ],
           selectedIndex: index,
           onDestinationSelected: (value) {
+            HapticUtil.selectionClick();
             if (this.index == index) {
               topStore.setTop("${index + 1}00");
             }

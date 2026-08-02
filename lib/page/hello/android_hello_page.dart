@@ -41,6 +41,7 @@ import 'package:pixez/page/saucenao/saucenao_page.dart';
 import 'package:pixez/page/search/search_page.dart';
 import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 import 'package:pixez/page/webview/saucenao_webview_page.dart';
+import 'package:pixez/utils/haptic_util.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 class AndroidHelloPage extends StatefulWidget {
@@ -190,6 +191,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
           ],
           selectedIndex: index,
           onDestinationSelected: (index) {
+            HapticUtil.selectionClick();
             if (this.index == index) {
               topStore.setTop("${index + 1}00");
             }
@@ -227,6 +229,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             selectedIndex: index,
             labelType: NavigationRailLabelType.all,
             onDestinationSelected: (int index) {
+              HapticUtil.selectionClick();
               _pageController.jumpToPage(index);
               setState(() {
                 index = index;

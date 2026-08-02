@@ -23,6 +23,7 @@ import 'package:pixez/page/hello/hello_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/novel/new/novel_new_page.dart';
 import 'package:pixez/page/novel/rank/novel_rank_page.dart';
+import 'package:pixez/utils/haptic_util.dart';
 import 'package:pixez/page/novel/recom/novel_recom_page.dart';
 import 'package:pixez/page/novel/search/novel_search_page.dart';
 
@@ -125,6 +126,7 @@ class _NovelRailState extends State<NovelRail> {
       ],
       selectedIndex: selectedIndex,
       onDestinationSelected: (index) {
+        HapticUtil.selectionClick();
         if (this.selectedIndex == index) {
           topStore.setTop("${index + 1}00");
         }

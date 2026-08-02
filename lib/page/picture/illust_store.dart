@@ -24,6 +24,7 @@ import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/illust_series_detail.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/history/history_store.dart';
+import 'package:pixez/utils/haptic_util.dart';
 
 part 'illust_store.g.dart';
 
@@ -144,6 +145,7 @@ abstract class _IllustStoreBase with Store {
         illusts!.isBookmarked = true;
         isBookmark = true;
         state = 2;
+        HapticUtil.medium();
         return true;
       } catch (e) {}
     } else {
@@ -152,6 +154,7 @@ abstract class _IllustStoreBase with Store {
         illusts!.isBookmarked = false;
         isBookmark = false;
         state = 0;
+        HapticUtil.light();
         return false;
       } catch (e) {}
     }
