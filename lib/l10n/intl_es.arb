@@ -1,5 +1,6 @@
 {
-  "about": "Sobre",
+  "about": "Acerca de",
+  "auto_hide_bottom_bar": "Ocultar automáticamente la barra inferior",
   "about_picture": "Ilustraciones relatado",
   "account_change": "Cambiar cuenta",
   "account_message": "Información de cuenta",

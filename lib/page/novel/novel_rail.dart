@@ -15,6 +15,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -35,6 +37,7 @@ class NovelRail extends StatefulWidget {
 class _NovelRailState extends State<NovelRail> {
   int selectedIndex = 0;
   DateTime? _preTime;
+  double? bottomNavigatorHeight = null;
   final _pageList = [
     NovelRecomPage(),
     NovelRankPage(),
@@ -43,6 +46,45 @@ class _NovelRailState extends State<NovelRail> {
     SettingPage()
   ];
   late PageController _pageController;
+
+  bool get _isCurrentPageSetting =>
+      selectedIndex < _pageList.length && _pageList[selectedIndex] is SettingPage;
+
+  /// 监听小说列表滚动通知，实现移动端底栏滚动时自动隐藏与呼出
+  bool _onScrollNotification(ScrollNotification notification) {
+    if (!userSetting.autoHideBottomBar) return false;
+    // 设置/更多页面常驻显示底栏，不参与自动隐藏
+    if (_isCurrentPageSetting) return false;
+    if (notification.metrics.axis != Axis.vertical) return false;
+
+    if (notification is UserScrollNotification) {
+      if (notification.direction == ScrollDirection.reverse) {
+        if (notification.metrics.pixels > 20 &&
+            fullScreenStore.bottomBarVisible) {
+          fullScreenStore.setBottomBarVisible(false);
+        }
+      } else if (notification.direction == ScrollDirection.forward) {
+        if (!fullScreenStore.bottomBarVisible) {
+          fullScreenStore.setBottomBarVisible(true);
+        }
+      }
+    } else if (notification is ScrollUpdateNotification) {
+      if (notification.metrics.pixels <= 0 &&
+          !fullScreenStore.bottomBarVisible) {
+        fullScreenStore.setBottomBarVisible(true);
+      } else if (notification.scrollDelta != null) {
+        if (notification.scrollDelta! > 5 &&
+            notification.metrics.pixels > 20 &&
+            fullScreenStore.bottomBarVisible) {
+          fullScreenStore.setBottomBarVisible(false);
+        } else if (notification.scrollDelta! < -5 &&
+            !fullScreenStore.bottomBarVisible) {
+          fullScreenStore.setBottomBarVisible(true);
+        }
+      }
+    }
+    return false;
+  }
 
   @override
   void initState() {
@@ -60,6 +102,9 @@ class _NovelRailState extends State<NovelRail> {
 
   @override
   Widget build(BuildContext context) {
+    if (bottomNavigatorHeight == null) {
+      bottomNavigatorHeight = MediaQuery.of(context).padding.bottom + 80;
+    }
     return PopScope(
       onPopInvokedWithResult: (didPop, result) async {
         userSetting.setAnimContainer(!userSetting.animContainer);
@@ -82,6 +127,7 @@ class _NovelRailState extends State<NovelRail> {
           _preTime != null &&
               DateTime.now().difference(_preTime!) <= Duration(seconds: 2),
       child: Scaffold(
+        extendBody: true,
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -91,18 +137,41 @@ class _NovelRailState extends State<NovelRail> {
           },
           child: Icon(Icons.picture_in_picture),
         ),
-        bottomNavigationBar: _buildNavigationBar(context),
-        body: PageView.builder(
-            itemCount: _pageList.length,
-            controller: _pageController,
-            onPageChanged: (index) {
-              setState(() {
-                this.selectedIndex = index;
-              });
-            },
-            itemBuilder: (context, index) {
-              return _pageList[index];
-            }),
+        bottomNavigationBar: Observer(
+          builder: (context) {
+            final isHidden = userSetting.autoHideBottomBar &&
+                !_isCurrentPageSetting &&
+                !fullScreenStore.bottomBarVisible;
+            return AnimatedSlide(
+              offset: Offset(0, isHidden ? 1.5 : 0.0),
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeInOut,
+              child: AnimatedOpacity(
+                opacity: isHidden ? 0.0 : 1.0,
+                duration: const Duration(milliseconds: 200),
+                child: IgnorePointer(
+                  ignoring: isHidden,
+                  child: _buildNavigationBar(context),
+                ),
+              ),
+            );
+          },
+        ),
+        body: NotificationListener<ScrollNotification>(
+          onNotification: _onScrollNotification,
+          child: PageView.builder(
+              itemCount: _pageList.length,
+              controller: _pageController,
+              onPageChanged: (index) {
+                setState(() {
+                  this.selectedIndex = index;
+                });
+                fullScreenStore.setBottomBarVisible(true);
+              },
+              itemBuilder: (context, index) {
+                return _pageList[index];
+              }),
+        ),
       ),
     );
   }
@@ -133,6 +202,7 @@ class _NovelRailState extends State<NovelRail> {
         setState(() {
           this.selectedIndex = index;
         });
+        fullScreenStore.setBottomBarVisible(true);
         if (_pageController.hasClients) _pageController.jumpToPage(index);
       },
     );

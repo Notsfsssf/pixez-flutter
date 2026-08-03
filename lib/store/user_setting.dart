@@ -100,6 +100,7 @@ abstract class _UserSetting with Store {
   static const String DRAG_START_X_KEY = "drag_start_x";
   static const String AUTO_TAG_WHEN_STAR_KEY = "auto_tag_when_star";
   static const String HAPTIC_FEEDBACK_KEY = "haptic_feedback";
+  static const String AUTO_HIDE_BOTTOM_BAR_KEY = "auto_hide_bottom_bar";
 
   @observable
   double dragStartX = 0;
@@ -215,12 +216,20 @@ abstract class _UserSetting with Store {
   bool autoTagWhenStar = false;
   @observable
   bool hapticFeedback = true;
+  @observable
+  bool autoHideBottomBar = true;
   static const String intialFormat = "{illust_id}_p{part}";
 
   @action
   setHapticFeedback(bool value) async {
     await prefs.setBool(HAPTIC_FEEDBACK_KEY, value);
     hapticFeedback = value;
+  }
+
+  @action
+  setAutoHideBottomBar(bool value) async {
+    autoHideBottomBar = value;
+    await prefs.setBool(AUTO_HIDE_BOTTOM_BAR_KEY, value);
   }
 
   @action
@@ -585,6 +594,7 @@ abstract class _UserSetting with Store {
     dragStartX = prefs.getDouble(DRAG_START_X_KEY) ?? 0;
     autoTagWhenStar = prefs.getBool(AUTO_TAG_WHEN_STAR_KEY) ?? false;
     hapticFeedback = prefs.getBool(HAPTIC_FEEDBACK_KEY) ?? true;
+    autoHideBottomBar = prefs.getBool(AUTO_HIDE_BOTTOM_BAR_KEY) ?? true;
     ignoreUpdateVersion = prefs.getString(IGNORE_UPDATE_VERSION_KEY);
     illustDetailSaveSkipLongPress =
         prefs.getBool(ILLUST_DETAIL_SAVE_SKIP_LONG_PRESS_KEY) ?? false;

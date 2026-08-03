@@ -21,6 +21,7 @@ import 'dart:ui';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -58,6 +59,45 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   void toggleFullscreen() {
     fullScreenStore.toggle();
+  }
+
+  bool get _isCurrentPageSetting =>
+      index < _pageList.length && _pageList[index] is SettingPage;
+
+  /// 监听子页面滚动通知，实现移动端底栏滚动时自动隐藏与呼出
+  bool _onScrollNotification(ScrollNotification notification) {
+    if (!userSetting.autoHideBottomBar) return false;
+    // 设置/更多页面常驻显示底栏，不参与自动隐藏
+    if (_isCurrentPageSetting) return false;
+    if (notification.metrics.axis != Axis.vertical) return false;
+
+    if (notification is UserScrollNotification) {
+      if (notification.direction == ScrollDirection.reverse) {
+        if (notification.metrics.pixels > 20 &&
+            fullScreenStore.bottomBarVisible) {
+          fullScreenStore.setBottomBarVisible(false);
+        }
+      } else if (notification.direction == ScrollDirection.forward) {
+        if (!fullScreenStore.bottomBarVisible) {
+          fullScreenStore.setBottomBarVisible(true);
+        }
+      }
+    } else if (notification is ScrollUpdateNotification) {
+      if (notification.metrics.pixels <= 0 &&
+          !fullScreenStore.bottomBarVisible) {
+        fullScreenStore.setBottomBarVisible(true);
+      } else if (notification.scrollDelta != null) {
+        if (notification.scrollDelta! > 5 &&
+            notification.metrics.pixels > 20 &&
+            fullScreenStore.bottomBarVisible) {
+          fullScreenStore.setBottomBarVisible(false);
+        } else if (notification.scrollDelta! < -5 &&
+            !fullScreenStore.bottomBarVisible) {
+          fullScreenStore.setBottomBarVisible(true);
+        }
+      }
+    }
+    return false;
   }
 
   @override
@@ -119,16 +159,22 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
                 ? null
                 : Observer(
                     builder: (context) {
-                      return AnimatedContainer(
-                        duration: const Duration(milliseconds: 400),
-                        transform: Matrix4.translationValues(
-                          0,
-                          fullScreenStore.fullscreen
-                              ? bottomNavigatorHeight!
-                              : 0,
-                          0,
+                      final isHidden = fullScreenStore.fullscreen ||
+                          (userSetting.autoHideBottomBar &&
+                              !_isCurrentPageSetting &&
+                              !fullScreenStore.bottomBarVisible);
+                      return AnimatedSlide(
+                        offset: Offset(0, isHidden ? 1.5 : 0.0),
+                        duration: const Duration(milliseconds: 250),
+                        curve: Curves.easeInOut,
+                        child: AnimatedOpacity(
+                          opacity: isHidden ? 0.0 : 1.0,
+                          duration: const Duration(milliseconds: 200),
+                          child: IgnorePointer(
+                            ignoring: isHidden,
+                            child: _buildNavigationBar(context),
+                          ),
                         ),
-                        child: _buildNavigationBar(context),
                       );
                     },
                   ),
@@ -139,22 +185,25 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   }
 
   Widget _buildPageView(BuildContext context) {
-    return Stack(
-      children: [
-        _buildPageContent(context),
-        Positioned(
-          bottom: MediaQuery.of(context).padding.bottom + 16,
-          right: 16,
-          child: Observer(
-            builder: (context) {
-              return AnimatedToggleFullscreenFAB(
-                isFullscreen: fullScreenStore.fullscreen,
-                toggleFullscreen: toggleFullscreen,
-              );
-            },
+    return NotificationListener<ScrollNotification>(
+      onNotification: _onScrollNotification,
+      child: Stack(
+        children: [
+          _buildPageContent(context),
+          Positioned(
+            bottom: MediaQuery.of(context).padding.bottom + 16,
+            right: 16,
+            child: Observer(
+              builder: (context) {
+                return AnimatedToggleFullscreenFAB(
+                  isFullscreen: fullScreenStore.fullscreen,
+                  toggleFullscreen: toggleFullscreen,
+                );
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -198,6 +247,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             setState(() {
               this.index = index;
             });
+            fullScreenStore.setBottomBarVisible(true);
             if (_pageController.hasClients) _pageController.jumpToPage(index);
           },
         ),
@@ -215,6 +265,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
         setState(() {
           this.index = index;
         });
+        fullScreenStore.setBottomBarVisible(true);
       },
       controller: _pageController,
       itemCount: _pageList.length,

@@ -326,6 +326,13 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   },
                 ),
                 SwitchListTile(
+                  value: userSetting.autoHideBottomBar,
+                  title: Text(I18n.of(context).auto_hide_bottom_bar),
+                  onChanged: (value) async {
+                    userSetting.setAutoHideBottomBar(value);
+                  },
+                ),
+                SwitchListTile(
                   value: userSetting.swipeChangeArtwork,
                   title: Text(I18n.of(context).swipe_to_switch_artworks),
                   onChanged: (value) async {

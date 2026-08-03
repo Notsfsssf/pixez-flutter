@@ -154,7 +154,7 @@ class _LightingListState extends State<LightingList> {
               backToTopVisible = !backToTopVisible;
             });
           }
-          return true;
+          return false;
         },
         child: EasyRefresh.builder(
           controller: _refreshController,
@@ -255,7 +255,7 @@ class _LightingListState extends State<LightingList> {
             backToTopVisible = !backToTopVisible;
           });
         }
-        return true;
+        return false;
       },
       child: EasyRefresh.builder(
         controller: _refreshController,

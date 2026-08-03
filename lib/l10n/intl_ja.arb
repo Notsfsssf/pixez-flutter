@@ -5,6 +5,7 @@
   "account_message": "アカウント",
   "ai_generated": "AI 生成",
   "all": "全て",
+  "auto_hide_bottom_bar": "ボトムバーを自動的に非表示にする",
   "ugoira_only": "うごイラのみ",
   "ugoira_none": "うごイラ以外",
   "already_in_query": "キューに追加済",

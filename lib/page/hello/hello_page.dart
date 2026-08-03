@@ -18,6 +18,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/constants.dart';
@@ -46,6 +47,45 @@ class _HelloPageState extends State<HelloPage> {
   late PageController _pageController;
   double? bottomNavigatorHeight = null;
   late List<Widget> _lists;
+
+  bool get _isCurrentPageSetting =>
+      index < _lists.length && _lists[index] is SettingPage;
+
+  /// 监听子页面滚动通知，实现移动端底栏滚动时自动隐藏与呼出
+  bool _onScrollNotification(ScrollNotification notification) {
+    if (!userSetting.autoHideBottomBar) return false;
+    // 设置/更多页面常驻显示底栏，不参与自动隐藏
+    if (_isCurrentPageSetting) return false;
+    if (notification.metrics.axis != Axis.vertical) return false;
+
+    if (notification is UserScrollNotification) {
+      if (notification.direction == ScrollDirection.reverse) {
+        if (notification.metrics.pixels > 20 &&
+            fullScreenStore.bottomBarVisible) {
+          fullScreenStore.setBottomBarVisible(false);
+        }
+      } else if (notification.direction == ScrollDirection.forward) {
+        if (!fullScreenStore.bottomBarVisible) {
+          fullScreenStore.setBottomBarVisible(true);
+        }
+      }
+    } else if (notification is ScrollUpdateNotification) {
+      if (notification.metrics.pixels <= 0 &&
+          !fullScreenStore.bottomBarVisible) {
+        fullScreenStore.setBottomBarVisible(true);
+      } else if (notification.scrollDelta != null) {
+        if (notification.scrollDelta! > 5 &&
+            notification.metrics.pixels > 20 &&
+            fullScreenStore.bottomBarVisible) {
+          fullScreenStore.setBottomBarVisible(false);
+        } else if (notification.scrollDelta! < -5 &&
+            !fullScreenStore.bottomBarVisible) {
+          fullScreenStore.setBottomBarVisible(true);
+        }
+      }
+    }
+    return false;
+  }
 
   @override
   void dispose() {
@@ -139,14 +179,22 @@ class _HelloPageState extends State<HelloPage> {
               ? null
               : Observer(
                   builder: (context) {
-                    return AnimatedContainer(
-                      duration: const Duration(milliseconds: 400),
-                      transform: Matrix4.translationValues(
-                        0,
-                        fullScreenStore.fullscreen ? bottomNavigatorHeight! : 0,
-                        0,
+                    final isHidden = fullScreenStore.fullscreen ||
+                        (userSetting.autoHideBottomBar &&
+                            !_isCurrentPageSetting &&
+                            !fullScreenStore.bottomBarVisible);
+                    return AnimatedSlide(
+                      offset: Offset(0, isHidden ? 1.5 : 0.0),
+                      duration: const Duration(milliseconds: 250),
+                      curve: Curves.easeInOut,
+                      child: AnimatedOpacity(
+                        opacity: isHidden ? 0.0 : 1.0,
+                        duration: const Duration(milliseconds: 200),
+                        child: IgnorePointer(
+                          ignoring: isHidden,
+                          child: _buildNavigationBar(context),
+                        ),
                       ),
-                      child: _buildNavigationBar(context),
                     );
                   },
                 ),
@@ -267,6 +315,7 @@ class _HelloPageState extends State<HelloPage> {
             setState(() {
               this.index = value;
             });
+            fullScreenStore.setBottomBarVisible(true);
             if (_pageController.hasClients) _pageController.jumpToPage(index);
           },
         ),
@@ -274,18 +323,22 @@ class _HelloPageState extends State<HelloPage> {
     );
   }
 
-  PageView _buildPageView(BuildContext context) {
-    return PageView.builder(
-      itemCount: 5,
-      controller: _pageController,
-      onPageChanged: (index) {
-        setState(() {
-          this.index = index;
-        });
-      },
-      itemBuilder: (context, index) {
-        return _lists[index];
-      },
+  Widget _buildPageView(BuildContext context) {
+    return NotificationListener<ScrollNotification>(
+      onNotification: _onScrollNotification,
+      child: PageView.builder(
+        itemCount: 5,
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            this.index = index;
+          });
+          fullScreenStore.setBottomBarVisible(true);
+        },
+        itemBuilder: (context, index) {
+          return _lists[index];
+        },
+      ),
     );
   }
 }

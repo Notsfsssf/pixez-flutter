@@ -123,7 +123,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
             backToTopVisible = !backToTopVisible;
           });
         }
-        return true;
+        return false;
       },
       child: CustomScrollView(
         controller: _scrollController,

@@ -58,19 +58,37 @@ class _FollowListState extends State<FollowList> {
 
   Widget buildHeader() {
     return Observer(builder: (_) {
+      final isHidden = fullScreenStore.fullscreen ||
+          (userSetting.autoHideBottomBar &&
+              !fullScreenStore.bottomBarVisible);
       return Visibility(
         visible: int.parse(accountStore.now!.userId) == widget.id,
         child: Align(
           alignment: Alignment.topCenter,
-          child: SortGroup(
-            children: [I18n.of(context).public, I18n.of(context).private],
-            onChange: (index) {
-              setState(() {
-                restrict = index == 0 ? 'public' : 'private';
-                futureGet =
-                    () => apiClient.getUserFollowing(widget.id, restrict);
-              });
-            },
+          child: AnimatedSlide(
+            offset: Offset(0, isHidden ? -1.5 : 0.0),
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeInOut,
+            child: AnimatedOpacity(
+              opacity: isHidden ? 0.0 : 1.0,
+              duration: const Duration(milliseconds: 200),
+              child: IgnorePointer(
+                ignoring: isHidden,
+                child: SortGroup(
+                  children: [
+                    I18n.of(context).public,
+                    I18n.of(context).private
+                  ],
+                  onChange: (index) {
+                    setState(() {
+                      restrict = index == 0 ? 'public' : 'private';
+                      futureGet =
+                          () => apiClient.getUserFollowing(widget.id, restrict);
+                    });
+                  },
+                ),
+              ),
+            ),
           ),
         ),
       );

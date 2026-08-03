@@ -17,6 +17,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_page.dart';
@@ -73,37 +74,56 @@ class _NewIllustPageState extends State<NewIllustPage> {
         ),
         Align(
           alignment: Alignment.topCenter,
-          child: Container(
-            child: SortGroup(
-              onChange: (index) {
-                if (index == 0)
-                  setState(() {
-                    futureGet = ApiForceSource(
-                        futureGet: (e) =>
-                            apiClient.getFollowIllusts('all', force: e),
-                        glanceKey: "follow_illust");
-                  });
-                if (index == 1)
-                  setState(() {
-                    futureGet = ApiForceSource(
-                        futureGet: (e) =>
-                            apiClient.getFollowIllusts('public', force: e),
-                        glanceKey: "follow_illust");
-                  });
-                if (index == 2)
-                  setState(() {
-                    futureGet = ApiForceSource(
-                        futureGet: (e) =>
-                            apiClient.getFollowIllusts('private', force: e),
-                        glanceKey: "follow_illust");
-                  });
-              },
-              children: [
-                I18n.of(context).all,
-                I18n.of(context).public,
-                I18n.of(context).private
-              ],
-            ),
+          child: Observer(
+            builder: (context) {
+              final isHidden = fullScreenStore.fullscreen ||
+                  (userSetting.autoHideBottomBar &&
+                      !fullScreenStore.bottomBarVisible);
+              return AnimatedSlide(
+                offset: Offset(0, isHidden ? -1.5 : 0.0),
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeInOut,
+                child: AnimatedOpacity(
+                  opacity: isHidden ? 0.0 : 1.0,
+                  duration: const Duration(milliseconds: 200),
+                  child: IgnorePointer(
+                    ignoring: isHidden,
+                    child: Container(
+                      child: SortGroup(
+                        onChange: (index) {
+                          if (index == 0)
+                            setState(() {
+                              futureGet = ApiForceSource(
+                                  futureGet: (e) =>
+                                      apiClient.getFollowIllusts('all', force: e),
+                                  glanceKey: "follow_illust");
+                            });
+                          if (index == 1)
+                            setState(() {
+                              futureGet = ApiForceSource(
+                                  futureGet: (e) =>
+                                      apiClient.getFollowIllusts('public', force: e),
+                                  glanceKey: "follow_illust");
+                            });
+                          if (index == 2)
+                            setState(() {
+                              futureGet = ApiForceSource(
+                                  futureGet: (e) =>
+                                      apiClient.getFollowIllusts('private', force: e),
+                                  glanceKey: "follow_illust");
+                            });
+                        },
+                        children: [
+                          I18n.of(context).all,
+                          I18n.of(context).public,
+                          I18n.of(context).private
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         )
       ],

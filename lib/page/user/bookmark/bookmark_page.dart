@@ -107,81 +107,106 @@ class _BookmarkPageState extends State<BookmarkPage> {
   Widget buildTopChip(BuildContext context) {
     return Align(
       alignment: Alignment.topCenter,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SortGroup(
-            children: [I18n.of(context).public, I18n.of(context).private],
-            onChange: (index) {
-              if (index == 0)
-                setState(() {
-                  futureGet = ApiForceSource(
-                    futureGet: (bool e) => apiClient.getBookmarksIllust(
-                      widget.id,
-                      restrict = 'public',
-                      currentTag,
-                    ),
-                  );
-                });
-              if (index == 1)
-                setState(() {
-                  futureGet = ApiForceSource(
-                    futureGet: (bool e) => apiClient.getBookmarksIllust(
-                      widget.id,
-                      restrict = 'private',
-                      currentTag,
-                    ),
-                  );
-                });
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: GestureDetector(
-              onTap: () async {
-                final result = await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => UserBookmarkTagPage(currentTag: currentTag),
-                  ),
-                );
-                if (result != null) {
-                  String? tag = result['tag'];
-                  String restrict = result['restrict'];
-                  setState(() {
-                    currentTag = tag;
-                    futureGet = ApiForceSource(
-                      futureGet: (bool e) => apiClient.getBookmarksIllust(
-                        widget.id,
-                        restrict,
-                        tag,
-                      ),
-                    );
-                  });
-                }
-              },
-              behavior: HitTestBehavior.opaque,
-              child: Chip(
-                label: Row(
+      child: Observer(
+        builder: (context) {
+          final isHidden = fullScreenStore.fullscreen ||
+              (userSetting.autoHideBottomBar &&
+                  !fullScreenStore.bottomBarVisible);
+          return AnimatedSlide(
+            offset: Offset(0, isHidden ? -1.5 : 0.0),
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeInOut,
+            child: AnimatedOpacity(
+              opacity: isHidden ? 0.0 : 1.0,
+              duration: const Duration(milliseconds: 200),
+              child: IgnorePointer(
+                ignoring: isHidden,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.tag, size: 18),
-                    if (currentTag != null)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Text(
-                          currentTag!,
-                          style: Theme.of(context).textTheme.bodySmall,
+                    SortGroup(
+                      children: [
+                        I18n.of(context).public,
+                        I18n.of(context).private
+                      ],
+                      onChange: (index) {
+                        if (index == 0)
+                          setState(() {
+                            futureGet = ApiForceSource(
+                              futureGet: (bool e) => apiClient.getBookmarksIllust(
+                                widget.id,
+                                restrict = 'public',
+                                currentTag,
+                              ),
+                            );
+                          });
+                        if (index == 1)
+                          setState(() {
+                            futureGet = ApiForceSource(
+                              futureGet: (bool e) => apiClient.getBookmarksIllust(
+                                widget.id,
+                                restrict = 'private',
+                                currentTag,
+                              ),
+                            );
+                          });
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: GestureDetector(
+                        onTap: () async {
+                          final result = await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  UserBookmarkTagPage(currentTag: currentTag),
+                            ),
+                          );
+                          if (result != null) {
+                            String? tag = result['tag'];
+                            String restrict = result['restrict'];
+                            setState(() {
+                              currentTag = tag;
+                              futureGet = ApiForceSource(
+                                futureGet: (bool e) =>
+                                    apiClient.getBookmarksIllust(
+                                  widget.id,
+                                  restrict,
+                                  tag,
+                                ),
+                              );
+                            });
+                          }
+                        },
+                        behavior: HitTestBehavior.opaque,
+                        child: Chip(
+                          label: Row(
+                            children: [
+                              Icon(Icons.tag, size: 18),
+                              if (currentTag != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: Text(
+                                    currentTag!,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                  ),
+                                ),
+                            ],
+                          ),
+                          backgroundColor: Theme.of(context).cardColor,
+                          elevation: 4.0,
+                          padding: EdgeInsets.all(0.0),
                         ),
                       ),
+                    ),
                   ],
                 ),
-                backgroundColor: Theme.of(context).cardColor,
-                elevation: 4.0,
-                padding: EdgeInsets.all(0.0),
               ),
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
