@@ -32,6 +32,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/task_persist.dart';
 import 'package:pixez/page/task/job_page.dart';
+import 'package:pixez/utils/haptic_util.dart';
 
 part 'save_store.g.dart';
 
@@ -126,11 +127,13 @@ abstract class _SaveStoreBase with Store {
   void listenBehavior(SaveStream stream) {
     switch (stream.state) {
       case SaveState.SUCCESS:
+        HapticUtil.light();
         Toaster.downloadOk(
           "${stream.data.title} (p${stream.index ?? 0}) ${I18n.of(ctx!).saved}",
         );
         break;
       case SaveState.JOIN:
+        HapticUtil.medium();
         BotToast.showCustomText(
           onlyOne: true,
           duration: Duration(seconds: 1),
@@ -166,6 +169,7 @@ abstract class _SaveStoreBase with Store {
         );
         break;
       case SaveState.INQUEUE:
+        HapticUtil.selectionClick();
         BotToast.showCustomText(
           onlyOne: true,
           duration: Duration(seconds: 2),
@@ -219,6 +223,7 @@ abstract class _SaveStoreBase with Store {
         );
         break;
       case SaveState.ALREADY:
+        HapticUtil.selectionClick();
         BotToast.showCustomText(
           onlyOne: true,
           duration: Duration(seconds: 1),

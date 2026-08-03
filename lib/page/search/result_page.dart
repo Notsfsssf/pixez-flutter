@@ -20,6 +20,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/tags.dart';
 import 'package:pixez/page/search/result/painter/search_result_painter_page.dart';
 import 'package:pixez/page/search/result_illust_list.dart';
+import 'package:pixez/utils/haptic_util.dart';
 
 class ResultPage extends StatefulWidget {
   final String word;
@@ -52,6 +53,7 @@ class _ResultPageState extends State<ResultPage> {
           title: TabBar(
               indicatorSize: TabBarIndicatorSize.label,
               onTap: (i) {
+                HapticUtil.selectionClick();
                 if (i == index) {
                   topStore.setTop("401");
                 }

@@ -5,6 +5,7 @@ import 'package:pixez/models/tags.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/search/novel_result_list.dart';
 import 'package:pixez/page/painter/painter_list.dart';
+import 'package:pixez/utils/haptic_util.dart';
 
 class NovelResultPage extends StatefulWidget {
   final String word;
@@ -32,7 +33,11 @@ class _NovelResultPageState extends State<NovelResultPage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(widget.word),
-          bottom: TabBar(tabs: [
+          bottom: TabBar(
+            onTap: (i) {
+              HapticUtil.selectionClick();
+            },
+            tabs: [
             Tab(
               child: Text('Novel'),
             ),

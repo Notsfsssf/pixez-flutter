@@ -45,6 +45,7 @@ import 'package:pixez/page/picture/picture_list_page.dart';
 import 'package:pixez/page/picture/tag_for_illust_page.dart';
 import 'package:pixez/page/picture/ugoira_loader.dart';
 import 'package:pixez/page/picture/user_follow_button.dart';
+import 'package:pixez/utils/haptic_util.dart';
 import 'package:pixez/page/report/report_items_page.dart';
 import 'package:pixez/page/search/result_page.dart';
 import 'package:pixez/page/user/user_store.dart';
@@ -803,6 +804,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
         break;
       case 2:
         {
+          HapticUtil.light();
           await Clipboard.setData(ClipboardData(text: f.name));
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -817,6 +819,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
   Widget buildRow(BuildContext context, Tags f) {
     return GestureDetector(
       onLongPress: () async {
+        HapticUtil.heavy();
         await _longPressTag(context, f);
       },
       onTap: () {
@@ -1315,6 +1318,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
   }
 
   Future<void> _showBookMarkTag() async {
+    HapticUtil.heavy();
     final result = await Leader.pushWithScaffold(
       context,
       TagForIllustPage(id: widget.id),

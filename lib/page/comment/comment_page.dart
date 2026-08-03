@@ -33,6 +33,7 @@ import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/comment/comment_store.dart';
 import 'package:pixez/page/report/report_items_page.dart';
 import 'package:pixez/supportor_plugin.dart';
+import 'package:pixez/utils/haptic_util.dart';
 import 'package:share_plus/share_plus.dart';
 
 enum CommentArtWorkType { ILLUST, NOVEL }
@@ -439,6 +440,7 @@ class _CommentPageState extends State<CommentPage> {
                                                           parentCommentId);
                                               }
                                               _editController.clear();
+                                              HapticUtil.medium();
                                               _store.fetch();
                                             } catch (e) {
                                               print(e);

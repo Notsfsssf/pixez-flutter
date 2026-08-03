@@ -25,6 +25,7 @@ import 'package:pixez/models/illust_persist.dart';
 import 'package:pixez/page/history/history_store.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
+import 'package:pixez/utils/haptic_util.dart';
 
 class HistoryPage extends HookConsumerWidget {
   const HistoryPage({super.key});
@@ -59,6 +60,7 @@ class HistoryPage extends HookConsumerWidget {
                     }));
                   },
                   onLongPress: () async {
+                    HapticUtil.heavy();
                     final result = await showDialog(
                         context: context,
                         builder: (context) {

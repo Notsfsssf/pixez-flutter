@@ -33,6 +33,7 @@ import 'package:pixez/er/pixiv_image_source.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/utils/haptic_util.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/follow/follow_list.dart';
@@ -333,6 +334,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
             TabBar(
               controller: _tabController,
               onTap: (index) {
+                HapticUtil.selectionClick();
                 setState(() {
                   _tabIndex = index;
                 });
