@@ -190,21 +190,6 @@ class _PixivImageState extends State<PixivImage> {
               ),
             ),
           ),
-      progressIndicatorBuilder: widget.placeWidget == null
-          ? (context, url, progress) => Container(
-              height: height,
-              child: Center(
-                child: SizedBox(
-                  width: size,
-                  height: size,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: CircularProgressIndicator(value: progress.progress),
-                  ),
-                ),
-              ),
-            )
-          : null,
       errorWidget: (context, url, _) => Container(
         height: height,
         child: Center(
