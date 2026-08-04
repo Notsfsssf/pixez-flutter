@@ -124,8 +124,6 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  int _tabIndex = 0;
-
   @override
   Widget build(BuildContext context) {
     return Observer(
@@ -335,29 +333,19 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
               controller: _tabController,
               onTap: (index) {
                 HapticUtil.selectionClick();
-                setState(() {
-                  _tabIndex = index;
-                });
+                if (_tabController.index == index &&
+                    _scrollController.hasClients) {
+                  _scrollController.animateTo(
+                    0,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeOut,
+                  );
+                }
               },
               tabs: [
-                GestureDetector(
-                  onDoubleTap: () {
-                    if (_tabIndex == 0) _scrollController.position.jumpTo(0);
-                  },
-                  child: Tab(text: I18n.of(context).works),
-                ),
-                GestureDetector(
-                  onDoubleTap: () {
-                    if (_tabIndex == 1) _scrollController.position.jumpTo(0);
-                  },
-                  child: Tab(text: I18n.of(context).bookmark),
-                ),
-                GestureDetector(
-                  onDoubleTap: () {
-                    if (_tabIndex == 2) _scrollController.position.jumpTo(0);
-                  },
-                  child: Tab(text: I18n.of(context).user_page_info_title),
-                ),
+                Tab(text: I18n.of(context).works),
+                Tab(text: I18n.of(context).bookmark),
+                Tab(text: I18n.of(context).user_page_info_title),
               ],
             ),
           ),
