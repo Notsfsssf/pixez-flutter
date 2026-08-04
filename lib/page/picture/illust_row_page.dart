@@ -152,6 +152,7 @@ class _IllustRowPageState extends State<IllustRowPage>
                   IconButton(
                     icon: Icon(Icons.more_vert),
                     onPressed: () {
+                      HapticUtil.selectionClick();
                       buildShowModalBottomSheet(context, _illustStore.illusts!);
                     },
                   ),
@@ -386,6 +387,7 @@ class _IllustRowPageState extends State<IllustRowPage>
             .toList();
         return InkWell(
           onTap: () {
+            HapticUtil.selectionClick();
             Leader.push(
               context,
               PictureListPage(
@@ -396,6 +398,7 @@ class _IllustRowPageState extends State<IllustRowPage>
             );
           },
           onLongPress: () async {
+            HapticUtil.heavy();
             final illust = _aboutStore.illusts[index];
             saveStore.saveImage(illust);
             await _autoBookmarkAfterSave(illust);
@@ -790,6 +793,7 @@ class _IllustRowPageState extends State<IllustRowPage>
   }
 
   Future<void> _pressSave(Illusts illust, int index) async {
+    HapticUtil.heavy();
     if (userSetting.illustDetailSaveSkipLongPress) {
       saveStore.saveImage(illust, index: index);
       await _autoBookmarkAfterSave(illust);

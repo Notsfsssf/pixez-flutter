@@ -267,6 +267,7 @@ class _SearchPageState extends State<SearchPage>
                   .isNotEmpty)
                 return InkWell(
                   onTap: () {
+                    HapticUtil.heavy();
                     showDialog(
                         context: context,
                         builder: (context) {

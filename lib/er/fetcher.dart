@@ -36,6 +36,7 @@ import 'package:pixez/models/task_persist.dart';
 import 'package:pixez/network/network_mode.dart';
 import 'package:pixez/network/pixez_network_settings.dart';
 import 'package:pixez/store/save_store.dart';
+import 'package:pixez/utils/haptic_util.dart';
 import 'package:quiver/collection.dart';
 import 'package:rhttp/rhttp.dart' as r;
 
@@ -231,6 +232,7 @@ class Fetcher {
     File file = File(savePath + Platform.pathSeparator + fileName);
     final uint8list = await file.readAsBytes();
     await saveStore.saveToGallery(uint8list, illusts, fileName);
+    HapticUtil.success(minIntervalMs: 300);
     Toaster.downloadOk("${illusts.title} ${I18n.of(context!).saved}");
     var job = jobMaps[url];
     if (job != null) {
@@ -247,6 +249,7 @@ class Fetcher {
     var taskPersist = await taskPersistProvider.getAccount(url);
     if (taskPersist == null) return;
     await taskPersistProvider.update(taskPersist..status = 3);
+    HapticUtil.error();
     var job = jobMaps[url];
     if (job != null) {
       job.status = 3;
