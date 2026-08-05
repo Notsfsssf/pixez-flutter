@@ -48,7 +48,6 @@ class NovelUsersPage extends StatefulWidget {
 class _NovelUsersPageState extends State<NovelUsersPage>
     with TickerProviderStateMixin {
   late TabController _tabController;
-  int _tabIndex = 0;
   late UserStore userStore;
   late ScrollController _scrollController;
   late NovelLightingStore _bookMarkStore;
@@ -180,30 +179,20 @@ class _NovelUsersPageState extends State<NovelUsersPage>
               controller: _tabController,
               onTap: (index) {
                 HapticUtil.selectionClick();
-                setState(() {
-                  _tabIndex = index;
-                });
+                if (_tabController.index == index &&
+                    _scrollController.hasClients) {
+                  _scrollController.animateTo(
+                    0,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeOut,
+                  );
+                }
               },
               indicatorSize: TabBarIndicatorSize.label,
               tabs: [
-                GestureDetector(
-                  onDoubleTap: () {
-                    if (_tabIndex == 0) _scrollController.position.jumpTo(0);
-                  },
-                  child: Tab(text: I18n.of(context).works),
-                ),
-                GestureDetector(
-                  onDoubleTap: () {
-                    if (_tabIndex == 1) _scrollController.position.jumpTo(0);
-                  },
-                  child: Tab(text: I18n.of(context).bookmark),
-                ),
-                GestureDetector(
-                  onDoubleTap: () {
-                    if (_tabIndex == 2) _scrollController.position.jumpTo(0);
-                  },
-                  child: Tab(text: I18n.of(context).user_page_info_title),
-                ),
+                Tab(text: I18n.of(context).works),
+                Tab(text: I18n.of(context).bookmark),
+                Tab(text: I18n.of(context).user_page_info_title),
               ],
             ),
           ),
