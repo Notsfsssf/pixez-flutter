@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/utils/haptic_util.dart';
 
 class SaveFormatPage extends StatefulWidget {
   @override
@@ -140,6 +141,7 @@ class _SaveFormatPageState extends State<SaveFormatPage> {
               title: Text(I18n.of(context).clear_old_format_file),
               subtitle: Text(I18n.of(context).clear_old_format_file_message),
               onChanged: (bool value) {
+                HapticUtil.light();
                 userSetting.setIsClearnOldFormatFile(value);
               },
               value: userSetting.isClearOldFormatFile,

@@ -300,6 +300,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   value: userSetting.isBangs,
                   title: Text(I18n.of(context).special_shaped_screen),
                   onChanged: (value) async {
+                    HapticUtil.light();
                     userSetting.setIsBangs(value);
                   },
                 ),
@@ -307,6 +308,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   value: userSetting.longPressSaveConfirm,
                   title: Text(I18n.of(context).long_press_save_confirm),
                   onChanged: (value) async {
+                    HapticUtil.light();
                     userSetting.setLongPressSaveConfirm(value);
                   },
                 ),
@@ -314,6 +316,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   value: userSetting.hIsNotAllow,
                   title: Text('H是不行的！'),
                   onChanged: (value) async {
+                    HapticUtil.light();
                     if (!value) BotToast.showText(text: 'H是可以的！(ˉ﹃ˉ)');
                     userSetting.setHIsNotAllow(value);
                   },
@@ -322,6 +325,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   value: userSetting.isReturnAgainToExit,
                   title: Text(I18n.of(context).return_again_to_exit),
                   onChanged: (value) async {
+                    HapticUtil.light();
                     userSetting.setIsReturnAgainToExit(value);
                   },
                 ),
@@ -329,6 +333,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   value: userSetting.swipeChangeArtwork,
                   title: Text(I18n.of(context).swipe_to_switch_artworks),
                   onChanged: (value) async {
+                    HapticUtil.light();
                     userSetting.setSwipeChangeArtwork(value);
                   },
                 ),
@@ -337,10 +342,8 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     value: userSetting.hapticFeedback,
                     title: Text(I18n.of(context).haptic_feedback),
                     onChanged: (value) async {
+                      if (value) HapticUtil.light(force: true);
                       userSetting.setHapticFeedback(value);
-                      if (value) {
-                        HapticUtil.medium();
-                      }
                     },
                   ),
                 if (Platform.isAndroid || Platform.isIOS)
@@ -352,6 +355,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                           : I18n.of(context).secure_window,
                     ),
                     onChanged: (value) async {
+                      HapticUtil.light();
                       userSetting.changeNsfwMask(value);
                     },
                   ),
@@ -360,6 +364,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     value: userSetting.useSaunceNaoWebview,
                     title: Text(I18n.of(context).open_saucenao_using_webview),
                     onChanged: (value) async {
+                      HapticUtil.light();
                       userSetting.setUseSaunceNaoWebview(value);
                     },
                   ),
@@ -367,6 +372,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   value: userSetting.illustDetailSaveSkipLongPress,
                   title: Text(I18n.of(context).illust_detail_save_skip_confirm),
                   onChanged: (value) async {
+                    HapticUtil.light();
                     userSetting.setIllustDetailSaveSkipLongPress(value);
                   },
                 ),
@@ -374,6 +380,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   value: userSetting.feedAIBadge,
                   title: Text(I18n.of(context).show_feed_ai_badge),
                   onChanged: (value) async {
+                    HapticUtil.light();
                     userSetting.setFeedAIBadge(value);
                   },
                 ),
@@ -384,6 +391,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                         userSetting.ignoreUpdateVersion == Updater.latestVersion,
                     title: Text(I18n.of(context).ignore_current_version_update),
                     onChanged: (value) async {
+                      HapticUtil.light();
                       if (value) {
                         if (Updater.latestVersion == null) {
                           await Updater.check();
@@ -404,6 +412,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   value: userSetting.followAfterStar,
                   title: Text(I18n.of(context).follow_after_star),
                   onChanged: (value) async {
+                    HapticUtil.light();
                     userSetting.setFollowAfterStar(value);
                   },
                 ),
@@ -411,6 +420,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   value: userSetting.defaultPrivateLike,
                   title: Text(I18n.of(context).private_like_by_default),
                   onChanged: (value) async {
+                    HapticUtil.light();
                     userSetting.setDefaultPrivateLike(value);
                   },
                 ),
@@ -420,6 +430,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     I18n.of(context).automatically_download_when_bookmarking,
                   ),
                   onChanged: (value) async {
+                    HapticUtil.light();
                     userSetting.setSaveAfterStar(value);
                   },
                 ),
@@ -429,6 +440,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     I18n.of(context).automatically_bookmark_when_downloading,
                   ),
                   onChanged: (value) async {
+                    HapticUtil.light();
                     userSetting.setStarAfterSave(value);
                   },
                 ),
@@ -438,6 +450,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     I18n.of(context).automatically_tag_when_bookmarking,
                   ),
                   onChanged: (value) async {
+                    HapticUtil.light();
                     userSetting.setAutoTagWhenStar(value);
                   },
                 ),
@@ -567,6 +580,7 @@ class _SettingSelectMenuState extends State<SettingSelectMenu> {
       color: Theme.of(context).colorScheme.secondaryContainer,
       child: InkWell(
         onTap: () async {
+          HapticUtil.selectionClick();
           final renderBox = context.findRenderObject() as RenderBox;
           var local = renderBox.localToGlobal(Offset.zero);
           var size = MediaQuery.of(context).size;

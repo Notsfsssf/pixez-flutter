@@ -99,6 +99,7 @@ class _ShieldPageState extends State<ShieldPage> {
                     trailing: Switch(
                       value: muteStore.banAIIllust,
                       onChanged: (v) {
+                        HapticUtil.light();
                         muteStore.changeBanAI(v);
                       },
                     ),

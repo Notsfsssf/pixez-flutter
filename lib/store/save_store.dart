@@ -133,7 +133,7 @@ abstract class _SaveStoreBase with Store {
         );
         break;
       case SaveState.JOIN:
-        HapticUtil.medium();
+        HapticUtil.light(minIntervalMs: 200);
         BotToast.showCustomText(
           onlyOne: true,
           duration: Duration(seconds: 1),

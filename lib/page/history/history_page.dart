@@ -52,6 +52,7 @@ class HistoryPage extends HookConsumerWidget {
             itemBuilder: (context, index) {
               return GestureDetector(
                   onTap: () {
+                    HapticUtil.selectionClick();
                     Navigator.of(context, rootNavigator: true).push(
                         MaterialPageRoute(builder: (BuildContext context) {
                       return IllustLightingPage(

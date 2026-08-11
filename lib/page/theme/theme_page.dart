@@ -231,7 +231,10 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
                 child: Card(
                     child: SwitchListTile(
                   value: userSetting.isAMOLED,
-                  onChanged: (v) => userSetting.setIsAMOLED(v),
+                  onChanged: (v) {
+                    HapticUtil.light();
+                    userSetting.setIsAMOLED(v);
+                  },
                   title: Text("AMOLED"),
                 )),
               ),
@@ -240,6 +243,7 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
                     child: SwitchListTile(
                   value: userSetting.useDynamicColor,
                   onChanged: (v) async {
+                    HapticUtil.light();
                     await userSetting.setUseDynamicColor(v);
                     topStore.setTop("main");
                   },
