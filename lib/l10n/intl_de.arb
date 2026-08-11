@@ -343,5 +343,6 @@
   "network_mode_ech_message": "Versuche dies, wenn die App geöffnet wird, aber keine Antworten vom Dienst erhält.",
   "network_mode_standard": "Standardverbindung",
   "network_mode_standard_message": "Für die meisten Netzwerke empfohlen.",
-  "ignore_current_version_update": "Aktuelles Update ignorieren"
+  "ignore_current_version_update": "Aktuelles Update ignorieren",
+  "haptic_feedback": "Haptisches Feedback"
 }
