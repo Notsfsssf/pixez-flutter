@@ -28,7 +28,7 @@ dependencies:
   path_provider: ^2.1.6
   shared_preferences: ^2.5.5
   share_plus: ^13.2.0
-  permission_handler: ^12.0.3
+  permission_handler: ^13.0.1
   archive: ^4.0.9
   url_launcher: ^6.3.2
   bot_toast: ^4.1.3
@@ -74,13 +74,6 @@ dependencies:
   webview_flutter: ^4.14.1
   # sqlite3: 3.1.6
   sqflite_common_ffi: ^2.4.2
-
-dependency_overrides:
-  # Local override of permission_handler_apple with location code removed
-  # to avoid App Store rejection ITMS-90683
-  # See https://github.com/Baseflow/flutter-permission-handler/issues/1543
-  permission_handler_apple:
-    path: ios/permission_handler_apple_override
 
 dev_dependencies:
   flutter_test:
@@ -152,6 +145,10 @@ msix_config:
   install_certificate: false
   store: false
   publisher: CN=Notsfsssf, C=CN
+
+dependency_overrides:
+  wakelock_plus:
+    path: ./plugins/wakelock_plus_stub
 
 hooks:
   user_defines:

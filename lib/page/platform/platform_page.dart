@@ -28,6 +28,7 @@ import 'package:pixez/open_setting_plugin.dart';
 import 'package:pixez/page/directory/save_mode_choice_page.dart';
 import 'package:pixez/page/hello/setting/save_eval_page.dart';
 import 'package:pixez/page/hello/setting/save_format_page.dart';
+import 'package:pixez/utils/haptic_util.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class PlatformPage extends StatefulWidget {
@@ -172,6 +173,7 @@ class _PlatformPageState extends State<PlatformPage> {
                   return SwitchListTile(
                     secondary: Icon(Icons.folder_shared),
                     onChanged: (bool value) async {
+                      HapticUtil.light();
                       if (value) {
                         ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text("可能会造成保存等待时间过长")));
@@ -189,6 +191,7 @@ class _PlatformPageState extends State<PlatformPage> {
                   return SwitchListTile(
                     secondary: Icon(Icons.folder_open),
                     onChanged: (bool value) async {
+                      HapticUtil.light();
                       await userSetting.setOverSanityLevelFolder(value);
                     },
                     title: Text("Sanity Single Folder"),

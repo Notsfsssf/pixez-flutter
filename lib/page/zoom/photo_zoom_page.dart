@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -101,7 +102,17 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
             bottomNavigationBar: _buildBottom(context),
             extendBodyBehindAppBar: true,
             backgroundColor: Colors.black,
-            body: Container(
+            body: ScrollConfiguration(
+              // Flutter excludes mouse from dragDevices by default (#1308).
+              behavior: ScrollConfiguration.of(context).copyWith(
+                dragDevices: {
+                  PointerDeviceKind.touch,
+                  PointerDeviceKind.stylus,
+                  PointerDeviceKind.invertedStylus,
+                  PointerDeviceKind.trackpad,
+                  PointerDeviceKind.mouse,
+                },
+              ),
               child: PhotoViewGallery.builder(
                 scrollPhysics: const BouncingScrollPhysics(),
                 pageController: PageController(initialPage: _index),

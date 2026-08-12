@@ -94,6 +94,7 @@ class _ShieldPageState extends State<ShieldPage> {
                         ),
                         value: muteStore.banAIIllust,
                         onChanged: (v) {
+                          HapticUtil.light();
                           muteStore.changeBanAI(v);
                         },
                       ),
