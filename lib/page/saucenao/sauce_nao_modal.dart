@@ -12,11 +12,15 @@ import 'package:image_picker/image_picker.dart';
 import 'package:image_picker_android/image_picker_android.dart';
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/er/hoster.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/er/prefer.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/illust.dart';
+import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/saucenao/sauce_nao_result.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -116,8 +120,6 @@ class _SauceNaoModalState extends State<SauceNaoModal> {
     final cancelToken = CancelToken();
     _cancelToken = cancelToken;
     try {
-      // 不要加 output_type=2：JSON API 匿名会 403
-      // 与原先 sauce_store 一样只上传文件，解析 HTML 结果
       final formData = FormData();
       formData.files.add(MapEntry("file", await MultipartFile.fromFile(path)));
 
@@ -564,7 +566,7 @@ class _SauceNaoModalState extends State<SauceNaoModal> {
             itemBuilder: (context, index) {
               final item = _results[index];
               return ListTile(
-                leading: _buildThumbnail(item),
+                leading: _PixivIllustThumbnail(illustId: item.illustId),
                 title: Text(
                   item.title?.isNotEmpty == true
                       ? item.title!
@@ -595,30 +597,95 @@ class _SauceNaoModalState extends State<SauceNaoModal> {
       ],
     );
   }
+}
 
-  Widget _buildThumbnail(SauceNaoResult item) {
-    final placeholder = Container(
+class _PixivIllustThumbnail extends StatefulWidget {
+  final int illustId;
+
+  const _PixivIllustThumbnail({required this.illustId});
+
+  @override
+  State<_PixivIllustThumbnail> createState() => _PixivIllustThumbnailState();
+}
+
+class _PixivIllustThumbnailState extends State<_PixivIllustThumbnail> {
+  String? _imageUrl;
+  bool _loading = true;
+  static bool _authBroken = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetch();
+  }
+
+  @override
+  void didUpdateWidget(covariant _PixivIllustThumbnail oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.illustId != widget.illustId) {
+      _imageUrl = null;
+      _loading = true;
+      _fetch();
+    }
+  }
+
+  Future<void> _fetch() async {
+    if (_authBroken) {
+      if (mounted) setState(() => _loading = false);
+      return;
+    }
+    try {
+      // apiClient 拦截器会自动带 Authorization: Bearer <access_token>
+      final response = await apiClient.getIllustDetail(widget.illustId);
+      final illust = Illusts.fromJson(response.data['illust']);
+      if (!mounted) return;
+      setState(() {
+        _imageUrl = illust.imageUrls.squareMedium;
+        _loading = false;
+      });
+    } catch (e) {
+      final message = e.toString();
+      if (message.contains('OAuth') || message.contains('invalid_request')) {
+        _authBroken = true;
+      }
+      if (!mounted) return;
+      setState(() => _loading = false);
+    }
+  }
+
+  Widget _placeholder({bool failed = false}) {
+    return Container(
       width: 56,
       height: 56,
       color: Theme.of(context).colorScheme.surfaceContainerHighest,
-      child: Icon(Icons.image_outlined, size: 24),
+      alignment: Alignment.center,
+      child: _loading && !failed
+          ? const SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          : Text(':(', style: Theme.of(context).textTheme.headlineMedium),
     );
-    if (item.thumbnail == null || item.thumbnail!.isEmpty) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: placeholder,
-      );
-    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final child = _imageUrl == null
+        ? _placeholder(failed: !_loading)
+        : CachedNetworkImage(
+            imageUrl: _imageUrl!,
+            width: 56,
+            height: 56,
+            fit: BoxFit.cover,
+            cacheManager: pixivCacheManager,
+            httpHeaders: Hoster.header(url: _imageUrl),
+            placeholder: (_, __) => _placeholder(),
+            errorWidget: (_, __, ___) => _placeholder(failed: true),
+          );
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
-      child: CachedNetworkImage(
-        imageUrl: item.thumbnail!,
-        width: 56,
-        height: 56,
-        fit: BoxFit.cover,
-        placeholder: (_, __) => placeholder,
-        errorWidget: (_, __, ___) => placeholder,
-      ),
+      child: SizedBox(width: 56, height: 56, child: child),
     );
   }
 }
