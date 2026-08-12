@@ -323,6 +323,7 @@
   "account": "账号",
   "save_wait_time_warning": "可能会造成保存等待时间过长",
   "uploading": "上传中",
+  "upload_picture": "上传图片",
   "parsing": "解析中",
   "no_more": "没有更多了",
   "delete_tag": "删除标签？",

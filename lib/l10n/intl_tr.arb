@@ -319,6 +319,7 @@
   "account": "Hesap",
   "save_wait_time_warning": "Bu durum kaydetme işleminin uzamasına neden olabilir",
   "uploading": "Yükleniyor...",
+  "upload_picture": "Resim yükle",
   "parsing": "Ayrıştırılıyor...",
   "no_more": "Hepsi bu kadar",
   "delete_tag": "Bu etiket silinsin mi?",

@@ -321,6 +321,7 @@
   "account": "帳號",
   "save_wait_time_warning": "可能會造成儲存等待時間過長",
   "uploading": "上傳中",
+  "upload_picture": "上傳圖片",
   "parsing": "解析中",
   "no_more": "沒有更多了",
   "delete_tag": "刪除標籤？",

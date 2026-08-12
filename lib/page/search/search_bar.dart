@@ -29,8 +29,9 @@ class _SearchBarState extends State<SearchBar> {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
-          color: Colors.grey.withValues(alpha: 0.4)),
+        borderRadius: BorderRadius.circular(24),
+        color: Colors.grey.withValues(alpha: 0.4),
+      ),
       child: Container(
         height: 48,
         child: Row(
@@ -38,10 +39,7 @@ class _SearchBarState extends State<SearchBar> {
           children: [
             Container(
               margin: const EdgeInsets.only(left: 8, right: 2),
-              child: IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () {},
-              ),
+              child: IconButton(icon: Icon(Icons.search), onPressed: () {}),
             ),
             Expanded(
               child: InkWell(
@@ -49,15 +47,17 @@ class _SearchBarState extends State<SearchBar> {
                   Navigator.push(
                     context,
                     PageRouteBuilder(
-                        pageBuilder: (_, __, ___) => SearchSuggestionPage()),
+                      pageBuilder: (_, __, ___) => SearchSuggestionPage(),
+                    ),
                   );
                 },
                 child: Container(
                   child: Text(
                     I18n.of(context).search_word_hint,
                     style: TextStyle(
-                        fontSize: 16,
-                        color: Theme.of(context).textTheme.displaySmall!.color),
+                      fontSize: 16,
+                      color: Theme.of(context).textTheme.displaySmall!.color,
+                    ),
                   ),
                 ),
               ),

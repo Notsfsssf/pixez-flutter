@@ -310,6 +310,7 @@
   "account": "Account",
   "save_wait_time_warning": "It may cause a long waiting time for saving.",
   "uploading": "Uploading",
+  "upload_picture": "Upload picture",
   "parsing": "parsing",
   "no_more": "No more",
   "delete_tag": "Delete this tag?",
