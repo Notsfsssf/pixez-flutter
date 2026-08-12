@@ -855,12 +855,8 @@ class IllustItem extends StatelessWidget {
           text: Text(I18n.of(context).copymessage),
           leading: Icon(FluentIcons.library),
           onPressed: () async {
-            await Clipboard.setData(
-              ClipboardData(
-                text:
-                    'title:${data.title}\npainter:${data.user.name}\nillust id:${widget.id}',
-              ),
-            );
+            final str = userSetting.illustToShareInfoText(data);
+            await Clipboard.setData(ClipboardData(text: str));
             BotToast.showText(text: I18n.of(context).copied_to_clipboard);
           },
         ),

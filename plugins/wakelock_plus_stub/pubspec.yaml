@@ -1,0 +1,12 @@
+name: wakelock_plus
+description: No-op stub for wakelock_plus to avoid broken Android native plugin.
+version: 1.7.0
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter

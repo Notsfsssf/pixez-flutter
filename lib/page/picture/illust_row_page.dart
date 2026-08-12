@@ -149,11 +149,18 @@ class _IllustRowPageState extends State<IllustRowPage>
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  IconButton(
-                    icon: Icon(Icons.more_vert),
-                    onPressed: () {
-                      HapticUtil.selectionClick();
-                      buildShowModalBottomSheet(context, _illustStore.illusts!);
+                  Builder(
+                    builder: (buttonContext) {
+                      return IconButton(
+                        icon: Icon(Icons.more_vert),
+                        onPressed: () {
+                          HapticUtil.selectionClick();
+                          buildShowModalBottomSheet(
+                            buttonContext,
+                            _illustStore.illusts!,
+                          );
+                        },
+                      );
                     },
                   ),
                 ],
@@ -969,139 +976,159 @@ class _IllustRowPageState extends State<IllustRowPage>
   }
 
   Future buildShowModalBottomSheet(BuildContext context, Illusts illusts) {
-    return showModalBottomSheet(
-      isScrollControlled: true,
+    final buttonBox = context.findRenderObject() as RenderBox?;
+    final shareOrigin = buttonBox != null
+        ? buttonBox.localToGlobal(Offset.zero) & buttonBox.size
+        : null;
+    return showGeneralDialog(
       context: context,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (_) {
-        return Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(8.0),
-              topRight: Radius.circular(8.0),
-            ),
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    _buildNameAvatar(context, illusts),
-                    if (illusts.metaPages.isNotEmpty)
-                      ListTile(
-                        title: Text(I18n.of(context).muti_choice_save),
-                        leading: Icon(Icons.save),
-                        onTap: () async {
-                          Navigator.of(context).pop();
-                          _showMutiChoiceDialog(illusts, context);
-                        },
-                      ),
-                    ListTile(
-                      title: Text(I18n.of(context).copymessage),
-                      leading: Icon(Icons.local_library),
-                      onTap: () async {
-                        await Clipboard.setData(
-                          ClipboardData(
-                            text:
-                                'title:${illusts.title}\npainter:${illusts.user.name}\nillust id:${widget.id}',
+      barrierDismissible: true,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.black.withValues(alpha: 0.35),
+      transitionDuration: const Duration(milliseconds: 180),
+      pageBuilder: (dialogContext, animation, secondaryAnimation) {
+        final width =
+            (MediaQuery.sizeOf(dialogContext).width - 24).clamp(0.0, 320.0);
+        return SafeArea(
+          child: Align(
+            alignment: Alignment.topRight,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 4, right: 12, left: 12),
+              child: Material(
+                color: Theme.of(dialogContext).colorScheme.surface,
+                elevation: 8,
+                shadowColor: Colors.black26,
+                borderRadius: BorderRadius.circular(14),
+                clipBehavior: Clip.antiAlias,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: width,
+                    maxHeight: MediaQuery.sizeOf(dialogContext).height * 0.75,
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        SizedBox(height: 8),
+                        _buildNameAvatar(dialogContext, illusts),
+                        if (illusts.metaPages.isNotEmpty)
+                          ListTile(
+                            title: Text(I18n.of(dialogContext).muti_choice_save),
+                            leading: Icon(Icons.save),
+                            onTap: () async {
+                              Navigator.of(dialogContext).pop();
+                              _showMutiChoiceDialog(illusts, context);
+                            },
                           ),
-                        );
-                        BotToast.showText(
-                          text: I18n.of(context).copied_to_clipboard,
-                        );
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    Builder(
-                      builder: (context) {
-                        return ListTile(
-                          title: Text(I18n.of(context).share),
+                        ListTile(
+                          title: Text(I18n.of(dialogContext).copymessage),
+                          leading: Icon(Icons.local_library),
+                          onTap: () async {
+                            final str =
+                                userSetting.illustToShareInfoText(illusts);
+                            await Clipboard.setData(ClipboardData(text: str));
+                            BotToast.showText(
+                              text: I18n.of(dialogContext).copied_to_clipboard,
+                            );
+                            Navigator.of(dialogContext).pop();
+                          },
+                        ),
+                        ListTile(
+                          title: Text(I18n.of(dialogContext).share),
                           leading: Icon(Icons.share),
                           onTap: () {
-                            final box =
-                                context.findRenderObject() as RenderBox?;
-                            final pos = box != null
-                                ? box.localToGlobal(Offset.zero) & box.size
-                                : null;
-                            Navigator.of(context).pop();
+                            Navigator.of(dialogContext).pop();
                             final link =
                                 "https://www.pixiv.net/artworks/${widget.id}";
                             SharePlus.instance.share(
-                              ShareParams(text: link, sharePositionOrigin: pos),
+                              ShareParams(
+                                text: link,
+                                sharePositionOrigin: shareOrigin,
+                              ),
                             );
                           },
-                        );
-                      },
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.link),
-                      title: Text(I18n.of(context).link),
-                      onTap: () async {
-                        await Clipboard.setData(
-                          ClipboardData(
-                            text: "https://www.pixiv.net/artworks/${widget.id}",
-                          ),
-                        );
-                        BotToast.showText(
-                          text: I18n.of(context).copied_to_clipboard,
-                        );
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    ListTile(
-                      title: Text(I18n.of(context).ban),
-                      leading: Icon(Icons.brightness_auto),
-                      onTap: () {
-                        muteStore.insertBanIllusts(
-                          BanIllustIdPersist(
-                            illustId: widget.id.toString(),
-                            name: illusts.title,
-                          ),
-                        );
-                        Navigator.pop(context);
-                      },
-                    ),
-                    ListTile(
-                      title: Text(I18n.of(context).report),
-                      leading: Icon(Icons.report),
-                      onTap: () async {
-                        await showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text(I18n.of(context).report),
-                              content: Text(I18n.of(context).report_message),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: Text(I18n.of(context).cancel),
-                                  onPressed: () {
-                                    Navigator.of(context).pop("CANCEL");
-                                  },
-                                ),
-                                TextButton(
-                                  child: Text(I18n.of(context).ok),
-                                  onPressed: () {
-                                    Navigator.of(context).pop("OK");
-                                  },
-                                ),
-                              ],
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.link),
+                          title: Text(I18n.of(dialogContext).link),
+                          onTap: () async {
+                            await Clipboard.setData(
+                              ClipboardData(
+                                text:
+                                    "https://www.pixiv.net/artworks/${widget.id}",
+                              ),
+                            );
+                            BotToast.showText(
+                              text: I18n.of(dialogContext).copied_to_clipboard,
+                            );
+                            Navigator.of(dialogContext).pop();
+                          },
+                        ),
+                        ListTile(
+                          title: Text(I18n.of(dialogContext).ban),
+                          leading: Icon(Icons.brightness_auto),
+                          onTap: () {
+                            muteStore.insertBanIllusts(
+                              BanIllustIdPersist(
+                                illustId: widget.id.toString(),
+                                name: illusts.title,
+                              ),
+                            );
+                            Navigator.of(dialogContext).pop();
+                          },
+                        ),
+                        ListTile(
+                          title: Text(I18n.of(dialogContext).report),
+                          leading: Icon(Icons.report),
+                          onTap: () async {
+                            await showDialog(
+                              context: dialogContext,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text(I18n.of(context).report),
+                                  content:
+                                      Text(I18n.of(context).report_message),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Text(I18n.of(context).cancel),
+                                      onPressed: () {
+                                        Navigator.of(context).pop("CANCEL");
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: Text(I18n.of(context).ok),
+                                      onPressed: () {
+                                        Navigator.of(context).pop("OK");
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
                             );
                           },
-                        );
-                      },
+                        ),
+                        SizedBox(height: 8),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-                Container(height: MediaQuery.of(context).padding.bottom),
-              ],
+              ),
             ),
+          ),
+        );
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        final curved = CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutCubic,
+        );
+        return FadeTransition(
+          opacity: curved,
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 0.92, end: 1.0).animate(curved),
+            alignment: Alignment.topRight,
+            child: child,
           ),
         );
       },

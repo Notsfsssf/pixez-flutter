@@ -93,7 +93,17 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
               ),
             );
           } else {
-            return Container(
+            return ScrollConfiguration(
+              // Flutter excludes mouse from dragDevices by default (#1308).
+              behavior: ScrollConfiguration.of(context).copyWith(
+                dragDevices: {
+                  PointerDeviceKind.touch,
+                  PointerDeviceKind.stylus,
+                  PointerDeviceKind.invertedStylus,
+                  PointerDeviceKind.trackpad,
+                  PointerDeviceKind.mouse,
+                },
+              ),
               child: PhotoViewGallery.builder(
                 scrollPhysics: const BouncingScrollPhysics(),
                 pageController: PageController(initialPage: _index),
