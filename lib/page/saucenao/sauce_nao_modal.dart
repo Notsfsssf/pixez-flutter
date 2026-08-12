@@ -659,13 +659,13 @@ class _PixivIllustThumbnailState extends State<_PixivIllustThumbnail> {
       height: 56,
       color: Theme.of(context).colorScheme.surfaceContainerHighest,
       alignment: Alignment.center,
-      child: _loading && !failed
-          ? const SizedBox(
+      child: failed
+          ? Text(':(', style: Theme.of(context).textTheme.headlineMedium)
+          : const SizedBox(
               width: 16,
               height: 16,
               child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : Text(':(', style: Theme.of(context).textTheme.headlineMedium),
+            ),
     );
   }
 
