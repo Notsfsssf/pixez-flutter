@@ -265,6 +265,7 @@
   "make_works_with_ai_generated_flags_invisible": "Membuat karya dengan bendera yang dihasilkan AI tidak terlihat",
   "script_page_hint": "Fungsi ini didesain untuk menangani nama file ketika menyimpan ilustrasi dengan menyesuaikan skrip js. Jika Kamu tidak mengetahui prinsipnya, mohon jangan mencobanya sesuka hati. Kamu bisa mengembalikan pengaturan default dengan mengeklik tanda silang di sudut kanan atas",
   "long_press_save_confirm": "Tekan lama untuk menyimpan konfirmasi",
+  "long_press_card_menu": "Long press thumbnail to show menu",
   "dynamic_color": "Warna dinamis",
   "seed_color": "Warna Tema",
   "app_data": "Data aplikasi",

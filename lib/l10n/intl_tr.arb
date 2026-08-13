@@ -265,6 +265,7 @@
   "make_works_with_ai_generated_flags_invisible": "YZ etiketli eserleri gizle",
   "script_page_hint": "Bu özellik, dosyaları kaydederken özel JS betiği ile dosya adlandırmayı özelleştirmek içindir. Mantığını bilmiyorsan lütfen değiştirme. Sağ üstteki simgeye dokunarak varsayılan ayarları geri yükleyebilirsin.",
   "long_press_save_confirm": "Görsele uzun basıldığında indirme onayı iste",
+  "long_press_card_menu": "Long press thumbnail to show menu",
   "dynamic_color": "Dinamik renk",
   "seed_color": "Vurgu rengi",
   "app_data": "Uygulama verileri",

@@ -265,6 +265,7 @@
   "make_works_with_ai_generated_flags_invisible": "KI-generierte Werke ausblenden",
   "script_page_hint": "Diese Funktion dient zur Anpassung von Dateinamen beim Speichern von Illustrationen über benutzerdefinierte JS-Skripte. Wenn du die Funktionsweise nicht kennst, ändere nichts. Mit dem Kreuz oben rechts kannst du die Standardeinstellungen wiederherstellen.",
   "long_press_save_confirm": "Langes Drücken zum Bestätigen des Speicherns",
+  "long_press_card_menu": "Long press thumbnail to show menu",
   "dynamic_color": "Dynamische Farbe",
   "seed_color": "Basisfarbe",
   "app_data": "App-Daten",
