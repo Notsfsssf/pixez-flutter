@@ -84,7 +84,13 @@ class _IllustCardState extends State<IllustCard> {
         if (store.illusts!.tags[i].name.startsWith('R-18')) {
           return InkWell(
             onTap: () => _buildTap(context),
-            onLongPress: () => _onLongPressCard(showSaveHint: false),
+            onLongPress: () async {
+              if (userSetting.longPressCardMenu) {
+                await _showCardMenu();
+              } else {
+                await _onLongPressSave();
+              }
+            },
             child: Card(
               margin: EdgeInsets.all(8.0),
               elevation: 8.0,
@@ -289,26 +295,18 @@ class _IllustCardState extends State<IllustCard> {
 
   Widget _buildAnimationWraper(BuildContext context, Widget child) {
     return InkWell(
-      onLongPress: () {
-        _onLongPressCard();
+      onLongPress: () async {
+        if (userSetting.longPressCardMenu) {
+          await _showCardMenu();
+        } else {
+          await _buildLongPressToSaveHint();
+        }
       },
       onTap: () {
         _buildInkTap(context, tag);
       },
       child: child,
     );
-  }
-
-  _onLongPressCard({bool showSaveHint = true}) async {
-    if (userSetting.longPressCardMenu) {
-      await _showCardMenu();
-      return;
-    }
-    if (showSaveHint) {
-      await _buildLongPressToSaveHint();
-      return;
-    }
-    await _onLongPressSave();
   }
 
   _showCardMenu() async {
