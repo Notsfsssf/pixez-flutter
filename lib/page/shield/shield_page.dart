@@ -54,160 +54,139 @@ class _ShieldPageState extends State<ShieldPage> {
             (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
           );
         return Scaffold(
-          appBar: AppBar(
-            title: Text(I18n.of(context).shielding_settings),
-            actions: [
-              // IconButton(
-              //     onPressed: () {
-              //       muteStore.export();
-              //     },
-              //     icon: Icon(Icons.expand_circle_down_outlined))
-            ],
-          ),
-          body: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  ListTile(
-                    title: Text(I18n.of(context).ai_work_display_settings),
-                    onTap: () async {
-                      try {
-                        BotToast.showLoading();
-                        Response response = await apiClient.getUserAISettings();
-                        var showAIResponse = ShowAIResponse.fromJson(
-                          response.data,
-                        );
-                        Leader.push(
-                          context,
-                          UserShowAISetting(showAI: showAIResponse.showAI),
-                        );
-                      } catch (e) {
-                      } finally {
-                        BotToast.closeAllLoading();
-                      }
-                    },
-                  ),
-                  ListTile(
-                    title: Text(
-                      I18n.of(
-                        context,
-                      ).make_works_with_ai_generated_flags_invisible,
-                    ),
-                    trailing: Switch(
-                      value: muteStore.banAIIllust,
-                      onChanged: (v) {
-                        HapticUtil.light();
-                        muteStore.changeBanAI(v);
-                      },
-                    ),
-                  ),
-                  Divider(),
-                  Row(
+          appBar: AppBar(title: Text(I18n.of(context).shielding_settings)),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Card(
+                  margin: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                  child: Column(
                     children: [
-                      Text(I18n.of(context).tag),
-                      IconButton(
-                        onPressed: () {
-                          _showBanTagAddDialog(context);
+                      ListTile(
+                        leading: Icon(Icons.smart_toy_outlined),
+                        title: Text(I18n.of(context).ai_work_display_settings),
+                        trailing: Icon(Icons.chevron_right),
+                        onTap: () async {
+                          try {
+                            BotToast.showLoading();
+                            Response response = await apiClient
+                                .getUserAISettings();
+                            var showAIResponse = ShowAIResponse.fromJson(
+                              response.data,
+                            );
+                            Leader.push(
+                              context,
+                              UserShowAISetting(showAI: showAIResponse.showAI),
+                            );
+                          } catch (e) {
+                          } finally {
+                            BotToast.closeAllLoading();
+                          }
                         },
-                        icon: Icon(Icons.add),
                       ),
-                    ],
-                  ),
-                  Container(
-                    child: Wrap(
-                      spacing: 2.0,
-                      runSpacing: 2.0,
-                      direction: Axis.horizontal,
-                      children: <Widget>[
-                        ...sortedBanTags
-                            .map(
-                              (f) => GestureDetector(
-                                onLongPress: () {
-                                  HapticUtil.heavy();
-                                  Clipboard.setData(
-                                    ClipboardData(text: f.name),
-                                  );
-                                  BotToast.showText(
-                                    text: I18n.of(context).copied_to_clipboard,
-                                  );
-                                },
-                                child: ActionChip(
-                                  onPressed: () => deleteTag(context, f),
-                                  label: Text(f.name),
-                                ),
-                              ),
-                            )
-                            .toList(),
-                      ],
-                    ),
-                  ),
-                  Divider(),
-                  Row(
-                    children: [
-                      Text(I18n.of(context).painter),
-                      Opacity(
-                        child: IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.add),
+                      SwitchListTile(
+                        secondary: Icon(Icons.visibility_off_outlined),
+                        title: Text(
+                          I18n.of(
+                            context,
+                          ).make_works_with_ai_generated_flags_invisible,
                         ),
-                        opacity: 0.0,
+                        value: muteStore.banAIIllust,
+                        onChanged: (v) {
+                          HapticUtil.light();
+                          muteStore.changeBanAI(v);
+                        },
                       ),
                     ],
                   ),
-                  Container(
-                    child: Wrap(
-                      spacing: 2.0,
-                      runSpacing: 2.0,
-                      direction: Axis.horizontal,
-                      children: muteStore.banUserIds
-                          .map(
-                            (f) => ActionChip(
-                              onPressed: () => _deleteUserIdTag(context, f),
-                              label: Text(f.name ?? ""),
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  ),
-                  Divider(),
-                  Row(
-                    children: [
-                      Text(I18n.of(context).illust),
-                      Opacity(
-                        child: IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.add),
+                ),
+                _buildBanSection(
+                  context,
+                  title: I18n.of(context).tag,
+                  icon: Icons.label_outline,
+                  onAdd: () => _showBanTagAddDialog(context),
+                  children: sortedBanTags
+                      .map(
+                        (f) => GestureDetector(
+                          onLongPress: () {
+                            HapticUtil.heavy();
+                            Clipboard.setData(ClipboardData(text: f.name));
+                            BotToast.showText(
+                              text: I18n.of(context).copied_to_clipboard,
+                            );
+                          },
+                          child: ActionChip(
+                            onPressed: () => deleteTag(context, f),
+                            label: Text(f.name),
+                          ),
                         ),
-                        opacity: 0.0,
-                      ),
-                    ],
-                  ),
-                  Container(
-                    child: Wrap(
-                      spacing: 2.0,
-                      runSpacing: 2.0,
-                      direction: Axis.horizontal,
-                      children: <Widget>[
-                        ...muteStore.banillusts
-                            .map(
-                              (f) => ActionChip(
-                                onPressed: () => _deleteIllust(context, f),
-                                label: Text(f.name),
-                              ),
-                            )
-                            .toList(),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                      )
+                      .toList(),
+                ),
+                _buildBanSection(
+                  context,
+                  title: I18n.of(context).painter,
+                  icon: Icons.person_outline,
+                  children: muteStore.banUserIds
+                      .map(
+                        (f) => ActionChip(
+                          onPressed: () => _deleteUserIdTag(context, f),
+                          label: Text(f.name ?? ""),
+                        ),
+                      )
+                      .toList(),
+                ),
+                _buildBanSection(
+                  context,
+                  title: I18n.of(context).illust,
+                  icon: Icons.image_outlined,
+                  children: muteStore.banillusts
+                      .map(
+                        (f) => ActionChip(
+                          onPressed: () => _deleteIllust(context, f),
+                          label: Text(f.name),
+                        ),
+                      )
+                      .toList(),
+                ),
+                Container(height: MediaQuery.of(context).padding.bottom + 20),
+              ],
             ),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildBanSection(
+    BuildContext context, {
+    required String title,
+    required IconData icon,
+    required List<Widget> children,
+    VoidCallback? onAdd,
+  }) {
+    return Card(
+      margin: const EdgeInsets.fromLTRB(8, 16, 8, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ListTile(
+            leading: Icon(icon),
+            title: Text(title),
+            trailing: onAdd == null
+                ? null
+                : IconButton(onPressed: onAdd, icon: Icon(Icons.add)),
+          ),
+          if (children.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: Wrap(spacing: 8.0, runSpacing: 8.0, children: children),
+            )
+          else
+            const SizedBox(height: 8),
+        ],
+      ),
     );
   }
 
@@ -220,16 +199,16 @@ class _ShieldPageState extends State<ShieldPage> {
           content: Text(I18n.of(context).delete_tag),
           actions: <Widget>[
             TextButton(
-              onPressed: () {
-                Navigator.pop(context, "OK");
-              },
-              child: Text(I18n.of(context).ok),
-            ),
-            TextButton(
               child: Text(I18n.of(context).cancel),
               onPressed: () {
                 Navigator.pop(context);
               },
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, "OK");
+              },
+              child: Text(I18n.of(context).ok),
             ),
           ],
         );
@@ -256,28 +235,32 @@ class _ShieldPageState extends State<ShieldPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text('regex example:"r\'pattern\'"'),
-              SizedBox(height: 2),
+              SizedBox(height: 8),
               TextField(
                 controller: controller,
+                autofocus: true,
                 decoration: InputDecoration(
                   hintText: I18n.of(context).input_regexp_hint,
                   hintStyle: TextStyle(fontSize: 12),
                 ),
+                onSubmitted: (value) {
+                  Navigator.pop(context, value);
+                },
               ),
             ],
           ),
           actions: <Widget>[
             TextButton(
-              onPressed: () {
-                Navigator.pop(context, controller.text);
-              },
-              child: Text(I18n.of(context).ok),
-            ),
-            TextButton(
               child: Text(I18n.of(context).cancel),
               onPressed: () {
                 Navigator.pop(context);
               },
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, controller.text);
+              },
+              child: Text(I18n.of(context).ok),
             ),
           ],
         );
@@ -297,16 +280,16 @@ class _ShieldPageState extends State<ShieldPage> {
           content: Text(I18n.of(context).delete_tag),
           actions: <Widget>[
             TextButton(
-              onPressed: () {
-                Navigator.pop(context, "OK");
-              },
-              child: Text(I18n.of(context).ok),
-            ),
-            TextButton(
               child: Text(I18n.of(context).cancel),
               onPressed: () {
                 Navigator.pop(context);
               },
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, "OK");
+              },
+              child: Text(I18n.of(context).ok),
             ),
           ],
         );
@@ -330,16 +313,16 @@ class _ShieldPageState extends State<ShieldPage> {
           content: Text(I18n.of(context).delete_tag),
           actions: <Widget>[
             TextButton(
-              onPressed: () {
-                Navigator.pop(context, "OK");
-              },
-              child: Text(I18n.of(context).ok),
-            ),
-            TextButton(
               child: Text(I18n.of(context).cancel),
               onPressed: () {
                 Navigator.pop(context);
               },
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, "OK");
+              },
+              child: Text(I18n.of(context).ok),
             ),
           ],
         );

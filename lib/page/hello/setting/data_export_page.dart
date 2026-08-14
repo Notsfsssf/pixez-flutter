@@ -14,6 +14,7 @@ class DataExportPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final errorColor = Theme.of(context).colorScheme.error;
     return Scaffold(
       appBar: AppBar(title: Text(I18n.of(context).app_data)),
       body: SingleChildScrollView(
@@ -23,7 +24,25 @@ class DataExportPage extends HookConsumerWidget {
               margin: EdgeInsets.all(8.0),
               child: _buildColumn(context, ref),
             ),
-            Container(height: MediaQuery.of(context).padding.bottom + 20),
+            const SizedBox(height: 24),
+            Card(
+              margin: EdgeInsets.symmetric(horizontal: 8.0),
+              child: ListTile(
+                leading: Icon(
+                  Icons.cleaning_services_outlined,
+                  color: errorColor,
+                ),
+                title: Text(
+                  I18n.of(context).clear_all_cache,
+                  style: TextStyle(color: errorColor),
+                ),
+                onTap: () async {
+                  try {
+                    await _showClearCacheDialog(context);
+                  } catch (e) {}
+                },
+              ),
+            ),
           ],
         ),
       ),
@@ -34,21 +53,18 @@ class DataExportPage extends HookConsumerWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ListTile(
-          title: Text(I18n.of(context).export_title),
-          subtitle: Text(I18n.of(context).export_tag_history),
-          onTap: () async {
+        _buildAppDataListTile(
+          context,
+          I18n.of(context).tag_history,
+          Icons.label_outline,
+          () async {
             try {
               await tagHistoryStore.exportData(context);
             } catch (e) {
               print(e);
             }
           },
-        ),
-        ListTile(
-          title: Text(I18n.of(context).import_title),
-          subtitle: Text(I18n.of(context).import_tag_history),
-          onTap: () async {
+          () async {
             try {
               await tagHistoryStore.importData();
             } catch (e) {
@@ -58,21 +74,18 @@ class DataExportPage extends HookConsumerWidget {
           },
         ),
         Divider(),
-        ListTile(
-          title: Text(I18n.of(context).export_title),
-          subtitle: Text(I18n.of(context).export_bookmark_tag),
-          onTap: () async {
+        _buildAppDataListTile(
+          context,
+          I18n.of(context).bookmark_tag,
+          Icons.star_outline,
+          () async {
             try {
               await bookTagStore.exportData(context);
             } catch (e) {
               print(e);
             }
           },
-        ),
-        ListTile(
-          title: Text(I18n.of(context).import_title),
-          subtitle: Text(I18n.of(context).import_bookmark_tag),
-          onTap: () async {
+          () async {
             try {
               await bookTagStore.importData();
             } catch (e) {
@@ -82,10 +95,11 @@ class DataExportPage extends HookConsumerWidget {
           },
         ),
         Divider(),
-        ListTile(
-          title: Text(I18n.of(context).export_title),
-          subtitle: Text(I18n.of(context).export_illust_history),
-          onTap: () async {
+        _buildAppDataListTile(
+          context,
+          I18n.of(context).illust_history,
+          Icons.photo_library_outlined,
+          () async {
             try {
               await ref.read(historyProvider.notifier).fetch();
               await ref.read(historyProvider.notifier).exportData(context);
@@ -93,11 +107,7 @@ class DataExportPage extends HookConsumerWidget {
               print(e);
             }
           },
-        ),
-        ListTile(
-          title: Text(I18n.of(context).import_title),
-          subtitle: Text(I18n.of(context).import_illust_history),
-          onTap: () async {
+          () async {
             try {
               await ref.read(historyProvider.notifier).fetch();
               await ref.read(historyProvider.notifier).importData();
@@ -108,10 +118,11 @@ class DataExportPage extends HookConsumerWidget {
           },
         ),
         Divider(),
-        ListTile(
-          title: Text(I18n.of(context).export_title),
-          subtitle: Text(I18n.of(context).export_novel_history),
-          onTap: () async {
+        _buildAppDataListTile(
+          context,
+          I18n.of(context).novel_history,
+          Icons.menu_book_outlined,
+          () async {
             try {
               await novelHistoryStore.fetch();
               await novelHistoryStore.exportData(context);
@@ -119,11 +130,7 @@ class DataExportPage extends HookConsumerWidget {
               print(e);
             }
           },
-        ),
-        ListTile(
-          title: Text(I18n.of(context).import_title),
-          subtitle: Text(I18n.of(context).import_novel_history),
-          onTap: () async {
+          () async {
             try {
               await novelHistoryStore.fetch();
               await novelHistoryStore.importData();
@@ -134,36 +141,24 @@ class DataExportPage extends HookConsumerWidget {
           },
         ),
         Divider(),
-        ListTile(
-          title: Text(I18n.of(context).export_title),
-          subtitle: Text(I18n.of(context).export_mute_data),
-          onTap: () async {
+        _buildAppDataListTile(
+          context,
+          I18n.of(context).mute_data,
+          Icons.block,
+          () async {
             try {
               await muteStore.export(context);
             } catch (e) {
               print(e);
             }
           },
-        ),
-        ListTile(
-          title: Text(I18n.of(context).import_title),
-          subtitle: Text(I18n.of(context).import_mute_data),
-          onTap: () async {
+          () async {
             try {
               await muteStore.importFile();
             } catch (e) {
               print(e);
               BotToast.showText(text: e.toString());
             }
-          },
-        ),
-        Divider(),
-        ListTile(
-          title: Text(I18n.of(context).clear_all_cache),
-          onTap: () async {
-            try {
-              await _showClearCacheDialog(context);
-            } catch (e) {}
           },
         ),
       ],
@@ -212,5 +207,28 @@ class DataExportPage extends HookConsumerWidget {
     await glanceIllustPersistProvider.open();
     await glanceIllustPersistProvider.deleteAll();
     await glanceIllustPersistProvider.close();
+  }
+
+  Widget _buildAppDataListTile(
+    BuildContext context,
+    String title,
+    IconData icon,
+    Function() onExport,
+    Function() onImport,
+  ) {
+    return ListTile(
+      title: Text(title),
+      leading: Icon(icon),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextButton(
+            child: Text(I18n.of(context).import_title),
+            onPressed: onImport,
+          ),
+          TextButton(child: Text(I18n.of(context).export), onPressed: onExport),
+        ],
+      ),
+    );
   }
 }
