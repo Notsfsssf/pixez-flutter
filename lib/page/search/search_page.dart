@@ -14,6 +14,7 @@
  *
  */
 
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -44,6 +45,7 @@ class _SearchPageState extends State<SearchPage>
   late TrendTagsStore _trendTagsStore;
   late AnimationController _animationController;
   late Animation<double> animation;
+  late StreamSubscription<String> _topSubscription;
 
   @override
   void didChangeDependencies() {
@@ -64,10 +66,26 @@ class _SearchPageState extends State<SearchPage>
     super.initState();
     tagHistoryStore.fetch();
     _trendTagsStore.fetch();
+    _topSubscription = topStore.topStream.listen((event) {
+      if (event == "400") {
+        _openSearch();
+      }
+    });
+  }
+
+  void _openSearch() {
+    if (!mounted) return;
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => SearchSuggestionPage(),
+      ),
+    );
   }
 
   @override
   void dispose() {
+    _topSubscription.cancel();
     _animationController.dispose();
     _tabController.dispose();
     super.dispose();

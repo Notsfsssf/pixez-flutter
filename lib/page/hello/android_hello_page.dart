@@ -230,9 +230,12 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             labelType: NavigationRailLabelType.all,
             onDestinationSelected: (int index) {
               HapticUtil.selectionClick();
+              if (this.index == index) {
+                topStore.setTop("${index + 1}00");
+              }
               _pageController.jumpToPage(index);
               setState(() {
-                index = index;
+                this.index = index;
               });
             },
             destinations: <NavigationRailDestination>[

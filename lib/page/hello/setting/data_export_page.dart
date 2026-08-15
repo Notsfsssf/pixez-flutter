@@ -55,8 +55,8 @@ class DataExportPage extends HookConsumerWidget {
       children: [
         _buildAppDataListTile(
           context,
-          I18n.of(context).tag_history,
-          Icons.label_outline,
+          I18n.of(context).search_history,
+          Icons.search,
           () async {
             try {
               await tagHistoryStore.exportData(context);

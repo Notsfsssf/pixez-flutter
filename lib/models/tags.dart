@@ -109,7 +109,9 @@ create table $tableTag (
   Future<void> insertAll(List<TagsPersist> tags) async {
     await db.transaction((txn) async {
       for (var tag in tags) {
-        await txn.insert(tableTag, tag.toJson(),
+        final map = tag.toJson();
+        map.remove(columnId);
+        await txn.insert(tableTag, map,
             conflictAlgorithm: ConflictAlgorithm.replace);
       }
     });

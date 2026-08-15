@@ -9,7 +9,7 @@ import PackageDescription
 let package = Package(
     name: "FlutterGeneratedPluginSwiftPackage",
     platforms: [
-        .iOS("13.0")
+        .iOS("14.0")
     ],
     products: [
         .library(name: "FlutterGeneratedPluginSwiftPackage", type: .static, targets: ["FlutterGeneratedPluginSwiftPackage"])
@@ -22,7 +22,7 @@ let package = Package(
         .package(name: "in_app_purchase_storekit", path: "../.packages/in_app_purchase_storekit-0.4.11"),
         .package(name: "just_audio", path: "../.packages/just_audio-0.10.6"),
         .package(name: "package_info_plus", path: "../.packages/package_info_plus-10.2.1"),
-        .package(name: "permission_handler_apple", path: "../.packages/permission_handler_apple_override"),
+        .package(name: "permission_handler_apple", path: "../.packages/permission_handler_apple-9.6.1"),
         .package(name: "receive_sharing_intent", path: "../.packages/receive_sharing_intent-1.9.0"),
         .package(name: "share_plus", path: "../.packages/share_plus-13.3.0"),
         .package(name: "shared_preferences_foundation", path: "../.packages/shared_preferences_foundation-2.5.6"),

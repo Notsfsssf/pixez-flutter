@@ -70,6 +70,8 @@ abstract class _TagHistoryStoreBase with Store {
 
   final EXPORT_TYPE = "history_tags";
 
+  String _tagKey(TagsPersist tag) => '${tag.name}\u0000${tag.type ?? 0}';
+
   Future<void> importData() async {
     final result = await SAFPlugin.openFile();
     if (result == null) return;
@@ -78,8 +80,14 @@ abstract class _TagHistoryStoreBase with Store {
     final map = decoder.convert(json);
     final data = ExportData.fromJson(map);
     if (data.tagHisotry == null) return;
-    final tagList = tags.map((element) => element.name);
-    data.tagHisotry!.removeWhere((element) => tagList.contains(element.name));
+    await fetch();
+    final existing = tags.map(_tagKey).toSet();
+    data.tagHisotry!
+        .removeWhere((element) => existing.contains(_tagKey(element)));
+    if (data.tagHisotry!.isEmpty) return;
+    for (final tag in data.tagHisotry!) {
+      tag.id = null;
+    }
     await tagsPersistProvider.open();
     await tagsPersistProvider.insertAll(data.tagHisotry!.toList());
     await fetch();
@@ -87,14 +95,17 @@ abstract class _TagHistoryStoreBase with Store {
 
   Future<void> exportData(BuildContext context) async {
     await tagsPersistProvider.open();
-    final exportData =
-        ExportData(tagHisotry: await tagsPersistProvider.getAllAccount());
+    final tagsToExport = await tagsPersistProvider.getAllAccount();
+    for (final tag in tagsToExport) {
+      tag.id = null;
+    }
+    final exportData = ExportData(tagHisotry: tagsToExport);
     final uint8List = utf8.encode(jsonEncode(exportData));
     if (Platform.isIOS) {
-      await Sharer.exportUint8List(context, uint8List, 'tag_history.json');
+      await Sharer.exportUint8List(context, uint8List, 'search_history.json');
     } else {
       final uriStr =
-          await SAFPlugin.createFile("tag_history.json", "application/json");
+          await SAFPlugin.createFile("search_history.json", "application/json");
       if (uriStr == null) return;
       await SAFPlugin.writeUri(uriStr, uint8List);
     }
