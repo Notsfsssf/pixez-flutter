@@ -47,7 +47,7 @@ dependencies:
   font_awesome_flutter: ^11.0.0
   json_annotation: ^4.9.0
   badges: ^3.1.2
-  image_picker: ^1.2.2
+  image_picker: ^1.2.3
   intl: any
   quiver: ^3.2.2
   dio_cache_interceptor: ^4.0.6
