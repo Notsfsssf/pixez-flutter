@@ -30,7 +30,6 @@
         android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher"
         android:label="PixEz"
-        android:extractNativeLibs="true"
         android:requestLegacyExternalStorage="true">
         <receiver
             android:name=".IllustCardAppWidget"
