@@ -11,14 +11,14 @@ group = "com.flutter_rust_bridge.rhttp"
 version = "1.0-SNAPSHOT"
 
 buildscript {
-    val kotlinVersion = "2.2.20"
+    val kotlinVersion = "2.4.0"
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:8.11.2")
+        classpath("com.android.tools.build:gradle:9.1.0")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
         classpath("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
     }
