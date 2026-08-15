@@ -8,7 +8,7 @@ import Foundation
 import audio_session
 import device_info_plus
 import dynamic_color
-import file_picker
+import file_picker_darwin
 import file_selector_macos
 import in_app_purchase_storekit
 import just_audio

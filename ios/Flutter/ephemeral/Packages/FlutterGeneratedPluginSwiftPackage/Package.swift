@@ -9,7 +9,7 @@ import PackageDescription
 let package = Package(
     name: "FlutterGeneratedPluginSwiftPackage",
     platforms: [
-        .iOS("14.0")
+        .iOS("15.0")
     ],
     products: [
         .library(name: "FlutterGeneratedPluginSwiftPackage", type: .static, targets: ["FlutterGeneratedPluginSwiftPackage"])
@@ -17,9 +17,9 @@ let package = Package(
     dependencies: [
         .package(name: "audio_session", path: "../.packages/audio_session-0.2.4"),
         .package(name: "device_info_plus", path: "../.packages/device_info_plus-13.2.0"),
-        .package(name: "file_picker", path: "../.packages/file_picker-12.0.0-beta.7"),
+        .package(name: "file_picker_darwin", path: "../.packages/file_picker_darwin-1.0.0"),
         .package(name: "image_picker_ios", path: "../.packages/image_picker_ios-0.8.13+6"),
-        .package(name: "in_app_purchase_storekit", path: "../.packages/in_app_purchase_storekit-0.4.11"),
+        .package(name: "in_app_purchase_storekit", path: "../.packages/in_app_purchase_storekit-0.4.11+1"),
         .package(name: "just_audio", path: "../.packages/just_audio-0.10.6"),
         .package(name: "package_info_plus", path: "../.packages/package_info_plus-10.2.1"),
         .package(name: "permission_handler_apple", path: "../.packages/permission_handler_apple-9.6.1"),
@@ -38,7 +38,7 @@ let package = Package(
             dependencies: [
                 .product(name: "audio-session", package: "audio_session"),
                 .product(name: "device-info-plus", package: "device_info_plus"),
-                .product(name: "file-picker", package: "file_picker"),
+                .product(name: "file-picker-darwin", package: "file_picker_darwin"),
                 .product(name: "image-picker-ios", package: "image_picker_ios"),
                 .product(name: "in-app-purchase-storekit", package: "in_app_purchase_storekit"),
                 .product(name: "just-audio", package: "just_audio"),
