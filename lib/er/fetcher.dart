@@ -232,7 +232,6 @@ class Fetcher {
     File file = File(savePath + Platform.pathSeparator + fileName);
     final uint8list = await file.readAsBytes();
     await saveStore.saveToGallery(uint8list, illusts, fileName);
-    HapticUtil.success(minIntervalMs: 300);
     Toaster.downloadOk("${illusts.title} ${I18n.of(context!).saved}");
     var job = jobMaps[url];
     if (job != null) {
