@@ -14,7 +14,7 @@
  *
  */
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:pixez/page/about/thanks_peoples.dart';
 
 class ThanksList extends StatelessWidget {

@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart' as fluentui;
-import 'package:flutter/material.dart' as material;
+import 'package:material_ui/material_ui.dart' as material;
 import 'package:flutter/widgets.dart';
 import 'package:pixez/fluent/component/pixiv_image.dart' as fluentui;
 import 'package:pixez/component/pixiv_image.dart' as material;

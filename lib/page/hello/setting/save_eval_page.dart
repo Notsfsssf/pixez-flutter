@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:bot_toast/bot_toast.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';

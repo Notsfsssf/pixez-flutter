@@ -3,7 +3,7 @@
 library material_colorpicker;
 
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'utils.dart';
 
 // The Color Picker which contains Material Design Color Palette.

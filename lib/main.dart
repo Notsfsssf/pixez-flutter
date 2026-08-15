@@ -18,8 +18,9 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dynamic_color/dynamic_color.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:flutter/material.dart' as legacy_material show ColorScheme;
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -153,103 +154,122 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     );
     final botToastBuilder = BotToastInit();
     return DynamicColorBuilder(
-      builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-        return Observer(
-          builder: (context) {
-            ColorScheme lightColorScheme;
-            ColorScheme darkColorScheme;
-            if (userSetting.useDynamicColor &&
-                lightDynamic != null &&
-                darkDynamic != null) {
-              lightColorScheme = lightDynamic.harmonized();
-              darkColorScheme = darkDynamic.harmonized();
-            } else {
-              Color primary = userSetting.seedColor;
-              lightColorScheme = ColorScheme.fromSeed(seedColor: primary);
-              darkColorScheme = ColorScheme.fromSeed(
-                seedColor: primary,
-                brightness: Brightness.dark,
-              );
-            }
-            final brightness =
-                SchedulerBinding.instance.platformDispatcher.platformBrightness;
-            if (userSetting.themeInitState != 1) {
-              return Container(
-                color: brightness == Brightness.dark
-                    ? Colors.black
-                    : Colors.white,
-                child: Center(
-                  child: Material(child: CircularProgressIndicator()),
-                ),
-              );
-            }
-            return MaterialApp(
-              navigatorObservers: [BotToastNavigatorObserver(), routeObserver],
-              locale: userSetting.locale,
-              home: Builder(
-                builder: (context) {
-                  return AnnotatedRegion<SystemUiOverlayStyle>(
-                    value: SystemUiOverlayStyle(
-                      systemNavigationBarColor: Colors.transparent,
-                      systemNavigationBarDividerColor: Colors.transparent,
-                      systemNavigationBarContrastEnforced: false,
-                      statusBarColor: Colors.transparent,
-                    ),
-                    child: SplashPage(),
+      builder:
+          (
+            legacy_material.ColorScheme? lightDynamic,
+            legacy_material.ColorScheme? darkDynamic,
+          ) {
+            return Observer(
+              builder: (context) {
+                ColorScheme lightColorScheme;
+                ColorScheme darkColorScheme;
+                if (userSetting.useDynamicColor &&
+                    lightDynamic != null &&
+                    darkDynamic != null) {
+                  lightColorScheme = _colorSchemeFromLegacy(
+                    lightDynamic.harmonized(),
                   );
-                },
-              ),
-              title: 'PixEz',
-              builder: (context, child) {
-                if (Platform.isIOS) child = _buildMaskBuilder(context, child);
-                child = botToastBuilder(context, child);
-                I18n.context = context;
-                return child;
+                  darkColorScheme = _colorSchemeFromLegacy(
+                    darkDynamic.harmonized(),
+                  );
+                } else {
+                  Color primary = userSetting.seedColor;
+                  lightColorScheme = ColorScheme.fromSeed(seedColor: primary);
+                  darkColorScheme = ColorScheme.fromSeed(
+                    seedColor: primary,
+                    brightness: Brightness.dark,
+                  );
+                }
+                final brightness = SchedulerBinding
+                    .instance
+                    .platformDispatcher
+                    .platformBrightness;
+                if (userSetting.themeInitState != 1) {
+                  return Container(
+                    color: brightness == Brightness.dark
+                        ? Colors.black
+                        : Colors.white,
+                    child: Center(
+                      child: Material(child: CircularProgressIndicator()),
+                    ),
+                  );
+                }
+                return MaterialApp(
+                  navigatorObservers: [
+                    BotToastNavigatorObserver(),
+                    routeObserver,
+                  ],
+                  locale: userSetting.locale,
+                  home: Builder(
+                    builder: (context) {
+                      return AnnotatedRegion<SystemUiOverlayStyle>(
+                        value: SystemUiOverlayStyle(
+                          systemNavigationBarColor: Colors.transparent,
+                          systemNavigationBarDividerColor: Colors.transparent,
+                          systemNavigationBarContrastEnforced: false,
+                          statusBarColor: Colors.transparent,
+                        ),
+                        child: SplashPage(),
+                      );
+                    },
+                  ),
+                  title: 'PixEz',
+                  builder: (context, child) {
+                    if (Platform.isIOS)
+                      child = _buildMaskBuilder(context, child);
+                    child = botToastBuilder(context, child);
+                    I18n.context = context;
+                    return child;
+                  },
+                  themeMode: userSetting.themeMode,
+                  theme: ThemeData(
+                    brightness: Brightness.light,
+                    useMaterial3: true,
+                    primaryColor: lightColorScheme.primary,
+                    colorScheme: lightColorScheme,
+                    scaffoldBackgroundColor: lightColorScheme.surface,
+                    cardColor: lightColorScheme.surfaceContainer,
+                    chipTheme: ChipThemeData(
+                      backgroundColor: lightColorScheme.surface,
+                    ),
+                    canvasColor: lightColorScheme.surfaceContainer,
+                    dialogTheme: DialogThemeData(
+                      backgroundColor: lightColorScheme.surfaceContainer,
+                    ),
+                    pageTransitionsTheme: PageTransitionsTheme(
+                      builders: {
+                        TargetPlatform.android: ZoomPageTransitionsBuilder(),
+                        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+                      },
+                    ),
+                  ),
+                  darkTheme: ThemeData(
+                    brightness: Brightness.dark,
+                    useMaterial3: true,
+                    scaffoldBackgroundColor: userSetting.isAMOLED
+                        ? Colors.black
+                        : null,
+                    pageTransitionsTheme: PageTransitionsTheme(
+                      builders: {
+                        TargetPlatform.android: ZoomPageTransitionsBuilder(),
+                        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+                      },
+                    ),
+                    // tabBarTheme: TabBarTheme(dividerColor: Colors.transparent),
+                    tabBarTheme: TabBarThemeData(
+                      dividerColor: Colors.transparent,
+                    ),
+                    colorScheme: darkColorScheme,
+                  ),
+                  localizationsDelegates: [
+                    AppLocalizations.delegate,
+                    ...GlobalMaterialLocalizations.delegates,
+                  ],
+                  supportedLocales: AppLocalizations.supportedLocales,
+                );
               },
-              themeMode: userSetting.themeMode,
-              theme: ThemeData(
-                brightness: Brightness.light,
-                useMaterial3: true,
-                primaryColor: lightColorScheme.primary,
-                colorScheme: lightColorScheme,
-                scaffoldBackgroundColor: lightColorScheme.surface,
-                cardColor: lightColorScheme.surfaceContainer,
-                chipTheme: ChipThemeData(
-                  backgroundColor: lightColorScheme.surface,
-                ),
-                canvasColor: lightColorScheme.surfaceContainer,
-                dialogTheme: DialogThemeData(
-                  backgroundColor: lightColorScheme.surfaceContainer,
-                ),
-                pageTransitionsTheme: PageTransitionsTheme(
-                  builders: {
-                    TargetPlatform.android: ZoomPageTransitionsBuilder(),
-                    TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-                  },
-                ),
-              ),
-              darkTheme: ThemeData(
-                brightness: Brightness.dark,
-                useMaterial3: true,
-                scaffoldBackgroundColor: userSetting.isAMOLED
-                    ? Colors.black
-                    : null,
-                pageTransitionsTheme: PageTransitionsTheme(
-                  builders: {
-                    TargetPlatform.android: ZoomPageTransitionsBuilder(),
-                    TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-                  },
-                ),
-                // tabBarTheme: TabBarTheme(dividerColor: Colors.transparent),
-                tabBarTheme: TabBarThemeData(dividerColor: Colors.transparent),
-                colorScheme: darkColorScheme,
-              ),
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
-              supportedLocales: AppLocalizations.supportedLocales,
             );
           },
-        );
-      },
     );
   }
 
@@ -265,13 +285,50 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               ? Container(
                   key: const ValueKey('recent_screen_mask'),
                   color: Theme.of(context).canvasColor,
-                  child: const Center(
-                    child: Icon(Icons.privacy_tip_outlined),
-                  ),
+                  child: const Center(child: Icon(Icons.privacy_tip_outlined)),
                 )
               : const SizedBox.shrink(key: ValueKey('recent_screen_unmask')),
         ),
       ],
     );
   }
+}
+
+ColorScheme _colorSchemeFromLegacy(legacy_material.ColorScheme scheme) {
+  return ColorScheme.fromSeed(
+    seedColor: scheme.primary,
+    brightness: scheme.brightness,
+    primary: scheme.primary,
+    onPrimary: scheme.onPrimary,
+    primaryContainer: scheme.primaryContainer,
+    onPrimaryContainer: scheme.onPrimaryContainer,
+    secondary: scheme.secondary,
+    onSecondary: scheme.onSecondary,
+    secondaryContainer: scheme.secondaryContainer,
+    onSecondaryContainer: scheme.onSecondaryContainer,
+    tertiary: scheme.tertiary,
+    onTertiary: scheme.onTertiary,
+    tertiaryContainer: scheme.tertiaryContainer,
+    onTertiaryContainer: scheme.onTertiaryContainer,
+    error: scheme.error,
+    onError: scheme.onError,
+    errorContainer: scheme.errorContainer,
+    onErrorContainer: scheme.onErrorContainer,
+    surface: scheme.surface,
+    onSurface: scheme.onSurface,
+    surfaceContainerLowest: scheme.surfaceContainerLowest,
+    surfaceContainerLow: scheme.surfaceContainerLow,
+    surfaceContainer: scheme.surfaceContainer,
+    surfaceContainerHigh: scheme.surfaceContainerHigh,
+    surfaceContainerHighest: scheme.surfaceContainerHighest,
+    onSurfaceVariant: scheme.onSurfaceVariant,
+    outline: scheme.outline,
+    outlineVariant: scheme.outlineVariant,
+    shadow: scheme.shadow,
+    scrim: scheme.scrim,
+    inverseSurface: scheme.inverseSurface,
+    onInverseSurface: scheme.onInverseSurface,
+    inversePrimary: scheme.inversePrimary,
+    surfaceTint: scheme.surfaceTint,
+  );
 }

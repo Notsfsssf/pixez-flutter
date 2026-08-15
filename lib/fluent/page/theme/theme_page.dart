@@ -97,7 +97,7 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
                   ComboBoxItem(child: Text(I18n.of(context).light), value: 1),
                   ComboBoxItem(child: Text(I18n.of(context).dark), value: 2),
                 ],
-                value: ThemeMode.values.indexOf(userSetting.themeMode),
+                value: userSetting.themeMode.index,
                 onChanged: (i) {
                   if (i == null) return;
                   userSetting.setThemeMode(i);
@@ -168,9 +168,7 @@ class _ThemePageState extends State<ThemePage> with TickerProviderStateMixin {
   _pickColor() async {
     Color? result = await showDialog(
       context: context,
-      builder: (context) => ColorPickPage(
-        initialColor: userSetting.seedColor,
-      ),
+      builder: (context) => ColorPickPage(initialColor: userSetting.seedColor),
     );
     if (result != null) {
       await userSetting.setThemeData(result);

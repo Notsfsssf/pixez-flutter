@@ -2,7 +2,7 @@
 
 library block_colorpicker;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'utils.dart';
 
 /// Child widget for layout builder.

@@ -27,7 +27,7 @@ dependencies:
   crypto: ^3.0.7
   path_provider: ^2.1.6
   shared_preferences: ^2.5.5
-  share_plus: ^13.2.0
+  share_plus: ^13.3.0
   permission_handler: ^13.0.1
   archive: ^4.0.9
   url_launcher: ^6.3.2
@@ -55,7 +55,7 @@ dependencies:
   image: ^4.7.2
   easy_refresh: ^3.5.1
   sqflite: ^2.4.3
-  dynamic_color: ^1.8.1
+  dynamic_color: ^1.9.0
   # Design Style
   fluent_ui: ^4.15.1
   # Desktop Support
@@ -65,7 +65,7 @@ dependencies:
     path: ./plugins/rhttp/rhttp
   dio_compatibility_layer: ^0.1.1
   flutter_cache_manager_dio: ^4.0.0
-  file_picker: ^12.0.0-beta.7
+  file_picker: ^12.0.0
   flutter_riverpod: ^3.0.3
   riverpod_annotation: ^4.0.0
   freezed_annotation: ^3.1.0
@@ -74,6 +74,8 @@ dependencies:
   webview_flutter: ^4.14.1
   # sqlite3: 3.1.6
   sqflite_common_ffi: ^2.4.2
+  material_ui: ^1.0.0
+  cupertino_ui: ^1.0.0
 
 dev_dependencies:
   flutter_test:

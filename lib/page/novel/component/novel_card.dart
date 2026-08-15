@@ -14,7 +14,7 @@
  *
  */
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 

@@ -14,7 +14,7 @@
  *
  */
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:pixez/page/novel/recom/novel_recom_page.dart';
 
 class NovelPage extends StatefulWidget {

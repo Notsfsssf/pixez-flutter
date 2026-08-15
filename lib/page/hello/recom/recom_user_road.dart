@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/page/hello/recom/recom_user_page.dart';
 import 'package:pixez/page/hello/recom/recom_user_store.dart';

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:pixez/component/follow_detail_alert.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/utils/haptic_util.dart';

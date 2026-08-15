@@ -4,6 +4,9 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' show ColorScheme;
+import 'package:material_ui/material_ui.dart'
+    as material_ui
+    show GlobalMaterialLocalizations, ThemeMode;
 import 'package:flutter/services.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -63,120 +66,126 @@ Widget buildFluentUI(BuildContext context) {
   if (!Constants.isFluent) return Container();
 
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    systemNavigationBarColor: Colors.transparent,
-    systemNavigationBarDividerColor: Colors.transparent,
-    systemNavigationBarContrastEnforced: false,
-    statusBarColor: Colors.transparent,
-  ));
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarDividerColor: Colors.transparent,
+      systemNavigationBarContrastEnforced: false,
+      statusBarColor: Colors.transparent,
+    ),
+  );
   final botToastBuilder = BotToastInit();
 
-  return DynamicColorBuilder(builder: (lightDynamic, darkDynamic) {
-    return Observer(builder: (context) {
-      ColorScheme lightColorScheme;
-      ColorScheme darkColorScheme;
-      if (userSetting.useDynamicColor &&
-          lightDynamic != null &&
-          darkDynamic != null) {
-        lightColorScheme = lightDynamic.harmonized();
-        darkColorScheme = darkDynamic.harmonized();
-      } else {
-        Color primary = userSetting.seedColor;
-        lightColorScheme = ColorScheme.fromSeed(
-          seedColor: primary,
-        );
-        darkColorScheme = ColorScheme.fromSeed(
-          seedColor: primary,
-          brightness: Brightness.dark,
-        );
-      }
+  return DynamicColorBuilder(
+    builder: (lightDynamic, darkDynamic) {
+      return Observer(
+        builder: (context) {
+          ColorScheme lightColorScheme;
+          ColorScheme darkColorScheme;
+          if (userSetting.useDynamicColor &&
+              lightDynamic != null &&
+              darkDynamic != null) {
+            lightColorScheme = lightDynamic.harmonized();
+            darkColorScheme = darkDynamic.harmonized();
+          } else {
+            Color primary = userSetting.seedColor;
+            lightColorScheme = ColorScheme.fromSeed(seedColor: primary);
+            darkColorScheme = ColorScheme.fromSeed(
+              seedColor: primary,
+              brightness: Brightness.dark,
+            );
+          }
 
-      final isDark = switch (userSetting.themeMode) {
-        ThemeMode.dark => true,
-        ThemeMode.system =>
-          MediaQuery.platformBrightnessOf(context) == Brightness.dark,
-        ThemeMode.light => false,
-      };
+          final isDark = switch (userSetting.themeMode) {
+            material_ui.ThemeMode.dark => true,
+            material_ui.ThemeMode.system =>
+              MediaQuery.platformBrightnessOf(context) == Brightness.dark,
+            material_ui.ThemeMode.light => false,
+          };
 
-      if (_effect != null) {
-        debugPrint("背景特效: $_effect; 暗色主题: $isDark;");
-        Window.setEffect(effect: _effect!, dark: isDark);
-      }
-      final focusTheme = FocusThemeData(
-        glowFactor: is10footScreen(context) ? 2.0 : 0.0,
-      );
-
-      if (userSetting.themeInitState != 1) {
-        return FluentTheme(
-          data: isDark ? FluentThemeData.dark() : FluentThemeData.light(),
-          child: Container(
-            child: Center(child: ProgressRing()),
-          ),
-        );
-      }
-
-      return FluentApp(
-        navigatorObservers: [
-          BotToastNavigatorObserver(),
-          routeObserver,
-        ],
-        locale: userSetting.locale,
-        home: Builder(builder: (context) {
-          return AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle(
-              systemNavigationBarColor: Colors.transparent,
-              systemNavigationBarDividerColor: Colors.transparent,
-              systemNavigationBarContrastEnforced: false,
-              statusBarColor: Colors.transparent,
-            ),
-            child: SplashPage(),
+          if (_effect != null) {
+            debugPrint("背景特效: $_effect; 暗色主题: $isDark;");
+            Window.setEffect(effect: _effect!, dark: isDark);
+          }
+          final focusTheme = FocusThemeData(
+            glowFactor: is10footScreen(context) ? 2.0 : 0.0,
           );
-        }),
-        title: 'PixEz',
-        builder: (context, child) {
-          child = botToastBuilder(context, child);
-          return Directionality(
-            textDirection: TextDirection.ltr,
-            child: child,
+
+          if (userSetting.themeInitState != 1) {
+            return FluentTheme(
+              data: isDark ? FluentThemeData.dark() : FluentThemeData.light(),
+              child: Container(child: Center(child: ProgressRing())),
+            );
+          }
+
+          return FluentApp(
+            navigatorObservers: [BotToastNavigatorObserver(), routeObserver],
+            locale: userSetting.locale,
+            home: Builder(
+              builder: (context) {
+                return AnnotatedRegion<SystemUiOverlayStyle>(
+                  value: SystemUiOverlayStyle(
+                    systemNavigationBarColor: Colors.transparent,
+                    systemNavigationBarDividerColor: Colors.transparent,
+                    systemNavigationBarContrastEnforced: false,
+                    statusBarColor: Colors.transparent,
+                  ),
+                  child: SplashPage(),
+                );
+              },
+            ),
+            title: 'PixEz',
+            builder: (context, child) {
+              child = botToastBuilder(context, child);
+              return Directionality(
+                textDirection: TextDirection.ltr,
+                child: child,
+              );
+            },
+            themeMode: ThemeMode.values[userSetting.themeMode.index],
+            theme: FluentThemeData.light().copyWith(
+              visualDensity: VisualDensity.standard,
+              accentColor: lightColorScheme.primary.toAccentColor(),
+              scaffoldBackgroundColor: userSetting.isAMOLED
+                  ? Colors.white
+                  : null,
+              micaBackgroundColor: Colors.transparent,
+              cardColor: lightColorScheme.surfaceContainer,
+              focusTheme: focusTheme,
+              navigationPaneTheme: _effect != WindowEffect.disabled
+                  ? NavigationPaneThemeData(
+                      highlightColor: lightColorScheme.primary,
+                      backgroundColor: Colors.transparent,
+                    )
+                  : null,
+            ),
+            darkTheme: FluentThemeData.dark().copyWith(
+              visualDensity: VisualDensity.standard,
+              accentColor: darkColorScheme.primary.toAccentColor(),
+              scaffoldBackgroundColor: userSetting.isAMOLED
+                  ? Colors.black
+                  : null,
+              micaBackgroundColor: Colors.transparent,
+              cardColor: darkColorScheme.surfaceContainer,
+              focusTheme: focusTheme,
+              navigationPaneTheme: _effect != WindowEffect.disabled
+                  ? NavigationPaneThemeData(
+                      highlightColor: darkColorScheme.primary,
+                      backgroundColor: Colors.transparent,
+                    )
+                  : null,
+            ),
+            localizationsDelegates: [
+              _FluentLocalizationsDelegate(),
+              AppLocalizations.delegate,
+              ...material_ui.GlobalMaterialLocalizations.delegates,
+            ],
+            supportedLocales: AppLocalizations.supportedLocales,
           );
         },
-        themeMode: userSetting.themeMode,
-        theme: FluentThemeData.light().copyWith(
-          visualDensity: VisualDensity.standard,
-          accentColor: lightColorScheme.primary.toAccentColor(),
-          scaffoldBackgroundColor: userSetting.isAMOLED ? Colors.white : null,
-          micaBackgroundColor: Colors.transparent,
-          cardColor: lightColorScheme.surfaceContainer,
-          focusTheme: focusTheme,
-          navigationPaneTheme: _effect != WindowEffect.disabled
-              ? NavigationPaneThemeData(
-                  highlightColor: lightColorScheme.primary,
-                  backgroundColor: Colors.transparent,
-                )
-              : null,
-        ),
-        darkTheme: FluentThemeData.dark().copyWith(
-          visualDensity: VisualDensity.standard,
-          accentColor: darkColorScheme.primary.toAccentColor(),
-          scaffoldBackgroundColor: userSetting.isAMOLED ? Colors.black : null,
-          micaBackgroundColor: Colors.transparent,
-          cardColor: darkColorScheme.surfaceContainer,
-          focusTheme: focusTheme,
-          navigationPaneTheme: _effect != WindowEffect.disabled
-              ? NavigationPaneThemeData(
-                  highlightColor: darkColorScheme.primary,
-                  backgroundColor: Colors.transparent,
-                )
-              : null,
-        ),
-        localizationsDelegates: [
-          _FluentLocalizationsDelegate(),
-          ...AppLocalizations.localizationsDelegates
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
       );
-    });
-  });
+    },
+  );
 }
 
 class _FluentLocalizationsDelegate

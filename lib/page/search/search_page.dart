@@ -16,7 +16,7 @@
 
 import 'dart:async';
 import 'dart:math';
-import 'package:flutter/material.dart' hide SearchBar;
+import 'package:material_ui/material_ui.dart' hide SearchBar;
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/leader.dart';

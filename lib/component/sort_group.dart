@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:pixez/utils/haptic_util.dart';
 
 class SortGroup extends StatefulWidget {

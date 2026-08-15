@@ -12,7 +12,7 @@
  *  You should have received a copy of the GNU General Public License along with
  *  this program. If not, see <http://www.gnu.org/licenses/>.
  */
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';

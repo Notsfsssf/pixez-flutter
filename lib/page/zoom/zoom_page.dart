@@ -15,7 +15,7 @@
  */
 
 import 'dart:ui';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:pixez/component/pixiv_image.dart';
 
 class ZoomPage extends StatefulWidget {

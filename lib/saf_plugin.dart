@@ -7,8 +7,10 @@ class SAFPlugin {
   static const platform = const MethodChannel('com.perol.dev/saf');
 
   static Future<String?> createFile(String name, String type) async {
-    final result = await platform
-        .invokeMethod("createFile", {'name': name, 'mimeType': type});
+    final result = await platform.invokeMethod("createFile", {
+      'name': name,
+      'mimeType': type,
+    });
     if (result != null) {
       return result;
     }
@@ -22,14 +24,13 @@ class SAFPlugin {
   static Future<Uint8List?> openFile() async {
     if (Platform.isIOS) {
       try {
-        FilePickerResult? result = await FilePicker.pickFiles();
-        if (result != null) {
-          return File(result.files.single.path!).readAsBytes();
-        }
+        final result = await FilePicker.pickFile();
+        return await result!.readAsBytes();
       } catch (e) {}
       return null;
     }
-    return platform
-        .invokeMethod<Uint8List>("openFile", {'type': "application/json"});
+    return platform.invokeMethod<Uint8List>("openFile", {
+      'type': "application/json",
+    });
   }
 }
