@@ -105,12 +105,16 @@ class _NovelNewPageState extends State<NovelNewPage>
               child: TabBarView(
             controller: _tabController,
             children: [
-              NovelNewList(),
-              NovelBookmarkPage(),
-              (accountStore.now != null) ? NovelWatchList() : Container(),
+              NovelNewList(key: PageStorageKey('novel_new_list')),
+              NovelBookmarkPage(key: PageStorageKey('novel_bookmark_page')),
+              (accountStore.now != null)
+                  ? NovelWatchList(key: PageStorageKey('novel_watch_list'))
+                  : Container(),
               (accountStore.now != null)
                   ? FollowList(
-                      id: int.parse(accountStore.now!.userId), isNovel: true)
+                      key: PageStorageKey('novel_follow_list'),
+                      id: int.parse(accountStore.now!.userId),
+                      isNovel: true)
                   : Container()
             ],
           )),

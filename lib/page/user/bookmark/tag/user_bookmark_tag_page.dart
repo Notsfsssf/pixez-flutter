@@ -140,8 +140,14 @@ class _UserBookmarkTagPageState extends State<UserBookmarkTagPage>
             child: TabBarView(
               controller: _tabController,
               children: [
-                NewWidget(restrict: "public"),
-                NewWidget(restrict: "private"),
+                NewWidget(
+                  key: PageStorageKey('user_bookmark_tag_public'),
+                  restrict: "public",
+                ),
+                NewWidget(
+                  key: PageStorageKey('user_bookmark_tag_private'),
+                  restrict: "private",
+                ),
               ],
             ),
           ),

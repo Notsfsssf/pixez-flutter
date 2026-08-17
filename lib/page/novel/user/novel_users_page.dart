@@ -96,8 +96,16 @@ class _NovelUsersPageState extends State<NovelUsersPage>
             body: TabBarView(
               controller: _tabController,
               children: [
-                NovelUserWorkPage(id: widget.id, store: _workStore),
-                NovelUserBookmarkPage(id: widget.id, store: _bookMarkStore),
+                NovelUserWorkPage(
+                  key: PageStorageKey('novel_user_work_${widget.id}'),
+                  id: widget.id,
+                  store: _workStore,
+                ),
+                NovelUserBookmarkPage(
+                  key: PageStorageKey('novel_user_bookmark_${widget.id}'),
+                  id: widget.id,
+                  store: _bookMarkStore,
+                ),
                 UserDetailPage(
                   key: PageStorageKey('NovelTab2'),
                   userDetail: userStore.userDetail,

@@ -111,6 +111,7 @@ class _BookTagPageState extends State<BookTagPage>
         body: TabBarView(controller: _tabController, children: [
           for (var j in bookTagStore.bookTagList)
             ResultIllustList(
+              key: PageStorageKey('book_tag_$j'),
               word: j,
             )
         ]),

@@ -48,8 +48,12 @@ class _NovelResultPageState extends State<NovelResultPage> {
         ),
         body: TabBarView(
           children: [
-            NovelResultList(word: widget.word),
+            NovelResultList(
+              key: PageStorageKey('novel_result_list_${widget.word}'),
+              word: widget.word,
+            ),
             PainterList(
+              key: PageStorageKey('novel_result_painter_${widget.word}'),
               futureGet: () => apiClient.getSearchUser(widget.word),
               isNovel: true,
             )

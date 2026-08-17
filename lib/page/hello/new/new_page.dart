@@ -121,13 +121,15 @@ class _NewPageState extends State<NewPage>
               child: TabBarView(
                 controller: _tabController,
                 children: <Widget>[
-                  NewIllustPage(),
+                  NewIllustPage(key: PageStorageKey('new_illust')),
                   BookmarkPage(
+                    key: PageStorageKey('new_bookmark'),
                     isNested: false,
                     id: int.parse(accountStore.now!.userId),
                   ),
-                  WatchlistPage(),
+                  WatchlistPage(key: PageStorageKey('new_watchlist')),
                   FollowList(
+                    key: PageStorageKey('new_follow'),
                     id: int.parse(accountStore.now!.userId),
                   ),
                 ],

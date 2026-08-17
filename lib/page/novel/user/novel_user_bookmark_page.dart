@@ -33,7 +33,8 @@ class NovelUserBookmarkPage extends StatefulWidget {
   final int id;
   final NovelLightingStore store;
 
-  NovelUserBookmarkPage({required this.id, required this.store});
+  NovelUserBookmarkPage({Key? key, required this.id, required this.store})
+      : super(key: key);
 
   @override
   _NovelUserBookmarkPageState createState() => _NovelUserBookmarkPageState();

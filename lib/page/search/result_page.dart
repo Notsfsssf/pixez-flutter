@@ -69,8 +69,12 @@ class _ResultPageState extends State<ResultPage> {
               ]),
         ),
         body: TabBarView(children: [
-          ResultIllustList(word: widget.word),
+          ResultIllustList(
+            key: PageStorageKey('search_result_illust_${widget.word}'),
+            word: widget.word,
+          ),
           SearchResultPainterPage(
+            key: PageStorageKey('search_result_painter_${widget.word}'),
             word: widget.word,
           ),
         ]),

@@ -86,6 +86,7 @@ class _NovelRankPageState extends State<NovelRankPage>
         body: TabBarView(children: [
           for (var i in modeList)
             NovelLightingList(
+              key: PageStorageKey('novel_rank_$i'),
               futureGet: () => apiClient.getNovelRanking(i, dateTime),
             )
         ]),

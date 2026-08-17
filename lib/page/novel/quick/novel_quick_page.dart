@@ -53,9 +53,10 @@ class _NovelQuickPageState extends State<NovelQuickPage> {
           ),
         ),
         body: TabBarView(children: [
-          NovelNewPage(),
-          NovelBookmarkPage(),
+          NovelNewPage(key: PageStorageKey('novel_quick_new')),
+          NovelBookmarkPage(key: PageStorageKey('novel_quick_bookmark')),
           FollowList(
+            key: PageStorageKey('novel_quick_follow'),
             id: int.parse(accountStore.now!.userId),
             isNovel: true,
           )

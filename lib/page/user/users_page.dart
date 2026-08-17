@@ -229,6 +229,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
             controller: _tabController,
             children: [
               WorksPage(
+                key: PageStorageKey('user_works_${widget.id}'),
                 id: widget.id,
                 store: _workStore,
                 portal: "Work",
@@ -240,6 +241,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
                 },
               ),
               BookMarkNestedPage(
+                key: PageStorageKey('user_bookmark_${widget.id}'),
                 id: widget.id,
                 store: _bookmarkStore,
                 portal: "Book",

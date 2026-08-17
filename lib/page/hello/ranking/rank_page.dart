@@ -157,6 +157,7 @@ class _RankPageState extends State<RankPage>
                 child: TabBarView(children: [
                   for (var element in rankStore.modeList)
                     RankModePage(
+                      key: PageStorageKey('rank_mode_$element'),
                       date: dateTime,
                       mode: element,
                       index: rankStore.modeList.indexOf(element),
