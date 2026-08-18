@@ -73,7 +73,7 @@ dependencies:
   flutter_hooks: ^0.21.3+1
   webview_flutter: ^4.14.1
   # sqlite3: 3.1.6
-  sqflite_common_ffi: ^2.4.2
+  sqflite_common_ffi: ^2.4.2+1
   material_ui: ^1.0.0
   cupertino_ui: ^1.0.0
 

@@ -15,10 +15,10 @@
 
 import 'dart:async';
 
-import 'package:animations/animations.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/sort_group.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/task_persist.dart';
@@ -370,164 +370,154 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(12))),
-      child: OpenContainer(
-        openElevation: 0.0,
-        closedElevation: 0.0,
-        closedColor: Colors.transparent,
-        openColor: Colors.transparent,
-        openBuilder: (context, closedContainer) {
-          return IllustLightingPage(id: taskPersist.illustId);
+      child: InkWell(
+        onTap: () {
+          Leader.push(context, IllustLightingPage(id: taskPersist.illustId));
         },
-        closedBuilder: (context, openContainer) {
-          return InkWell(
-            onTap: () {
-              openContainer();
-            },
-            child: Stack(
+        child: Stack(
+          children: [
+            Row(
               children: [
-                Row(
-                  children: [
-                    (!_itemSimple)
-                        ? Container(
-                            child: Stack(
-                              children: [
-                                Container(
-                                  height: 100,
-                                  width: 100,
-                                  child: PixivImage(
-                                    taskPersist.medium ?? taskPersist.url,
-                                    fit: BoxFit.cover,
+                (!_itemSimple)
+                    ? Container(
+                        child: Stack(
+                          children: [
+                            Container(
+                              height: 100,
+                              width: 100,
+                              child: PixivImage(
+                                taskPersist.medium ?? taskPersist.url,
+                                fit: BoxFit.cover,
+                                height: 100,
+                                width: 100,
+                              ),
+                            ),
+                            (jobEntity != null && jobEntity.status != 2)
+                                ? Container(
+                                    height: 100,
+                                    width: 100,
+                                    child: Center(
+                                      child: CircularProgressIndicator(
+                                        value: ((jobEntity.min ?? 0.0) /
+                                                ((jobEntity.max ?? 0.0)))
+                                            .toDouble(),
+                                        backgroundColor: Colors.grey[200],
+                                      ),
+                                    ),
+                                  )
+                                : Container(
                                     height: 100,
                                     width: 100,
                                   ),
-                                ),
-                                (jobEntity != null && jobEntity.status != 2)
-                                    ? Container(
-                                        height: 100,
-                                        width: 100,
-                                        child: Center(
-                                          child: CircularProgressIndicator(
-                                            value: ((jobEntity.min ?? 0.0) /
-                                                    ((jobEntity.max ?? 0.0)))
-                                                .toDouble(),
-                                            backgroundColor: Colors.grey[200],
-                                          ),
-                                        ),
-                                      )
-                                    : Container(
-                                        height: 100,
-                                        width: 100,
-                                      ),
-                              ],
-                            ),
-                            width: 100,
-                            height: 100,
-                          )
-                        : Container(
-                            width: 8,
-                          ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                          ],
+                        ),
+                        width: 100,
+                        height: 100,
+                      )
+                    : Container(
+                        width: 8,
+                      ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    taskPersist.title,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.clip,
-                                  ),
-                                ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                taskPersist.title,
+                                maxLines: 1,
+                                overflow: TextOverflow.clip,
+                                style: Theme.of(context).textTheme.bodyLarge,
                               ),
-                              if (_itemSimple) ...[
-                                InkWell(
-                                    onTap: () {
-                                      _retryJob(taskPersist);
-                                    },
-                                    child: Icon(Icons.refresh)),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: InkWell(
-                                      onTap: () {
-                                        _deleteJob(taskPersist);
-                                      },
-                                      child: Icon(Icons.delete)),
-                                ),
-                              ],
-                              Padding(
-                                padding: const EdgeInsets.only(right: 16.0),
-                                child: _buildStatusWidget(
-                                    jobEntity?.status ?? taskPersist.status),
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Text(
-                              taskPersist.userName,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      fontSize: 12),
                             ),
                           ),
-                          (!_itemSimple)
-                              ? Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  mainAxisSize: MainAxisSize.max,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(" "),
-                                    Row(
-                                      children: [
-                                        IconButton(
-                                            onPressed: () {
-                                              _retryJob(taskPersist);
-                                            },
-                                            icon: Icon(Icons.refresh)),
-                                        IconButton(
-                                            onPressed: () {
-                                              _deleteJob(taskPersist);
-                                            },
-                                            icon: Icon(Icons.delete)),
-                                      ],
-                                    )
-                                  ],
-                                )
-                              : Container(
-                                  height: 10,
-                                ),
+                          if (_itemSimple) ...[
+                            InkWell(
+                                onTap: () {
+                                  _retryJob(taskPersist);
+                                },
+                                child: Icon(Icons.refresh)),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: InkWell(
+                                  onTap: () {
+                                    _deleteJob(taskPersist);
+                                  },
+                                  child: Icon(Icons.delete)),
+                            ),
+                          ],
+                          Padding(
+                            padding: const EdgeInsets.only(right: 16.0),
+                            child: _buildStatusWidget(
+                                jobEntity?.status ?? taskPersist.status),
+                          ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-                (jobEntity != null && jobEntity.status != 2)
-                    ? Positioned(
-                        left: 0.0,
-                        right: 0.0,
-                        bottom: 0.0,
-                        child: LinearProgressIndicator(
-                          value: ((jobEntity.min ?? 0.0) /
-                                  ((jobEntity.max ?? 0.0)))
-                              .toDouble(),
-                          backgroundColor: Colors.grey[200],
+                      Padding(
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          taskPersist.userName,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge!
+                              .copyWith(
+                                  color:
+                                      Theme.of(context).colorScheme.primary,
+                                  fontSize: 12),
                         ),
-                      )
-                    : Container(),
+                      ),
+                      (!_itemSimple)
+                          ? Row(
+                              mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                              mainAxisSize: MainAxisSize.max,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(" "),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                        onPressed: () {
+                                          _retryJob(taskPersist);
+                                        },
+                                        icon: Icon(Icons.refresh)),
+                                    IconButton(
+                                        onPressed: () {
+                                          _deleteJob(taskPersist);
+                                        },
+                                        icon: Icon(Icons.delete)),
+                                  ],
+                                )
+                              ],
+                            )
+                          : Container(
+                              height: 10,
+                            ),
+                    ],
+                  ),
+                ),
               ],
             ),
-          );
-        },
+            (jobEntity != null && jobEntity.status != 2)
+                ? Positioned(
+                    left: 0.0,
+                    right: 0.0,
+                    bottom: 0.0,
+                    child: LinearProgressIndicator(
+                      value: ((jobEntity.min ?? 0.0) /
+                              ((jobEntity.max ?? 0.0)))
+                          .toDouble(),
+                      backgroundColor: Colors.grey[200],
+                    ),
+                  )
+                : Container(),
+          ],
+        ),
       ),
     );
   }
