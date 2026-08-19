@@ -26,6 +26,7 @@ import 'package:intl/intl.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/crypto_plugin.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/network/network_mode.dart';
 import 'package:pixez/network/pixez_network_settings.dart';
 import 'package:rhttp/rhttp.dart' as r;
 
@@ -76,9 +77,12 @@ class OAuthClient {
 
   OAuthClient() {
     String time = getIsoDate();
+    final String baseUrl = userSetting.networkMode == NetworkMode.compat
+        ? 'https://pixiv.me'
+        : 'https://${BASE_OAUTH_URL_HOST}';
     httpClient = Dio(
       BaseOptions(
-        baseUrl: 'https://${BASE_OAUTH_URL_HOST}',
+        baseUrl: baseUrl,
         headers: {
           "X-Client-Time": time,
           "X-Client-Hash": getHash(time + hashSalt),
@@ -87,6 +91,7 @@ class OAuthClient {
           "App-OS": "Android",
           "App-OS-Version": "Android 6.0",
           "App-Version": "5.0.166",
+          HttpHeaders.hostHeader: BASE_OAUTH_URL_HOST,
         },
         contentType: Headers.formUrlEncodedContentType,
       ),
