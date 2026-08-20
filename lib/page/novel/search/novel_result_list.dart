@@ -7,6 +7,16 @@ import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/component/novel_lighting_list.dart';
 
+enum SearchDatePreset {
+  none,
+  day1,
+  week1,
+  month1,
+  month6,
+  year1,
+  custom,
+}
+
 class NovelResultList extends StatefulWidget {
   final String word;
 
@@ -52,11 +62,7 @@ class _NovelResultListState extends State<NovelResultList> {
                 alignment: Alignment.centerRight,
                 child: Row(
                   children: [
-                    IconButton(
-                        icon: Icon(Icons.date_range),
-                        onPressed: () {
-                          _buildShowDateRange(context);
-                        }),
+                    _buildDateRangeButton(),
                     _buildStar(),
                     IconButton(
                         icon: Icon(Icons.filter_alt_outlined),
@@ -101,6 +107,77 @@ class _NovelResultListState extends State<NovelResultList> {
   String searchTarget = search_target[0];
   String selectSort = "date_desc";
   int selectStarNum = 0;
+
+  String _getDatePresetLabel(BuildContext context, SearchDatePreset preset) {
+    return switch (preset) {
+      SearchDatePreset.none => I18n.of(context).date_preset_none,
+      SearchDatePreset.day1 => I18n.of(context).date_preset_1day,
+      SearchDatePreset.week1 => I18n.of(context).date_preset_1week,
+      SearchDatePreset.month1 => I18n.of(context).date_preset_1month,
+      SearchDatePreset.month6 => I18n.of(context).date_preset_6months,
+      SearchDatePreset.year1 => I18n.of(context).date_preset_1year,
+      SearchDatePreset.custom => I18n.of(context).date_preset_custom,
+    };
+  }
+
+  Widget _buildDateRangeButton() {
+    return PopupMenuButton<SearchDatePreset>(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Icon(
+          Icons.date_range,
+          color: _dateTimeRange != null
+              ? Theme.of(context).colorScheme.primary
+              : null,
+        ),
+      ),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(16.0)),
+      ),
+      onSelected: (preset) {
+        if (preset == SearchDatePreset.custom) {
+          _buildShowDateRange(context);
+          return;
+        }
+        final now = DateTime.now();
+        setState(() {
+          _dateTimeRange = switch (preset) {
+            SearchDatePreset.none => null,
+            SearchDatePreset.day1 => DateTimeRange(
+                start: now.subtract(const Duration(days: 1)),
+                end: now,
+              ),
+            SearchDatePreset.week1 => DateTimeRange(
+                start: now.subtract(const Duration(days: 7)),
+                end: now,
+              ),
+            SearchDatePreset.month1 => DateTimeRange(
+                start: now.subtract(const Duration(days: 30)),
+                end: now,
+              ),
+            SearchDatePreset.month6 => DateTimeRange(
+                start: now.subtract(const Duration(days: 180)),
+                end: now,
+              ),
+            SearchDatePreset.year1 => DateTimeRange(
+                start: now.subtract(const Duration(days: 365)),
+                end: now,
+              ),
+            SearchDatePreset.custom => _dateTimeRange,
+          };
+        });
+        _changeQueryParams();
+      },
+      itemBuilder: (context) {
+        return SearchDatePreset.values.map((preset) {
+          return PopupMenuItem<SearchDatePreset>(
+            value: preset,
+            child: Text(_getDatePresetLabel(context, preset)),
+          );
+        }).toList();
+      },
+    );
+  }
 
   DateTimeRange? _dateTimeRange;
 

@@ -350,5 +350,12 @@
   "network_mode_ech_message": "Try this when the app opens but service responses fail.",
   "network_mode_standard": "Standard connection",
   "network_mode_standard_message": "Recommended for most networks.",
-  "ignore_current_version_update": "Ignore current version update"
+  "ignore_current_version_update": "Ignore current version update",
+  "date_preset_none": "Không giới hạn",
+  "date_preset_1day": "1 ngày",
+  "date_preset_1week": "1 tuần",
+  "date_preset_1month": "1 tháng",
+  "date_preset_6months": "6 tháng",
+  "date_preset_1year": "1 năm",
+  "date_preset_custom": "Khoảng thời gian tùy chỉnh"
 }
