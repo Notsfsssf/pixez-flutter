@@ -350,5 +350,12 @@
   "network_mode_ech_message": "Try this when the app opens but service responses fail.",
   "network_mode_standard": "Standard connection",
   "network_mode_standard_message": "Recommended for most networks.",
-  "ignore_current_version_update": "Ignore current version update"
+  "ignore_current_version_update": "Ignore current version update",
+  "date_preset_none": "전체",
+  "date_preset_1day": "1일",
+  "date_preset_1week": "1주일",
+  "date_preset_1month": "1개월",
+  "date_preset_6months": "6개월",
+  "date_preset_1year": "1년",
+  "date_preset_custom": "기간 지정"
 }

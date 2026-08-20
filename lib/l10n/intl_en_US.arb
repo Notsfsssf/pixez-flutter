@@ -352,5 +352,12 @@
   "network_mode_standard": "Standard connection",
   "network_mode_standard_message": "Recommended for most networks.",
   "ignore_current_version_update": "Ignore current version update",
-  "haptic_feedback": "Haptic feedback"
+  "haptic_feedback": "Haptic feedback",
+  "date_preset_none": "All time",
+  "date_preset_1day": "1 day",
+  "date_preset_1week": "1 week",
+  "date_preset_1month": "1 month",
+  "date_preset_6months": "6 months",
+  "date_preset_1year": "1 year",
+  "date_preset_custom": "Custom range"
 }

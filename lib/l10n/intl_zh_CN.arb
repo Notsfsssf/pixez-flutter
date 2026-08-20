@@ -352,5 +352,12 @@
   "network_mode_standard": "标准连接",
   "network_mode_standard_message": "大多数网络环境推荐使用。",
   "ignore_current_version_update": "忽略当前版本更新",
-  "haptic_feedback": "触感反馈"
+  "haptic_feedback": "触感反馈",
+  "date_preset_none": "不限",
+  "date_preset_1day": "1天",
+  "date_preset_1week": "1周",
+  "date_preset_1month": "1个月",
+  "date_preset_6months": "6个月",
+  "date_preset_1year": "1年",
+  "date_preset_custom": "指定期间"
 }

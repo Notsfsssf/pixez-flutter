@@ -33,6 +33,16 @@ enum UgoiraFilter {
   noUgoira,
 }
 
+enum SearchDatePreset {
+  none,
+  day1,
+  week1,
+  month1,
+  month6,
+  year1,
+  custom,
+}
+
 class ResultIllustList extends StatefulWidget {
   final String word;
 
@@ -186,14 +196,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
                       const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 8.0),
                   child: Row(
                     children: [
-                      InkWell(
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Icon(Icons.date_range),
-                          ),
-                          onTap: () {
-                            _buildShowDateRange(context);
-                          }),
+                      _buildDateRangeButton(),
                       if (accountStore.now?.isPremium == 1)
                         Padding(
                           padding: const EdgeInsets.all(4.0),
@@ -233,6 +236,77 @@ class _ResultIllustListState extends State<ResultIllustList> {
                     ))
         ],
       ),
+    );
+  }
+
+  String _getDatePresetLabel(BuildContext context, SearchDatePreset preset) {
+    return switch (preset) {
+      SearchDatePreset.none => I18n.of(context).date_preset_none,
+      SearchDatePreset.day1 => I18n.of(context).date_preset_1day,
+      SearchDatePreset.week1 => I18n.of(context).date_preset_1week,
+      SearchDatePreset.month1 => I18n.of(context).date_preset_1month,
+      SearchDatePreset.month6 => I18n.of(context).date_preset_6months,
+      SearchDatePreset.year1 => I18n.of(context).date_preset_1year,
+      SearchDatePreset.custom => I18n.of(context).date_preset_custom,
+    };
+  }
+
+  Widget _buildDateRangeButton() {
+    return PopupMenuButton<SearchDatePreset>(
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Icon(
+          Icons.date_range,
+          color: _dateTimeRange != null
+              ? Theme.of(context).colorScheme.primary
+              : null,
+        ),
+      ),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(16.0)),
+      ),
+      onSelected: (preset) {
+        if (preset == SearchDatePreset.custom) {
+          _buildShowDateRange(context);
+          return;
+        }
+        final now = DateTime.now();
+        setState(() {
+          _dateTimeRange = switch (preset) {
+            SearchDatePreset.none => null,
+            SearchDatePreset.day1 => DateTimeRange(
+                start: now.subtract(const Duration(days: 1)),
+                end: now,
+              ),
+            SearchDatePreset.week1 => DateTimeRange(
+                start: now.subtract(const Duration(days: 7)),
+                end: now,
+              ),
+            SearchDatePreset.month1 => DateTimeRange(
+                start: now.subtract(const Duration(days: 30)),
+                end: now,
+              ),
+            SearchDatePreset.month6 => DateTimeRange(
+                start: now.subtract(const Duration(days: 180)),
+                end: now,
+              ),
+            SearchDatePreset.year1 => DateTimeRange(
+                start: now.subtract(const Duration(days: 365)),
+                end: now,
+              ),
+            SearchDatePreset.custom => _dateTimeRange,
+          };
+        });
+        _changeQueryParams();
+      },
+      itemBuilder: (context) {
+        return SearchDatePreset.values.map((preset) {
+          return PopupMenuItem<SearchDatePreset>(
+            value: preset,
+            child: Text(_getDatePresetLabel(context, preset)),
+          );
+        }).toList();
+      },
     );
   }
 

@@ -351,5 +351,12 @@
   "network_mode_ech_message": "Uygulama açıldığı halde sunucu yanıtı başarısız olursa bunu dene.",
   "network_mode_standard": "Standart bağlantı",
   "network_mode_standard_message": "Çoğu ağ için önerilir.",
-  "ignore_current_version_update": "Mevcut sürüm güncellemesini yoksay"
+  "ignore_current_version_update": "Mevcut sürüm güncellemesini yoksay",
+  "date_preset_none": "Tümü",
+  "date_preset_1day": "1 gün",
+  "date_preset_1week": "1 hafta",
+  "date_preset_1month": "1 ay",
+  "date_preset_6months": "6 ay",
+  "date_preset_1year": "1 yıl",
+  "date_preset_custom": "Özel tarih aralığı"
 }
