@@ -266,6 +266,7 @@
   "make_works_with_ai_generated_flags_invisible": "Ẩn những sản phẩm dùng AI tạo sinh (nên bật)",
   "script_page_hint": "Chức năng này được thiết kế để xử lý tên tệp khi lưu hình minh họa bằng cách tùy chỉnh tập lệnh js. Nếu bạn không biết nguyên tắc, xin vui lòng không thử nó theo ý muốn. Bạn có thể khôi phục cài đặt mặc định bằng cách nhấp vào dấu thập ở góc trên bên phải",
   "long_press_save_confirm": "Giữ để xác nhận lưu",
+  "long_press_card_menu": "Long press thumbnail to show menu",
   "dynamic_color": "Material color trên android 12+",
   "seed_color": "Màu hạt",
   "app_data": "Dữ liệu ứng dụng",

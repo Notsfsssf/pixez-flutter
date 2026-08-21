@@ -313,6 +313,14 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                   },
                 ),
                 SwitchListTile(
+                  value: userSetting.longPressCardMenu,
+                  title: Text(I18n.of(context).long_press_card_menu),
+                  onChanged: (value) async {
+                    HapticUtil.light();
+                    userSetting.setLongPressCardMenu(value);
+                  },
+                ),
+                SwitchListTile(
                   value: userSetting.hIsNotAllow,
                   title: Text('H是不行的！'),
                   onChanged: (value) async {
