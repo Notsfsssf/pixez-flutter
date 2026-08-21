@@ -17,7 +17,7 @@ let package = Package(
     dependencies: [
         .package(name: "audio_session", path: "../.packages/audio_session-0.2.4"),
         .package(name: "device_info_plus", path: "../.packages/device_info_plus-13.2.0"),
-        .package(name: "file_picker_darwin", path: "../.packages/file_picker_darwin-1.0.0"),
+        .package(name: "file_picker_darwin", path: "../.packages/file_picker_darwin-1.0.1"),
         .package(name: "image_picker_ios", path: "../.packages/image_picker_ios-0.8.13+6"),
         .package(name: "in_app_purchase_storekit", path: "../.packages/in_app_purchase_storekit-0.4.11+1"),
         .package(name: "just_audio", path: "../.packages/just_audio-0.10.6"),

@@ -368,7 +368,7 @@ async fn make_http_request_helper(
             HttpVersionPref::Http10 => request.version(Version::HTTP_10),
             HttpVersionPref::Http11 => request.version(Version::HTTP_11),
             HttpVersionPref::Http2 => request.version(Version::HTTP_2),
-            HttpVersionPref::Http3 => request.version(Version::HTTP_3),
+            HttpVersionPref::Http3 => request,
             HttpVersionPref::All => request,
         };
 

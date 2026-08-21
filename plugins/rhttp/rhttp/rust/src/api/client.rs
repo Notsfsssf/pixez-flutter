@@ -387,7 +387,7 @@ fn build_reqwest_client(
     client = match settings.http_version_pref {
         HttpVersionPref::Http10 | HttpVersionPref::Http11 => client.http1_only(),
         HttpVersionPref::Http2 => client.http2_prior_knowledge(),
-        HttpVersionPref::Http3 => client.http3_prior_knowledge(),
+        HttpVersionPref::Http3 => client,
         HttpVersionPref::All => client,
     };
 
