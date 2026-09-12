@@ -266,6 +266,7 @@
   "make_works_with_ai_generated_flags_invisible": "Gawing invisible ang mga gawang may AI generated na flag",
   "script_page_hint": "Naka-disenyo ang function na ito na ipamahala ang file kapag nagsa-save ng mga larawan sa pamamagitan ng pag-customize ng js script. Kung hindi mo alam ang prinsipyo, mangyaring huwag itong subukan sa kalooban. Maari mong ibalik ang mga default na setting sa pamamagitan ng pag-click sa cross sa itaas kanang bahagi ng sulok",
   "long_press_save_confirm": "Pindutin nang matagal para kumpirmahin ang pag-save",
+  "long_press_card_menu": "Long press thumbnail to show menu",
   "dynamic_color": "Dinamikang kulay",
   "seed_color": "Seed ng kulay",
   "app_data": "Data ng app",
