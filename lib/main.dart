@@ -27,6 +27,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/er/fetcher.dart';
+import 'package:pixez/er/novel_series_fetcher.dart';
 import 'package:pixez/er/illust_cacher.dart';
 import 'package:pixez/fluent/fluentui.dart';
 import 'package:pixez/i18n.dart';
@@ -59,6 +60,7 @@ final TopStore topStore = TopStore();
 final BookTagStore bookTagStore = BookTagStore();
 final SplashStore splashStore = SplashStore();
 final Fetcher fetcher = new Fetcher();
+final NovelSeriesFetcher novelSeriesFetcher = NovelSeriesFetcher();
 final FullScreenStore fullScreenStore = FullScreenStore();
 
 main(List<String> args) async {

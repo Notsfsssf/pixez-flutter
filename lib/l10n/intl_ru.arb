@@ -357,5 +357,10 @@
   "date_preset_1month": "1 месяц",
   "date_preset_6months": "6 месяцев",
   "date_preset_1year": "1 год",
-  "date_preset_custom": "Указать период"
+  "date_preset_custom": "Указать период",
+  "download_novel_series": "Скачать серию романов",
+  "downloading": "Загрузка...",
+  "select_all": "Выбрать все",
+  "cancel_select_all": "Отменить выбор всех",
+  "selected": "Выбрано"
 }

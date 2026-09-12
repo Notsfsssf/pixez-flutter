@@ -14,6 +14,7 @@
  */
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:material_ui/material_ui.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -21,7 +22,9 @@ import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/novel_task_persist.dart';
 import 'package:pixez/models/task_persist.dart';
+import 'package:pixez/page/novel/series/novel_series_page.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/store/save_store.dart';
 
@@ -32,7 +35,9 @@ class JobPage extends StatefulWidget {
 
 class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
   List<TaskPersist> _list = [];
+  List<NovelTaskPersist> _novelList = [];
   TaskPersistProvider taskPersistProvider = TaskPersistProvider();
+  NovelTaskPersistProvider novelTaskPersistProvider = NovelTaskPersistProvider();
   Timer? _timer;
   late AnimationController rotationController;
   ScrollController _scrollController = ScrollController();
@@ -65,6 +70,7 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
 
   initMethod() async {
     await taskPersistProvider.open();
+    await novelTaskPersistProvider.open();
     _refresh();
     _timer = Timer.periodic(Duration(seconds: 1), (time) {
       _fetchLocal();
@@ -86,6 +92,21 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
                   fileName: e.fileName ?? "",
                   status: 1))
               .toList();
+          // 系列小说下载
+          _novelList = novelSeriesFetcher.queue
+              .where((element) =>
+                  novelSeriesFetcher.urlPool.contains(element.seriesId.toString()))
+              .map((e) => NovelTaskPersist(
+                  seriesId: e.seriesId,
+                  seriesTitle: e.seriesTitle,
+                  userName: e.userName ?? "",
+                  coverUrl: e.coverUrl,
+                  novelIds: jsonEncode(e.novelIds),
+                  novelCount: e.novelIds.length,
+                  doneCount:
+                      novelSeriesFetcher.jobMaps[e.seriesId.toString()]?.min ?? 0,
+                  status: 1))
+              .toList();
         }
       });
     }
@@ -96,9 +117,12 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
     _endOfPage = false;
     final results = await taskPersistProvider.getDownloadTask(
         _page, toTaskStatus(currentIndex), asc);
+    final novelResults = await novelTaskPersistProvider.getDownloadTask(
+        _page, toTaskStatus(currentIndex), asc);
     if (mounted) {
       setState(() {
         _list = results;
+        _novelList = novelResults;
       });
     }
   }
@@ -106,9 +130,12 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
   _reQueryFilter() async {
     final results = await taskPersistProvider.getDownloadTask(
         _page, toTaskStatus(currentIndex), asc);
+    final novelResults = await novelTaskPersistProvider.getDownloadTask(
+        _page, toTaskStatus(currentIndex), asc);
     if (mounted) {
       setState(() {
         _list = results;
+        _novelList = novelResults;
       });
     }
   }
@@ -122,11 +149,15 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
     _page++;
     final results = await taskPersistProvider.getDownloadTask(
         _page, toTaskStatus(currentIndex), asc);
-    _endOfPage = results.length < 16;
+    final novelResults = await novelTaskPersistProvider.getDownloadTask(
+        _page, toTaskStatus(currentIndex), asc);
+    _endOfPage =
+        results.length < 16 && novelResults.length < 16;
     _nextLoading = false;
     if (mounted) {
       setState(() {
         _list += results;
+        _novelList += novelResults;
       });
     }
   }
@@ -254,6 +285,12 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
                               _retryJob(element);
                             }
                           });
+                          final novelResults = await novelTaskPersistProvider.getAllAccount();
+                          novelResults.forEach((element) {
+                            if (element.status == 3) {
+                              _retryNovelJob(element);
+                            }
+                          });
                           Navigator.of(context).pop();
                         },
                       ),
@@ -267,6 +304,12 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
                               _retryJob(element);
                             }
                           });
+                          final novelResults = await novelTaskPersistProvider.getAllAccount();
+                          novelResults.forEach((element) {
+                            if (element.status == 0) {
+                              _retryNovelJob(element);
+                            }
+                          });
                           Navigator.of(context).pop();
                         },
                       ),
@@ -278,6 +321,12 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
                           results.forEach((element) {
                             if (element.status == 2) {
                               _deleteJob(element);
+                            }
+                          });
+                          final novelResults = await novelTaskPersistProvider.getAllAccount();
+                          novelResults.forEach((element) {
+                            if (element.status == 2) {
+                              _deleteNovelJob(element);
                             }
                           });
                           Navigator.of(context).pop();
@@ -321,6 +370,22 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
                       fileName: e.fileName ?? "",
                       status: 1))
                   .toList();
+              _novelList = novelSeriesFetcher.queue
+                  .where((element) => novelSeriesFetcher.urlPool
+                      .contains(element.seriesId.toString()))
+                  .map((e) => NovelTaskPersist(
+                      seriesId: e.seriesId,
+                      seriesTitle: e.seriesTitle,
+                      userName: e.userName ?? "",
+                      coverUrl: e.coverUrl,
+                      novelIds: jsonEncode(e.novelIds),
+                      novelCount: e.novelIds.length,
+                      doneCount: novelSeriesFetcher
+                              .jobMaps[e.seriesId.toString()]
+                              ?.min ??
+                          0,
+                      status: 1))
+                  .toList();
             } else {
               _refresh();
             }
@@ -331,7 +396,13 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
   }
 
   Widget _body() {
-    final trueList = asc ? _list.reversed.toList() : _list;
+    final merged = <Object>[..._list, ..._novelList]
+      ..sort((a, b) {
+        final idA = a is TaskPersist ? a.id : (a as NovelTaskPersist).id;
+        final idB = b is TaskPersist ? b.id : (b as NovelTaskPersist).id;
+        return (idB ?? 0).compareTo(idA ?? 0);
+      });
+    final trueList = asc ? merged.reversed.toList() : merged;
     return ListView.builder(
       controller: _scrollController,
       itemBuilder: (context, index) {
@@ -354,7 +425,12 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
     );
   }
 
-  Widget _buildItem(TaskPersist taskPersist, int index) {
+  Widget _buildItem(Object item, int index) {
+    if (item is NovelTaskPersist) return _buildNovelItem(item, index);
+    return _buildImageItem(item as TaskPersist, index);
+  }
+
+  Widget _buildImageItem(TaskPersist taskPersist, int index) {
     JobEntity? jobEntity = fetcher.jobMaps[taskPersist.url];
     if (currentIndex != 0) {
       if ((jobEntity?.status ?? taskPersist.status) != currentIndex)
@@ -537,6 +613,161 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
     final taskPersist = persist;
     await taskPersistProvider.insert(taskPersist);
     await fetcher.save(persist.url, taskPersist.toIllusts(), persist.fileName);
+    _refresh();
+  }
+
+  // 任务页面的系列小说下载项
+  Widget _buildNovelItem(NovelTaskPersist taskPersist, int index) {
+    final key = taskPersist.seriesId.toString();
+    JobEntity? jobEntity = novelSeriesFetcher.jobMaps[key];
+    if (currentIndex != 0) {
+      if ((jobEntity?.status ?? taskPersist.status) != currentIndex)
+        return Visibility(
+          child: Container(
+            height: 0,
+          ),
+          visible: false,
+        );
+    }
+    final int done = jobEntity?.min ?? taskPersist.doneCount;
+    final int total = jobEntity?.max ?? taskPersist.novelCount;
+    final int status = jobEntity?.status ?? taskPersist.status;
+    return Card(
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12))),
+      child: InkWell(
+        onTap: () {
+          Leader.push(context, NovelSeriesPage(taskPersist.seriesId));
+        },
+        child: LayoutBuilder(builder: (context, constraints) {
+          final coverWidth = constraints.maxWidth * 0.25;
+          return SizedBox(
+            height: 132,
+            child: Row(
+              children: [
+                Container(
+                  width: coverWidth,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      PixivImage(
+                        taskPersist.coverUrl ?? "",
+                        fit: BoxFit.cover,
+                      ),
+                      if (jobEntity != null && status != 2)
+                        Center(
+                          child: CircularProgressIndicator(
+                            value: total == 0
+                                ? null
+                                : (done / total).toDouble(),
+                            backgroundColor: Colors.grey[200],
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                taskPersist.seriesTitle,
+                                maxLines: 1,
+                                overflow: TextOverflow.clip,
+                                style:
+                                    Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ),
+                            _buildStatusWidget(status),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              LinearProgressIndicator(
+                                value: total == 0
+                                    ? null
+                                    : (done / total).toDouble(),
+                                backgroundColor: Colors.grey[200],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4.0),
+                                child: Text(
+                                  status == 2
+                                      ? "$total/$total"
+                                      : "$done/$total",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(fontSize: 12),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.bottomRight,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                    onPressed: () {
+                                      _retryNovelJob(taskPersist);
+                                    },
+                                    icon: Icon(Icons.refresh)),
+                                IconButton(
+                                    onPressed: () {
+                                      _deleteNovelJob(taskPersist);
+                                    },
+                                    icon: Icon(Icons.delete)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
+      ),
+    );
+  }
+
+  Future _deleteNovelJob(NovelTaskPersist persist) async {
+    await novelTaskPersistProvider.remove(persist.id!);
+    novelSeriesFetcher.jobMaps.remove(persist.seriesId.toString());
+    novelSeriesFetcher.queue
+        .removeWhere((element) => element.seriesId == persist.seriesId);
+    setState(() {
+      _novelList.removeWhere((element) => element.id == persist.id);
+    });
+  }
+
+  Future _retryNovelJob(NovelTaskPersist persist) async {
+    if (persist.status == 2) return;
+    await _deleteNovelJob(persist);
+    await novelSeriesFetcher.save(
+      persist.seriesId,
+      persist.getNovelIds(),
+      seriesTitle: persist.seriesTitle,
+      userName: persist.userName,
+      coverUrl: persist.coverUrl,
+    );
     _refresh();
   }
 }
