@@ -216,7 +216,7 @@
   "permission_denied": "Permintaan ditolak",
   "old_way_message": "Untuk menggunakan metode ini, kamu harus mengizinkan PixEz mengakses file Anda dan memilih folder",
   "return_again_to_exit": "Kembali lagi untuk keluar",
-  "save_format_lose_part_warning": "Format penyimpanan harus mengandung {part}, jika tidak, pekerjaan multi-bagian akan disimpan dengan tidak benar！",
+  "save_format_lose_part_warning": "Format penyimpanan harus mengandung {part}, jika tidak, pekerjaan multi-bagian akan disimpan dengan tidak benar!",
   "@save_format_lose_part_warning": {
     "description": "A message with a parameter",
     "placeholders": {
@@ -297,7 +297,7 @@
   "show_feed_ai_badge": "Tampilkan lencana AI umpan",
   "illust_detail_save_skip_confirm": "Lewati konfirmasi saat menyimpan pada halaman detail",
   "secure_window": "Jendela aman",
-  "open_saucenao_using_webview": "Buka SauceNao menggunakan WebView",
+  "open_saucenao_using_webview": "Buka SauceNAO menggunakan WebView",
   "appwidget_recommend_type": "Jenis rekomendasi Appwidget",
   "feed_preview_quality": "Kualitas pratinjau feed",
   "clean_history": "Hapus histori?",
