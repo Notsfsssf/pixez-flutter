@@ -9,6 +9,14 @@ project(runner LANGUAGES CXX)
 add_executable(${BINARY_NAME}
   "main.cc"
   "my_application.cc"
+  "utils.cc"
+  "settings.cc"
+  "plugins_manager.cc"
+  "plugins/clipboard_plugin.cc"
+  "plugins/document_plugin.cc"
+  "plugins/paths_plugin.cc"
+  "plugins/single_instance_plugin.cc"
+  "plugins/weiss_plugin.cc"
   "${FLUTTER_MANAGED_DIR}/generated_plugin_registrant.cc"
 )
 

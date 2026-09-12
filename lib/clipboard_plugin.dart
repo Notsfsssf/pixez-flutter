@@ -12,7 +12,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 
 class ClipboardPlugin {
-  static final supported = Platform.isWindows;
+  static final supported = Platform.isWindows || Platform.isLinux;
   static const _platform = const MethodChannel('com.perol.dev/clipboard');
 
   static Future<void> copyImageFromByteArray(Uint8List data) =>

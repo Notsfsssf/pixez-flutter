@@ -6,6 +6,9 @@
 #endif
 
 #include "flutter/generated_plugin_registrant.h"
+#include "plugins_manager.h"
+#include "plugins/single_instance_plugin.h"
+#include "utils.h"
 
 struct _MyApplication {
   GtkApplication parent_instance;
@@ -22,8 +25,18 @@ static void first_frame_cb(MyApplication* self, FlView* view) {
 // Implements GApplication::activate.
 static void my_application_activate(GApplication* application) {
   MyApplication* self = MY_APPLICATION(application);
+
+  // Flutter Linux currently only supports a single window.
+  GList* windows = gtk_application_get_windows(GTK_APPLICATION(application));
+  if (windows != nullptr) {
+    gtk_window_present(GTK_WINDOW(windows->data));
+    return;
+  }
+
   GtkWindow* window =
       GTK_WINDOW(gtk_application_window_new(GTK_APPLICATION(application)));
+
+  gtk_window_set_title(window, "PixEz");
 
   // Use a header bar when running in GNOME as this is the common style used
   // by applications and is the setup most users will be using (e.g. Ubuntu
@@ -45,11 +58,9 @@ static void my_application_activate(GApplication* application) {
   if (use_header_bar) {
     GtkHeaderBar* header_bar = GTK_HEADER_BAR(gtk_header_bar_new());
     gtk_widget_show(GTK_WIDGET(header_bar));
-    gtk_header_bar_set_title(header_bar, "Pixez");
+    gtk_header_bar_set_title(header_bar, "PixEz");
     gtk_header_bar_set_show_close_button(header_bar, TRUE);
     gtk_window_set_titlebar(window, GTK_WIDGET(header_bar));
-  } else {
-    gtk_window_set_title(window, "Pixez");
   }
 
   gtk_window_set_default_size(window, 1280, 720);
@@ -74,8 +85,42 @@ static void my_application_activate(GApplication* application) {
   gtk_widget_realize(GTK_WIDGET(view));
 
   fl_register_plugins(FL_PLUGIN_REGISTRY(view));
+  RegisterPixEzPlugins(view, window);
 
   gtk_widget_grab_focus(GTK_WIDGET(view));
+}
+
+// Implements GApplication::command_line on the primary instance.
+static int my_application_command_line(GApplication* application,
+                                       GApplicationCommandLine* cmdline) {
+  gint argc = 0;
+  gchar** argv = g_application_command_line_get_arguments(cmdline, &argc);
+
+  GtkApplication* gtk_app = GTK_APPLICATION(application);
+  GList* windows = gtk_application_get_windows(gtk_app);
+  if (windows != nullptr) {
+    GtkWindow* window = GTK_WINDOW(windows->data);
+    GVariant* platform_data =
+        g_application_command_line_get_platform_data(cmdline);
+    const gchar* startup_id = nullptr;
+    if (platform_data != nullptr) {
+      g_variant_lookup(platform_data, "desktop-startup-id", "&s", &startup_id);
+    }
+    if (startup_id != nullptr) {
+      gtk_window_set_startup_id(window, startup_id);
+    }
+    gtk_window_present(window);
+  } else {
+    g_application_activate(application);
+  }
+
+  if (argc > 1) {
+    std::string joined = Utils::FormatCommandLineArguments(argc, argv);
+    SingleInstance::SendArgs(joined.c_str());
+  }
+
+  g_strfreev(argv);
+  return 0;
 }
 
 // Implements GApplication::local_command_line.
@@ -83,14 +128,23 @@ static gboolean my_application_local_command_line(GApplication* application,
                                                   gchar*** arguments,
                                                   int* exit_status) {
   MyApplication* self = MY_APPLICATION(application);
-  // Strip out the first argument as it is the binary name.
-  self->dart_entrypoint_arguments = g_strdupv(*arguments + 1);
 
   g_autoptr(GError) error = nullptr;
   if (!g_application_register(application, nullptr, &error)) {
     g_warning("Failed to register: %s", error->message);
     *exit_status = 1;
     return TRUE;
+  }
+
+  if (g_application_get_is_remote(application)) {
+    // Secondary instance: return FALSE so GApplication forwards
+    // the command line to the primary instance over D-Bus.
+    return FALSE;
+  }
+
+  // Primary instance:
+  if (*arguments != nullptr && (*arguments)[0] != nullptr) {
+    self->dart_entrypoint_arguments = g_strdupv(*arguments + 1);
   }
 
   g_application_activate(application);
@@ -128,6 +182,7 @@ static void my_application_class_init(MyApplicationClass* klass) {
   G_APPLICATION_CLASS(klass)->activate = my_application_activate;
   G_APPLICATION_CLASS(klass)->local_command_line =
       my_application_local_command_line;
+  G_APPLICATION_CLASS(klass)->command_line = my_application_command_line;
   G_APPLICATION_CLASS(klass)->startup = my_application_startup;
   G_APPLICATION_CLASS(klass)->shutdown = my_application_shutdown;
   G_OBJECT_CLASS(klass)->dispose = my_application_dispose;
@@ -143,6 +198,7 @@ MyApplication* my_application_new() {
   g_set_prgname(APPLICATION_ID);
 
   return MY_APPLICATION(g_object_new(my_application_get_type(),
-                                     "application-id", APPLICATION_ID, "flags",
-                                     G_APPLICATION_NON_UNIQUE, nullptr));
+                                     "application-id", APPLICATION_ID,
+                                     "flags", G_APPLICATION_HANDLES_COMMAND_LINE,
+                                     nullptr));
 }
