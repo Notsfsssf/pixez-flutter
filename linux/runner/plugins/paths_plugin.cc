@@ -29,5 +29,5 @@ void Paths::HandleMethodCall(FlMethodChannel* channel,
 }
 
 std::string Paths::GetDatabaseFolderPath() {
-  return Settings::AppDataFolder();
+  return Settings::DatabaseFolder();
 }
