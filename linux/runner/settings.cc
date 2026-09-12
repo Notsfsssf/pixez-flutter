@@ -4,24 +4,24 @@
 #include <flutter_linux/flutter_linux.h>
 #include <glib.h>
 
-std::string Settings::ConfigFolder() {
-  std::string base_dir = Utils::GetConfigDirectory();
-  g_autofree gchar* path = g_build_filename(base_dir.c_str(), "PixEz", nullptr);
+std::string Settings::AppDataFolder() {
+  std::string base_dir = Utils::GetDataDirectory();
+  g_autofree gchar* path = g_build_filename(base_dir.c_str(), APPLICATION_ID, nullptr);
   g_mkdir_with_parents(path, 0755);
   return std::string(path);
 }
 
-std::string Settings::AppDataFolder() {
-  std::string base_dir = Utils::GetDataDirectory();
-  g_autofree gchar* path = g_build_filename(base_dir.c_str(), "PixEz", nullptr);
+std::string Settings::DatabaseFolder() {
+  std::string app_data = AppDataFolder();
+  g_autofree gchar* path = g_build_filename(app_data.c_str(), "db", nullptr);
   g_mkdir_with_parents(path, 0755);
   return std::string(path);
 }
 
 std::string Settings::TryGetValue(const std::string& key) {
-  std::string config_dir = ConfigFolder();
+  std::string app_data = AppDataFolder();
   g_autofree gchar* file_path =
-      g_build_filename(config_dir.c_str(), "settings.json", nullptr);
+      g_build_filename(app_data.c_str(), "settings.json", nullptr);
 
   gchar* content = nullptr;
   if (!g_file_get_contents(file_path, &content, nullptr, nullptr)) {
@@ -43,9 +43,9 @@ std::string Settings::TryGetValue(const std::string& key) {
 }
 
 void Settings::SetValue(const std::string& key, const std::string& value) {
-  std::string config_dir = ConfigFolder();
+  std::string app_data = AppDataFolder();
   g_autofree gchar* file_path =
-      g_build_filename(config_dir.c_str(), "settings.json", nullptr);
+      g_build_filename(app_data.c_str(), "settings.json", nullptr);
 
   g_autoptr(FlJsonMessageCodec) codec = fl_json_message_codec_new();
   g_autoptr(FlValue) map = nullptr;
