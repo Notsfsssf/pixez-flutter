@@ -586,6 +586,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                     },
                     child: NullHero(
                       tag: widget.heroString,
+                      radius: BorderRadius.zero,
                       child: PixivImage(
                         url,
                         fade: false,

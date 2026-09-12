@@ -183,6 +183,10 @@ class _IllustCardState extends State<IllustCard> {
     return tooLong
         ? NullHero(
             tag: tag,
+            radius: BorderRadius.only(
+              topLeft: Radius.circular(12.0),
+              topRight: Radius.circular(12.0),
+            ),
             child: PixivImage(
               store.illusts!.imageUrls.squareMedium,
               fit: BoxFit.fitWidth,
@@ -190,10 +194,17 @@ class _IllustCardState extends State<IllustCard> {
           )
         : NullHero(
             tag: tag,
+            radius: BorderRadius.only(
+              topLeft: Radius.circular(12.0),
+              topRight: Radius.circular(12.0),
+            ),
             child: PixivImage(
               url,
               fit: BoxFit.fitWidth,
-              cacheHeaderData: PixEzCacheHeaderData(key: tag, quality: quality),
+              cacheHeaderData: PixEzCacheHeaderData(
+                key: tag,
+                quality: quality,
+              ),
             ),
           );
   }
@@ -207,7 +218,7 @@ class _IllustCardState extends State<IllustCard> {
     return Card(
       margin: EdgeInsets.all(8.0),
       clipBehavior: Clip.antiAlias,
-      color: Theme.of(context).colorScheme.surface,
+      color: Theme.of(context).colorScheme.surfaceContainer,
       child: _buildAnimationWraper(
         context,
         Column(

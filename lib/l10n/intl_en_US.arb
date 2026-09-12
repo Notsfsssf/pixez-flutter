@@ -76,6 +76,8 @@
   "loading_failed_retry_message": "Failed to load. Click to retry",
   "login": "Login",
   "login_message": "Discover a whole new world",
+  "login_with_token": "Login with token",
+  "login_with_token_input_placeholder": "Enter your account token",
   "logout": "Logout",
   "logout_message": "This will clear account info and return to Login page.",
   "manga": "Manga",

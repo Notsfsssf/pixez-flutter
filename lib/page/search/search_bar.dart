@@ -28,50 +28,49 @@ class _SearchBarState extends State<SearchBar> {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
+      height: 48,
+      child: Material(
         color: Colors.grey.withValues(alpha: 0.4),
-      ),
-      child: Container(
-        height: 48,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              margin: const EdgeInsets.only(left: 8, right: 2),
-              child: IconButton(icon: Icon(Icons.search), onPressed: () {}),
-            ),
-            Expanded(
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (_, __, ___) => SearchSuggestionPage(),
-                    ),
-                  );
-                },
-                child: Container(
-                  child: Text(
-                    I18n.of(context).search_word_hint,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).textTheme.displaySmall!.color,
+        borderRadius: BorderRadius.circular(24),
+        clipBehavior: Clip.hardEdge,
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              PageRouteBuilder(
+                pageBuilder: (_, __, ___) => SearchSuggestionPage(),
+              ),
+            );
+          },
+          child: Padding(
+            padding: EdgeInsetsGeometry.symmetric(horizontal: 8.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              spacing: 4,
+              children: [
+                IconButton(icon: Icon(Icons.search), onPressed: () {}),
+                Expanded(
+                  child: Container(
+                    child: Text(
+                      I18n.of(context).search_word_hint,
+                      style: TextStyle(
+                        fontSize: Theme.of(
+                          context,
+                        ).textTheme.titleMedium!.fontSize,
+                        // color: Theme.of(context).textTheme.displaySmall!.color,
+                      ),
                     ),
                   ),
                 ),
-              ),
+                IconButton(
+                  icon: Icon(Icons.image_search),
+                  onPressed: () {
+                    if (widget.onSaucenao != null) widget.onSaucenao!();
+                  },
+                ),
+              ],
             ),
-            Container(
-              margin: const EdgeInsets.only(right: 8, left: 4),
-              child: IconButton(
-                icon: Icon(Icons.image_search),
-                onPressed: () {
-                  if (widget.onSaucenao != null) widget.onSaucenao!();
-                },
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

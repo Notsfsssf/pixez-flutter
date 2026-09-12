@@ -239,7 +239,7 @@ class _HelloPageState extends State<HelloPage> {
           height: 68,
           backgroundColor: Theme.of(
             context,
-          ).colorScheme.surface.withValues(alpha: 0.9),
+          ).colorScheme.surfaceContainer.withValues(alpha: 0.9),
           destinations: [
             NavigationDestination(
               icon: Icon(Icons.home),
