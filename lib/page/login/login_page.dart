@@ -21,6 +21,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:pixez/custom_tab_plugin.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
+import 'package:pixez/login_plugin.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/about/about_page.dart';
@@ -177,6 +178,17 @@ class _LoginPageState extends State<LoginPage> {
         CustomTabPlugin.launch(url);
       } catch (e) {
         BotToast.showText(text: e.toString());
+      }
+      return;
+    }
+    if (Platform.isLinux) {
+      final resultUri =
+          await LoginPlugin.open(url, title: I18n.of(context).login);
+      if (resultUri != null && resultUri.isNotEmpty && mounted) {
+        final parsedUri = Uri.tryParse(resultUri);
+        if (parsedUri != null) {
+          await Leader.pushWithUri(context, parsedUri);
+        }
       }
       return;
     }
