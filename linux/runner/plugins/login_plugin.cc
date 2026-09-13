@@ -286,7 +286,7 @@ void LoginPlugin::HandleMethodCall(FlMethodChannel* channel,
         web_view, "notify::uri", G_CALLBACK(on_uri_changed), session);
     g_signal_connect_object(
         web_view, "notify::estimated-load-progress",
-        G_CALLBACK(on_progress_changed), progress_bar, G_CONNECT_DEFAULT);
+        G_CALLBACK(on_progress_changed), progress_bar, static_cast<GConnectFlags>(0));
     g_signal_connect(
         web_view, "destroy", G_CALLBACK(on_web_view_destroy), session);
     g_signal_connect(
