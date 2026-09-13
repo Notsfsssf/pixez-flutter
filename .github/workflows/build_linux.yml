@@ -1,0 +1,136 @@
+name: Build Linux
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Linux
+    runs-on: ubuntu-22.04
+    steps:
+      - name: 签出仓库
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: 初始化 GitVersion
+        uses: gittools/actions/gitversion/setup@v4
+        with:
+          versionSpec: '6.7.x'
+
+      - name: 计算版本 Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v4
+        with:
+          overrideConfig: |
+            assembly-versioning-scheme=MajorMinorPatchTag
+            assembly-file-versioning-format="{Major}.{Minor}.{Patch}.{BuildMetaData ?? 0}"
+
+      - name: 初始化 Flutter 环境
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: .fvmrc
+          cache: true
+
+      - name: 初始化 Rust 工具链
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+
+      - name: 安装系统依赖
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev libwebkit2gtk-4.1-dev
+
+      - name: 还原依赖
+        run: flutter pub get --no-example --enforce-lockfile
+
+      - name: 生成代码 (rhttp)
+        working-directory: plugins/rhttp/rhttp
+        run: dart run build_runner build
+
+      - name: 生成代码 (PixEz)
+        run: dart run build_runner build
+
+      - name: 构建项目
+        run: |
+          flutter build linux \
+            --release \
+            --no-pub \
+            --build-name=${{ steps.gitversion.outputs.majorMinorPatch }} \
+            --build-number=${{ steps.gitversion.outputs.buildMetaData }}
+
+      - name: 打包产物
+        run: |
+          mkdir -p dist
+          tar -czf dist/linux-x86_64-release.tar.gz -C build/linux/x64/release/bundle .
+
+      - name: 上传产物
+        id: tarball-artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-x86_64-release.tar.gz
+          path: dist/linux-x86_64-release.tar.gz
+          compression-level: 0
+
+      - name: 构建 AppImage
+        id: appimage
+        run: |
+          mkdir -p AppDir
+          cp -r build/linux/x64/release/bundle/* AppDir/
+          cp linux/packaging/com.perol.pixez.desktop AppDir/com.perol.pixez.desktop
+          cp linux/packaging/AppRun AppDir/AppRun
+          chmod +x AppDir/AppRun AppDir/com.perol.pixez.desktop
+          cp assets/images/icon.png AppDir/pixez.png
+          cp assets/images/icon.png AppDir/.DirIcon
+
+          curl -fsSL --retry 3 https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage -o appimagetool
+          chmod +x appimagetool
+          mkdir -p dist
+          ARCH=x86_64 ./appimagetool --appimage-extract-and-run AppDir dist/linux-x86_64-release.AppImage
+
+      - name: 上传 AppImage
+        id: appimage-artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-x86_64-release.AppImage
+          path: dist/linux-x86_64-release.AppImage
+          compression-level: 0
+
+      - name: 生成校验和
+        run: |
+          echo '### Build Success :rocket:' >> $GITHUB_STEP_SUMMARY
+          echo '' >> $GITHUB_STEP_SUMMARY
+          echo '|File|SHA256|' >> $GITHUB_STEP_SUMMARY
+          echo '|:-|:-:|' >> $GITHUB_STEP_SUMMARY
+          echo "|[tar.gz](${{ steps.tarball-artifact.outputs.artifact-url }})|${{ steps.tarball-artifact.outputs.artifact-digest }}|" >> $GITHUB_STEP_SUMMARY
+          echo "|[AppImage](${{ steps.appimage-artifact.outputs.artifact-url }})|${{ steps.appimage-artifact.outputs.artifact-digest }}|" >> $GITHUB_STEP_SUMMARY
+
+  publish:
+    needs: build
+    name: 发布
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: write
+      discussions: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: 签出仓库
+        uses: actions/checkout@v7
+
+      - name: Download Tarball Artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: linux-x86_64-release.tar.gz
+          path: artifacts
+
+      - name: Download AppImage Artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: linux-x86_64-release.AppImage
+          path: artifacts
+
+      - name: Release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: artifacts/*
