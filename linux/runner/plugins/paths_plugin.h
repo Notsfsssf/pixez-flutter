@@ -2,6 +2,7 @@
 #define PLUGINS_PATHS_PLUGIN_H_
 
 #include <flutter_linux/flutter_linux.h>
+
 #include <string>
 
 class Paths {
@@ -10,8 +11,7 @@ class Paths {
 
   static std::string GetDatabaseFolderPath();
   static void HandleMethodCall(FlMethodChannel* channel,
-                               FlMethodCall* method_call,
-                               gpointer user_data);
+                               FlMethodCall* method_call, gpointer user_data);
 
  public:
   static void Initialize(FlPluginRegistrar* registrar);

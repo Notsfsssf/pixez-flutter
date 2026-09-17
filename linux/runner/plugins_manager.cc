@@ -2,10 +2,10 @@
 
 #include "plugins/clipboard_plugin.h"
 #include "plugins/document_plugin.h"
+#include "plugins/login_plugin.h"
 #include "plugins/paths_plugin.h"
 #include "plugins/single_instance_plugin.h"
 #include "plugins/weiss_plugin.h"
-#include "plugins/login_plugin.h"
 
 void RegisterPixEzPlugins(FlView* view, GtkWindow* window) {
   FlPluginRegistry* registry = FL_PLUGIN_REGISTRY(view);
@@ -23,7 +23,8 @@ void RegisterPixEzPlugins(FlView* view, GtkWindow* window) {
   Paths::Initialize(paths_registrar);
 
   g_autoptr(FlPluginRegistrar) single_instance_registrar =
-      fl_plugin_registry_get_registrar_for_plugin(registry, "SingleInstancePlugin");
+      fl_plugin_registry_get_registrar_for_plugin(registry,
+                                                  "SingleInstancePlugin");
   SingleInstance::Initialize(single_instance_registrar);
 
   g_autoptr(FlPluginRegistrar) weiss_registrar =

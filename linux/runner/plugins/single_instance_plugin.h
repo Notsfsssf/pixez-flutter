@@ -2,6 +2,7 @@
 #define PLUGINS_SINGLE_INSTANCE_PLUGIN_H_
 
 #include <flutter_linux/flutter_linux.h>
+
 #include <string>
 #include <vector>
 
@@ -12,11 +13,9 @@ class SingleInstance {
   static gboolean s_has_listener;
   static std::vector<std::string> s_pending_args;
 
-  static FlMethodErrorResponse* OnListen(FlEventChannel* channel,
-                                         FlValue* args,
+  static FlMethodErrorResponse* OnListen(FlEventChannel* channel, FlValue* args,
                                          gpointer user_data);
-  static FlMethodErrorResponse* OnCancel(FlEventChannel* channel,
-                                         FlValue* args,
+  static FlMethodErrorResponse* OnCancel(FlEventChannel* channel, FlValue* args,
                                          gpointer user_data);
 
  public:

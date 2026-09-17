@@ -9,10 +9,10 @@ std::string Clipboard::name = "com.perol.dev/clipboard";
 void Clipboard::Initialize(FlPluginRegistrar* registrar) {
   FlBinaryMessenger* messenger = fl_plugin_registrar_get_messenger(registrar);
   g_autoptr(FlStandardMethodCodec) codec = fl_standard_method_codec_new();
-  g_autoptr(FlMethodChannel) channel = fl_method_channel_new(
-      messenger, name.c_str(), FL_METHOD_CODEC(codec));
-  fl_method_channel_set_method_call_handler(
-      channel, HandleMethodCall, nullptr, nullptr);
+  g_autoptr(FlMethodChannel) channel =
+      fl_method_channel_new(messenger, name.c_str(), FL_METHOD_CODEC(codec));
+  fl_method_channel_set_method_call_handler(channel, HandleMethodCall, nullptr,
+                                            nullptr);
 }
 
 bool Clipboard::CopyImageFromByteArray(const uint8_t* data, size_t length) {
@@ -23,7 +23,8 @@ bool Clipboard::CopyImageFromByteArray(const uint8_t* data, size_t length) {
   g_autoptr(GdkPixbufLoader) loader = gdk_pixbuf_loader_new();
   g_autoptr(GError) write_error = nullptr;
 
-  gboolean write_ok = gdk_pixbuf_loader_write(loader, data, length, &write_error);
+  gboolean write_ok =
+      gdk_pixbuf_loader_write(loader, data, length, &write_error);
   if (!write_ok) {
     g_warning("Failed to write to pixbuf loader: %s",
               write_error ? write_error->message : "unknown");
@@ -69,9 +70,9 @@ void Clipboard::HandleMethodCall(FlMethodChannel* channel,
         return;
       }
     }
-    fl_method_call_respond_error(
-        method_call, "COPY_FAILED", "Failed to write image to clipboard",
-        nullptr, nullptr);
+    fl_method_call_respond_error(method_call, "COPY_FAILED",
+                                 "Failed to write image to clipboard", nullptr,
+                                 nullptr);
     return;
   }
 

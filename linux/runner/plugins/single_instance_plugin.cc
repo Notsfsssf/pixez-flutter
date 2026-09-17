@@ -8,10 +8,10 @@ std::vector<std::string> SingleInstance::s_pending_args;
 void SingleInstance::Initialize(FlPluginRegistrar* registrar) {
   FlBinaryMessenger* messenger = fl_plugin_registrar_get_messenger(registrar);
   g_autoptr(FlStandardMethodCodec) codec = fl_standard_method_codec_new();
-  s_event_channel = fl_event_channel_new(
-      messenger, name.c_str(), FL_METHOD_CODEC(codec));
-  fl_event_channel_set_stream_handlers(
-      s_event_channel, OnListen, OnCancel, nullptr, nullptr);
+  s_event_channel =
+      fl_event_channel_new(messenger, name.c_str(), FL_METHOD_CODEC(codec));
+  fl_event_channel_set_stream_handlers(s_event_channel, OnListen, OnCancel,
+                                       nullptr, nullptr);
 }
 
 FlMethodErrorResponse* SingleInstance::OnListen(FlEventChannel* channel,

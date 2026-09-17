@@ -2,6 +2,7 @@
 #define PLUGINS_WEISS_PLUGIN_H_
 
 #include <flutter_linux/flutter_linux.h>
+
 #include <string>
 
 class Weiss {
@@ -13,8 +14,7 @@ class Weiss {
   static void Proxy();
 
   static void HandleMethodCall(FlMethodChannel* channel,
-                               FlMethodCall* method_call,
-                               gpointer user_data);
+                               FlMethodCall* method_call, gpointer user_data);
 
  public:
   static void Initialize(FlPluginRegistrar* registrar);
