@@ -7,7 +7,8 @@
 #include "plugins/single_instance_plugin.h"
 #include "plugins/weiss_plugin.h"
 
-void RegisterPixEzPlugins(FlView* view, GtkWindow* window) {
+void RegisterPixEzPlugins(FlView* view, GtkWindow* window,
+                          GtkOverlay* overlay) {
   FlPluginRegistry* registry = FL_PLUGIN_REGISTRY(view);
 
   g_autoptr(FlPluginRegistrar) clipboard_registrar =
@@ -33,5 +34,5 @@ void RegisterPixEzPlugins(FlView* view, GtkWindow* window) {
 
   g_autoptr(FlPluginRegistrar) login_registrar =
       fl_plugin_registry_get_registrar_for_plugin(registry, "LoginPlugin");
-  LoginPlugin::Initialize(login_registrar, window);
+  LoginPlugin::Initialize(login_registrar, overlay, view);
 }

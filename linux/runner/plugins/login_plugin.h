@@ -7,15 +7,18 @@
 #include <string>
 
 class LoginPlugin {
- private:
+ public:
   static std::string name;
-  static GtkWindow* s_parent_window;
+  static GtkOverlay* s_overlay;
+  static FlView* s_fl_view;
+  static FlMethodChannel* s_channel;
 
+  static void Initialize(FlPluginRegistrar* registrar, GtkOverlay* overlay,
+                         FlView* view);
+
+ private:
   static void HandleMethodCall(FlMethodChannel* channel,
                                FlMethodCall* method_call, gpointer user_data);
-
- public:
-  static void Initialize(FlPluginRegistrar* registrar, GtkWindow* window);
 };
 
 #endif  // PLUGINS_LOGIN_PLUGIN_H_

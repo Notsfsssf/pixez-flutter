@@ -1,22 +1,44 @@
 #include "login_plugin.h"
 
-#include <gdk/gdkkeysyms.h>
 #include <webkit2/webkit2.h>
 
+#include <algorithm>
+#include <cmath>
 #include <string>
 
 std::string LoginPlugin::name = "com.perol.dev/login";
-GtkWindow* LoginPlugin::s_parent_window = nullptr;
+GtkOverlay* LoginPlugin::s_overlay = nullptr;
+FlView* LoginPlugin::s_fl_view = nullptr;
+FlMethodChannel* LoginPlugin::s_channel = nullptr;
 
 namespace {
 
 struct LoginSession;
 static LoginSession* s_active_session = nullptr;
 
+static double get_double_from_map(FlValue* map, const gchar* key,
+                                  double def_val = 0.0) {
+  if (map == nullptr || fl_value_get_type(map) != FL_VALUE_TYPE_MAP)
+    return def_val;
+  FlValue* val = fl_value_lookup_string(map, key);
+  if (val == nullptr) return def_val;
+  if (fl_value_get_type(val) == FL_VALUE_TYPE_FLOAT) {
+    return fl_value_get_float(val);
+  }
+  if (fl_value_get_type(val) == FL_VALUE_TYPE_INT) {
+    return static_cast<double>(fl_value_get_int(val));
+  }
+  return def_val;
+}
+
 struct LoginSession {
   FlMethodCall* method_call = nullptr;
-  GtkWidget* dialog = nullptr;
+  GtkWidget* container = nullptr;
   GtkWidget* web_view = nullptr;
+  int x = 0;
+  int y = 0;
+  int width = 0;
+  int height = 0;
   bool handled = false;
 
   ~LoginSession() {
@@ -26,7 +48,6 @@ struct LoginSession {
     }
     if (web_view != nullptr) {
       g_signal_handlers_disconnect_by_data(web_view, this);
-      webkit_web_view_stop_loading(WEBKIT_WEB_VIEW(web_view));
       web_view = nullptr;
     }
   }
@@ -56,6 +77,36 @@ struct LoginSession {
     return false;
   }
 
+  void CleanupContainer() {
+    if (container != nullptr) {
+      GtkWidget* c = container;
+      container = nullptr;
+      web_view = nullptr;
+      gtk_widget_hide(c);
+      g_object_ref(c);
+      g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,
+                      G_SOURCE_FUNC(+[](gpointer data) -> gboolean {
+                        GtkWidget* widget = GTK_WIDGET(data);
+                        if (GTK_IS_WIDGET(widget)) {
+                          GtkWidget* parent = gtk_widget_get_parent(widget);
+                          if (parent != nullptr && GTK_IS_CONTAINER(parent)) {
+                            gtk_container_remove(GTK_CONTAINER(parent), widget);
+                          }
+                          gtk_widget_destroy(widget);
+                        }
+                        g_object_unref(widget);
+                        return G_SOURCE_REMOVE;
+                      }),
+                      c, nullptr);
+    }
+    if (LoginPlugin::s_fl_view != nullptr) {
+      gtk_widget_grab_focus(GTK_WIDGET(LoginPlugin::s_fl_view));
+    }
+    if (LoginPlugin::s_overlay != nullptr) {
+      gtk_widget_queue_resize(GTK_WIDGET(LoginPlugin::s_overlay));
+    }
+  }
+
   void FinishWithResult(const std::string& result) {
     if (handled) return;
     handled = true;
@@ -65,7 +116,6 @@ struct LoginSession {
     if (web_view != nullptr) {
       g_signal_handlers_disconnect_by_data(web_view, this);
       webkit_web_view_stop_loading(WEBKIT_WEB_VIEW(web_view));
-      web_view = nullptr;
     }
     if (method_call != nullptr) {
       g_autoptr(FlValue) val = fl_value_new_string(result.c_str());
@@ -73,22 +123,8 @@ struct LoginSession {
       g_object_unref(method_call);
       method_call = nullptr;
     }
-    if (dialog != nullptr) {
-      GtkWidget* win = dialog;
-      dialog = nullptr;
-      // Immediately hide the window so user cannot interact further
-      gtk_widget_hide(win);
-      // Retain reference to prevent premature freeing before idle dispatch
-      g_object_ref(win);
-      g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,
-                      G_SOURCE_FUNC(+[](gpointer data) -> gboolean {
-                        GtkWidget* w = GTK_WIDGET(data);
-                        gtk_widget_destroy(w);
-                        g_object_unref(w);
-                        return G_SOURCE_REMOVE;
-                      }),
-                      win, nullptr);
-    }
+    CleanupContainer();
+    ScheduleDelete();
   }
 
   void FinishWithNull() {
@@ -100,13 +136,24 @@ struct LoginSession {
     if (web_view != nullptr) {
       g_signal_handlers_disconnect_by_data(web_view, this);
       webkit_web_view_stop_loading(WEBKIT_WEB_VIEW(web_view));
-      web_view = nullptr;
     }
     if (method_call != nullptr) {
       fl_method_call_respond_success(method_call, nullptr, nullptr);
       g_object_unref(method_call);
       method_call = nullptr;
     }
+    CleanupContainer();
+    ScheduleDelete();
+  }
+
+  void ScheduleDelete() {
+    g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,
+                    G_SOURCE_FUNC(+[](gpointer data) -> gboolean {
+                      LoginSession* s = static_cast<LoginSession*>(data);
+                      delete s;
+                      return G_SOURCE_REMOVE;
+                    }),
+                    this, nullptr);
   }
 };
 
@@ -149,47 +196,49 @@ static void on_uri_changed(GObject* object, GParamSpec* pspec,
                            gpointer user_data) {
   WebKitWebView* web_view = WEBKIT_WEB_VIEW(object);
   const gchar* uri = webkit_web_view_get_uri(web_view);
+  std::string uri_str = (uri != nullptr) ? uri : "";
   LoginSession* session = static_cast<LoginSession*>(user_data);
-  if (session != nullptr) {
-    session->CheckAndHandleRedirect(uri);
+  if (session != nullptr && !uri_str.empty()) {
+    session->CheckAndHandleRedirect(uri_str.c_str());
+  }
+  if (!uri_str.empty() && LoginPlugin::s_channel != nullptr) {
+    g_autoptr(FlValue) val = fl_value_new_string(uri_str.c_str());
+    fl_method_channel_invoke_method(LoginPlugin::s_channel, "onUrlChanged", val,
+                                    nullptr, nullptr, nullptr);
   }
 }
 
 static void on_progress_changed(GObject* object, GParamSpec* pspec,
                                 gpointer user_data) {
   WebKitWebView* web_view = WEBKIT_WEB_VIEW(object);
-  GtkProgressBar* bar = GTK_PROGRESS_BAR(user_data);
   gdouble progress = webkit_web_view_get_estimated_load_progress(web_view);
-  gtk_progress_bar_set_fraction(bar, progress);
-  if (progress >= 1.0) {
-    gtk_widget_hide(GTK_WIDGET(bar));
-  } else {
-    gtk_widget_show(GTK_WIDGET(bar));
+  if (LoginPlugin::s_channel != nullptr) {
+    g_autoptr(FlValue) val = fl_value_new_float(progress);
+    fl_method_channel_invoke_method(LoginPlugin::s_channel, "onProgress", val,
+                                    nullptr, nullptr, nullptr);
   }
 }
 
-static void on_web_view_destroy(GtkWidget* widget, gpointer user_data) {
-  LoginSession* session = static_cast<LoginSession*>(user_data);
-  if (session != nullptr && session->web_view == widget) {
-    session->web_view = nullptr;
+static void on_title_changed(GObject* object, GParamSpec* pspec,
+                             gpointer user_data) {
+  WebKitWebView* web_view = WEBKIT_WEB_VIEW(object);
+  const gchar* title = webkit_web_view_get_title(web_view);
+  if (title != nullptr && LoginPlugin::s_channel != nullptr) {
+    g_autoptr(FlValue) val = fl_value_new_string(title);
+    fl_method_channel_invoke_method(LoginPlugin::s_channel, "onTitle", val,
+                                    nullptr, nullptr, nullptr);
   }
 }
 
-static void on_dialog_destroy(GtkWidget* widget, gpointer user_data) {
-  LoginSession* session = static_cast<LoginSession*>(user_data);
-  if (session != nullptr) {
-    session->FinishWithNull();
-    delete session;
+static GtkWidget* on_create_web_view(WebKitWebView* web_view,
+                                     WebKitNavigationAction* action,
+                                     gpointer user_data) {
+  WebKitURIRequest* request = webkit_navigation_action_get_request(action);
+  const gchar* uri = webkit_uri_request_get_uri(request);
+  if (uri != nullptr) {
+    webkit_web_view_load_uri(web_view, uri);
   }
-}
-
-static gboolean on_dialog_key_press(GtkWidget* widget, GdkEventKey* event,
-                                    gpointer user_data) {
-  if (event->keyval == GDK_KEY_Escape) {
-    gtk_widget_destroy(widget);
-    return TRUE;
-  }
-  return FALSE;
+  return nullptr;
 }
 
 }  // namespace
@@ -198,8 +247,9 @@ void LoginPlugin::HandleMethodCall(FlMethodChannel* channel,
                                    FlMethodCall* method_call,
                                    gpointer user_data) {
   const gchar* method = fl_method_call_get_name(method_call);
+  FlValue* args = fl_method_call_get_args(method_call);
+
   if (strcmp(method, "open") == 0) {
-    FlValue* args = fl_method_call_get_args(method_call);
     if (args == nullptr || fl_value_get_type(args) != FL_VALUE_TYPE_MAP) {
       fl_method_call_respond_error(method_call, "BAD_ARGS",
                                    "Expected argument map", nullptr, nullptr);
@@ -212,60 +262,34 @@ void LoginPlugin::HandleMethodCall(FlMethodChannel* channel,
                                    "Expected 'url' string", nullptr, nullptr);
       return;
     }
-    const gchar* url = fl_value_get_string(url_val);
-    std::string title = "Pixiv";
-    FlValue* title_val = fl_value_lookup_string(args, "title");
-    if (title_val != nullptr &&
-        fl_value_get_type(title_val) == FL_VALUE_TYPE_STRING) {
-      title = fl_value_get_string(title_val);
-    }
-
-    if (s_active_session != nullptr) {
-      if (s_active_session->dialog != nullptr) {
-        gtk_window_present(GTK_WINDOW(s_active_session->dialog));
-      }
-      fl_method_call_respond_error(method_call, "ALREADY_ACTIVE",
-                                   "Login window is already open", nullptr,
+    if (LoginPlugin::s_overlay == nullptr) {
+      fl_method_call_respond_error(method_call, "NO_OVERLAY",
+                                   "GtkOverlay not initialized", nullptr,
                                    nullptr);
       return;
     }
 
+    if (s_active_session != nullptr) {
+      s_active_session->FinishWithNull();
+    }
+
+    const gchar* url = fl_value_get_string(url_val);
     LoginSession* session = new LoginSession();
     session->method_call = FL_METHOD_CALL(g_object_ref(method_call));
     s_active_session = session;
 
-    // Create modal dialog
-    GtkWidget* dialog = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    session->dialog = dialog;
-    if (s_parent_window != nullptr) {
-      gtk_window_set_transient_for(GTK_WINDOW(dialog), s_parent_window);
-      gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
-    }
-    gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
-    gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
-    gtk_window_set_default_size(GTK_WINDOW(dialog), 480, 700);
+    double x = get_double_from_map(args, "x", 0.0);
+    double y = get_double_from_map(args, "y", 0.0);
+    double width = get_double_from_map(args, "width", 0.0);
+    double height = get_double_from_map(args, "height", 0.0);
 
-    // Header bar
-    GtkHeaderBar* header_bar = GTK_HEADER_BAR(gtk_header_bar_new());
-    gtk_header_bar_set_show_close_button(header_bar, TRUE);
-    gtk_header_bar_set_title(header_bar, title.c_str());
+    session->x = static_cast<int>(std::round(x));
+    session->y = static_cast<int>(std::round(y));
+    session->width = static_cast<int>(std::round(width));
+    session->height = static_cast<int>(std::round(height));
 
-    GtkWidget* back_btn = gtk_button_new_from_icon_name("go-previous-symbolic",
-                                                        GTK_ICON_SIZE_BUTTON);
-    gtk_header_bar_pack_start(header_bar, back_btn);
+    session->container = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
-    GtkWidget* reload_btn = gtk_button_new_from_icon_name(
-        "view-refresh-symbolic", GTK_ICON_SIZE_BUTTON);
-    gtk_header_bar_pack_start(header_bar, reload_btn);
-    gtk_window_set_titlebar(GTK_WINDOW(dialog), GTK_WIDGET(header_bar));
-
-    // Content container
-    GtkWidget* box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    GtkWidget* progress_bar = gtk_progress_bar_new();
-    gtk_box_pack_start(GTK_BOX(box), progress_bar, FALSE, FALSE, 0);
-
-    // Use ephemeral WebKitWebContext to guarantee clean session per login and
-    // multi-account support
     g_autoptr(WebKitWebContext) context = webkit_web_context_new_ephemeral();
     GtkWidget* web_view = webkit_web_view_new_with_context(context);
     session->web_view = web_view;
@@ -274,48 +298,123 @@ void LoginPlugin::HandleMethodCall(FlMethodChannel* channel,
         webkit_web_view_get_settings(WEBKIT_WEB_VIEW(web_view));
     webkit_settings_set_enable_javascript(settings, TRUE);
     webkit_settings_set_enable_smooth_scrolling(settings, TRUE);
+    webkit_settings_set_enable_developer_extras(settings, TRUE);
     webkit_settings_set_user_agent(settings,
                                    "Mozilla/5.0 (X11; Linux x86_64) "
                                    "AppleWebKit/537.36 (KHTML, like Gecko) "
                                    "Chrome/128.0.0.0 Safari/537.36");
 
-    g_signal_connect_swapped(back_btn, "clicked",
-                             G_CALLBACK(webkit_web_view_go_back), web_view);
-    g_signal_connect_swapped(reload_btn, "clicked",
-                             G_CALLBACK(webkit_web_view_reload), web_view);
     g_signal_connect(web_view, "decide-policy", G_CALLBACK(on_decide_policy),
                      session);
     g_signal_connect(web_view, "load-failed", G_CALLBACK(on_load_failed),
                      session);
     g_signal_connect(web_view, "notify::uri", G_CALLBACK(on_uri_changed),
                      session);
-    g_signal_connect_object(web_view, "notify::estimated-load-progress",
-                            G_CALLBACK(on_progress_changed), progress_bar,
-                            static_cast<GConnectFlags>(0));
-    g_signal_connect(web_view, "destroy", G_CALLBACK(on_web_view_destroy),
-                     session);
-    g_signal_connect(dialog, "key-press-event", G_CALLBACK(on_dialog_key_press),
+    g_signal_connect(web_view, "notify::estimated-load-progress",
+                     G_CALLBACK(on_progress_changed), nullptr);
+    g_signal_connect(web_view, "notify::title", G_CALLBACK(on_title_changed),
                      nullptr);
-    g_signal_connect(dialog, "destroy", G_CALLBACK(on_dialog_destroy), session);
+    g_signal_connect(web_view, "create", G_CALLBACK(on_create_web_view),
+                     nullptr);
 
-    gtk_box_pack_start(GTK_BOX(box), web_view, TRUE, TRUE, 0);
-    gtk_container_add(GTK_CONTAINER(dialog), box);
+    gtk_box_pack_start(GTK_BOX(session->container), web_view, TRUE, TRUE, 0);
+    gtk_widget_show_all(session->container);
 
-    gtk_widget_show_all(dialog);
+    gtk_overlay_add_overlay(LoginPlugin::s_overlay, session->container);
+    gtk_overlay_set_overlay_pass_through(LoginPlugin::s_overlay,
+                                         session->container, FALSE);
+    gtk_widget_queue_resize(GTK_WIDGET(LoginPlugin::s_overlay));
+    gtk_widget_grab_focus(web_view);
+
     webkit_web_view_load_uri(WEBKIT_WEB_VIEW(web_view), url);
+  } else if (strcmp(method, "updateBounds") == 0) {
+    if (s_active_session != nullptr && args != nullptr &&
+        fl_value_get_type(args) == FL_VALUE_TYPE_MAP) {
+      double x = get_double_from_map(args, "x", s_active_session->x);
+      double y = get_double_from_map(args, "y", s_active_session->y);
+      double width =
+          get_double_from_map(args, "width", s_active_session->width);
+      double height =
+          get_double_from_map(args, "height", s_active_session->height);
+      s_active_session->x = static_cast<int>(std::round(x));
+      s_active_session->y = static_cast<int>(std::round(y));
+      s_active_session->width = static_cast<int>(std::round(width));
+      s_active_session->height = static_cast<int>(std::round(height));
+
+      FlValue* vis_val = fl_value_lookup_string(args, "visible");
+      bool visible = true;
+      if (vis_val != nullptr &&
+          fl_value_get_type(vis_val) == FL_VALUE_TYPE_BOOL) {
+        visible = fl_value_get_bool(vis_val);
+      }
+
+      if (s_active_session->container != nullptr) {
+        if (visible) {
+          gtk_widget_show(s_active_session->container);
+        } else {
+          gtk_widget_hide(s_active_session->container);
+        }
+      }
+      if (LoginPlugin::s_overlay != nullptr) {
+        gtk_widget_queue_resize(GTK_WIDGET(LoginPlugin::s_overlay));
+      }
+    }
+    fl_method_call_respond_success(method_call, nullptr, nullptr);
+  } else if (strcmp(method, "close") == 0) {
+    if (s_active_session != nullptr) {
+      s_active_session->FinishWithNull();
+    }
+    fl_method_call_respond_success(method_call, nullptr, nullptr);
+  } else if (strcmp(method, "goBack") == 0) {
+    if (s_active_session != nullptr && s_active_session->web_view != nullptr) {
+      webkit_web_view_go_back(WEBKIT_WEB_VIEW(s_active_session->web_view));
+    }
+    fl_method_call_respond_success(method_call, nullptr, nullptr);
+  } else if (strcmp(method, "reload") == 0) {
+    if (s_active_session != nullptr && s_active_session->web_view != nullptr) {
+      webkit_web_view_reload(WEBKIT_WEB_VIEW(s_active_session->web_view));
+    }
+    fl_method_call_respond_success(method_call, nullptr, nullptr);
   } else {
     fl_method_call_respond_not_implemented(method_call, nullptr);
   }
 }
 
-void LoginPlugin::Initialize(FlPluginRegistrar* registrar, GtkWindow* window) {
-  s_parent_window = window;
+void LoginPlugin::Initialize(FlPluginRegistrar* registrar, GtkOverlay* overlay,
+                             FlView* view) {
+  s_overlay = overlay;
+  s_fl_view = view;
+
+  g_signal_connect(
+      overlay, "get-child-position",
+      G_CALLBACK(+[](GtkOverlay* ov, GtkWidget* widget, GtkAllocation* alloc,
+                     gpointer user_data) -> gboolean {
+        if (s_active_session != nullptr &&
+            widget == s_active_session->container) {
+          if (s_active_session->width > 0 && s_active_session->height > 0) {
+            alloc->x = s_active_session->x;
+            alloc->y = s_active_session->y;
+            alloc->width = s_active_session->width;
+            alloc->height = s_active_session->height;
+          } else {
+            GtkAllocation ov_alloc;
+            gtk_widget_get_allocation(GTK_WIDGET(ov), &ov_alloc);
+            alloc->x = 0;
+            alloc->y = 0;
+            alloc->width = std::max(1, ov_alloc.width);
+            alloc->height = std::max(1, ov_alloc.height);
+          }
+          return TRUE;
+        }
+        return FALSE;
+      }),
+      nullptr);
 
   g_autoptr(FlStandardMethodCodec) codec = fl_standard_method_codec_new();
-  g_autoptr(FlMethodChannel) channel =
+  s_channel =
       fl_method_channel_new(fl_plugin_registrar_get_messenger(registrar),
                             name.c_str(), FL_METHOD_CODEC(codec));
 
-  fl_method_channel_set_method_call_handler(channel, HandleMethodCall, nullptr,
-                                            nullptr);
+  fl_method_channel_set_method_call_handler(s_channel, HandleMethodCall,
+                                            nullptr, nullptr);
 }

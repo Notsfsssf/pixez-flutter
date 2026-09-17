@@ -5,6 +5,6 @@
 #include <gtk/gtk.h>
 
 // Registers Flutter plugins for PixEz.
-void RegisterPixEzPlugins(FlView* view, GtkWindow* window);
+void RegisterPixEzPlugins(FlView* view, GtkWindow* window, GtkOverlay* overlay);
 
 #endif  // PIXEZ_PLUGIN_REGISTRANT_
