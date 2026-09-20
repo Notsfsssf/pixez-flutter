@@ -358,5 +358,8 @@
   "date_preset_1month": "1 month",
   "date_preset_6months": "6 months",
   "date_preset_1year": "1 year",
-  "date_preset_custom": "Custom range"
+  "date_preset_custom": "Custom range",
+  "bookmark_order": "Bookmark order",
+  "bookmark_order_normal": "Normal",
+  "bookmark_order_random": "Random"
 }
