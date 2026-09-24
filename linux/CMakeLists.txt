@@ -9,6 +9,17 @@ set(BINARY_NAME "pixez")
 # https://wiki.gnome.org/HowDoI/ChooseApplicationID
 set(APPLICATION_ID "com.perol.pixez")
 
+message("")
+message("______ _______   __ _____ ______")
+message("| ___ \\_   _\\ \\ / /|  ___|___  /")
+message("| |_/ / | |  \\ V / | |__    / / ")
+message("|  __/  | |  /   \\ |  __|  / /  ")
+message("| |    _| |_/ /^\\ \\| |___./ /___")
+message("\\_|    \\___/\\/   \\/\\____/\\_____/")
+message("")
+message("")
+message("Pixez for Linux Desktop Application")
+
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.
 cmake_policy(SET CMP0063 NEW)
