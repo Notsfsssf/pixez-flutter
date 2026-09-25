@@ -37,7 +37,6 @@ class LoginPlugin {
   /// Resolves to redirect URL string on success, or null on cancellation/close.
   static Future<String?> open(
     String url, {
-    String? title,
     Rect? bounds,
     void Function(double progress)? progressCallback,
     void Function(String title)? titleCallback,
@@ -51,7 +50,6 @@ class LoginPlugin {
     try {
       final Map<String, dynamic> args = {
         'url': url,
-        if (title != null) 'title': title,
         if (bounds != null) ...{
           'x': bounds.left,
           'y': bounds.top,
@@ -72,14 +70,13 @@ class LoginPlugin {
   }
 
   /// Updates the position and size of the WebKit view.
-  static Future<void> updateBounds(Rect bounds, {bool visible = true}) async {
+  static Future<void> updateBounds(Rect bounds) async {
     try {
       await _channel.invokeMethod('updateBounds', {
         'x': bounds.left,
         'y': bounds.top,
         'width': bounds.width,
         'height': bounds.height,
-        'visible': visible,
       });
     } catch (e) {
       debugPrint("LoginPlugin.updateBounds error: $e");

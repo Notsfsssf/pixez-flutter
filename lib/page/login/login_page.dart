@@ -25,7 +25,6 @@ import 'package:pixez/main.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/about/about_page.dart';
 import 'package:pixez/page/hello/setting/setting_quality_page.dart';
-import 'package:pixez/page/login/linux_login_page.dart';
 import 'package:pixez/page/login/token_page.dart';
 import 'package:pixez/page/webview/webview_page.dart';
 import 'package:pixez/weiss_plugin.dart';
@@ -178,17 +177,6 @@ class _LoginPageState extends State<LoginPage> {
         CustomTabPlugin.launch(url);
       } catch (e) {
         BotToast.showText(text: e.toString());
-      }
-      return;
-    }
-    if (Platform.isLinux) {
-      final result = await Leader.push(context, LinuxLoginPage(url: url));
-      final resultUri = result is String ? result : null;
-      if (resultUri != null && resultUri.isNotEmpty && mounted) {
-        final parsedUri = Uri.tryParse(resultUri);
-        if (parsedUri != null) {
-          await Leader.pushWithUri(context, parsedUri);
-        }
       }
       return;
     }

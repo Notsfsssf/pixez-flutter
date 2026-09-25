@@ -55,6 +55,7 @@ class _PixEzSearchBoxState extends State<StatefulWidget> {
 
   @override
   void dispose() {
+    _delay?.cancel();
     _focusNode.dispose();
     _controller.dispose();
     super.dispose();
@@ -453,9 +454,11 @@ class _PixEzSearchBoxState extends State<StatefulWidget> {
     if (text.isEmpty) {
       _delay?.cancel();
       _delay = Timer(const Duration(seconds: 1), () async {
+        if (!mounted) return;
         setState(() => _loading = true);
         // 如果搜索框为空则展示历史记录
         await tagHistoryStore.fetch();
+        if (!mounted) return;
         if (tagHistoryStore.tags.isEmpty) {
           setState(() => _loading = false);
           return;
@@ -479,8 +482,10 @@ class _PixEzSearchBoxState extends State<StatefulWidget> {
 
       _delay?.cancel();
       _delay = Timer(const Duration(seconds: 1), () async {
+        if (!mounted) return;
         setState(() => _loading = true);
         await _trendTagsStore.fetch();
+        if (!mounted) return;
         if (_trendTagsStore.trendTags.isEmpty) {
           setState(() => _loading = false);
           return;
@@ -504,8 +509,10 @@ class _PixEzSearchBoxState extends State<StatefulWidget> {
 
       _delay?.cancel();
       _delay = Timer(const Duration(seconds: 1), () async {
+        if (!mounted) return;
         setState(() => _loading = true);
         await _suggestionStore.fetch(text);
+        if (!mounted) return;
         if (_suggestionStore.autoWords?.tags.isNotEmpty != true) {
           setState(() => _loading = false);
           return;
@@ -520,6 +527,7 @@ class _PixEzSearchBoxState extends State<StatefulWidget> {
       });
     }
 
+    if (!mounted) return;
     setState(() {});
   }
 

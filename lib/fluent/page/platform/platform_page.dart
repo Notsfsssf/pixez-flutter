@@ -11,7 +11,7 @@ import 'package:pixez/fluent/page/hello/setting/save_format_page.dart';
 class PlatformPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    if (Platform.isWindows) return _PlatformPageStateWindow();
+    if (Platform.isWindows || Platform.isLinux) return _PlatformPageStateWindow();
     throw UnimplementedError();
   }
 }
@@ -47,7 +47,14 @@ class _PlatformPageStateWindow extends State<PlatformPage> {
     return ContentDialog(
       title: ListTile(
         title: Text("Platform Setting"),
-        subtitle: Text("For Windows", style: TextStyle(color: Colors.blue)),
+        subtitle: Text(
+          Platform.isWindows
+            ? "For Windows"
+            : Platform.isLinux
+              ? "For Linux"
+              : "",
+          style: TextStyle(color: Colors.blue),
+        ),
       ),
       content: Observer(
         builder: (_) {

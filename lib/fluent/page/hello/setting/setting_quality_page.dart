@@ -76,12 +76,16 @@ class _SettingQualityPageState extends State<SettingQualityPage>
       builder: (context) => ScaffoldPage.scrollable(
         header: PageHeader(title: Text(I18n.of(context).quality_setting)),
         children: [
-          if (Platform.isWindows)
+          if (Platform.isWindows || Platform.isLinux)
             ListTile(
               leading: const Icon(Icons.window),
               title: Text(I18n.of(context).platform_special_setting),
               subtitle: Text(
-                "For Windows",
+                Platform.isWindows
+                  ? "For Windows"
+                  : Platform.isLinux
+                    ? "For Linux"
+                    : "",
                 style: TextStyle(color: Colors.blue),
               ),
               onPressed: () {

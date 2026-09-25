@@ -341,20 +341,6 @@ void LoginPlugin::HandleMethodCall(FlMethodChannel* channel,
       s_active_session->width = static_cast<int>(std::round(width));
       s_active_session->height = static_cast<int>(std::round(height));
 
-      FlValue* vis_val = fl_value_lookup_string(args, "visible");
-      bool visible = true;
-      if (vis_val != nullptr &&
-          fl_value_get_type(vis_val) == FL_VALUE_TYPE_BOOL) {
-        visible = fl_value_get_bool(vis_val);
-      }
-
-      if (s_active_session->container != nullptr) {
-        if (visible) {
-          gtk_widget_show(s_active_session->container);
-        } else {
-          gtk_widget_hide(s_active_session->container);
-        }
-      }
       if (LoginPlugin::s_overlay != nullptr) {
         gtk_widget_queue_resize(GTK_WIDGET(LoginPlugin::s_overlay));
       }
