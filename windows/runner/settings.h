@@ -6,13 +6,11 @@
 class Settings
 {
 private:
-  static winrt::hstring _appDataFolder;
+  static winrt::hstring &Storage();
 
 public:
-  static inline winrt::hstring AppDataFolder()
-  {
-    return _appDataFolder;
-  }
+  static void SetAppDataFolderPath(winrt::hstring path);
+  static winrt::hstring AppDataFolder();
   static winrt::Windows::Foundation::IAsyncOperation<winrt::hstring> TryGetValueAsync(winrt::hstring key);
   static winrt::Windows::Foundation::IAsyncAction SetValueAsync(winrt::hstring key, winrt::hstring value);
 };

@@ -13,4 +13,7 @@ class Win32 {
       return false;
     }
   }
+  static Future<void> migrationAppData() async {
+    return await channel.invokeMethod("migrationAppData");
+  }
 }

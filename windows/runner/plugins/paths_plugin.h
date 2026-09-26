@@ -9,8 +9,7 @@ class Paths
 private:
   static std::string name;
 
-  static winrt::hstring GetDatabaseFolderPath();
-  static winrt::hstring GetPicturesFolderPath();
+  static void SetApplicationSupportDirectory(winrt::hstring path);
 
 public:
   static void Initialize(flutter::BinaryMessenger *messenger, const flutter::StandardMethodCodec *codec);

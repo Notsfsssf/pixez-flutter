@@ -10,7 +10,21 @@ using namespace Windows::Foundation;
 using namespace Windows::Foundation::Collections;
 using namespace Windows::Storage;
 
-hstring Settings::_appDataFolder = UserDataPaths::GetDefault().RoamingAppData() + L"\\PixEz";
+winrt::hstring &Settings::Storage()
+{
+  static winrt::hstring value;
+  return value;
+}
+
+void Settings::SetAppDataFolderPath(winrt::hstring path)
+{
+  Storage() = std::move(path);
+}
+
+winrt::hstring Settings::AppDataFolder()
+{
+  return Storage();
+}
 
 IAsyncOperation<hstring> Settings::TryGetValueAsync(hstring key)
 {

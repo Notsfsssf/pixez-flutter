@@ -21,14 +21,17 @@ void Paths::Initialize(BinaryMessenger *messenger, const StandardMethodCodec *co
       [](const MethodCall<EncodableValue> &call,
          unique_ptr<MethodResult<EncodableValue>> result)
       {
-        if (call.method_name().compare("getDatabaseFolderPath") == 0)
+        if (call.method_name().compare("setApplicationSupportDirectory") == 0)
         {
-          result->Success(to_string(GetDatabaseFolderPath()));
+        const auto *arguments = get_if<EncodableMap>(call.arguments());
+          auto path = to_hstring(get<string>(arguments->find(EncodableValue("path"))->second));
+          SetApplicationSupportDirectory(path);
+          result->Success();
         }
       });
 }
 
-hstring Paths::GetDatabaseFolderPath()
+void Paths::SetApplicationSupportDirectory(winrt::hstring path)
 {
-  return Settings::AppDataFolder();
+  return Settings::SetAppDataFolderPath(path);
 }
