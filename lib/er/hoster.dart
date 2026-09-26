@@ -28,14 +28,14 @@ class Hoster {
     'oauth.secure.pixiv.net',
   ];
 
-  static Dio httpClient = Dio(BaseOptions(baseUrl: 'https://1dot1dot1dot1.cloudflare-dns.com'));
+  static Dio httpClient = Dio(BaseOptions(baseUrl: 'https://dns.google'));
 
   static Future<Dio> createDioClient() async {
     final compatibleClient = await r.RhttpCompatibleClient.create(
       settings: r.ClientSettings(
         dnsSettings: r.DnsSettings.static(
           overrides: {
-            "1dot1dot1dot1.cloudflare-dns.com": ['104.16.248.249', '104.16.249.249'],
+            "dns.google": ['216.239.34.34'],
           },
         ),
       )
@@ -73,7 +73,7 @@ class Hoster {
     try {
       await createDioClient();
       Response response = await httpClient.get(
-        '/dns-query',
+        '/resolve',
         options: Options(headers: {'accept': 'application/dns-json'}),
         queryParameters: {'name': name},
       );
