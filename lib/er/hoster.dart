@@ -38,6 +38,7 @@ class Hoster {
             "1dot1dot1dot1.cloudflare-dns.com": ['104.16.248.249', '104.16.249.249'],
           },
         ),
+        tlsSettings: r.TlsSettings(verifyCertificates: true, sni: false),
       )
     );
     httpClient.httpClientAdapter = ConversionLayerAdapter(compatibleClient);
