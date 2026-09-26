@@ -80,7 +80,20 @@ jobs:
           [System.IO.File]::WriteAllBytes($certFile, [System.Convert]::FromBase64String($env:CERTIFICATE))
           $Private:Password = ConvertTo-SecureString -String $env:CERTIFICATE_PASSWORD -AsPlainText
           $Private:Certificate = Get-PfxCertificate $certFile -Password $Private:Password
-          $Private:Certificate.Subject
+
+          $notBefore = $Private:Certificate.NotBefore.ToString("yyyy-MM-dd HH:mm:ss")
+          $notAfter  = $Private:Certificate.NotAfter.ToString("yyyy-MM-dd HH:mm:ss")
+          $daysLeft  = [math]::Floor(($Private:Certificate.NotAfter - (Get-Date)).TotalDays)
+
+          Write-Output "========== Certificate Info =========="
+          Write-Output "Subject     : $($Private:Certificate.Subject)"
+          Write-Output "Issuer      : $($Private:Certificate.Issuer)"
+          Write-Output "Thumbprint  : $($Private:Certificate.Thumbprint)"
+          Write-Output "Valid From  : $notBefore"
+          Write-Output "Valid To    : $notAfter"
+          Write-Output "Days Left   : $daysLeft days"
+          Write-Output "======================================"
+
           Write-Output "CERTIFICATE_PATH=$certFile" >> "$env:GITHUB_OUTPUT"
           Write-Output "CERTIFICATE_SUBJECT=$($Private:Certificate.Subject)" >> "$env:GITHUB_OUTPUT"
 
