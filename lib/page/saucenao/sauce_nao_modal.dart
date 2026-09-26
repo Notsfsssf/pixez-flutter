@@ -393,7 +393,7 @@ class _SauceNaoModalState extends State<SauceNaoModal> {
                 ),
               ),
               ListTile(
-                title: Text("SauceNao"),
+                title: Text("SauceNAO"),
                 trailing: IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () {

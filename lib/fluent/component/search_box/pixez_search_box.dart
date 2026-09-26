@@ -66,7 +66,7 @@ class _PixEzSearchBoxState extends State<StatefulWidget> {
         context,
         SauncenaoWebview(),
         icon: const Icon(FluentIcons.image_search),
-        title: const Text('SauceNao'),
+        title: const Text('SauceNAO'),
       );
     } else {
       SauceNaoModal.show(context);

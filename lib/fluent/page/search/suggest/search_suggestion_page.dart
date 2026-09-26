@@ -68,7 +68,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
         context,
         SauncenaoWebview(),
         icon: const Icon(FluentIcons.image_search),
-        title: const Text('SauceNao'),
+        title: const Text('SauceNAO'),
       );
     } else {
       SauceNaoModal.show(context);

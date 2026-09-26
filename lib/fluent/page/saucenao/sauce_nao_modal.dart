@@ -323,7 +323,7 @@ class _SauceNaoModalState extends State<SauceNaoModal> {
       constraints: const BoxConstraints(maxWidth: 560, maxHeight: 640),
       title: Row(
         children: [
-          const Expanded(child: Text('SauceNao')),
+          const Expanded(child: Text('SauceNAO')),
           IconButton(
             icon: const Icon(FluentIcons.chrome_close),
             onPressed: _close,
