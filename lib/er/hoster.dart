@@ -38,6 +38,7 @@ class Hoster {
             "dns.google": ['216.239.34.34'],
           },
         ),
+        tlsSettings: r.TlsSettings(verifyCertificates: true, sni: false),
       )
     );
     httpClient.httpClientAdapter = ConversionLayerAdapter(compatibleClient);
