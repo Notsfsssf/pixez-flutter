@@ -33,7 +33,9 @@ initFluent(List<String> args) async {
     ),
     () async {
       await Window.initialize();
-      Window.hideWindowControls();
+      if (Platform.isWindows) {
+        Window.hideWindowControls();
+      }
 
       _effect = await getEffect();
       await windowManager.show();
@@ -103,7 +105,7 @@ Widget buildFluentUI(BuildContext context) {
             material_ui.ThemeMode.light => false,
           };
 
-          if (_effect != null) {
+          if (_effect != null && !Platform.isLinux) {
             debugPrint("背景特效: $_effect; 暗色主题: $isDark;");
             Window.setEffect(effect: _effect!, dark: isDark);
           }

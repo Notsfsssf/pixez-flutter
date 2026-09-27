@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=PixEz
+Comment=Pixiv third-party client written in Flutter
+Exec=pixez %U
+Icon=pixez
+Type=Application
+Categories=Network;Graphics;
+MimeType=x-scheme-handler/pixiv;
+Terminal=false
+StartupWMClass=com.perol.pixez

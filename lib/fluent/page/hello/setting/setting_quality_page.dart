@@ -18,6 +18,7 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_ui/material_ui.dart' show Icons;
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/fluent/component/pixez_button.dart';
@@ -76,14 +77,17 @@ class _SettingQualityPageState extends State<SettingQualityPage>
       builder: (context) => ScaffoldPage.scrollable(
         header: PageHeader(title: Text(I18n.of(context).quality_setting)),
         children: [
-          if (Platform.isWindows)
+          if (Platform.isWindows || Platform.isLinux)
             ListTile(
-              leading: const Icon(Icons.window),
+              leading: Platform.isWindows
+                  ? const Icon(Icons.window)
+                  : const FaIcon(FontAwesomeIcons.linux),
               title: Text(I18n.of(context).platform_special_setting),
-              subtitle: Text(
-                "For Windows",
-                style: TextStyle(color: Colors.blue),
-              ),
+              subtitle: Platform.isWindows
+                  ? Text("For Windows", style: TextStyle(color: Colors.blue))
+                  : Platform.isLinux
+                      ? Text("For Linux", style: TextStyle(color: Colors.orange))
+                      : null,
               onPressed: () {
                 showDialog(
                   context: context,

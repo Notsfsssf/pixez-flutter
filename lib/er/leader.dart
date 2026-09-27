@@ -166,7 +166,7 @@ class Leader {
           await accountProvider.insert(accountPersist);
           await accountStore.fetch();
           BotToast.showText(text: "Login Success");
-          if (Platform.isIOS) pushUntilHome(context);
+          if (Platform.isIOS || Platform.isLinux) pushUntilHome(context);
         } catch (e) {
           LPrinter.d(e);
           BotToast.showText(text: e.toString());
