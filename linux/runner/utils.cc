@@ -23,11 +23,3 @@ std::string Utils::GetPicturesDirectory() {
       g_build_filename(g_get_home_dir(), "Pictures", nullptr);
   return std::string(home_pictures);
 }
-
-std::string Utils::GetDataDirectory() {
-  return std::string(g_get_user_data_dir());
-}
-
-std::string Utils::GetConfigDirectory() {
-  return std::string(g_get_user_config_dir());
-}

@@ -9,7 +9,7 @@ class Paths {
  private:
   static std::string name;
 
-  static std::string GetDatabaseFolderPath();
+  static void SetApplicationSupportDirectory(const std::string& path);
   static void HandleMethodCall(FlMethodChannel* channel,
                                FlMethodCall* method_call, gpointer user_data);
 

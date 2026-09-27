@@ -3,25 +3,24 @@
 #include <flutter_linux/flutter_linux.h>
 #include <glib.h>
 
-#include "utils.h"
-
-std::string Settings::AppDataFolder() {
-  std::string base_dir = Utils::GetDataDirectory();
-  g_autofree gchar* path =
-      g_build_filename(base_dir.c_str(), APPLICATION_ID, nullptr);
-  g_mkdir_with_parents(path, 0755);
-  return std::string(path);
+std::string& Settings::Storage() {
+  static std::string value;
+  return value;
 }
 
-std::string Settings::DatabaseFolder() {
-  std::string app_data = AppDataFolder();
-  g_autofree gchar* path = g_build_filename(app_data.c_str(), "db", nullptr);
-  g_mkdir_with_parents(path, 0755);
-  return std::string(path);
+void Settings::SetAppDataFolderPath(const std::string& path) {
+  Storage() = path;
+}
+
+std::string Settings::AppDataFolder() {
+  return Storage();
 }
 
 std::string Settings::TryGetValue(const std::string& key) {
   std::string app_data = AppDataFolder();
+  if (app_data.empty()) {
+    return "";
+  }
   g_autofree gchar* file_path =
       g_build_filename(app_data.c_str(), "settings.json", nullptr);
 
@@ -47,6 +46,9 @@ std::string Settings::TryGetValue(const std::string& key) {
 
 void Settings::SetValue(const std::string& key, const std::string& value) {
   std::string app_data = AppDataFolder();
+  if (app_data.empty()) {
+    return;
+  }
   g_autofree gchar* file_path =
       g_build_filename(app_data.c_str(), "settings.json", nullptr);
 

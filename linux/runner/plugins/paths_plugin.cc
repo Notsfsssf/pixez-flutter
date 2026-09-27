@@ -19,15 +19,24 @@ void Paths::HandleMethodCall(FlMethodChannel* channel,
                              FlMethodCall* method_call, gpointer user_data) {
   const gchar* method = fl_method_call_get_name(method_call);
 
-  if (strcmp(method, "getDatabaseFolderPath") == 0) {
-    std::string path = GetDatabaseFolderPath();
-    g_autoptr(FlValue) result = fl_value_new_string(path.c_str());
-    fl_method_call_respond_success(method_call, result, nullptr);
+  if (strcmp(method, "setApplicationSupportDirectory") == 0) {
+    FlValue* args = fl_method_call_get_args(method_call);
+    if (args != nullptr && fl_value_get_type(args) == FL_VALUE_TYPE_MAP) {
+      FlValue* path_value = fl_value_lookup_string(args, "path");
+      if (path_value != nullptr &&
+          fl_value_get_type(path_value) == FL_VALUE_TYPE_STRING) {
+        SetApplicationSupportDirectory(fl_value_get_string(path_value));
+        fl_method_call_respond_success(method_call, nullptr, nullptr);
+        return;
+      }
+    }
+    fl_method_call_respond_error(method_call, "bad_args", "Invalid arguments",
+                                 nullptr, nullptr);
   } else {
     fl_method_call_respond_not_implemented(method_call, nullptr);
   }
 }
 
-std::string Paths::GetDatabaseFolderPath() {
-  return Settings::DatabaseFolder();
+void Paths::SetApplicationSupportDirectory(const std::string& path) {
+  Settings::SetAppDataFolderPath(path);
 }
