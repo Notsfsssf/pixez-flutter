@@ -47,14 +47,11 @@ class _PlatformPageStateWindow extends State<PlatformPage> {
     return ContentDialog(
       title: ListTile(
         title: Text("Platform Setting"),
-        subtitle: Text(
-          Platform.isWindows
-            ? "For Windows"
+        subtitle: Platform.isWindows
+            ? Text("For Windows", style: TextStyle(color: Colors.blue))
             : Platform.isLinux
-              ? "For Linux"
-              : "",
-          style: TextStyle(color: Colors.blue),
-        ),
+                ? Text("For Linux", style: TextStyle(color: Colors.orange))
+                : null,
       ),
       content: Observer(
         builder: (_) {
