@@ -349,14 +349,16 @@ class ApiClient {
   Future<Response> getBookmarksIllust(
     int user_id,
     String restrict,
-    String? tag,
-  ) async {
+    String? tag, {
+    int? maxBookmarkId,
+  }) async {
     return httpClient.get(
       "/v1/user/bookmarks/illust",
       queryParameters: notNullMap({
         "user_id": user_id,
         "restrict": restrict,
         "tag": tag,
+        "max_bookmark_id": maxBookmarkId,
       }),
     );
   }
