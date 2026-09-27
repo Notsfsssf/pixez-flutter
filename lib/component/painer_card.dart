@@ -15,8 +15,11 @@
  */
 
 import 'package:material_ui/material_ui.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/constants.dart';
+import 'package:pixez/exts.dart';
 import 'package:pixez/models/user_preview.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/user/novel_users_page.dart';
@@ -119,9 +122,20 @@ class _PainterCardState extends State<PainterCard> {
                   child: i < _user.illusts.length
                       ? AspectRatio(
                           aspectRatio: 1.0,
-                          child: PixivImage(
-                            _user.illusts[i].imageUrls.squareMedium,
-                            fit: BoxFit.cover,
+                          child: Observer(
+                            builder: (_) {
+                              final illust = _user.illusts[i];
+                              if (illust.hIsNotAllow()) {
+                                return Image.asset(
+                                  Constants.no_h,
+                                  fit: BoxFit.cover,
+                                );
+                              }
+                              return PixivImage(
+                                illust.imageUrls.squareMedium,
+                                fit: BoxFit.cover,
+                              );
+                            },
                           ),
                         )
                       : Container(),

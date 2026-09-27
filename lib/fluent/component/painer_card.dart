@@ -15,7 +15,10 @@
  */
 
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/constants.dart';
 import 'package:pixez/er/leader.dart';
+import 'package:pixez/exts.dart';
 import 'package:pixez/fluent/component/painter_avatar.dart';
 import 'package:pixez/fluent/component/pixez_button.dart';
 import 'package:pixez/fluent/component/pixiv_image.dart';
@@ -43,9 +46,17 @@ class PainterCard extends StatelessWidget {
                   SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
               delegate: SliverChildBuilderDelegate((context, index) {
                 if (index >= user.illusts.length) return Container();
-                return PixivImage(
-                  user.illusts[index].imageUrls.squareMedium,
-                  fit: BoxFit.cover,
+                return Observer(
+                  builder: (_) {
+                    final illust = user.illusts[index];
+                    if (illust.hIsNotAllow()) {
+                      return Image.asset(Constants.no_h, fit: BoxFit.cover);
+                    }
+                    return PixivImage(
+                      illust.imageUrls.squareMedium,
+                      fit: BoxFit.cover,
+                    );
+                  },
                 );
               }, childCount: user.illusts.length)),
           SliverToBoxAdapter(child: buildPadding(context))
