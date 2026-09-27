@@ -6,6 +6,7 @@ import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/models/novel_series_detail.dart';
 import 'package:pixez/network/api_client.dart';
@@ -15,6 +16,7 @@ import 'package:pixez/page/novel/user/novel_users_page.dart';
 import 'package:pixez/page/novel/viewer/novel_store.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:pixez/component/novel_series_download_alert.dart';
 
 final novelSeriesProvider =
     NotifierProvider<NovelSeriesNotifier, NovelSeriesState?>(() {
@@ -111,6 +113,88 @@ class NovelSeriesNotifier extends Notifier<NovelSeriesState?> {
 class NovelSeriesPage extends HookConsumerWidget {
   final int id;
   const NovelSeriesPage(this.id, {Key? key}) : super(key: key);
+
+  Future<void> _showMessage(
+  BuildContext context,
+  WidgetRef ref,
+) {
+  // 底部弹出窗选择下载/分享
+  return showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(16.0),
+      ),
+    ),
+    builder: (context) {
+      return SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (ref.read(novelSeriesProvider) != null)
+              ListTile(
+                title: Text(I18n.of(context).download_novel_series),
+                leading: const Icon(Icons.download),
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  final data = ref.read(novelSeriesProvider);
+                  if (data == null) {
+                    return;
+                  }
+                  final result = await showDialog<NovelSeriesDownloadResult>(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (_) => NovelSeriesDownloadAlert(
+                      id: id,
+                    ),
+                  );
+                  if (result == null || result.novelIds.isEmpty) {
+                    return;
+                  }
+                  novelSeriesFetcher.save(
+                    id,
+                    result.novelIds,
+                    seriesTitle: data.novelSeriesDetail.title,
+                    userName: data.novelSeriesDetail.user.name,
+                    coverUrl: data.novels.isNotEmpty
+                        ? data.novels.first.imageUrls.medium
+                        : null,
+                  );
+                },
+              ),
+            Builder(
+              builder: (context) {
+                return ListTile(
+                  title: Text(I18n.of(context).share),
+                  leading: const Icon(Icons.share),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    final box =
+                        context.findRenderObject() as RenderBox?;
+                    final pos = box != null
+                        ? box.localToGlobal(Offset.zero) & box.size
+                        : null;
+                    final link =
+                        "https://www.pixiv.net/novel/series/$id";
+                    SharePlus.instance.share(
+                      ShareParams(
+                        text: link,
+                        sharePositionOrigin: pos,
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final data = ref.watch(novelSeriesProvider);
@@ -138,19 +222,33 @@ class NovelSeriesPage extends HookConsumerWidget {
           ]
         ]),
         actions: [
-          Builder(builder: (context) {
+          // 分享改为通过展开按钮分享
+          Builder(
+          builder: (context) {
             return IconButton(
-                onPressed: () {
-                  final box = context.findRenderObject() as RenderBox?;
-                  final pos = box != null
-                      ? box.localToGlobal(Offset.zero) & box.size
-                      : null;
-                  final link = "https://www.pixiv.net/novel/series/$id";
-                  SharePlus.instance
-                      .share(ShareParams(text: link, sharePositionOrigin: pos));
-                },
-                icon: Icon(Icons.share));
-          })
+              icon: Icon(
+                Icons.more_vert,
+                color: Theme.of(context).textTheme.bodyLarge!.color,
+              ),
+              onPressed: () {
+                _showMessage(context, ref);
+              },
+            );
+          },
+        ),
+          // Builder(builder: (context) {
+          //   return IconButton(
+          //       onPressed: () {
+          //         final box = context.findRenderObject() as RenderBox?;
+          //         final pos = box != null
+          //             ? box.localToGlobal(Offset.zero) & box.size
+          //             : null;
+          //         final link = "https://www.pixiv.net/novel/series/$id";
+          //         SharePlus.instance
+          //             .share(ShareParams(text: link, sharePositionOrigin: pos));
+          //       },
+          //       icon: Icon(Icons.share));
+          // })
         ],
       ),
       body: EasyRefresh(

@@ -357,5 +357,10 @@
   "date_preset_1month": "1 buwan",
   "date_preset_6months": "6 na buwan",
   "date_preset_1year": "1 taon",
-  "date_preset_custom": "Pumili ng saklaw ng petsa"
+  "date_preset_custom": "Pumili ng saklaw ng petsa",
+  "download_novel_series": "I-download ang serye ng nobela",
+  "downloading": "Nagda-download",
+  "select_all": "Piliin lahat",
+  "cancel_select_all": "Alisin ang pagkapili sa lahat",
+  "selected": "Napili"
 }

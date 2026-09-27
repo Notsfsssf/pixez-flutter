@@ -357,5 +357,10 @@
   "date_preset_1month": "1 tháng",
   "date_preset_6months": "6 tháng",
   "date_preset_1year": "1 năm",
-  "date_preset_custom": "Khoảng thời gian tùy chỉnh"
+  "date_preset_custom": "Khoảng thời gian tùy chỉnh",
+  "download_novel_series": "Tải bộ tiểu thuyết",
+  "downloading": "Đang tải xuống",
+  "select_all": "Chọn tất cả",
+  "cancel_select_all": "Bỏ chọn tất cả",
+  "selected": "Đã chọn" 
 }

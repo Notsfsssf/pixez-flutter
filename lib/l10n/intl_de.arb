@@ -359,5 +359,10 @@
   "date_preset_1month": "1 Monat",
   "date_preset_6months": "6 Monate",
   "date_preset_1year": "1 Jahr",
-  "date_preset_custom": "Zeitraum auswählen"
+  "date_preset_custom": "Zeitraum auswählen",
+  "download_novel_series": "Romanreihe herunterladen",
+  "downloading": "Wird heruntergeladen",
+  "select_all": "Alle auswählen",
+  "cancel_select_all": "Auswahl aufheben",
+  "selected": "Ausgewählt"
 }
