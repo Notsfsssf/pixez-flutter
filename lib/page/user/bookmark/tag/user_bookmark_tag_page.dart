@@ -38,12 +38,27 @@ class _UserBookmarkTagPageState extends State<UserBookmarkTagPage>
   late String? currentTag;
   late TextEditingController _tagController;
   String? _suggestedTag;
+  late EasyRefreshController _publicRefreshController;
+  late EasyRefreshController _privateRefreshController;
+  late BookMarkTagStore _publicTagStore;
+  late BookMarkTagStore _privateTagStore;
 
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
     currentTag = widget.currentTag;
     _tagController = TextEditingController(text: currentTag);
+    _publicRefreshController = EasyRefreshController(
+      controlFinishLoad: true,
+      controlFinishRefresh: true,
+    );
+    _privateRefreshController = EasyRefreshController(
+      controlFinishLoad: true,
+      controlFinishRefresh: true,
+    );
+    final userId = int.parse(accountStore.now!.userId);
+    _publicTagStore = BookMarkTagStore(userId, _publicRefreshController);
+    _privateTagStore = BookMarkTagStore(userId, _privateRefreshController);
     super.initState();
   }
 
@@ -51,7 +66,19 @@ class _UserBookmarkTagPageState extends State<UserBookmarkTagPage>
   void dispose() {
     _tabController.dispose();
     _tagController.dispose();
+    _publicRefreshController.dispose();
+    _privateRefreshController.dispose();
     super.dispose();
+  }
+
+  BookMarkTagStore get _currentTagStore =>
+      _tabController.index == 0 ? _publicTagStore : _privateTagStore;
+
+  void _chooseTag(String tag) {
+    Navigator.of(context).pop({
+      'tag': tag,
+      'restrict': _tabController.index == 0 ? 'public' : 'private',
+    });
   }
 
   @override
@@ -136,12 +163,47 @@ class _UserBookmarkTagPageState extends State<UserBookmarkTagPage>
               ],
             ),
           ),
+          Observer(
+            builder: (_) {
+              final query = _tagController.text.trim().toLowerCase();
+              final suggestions = _currentTagStore.bookmarkTags
+                  .where((tag) => tag.name.toLowerCase().contains(query))
+                  .take(8)
+                  .toList();
+              if (query.isEmpty || suggestions.isEmpty) {
+                return const SizedBox.shrink();
+              }
+              return SizedBox(
+                height: suggestions.length * 48.0,
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    for (final tag in suggestions)
+                      ListTile(
+                        dense: true,
+                        title: Text(tag.name),
+                        trailing: Text(tag.count.toString()),
+                        onTap: () => _chooseTag(tag.name),
+                      ),
+                  ],
+                ),
+              );
+            },
+          ),
           Expanded(
             child: TabBarView(
               controller: _tabController,
               children: [
-                NewWidget(restrict: "public"),
-                NewWidget(restrict: "private"),
+                NewWidget(
+                  restrict: "public",
+                  tagStore: _publicTagStore,
+                  refreshController: _publicRefreshController,
+                ),
+                NewWidget(
+                  restrict: "private",
+                  tagStore: _privateTagStore,
+                  refreshController: _privateRefreshController,
+                ),
               ],
             ),
           ),
@@ -154,6 +216,7 @@ class _UserBookmarkTagPageState extends State<UserBookmarkTagPage>
     return TabBar(
       onTap: (i) {
         HapticUtil.selectionClick();
+        setState(() {});
       },
       controller: _tabController,
       tabs: <Widget>[
@@ -166,37 +229,34 @@ class _UserBookmarkTagPageState extends State<UserBookmarkTagPage>
 
 class NewWidget extends StatefulWidget {
   final String restrict;
+  final BookMarkTagStore tagStore;
+  final EasyRefreshController refreshController;
 
-  const NewWidget({Key? key, required this.restrict}) : super(key: key);
+  const NewWidget({
+    Key? key,
+    required this.restrict,
+    required this.tagStore,
+    required this.refreshController,
+  }) : super(key: key);
 
   @override
   State<NewWidget> createState() => _NewWidgetState();
 }
 
 class _NewWidgetState extends State<NewWidget> {
-  final EasyRefreshController _easyRefreshController = EasyRefreshController(
-    controlFinishLoad: true,
-    controlFinishRefresh: true,
-  );
-  late BookMarkTagStore _bookMarkTagStore;
   late String restrict;
 
   @override
   void initState() {
-    _bookMarkTagStore = BookMarkTagStore(
-      int.parse(accountStore.now!.userId),
-      _easyRefreshController,
-    );
     restrict = widget.restrict;
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((duration) {
-      _bookMarkTagStore.fetch(restrict);
+      widget.tagStore.fetch(restrict);
     });
   }
 
   @override
   void dispose() {
-    _easyRefreshController.dispose();
     super.dispose();
   }
 
@@ -205,7 +265,7 @@ class _NewWidgetState extends State<NewWidget> {
     return Observer(
       builder: (_) {
         return EasyRefresh(
-          controller: _easyRefreshController,
+          controller: widget.refreshController,
           refreshOnStart: true,
           header: PixezDefault.header(context),
           footer: PixezDefault.footer(context),
@@ -226,7 +286,7 @@ class _NewWidgetState extends State<NewWidget> {
                   }); //日语
                 },
               ),
-              for (var bookmarkTag in _bookMarkTagStore.bookmarkTags)
+              for (var bookmarkTag in widget.tagStore.bookmarkTags)
                 ListTile(
                   title: Text(bookmarkTag.name),
                   trailing: Text(bookmarkTag.count.toString()),
@@ -240,10 +300,10 @@ class _NewWidgetState extends State<NewWidget> {
             ],
           ),
           onRefresh: () async {
-            await _bookMarkTagStore.fetch(restrict);
+            await widget.tagStore.fetch(restrict);
           },
           onLoad: () async {
-            await _bookMarkTagStore.next();
+            await widget.tagStore.next();
           },
         );
       },
