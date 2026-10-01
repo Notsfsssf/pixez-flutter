@@ -358,4 +358,8 @@
   "date_preset_6months": "6개월",
   "date_preset_1year": "1년",
   "date_preset_custom": "기간 지정"
+,
+  "expand_remaining_pages": "나머지 {count}장 펼치기",
+  "collapse_pages": "접기",
+  "fold_multipage_illust": "다중 페이지 작품 기본 접기"
 }

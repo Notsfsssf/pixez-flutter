@@ -359,4 +359,8 @@
   "date_preset_6months": "6 ay",
   "date_preset_1year": "1 yıl",
   "date_preset_custom": "Özel tarih aralığı"
+,
+  "expand_remaining_pages": "Kalan {count} görüntüyü aç",
+  "collapse_pages": "Daralt",
+  "fold_multipage_illust": "Çok sayfalı eserleri varsayılan olarak daralt"
 }

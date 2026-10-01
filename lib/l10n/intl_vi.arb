@@ -358,4 +358,8 @@
   "date_preset_6months": "6 tháng",
   "date_preset_1year": "1 năm",
   "date_preset_custom": "Khoảng thời gian tùy chỉnh"
+,
+  "expand_remaining_pages": "Mở thêm {count} ảnh",
+  "collapse_pages": "Thu gọn",
+  "fold_multipage_illust": "Thu gọn tác phẩm nhiều trang theo mặc định"
 }

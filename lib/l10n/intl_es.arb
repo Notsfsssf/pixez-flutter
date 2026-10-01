@@ -349,4 +349,8 @@
   "date_preset_6months": "6 meses",
   "date_preset_1year": "1 año",
   "date_preset_custom": "Intervalo personalizado"
+,
+  "expand_remaining_pages": "Expandir las {count} restantes",
+  "collapse_pages": "Contraer",
+  "fold_multipage_illust": "Contraer obras multipágina por defecto"
 }

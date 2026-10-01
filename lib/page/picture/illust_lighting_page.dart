@@ -24,6 +24,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/ban_page.dart';
 import 'package:pixez/component/common_back_area.dart';
+import 'package:pixez/component/detail_jump_button.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixez_default_header.dart';
@@ -220,19 +221,9 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  IconButton(
-                    icon: Icon(Icons.expand_less),
-                    onPressed: () async {
-                      final context = _detailKey.currentContext;
-                      if (context != null) {
-                        await Scrollable.ensureVisible(
-                          context,
-                          duration: Duration(milliseconds: 0),
-                          curve: Curves.easeInOut,
-                          alignment: 0.5,
-                        );
-                      }
-                    },
+                  DetailJumpButton(
+                    anchorKey: _detailKey,
+                    scrollController: _scrollController,
                   ),
                   Builder(
                     builder: (buttonContext) {
@@ -438,7 +429,50 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
     );
   }
 
-  ScrollController scrollController = ScrollController();
+  bool _folded = userSetting.foldMultiPage;
+  final _foldButtonKey = GlobalKey();
+
+  Widget _buildFoldButton(Illusts data) {
+    return InkWell(
+      key: _foldButtonKey,
+      onTap: () {
+        HapticUtil.selectionClick();
+        final buttonContext = _foldButtonKey.currentContext;
+        final wasFolded = _folded;
+        setState(() => _folded = !_folded);
+        if (!wasFolded && buttonContext != null) {
+          // collapsing shrinks content; keep the button (now under page 1) on screen
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Scrollable.ensureVisible(
+              buttonContext,
+              duration: const Duration(milliseconds: 200),
+              alignment: 0.1,
+            );
+          });
+        }
+      },
+      child: Container(
+        height: 48,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              _folded ? Icons.expand_more : Icons.expand_less,
+              size: 20,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              _folded
+                  ? I18n.of(context).expand_remaining_pages(
+                      data.metaPages.length - 1)
+                  : I18n.of(context).collapse_pages,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget _buildContent(BuildContext context, Illusts? data) {
     if (_illustStore.errorMessage != null) return _buildErrorContent(context);
@@ -466,7 +500,11 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
               child: Container(height: MediaQuery.of(context).padding.top),
             ),
           ..._buildPhotoList(data),
-          SliverToBoxAdapter(key: _detailKey, child: SizedBox.shrink()),
+          if (data.pageCount > 1)
+            SliverToBoxAdapter(child: _buildFoldButton(data)),
+          SliverToBoxAdapter(
+            child: SizedBox.shrink(key: _detailKey),
+          ),
           SliverToBoxAdapter(
             child: IllustDetailContent(
               illusts: data,
@@ -632,7 +670,8 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                     },
                     child: _buildIllustsItem(index, data, height),
                   );
-                }, childCount: data.metaPages.length),
+                },
+                childCount: _folded ? 1 : data.metaPages.length),
               ),
     ];
   }
@@ -744,7 +783,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
             ),
             fade: false,
             placeWidget: Container(
-              height: 150,
+              height: height,
               child: Center(
                 child: Text(
                   '$index',

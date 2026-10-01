@@ -360,4 +360,8 @@
   "date_preset_6months": "6 Monate",
   "date_preset_1year": "1 Jahr",
   "date_preset_custom": "Zeitraum auswählen"
+,
+  "expand_remaining_pages": "Weitere {count} anzeigen",
+  "collapse_pages": "Einklappen",
+  "fold_multipage_illust": "Mehrseitige Werke standardmäßig einklappen"
 }
