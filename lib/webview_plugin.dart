@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 /// Linux only.
-class LoginPlugin {
-  static const MethodChannel _channel = MethodChannel('com.perol.dev/login');
+class WebviewPlugin {
+  static const MethodChannel _channel = MethodChannel('com.perol.dev/webview');
 
   static void Function(double progress)? onProgress;
   static void Function(String title)? onTitle;
@@ -33,11 +33,17 @@ class LoginPlugin {
     });
   }
 
-  /// Opens an embedded WebKit login view.
+  /// Opens an embedded WebKit view.
+  /// If [url] is provided, loads the URL.
+  /// If [html] is provided, loads the HTML string with optional [baseUrl].
+  /// If [handlePixivLogin] is true, resolves to redirect URL string on login success.
   /// Resolves to redirect URL string on success, or null on cancellation/close.
-  static Future<String?> open(
-    String url, {
+  static Future<String?> open({
+    String? url,
+    String? html,
+    String? baseUrl,
     Rect? bounds,
+    bool handlePixivLogin = false,
     void Function(double progress)? progressCallback,
     void Function(String title)? titleCallback,
     void Function(String url)? urlCallback,
@@ -49,7 +55,10 @@ class LoginPlugin {
 
     try {
       final Map<String, dynamic> args = {
-        'url': url,
+        if (url != null) 'url': url,
+        if (html != null) 'html': html,
+        if (baseUrl != null) 'baseUrl': baseUrl,
+        'handlePixivLogin': handlePixivLogin,
         if (bounds != null) ...{
           'x': bounds.left,
           'y': bounds.top,
@@ -60,7 +69,7 @@ class LoginPlugin {
       final result = await _channel.invokeMethod<String>('open', args);
       return result;
     } catch (e) {
-      debugPrint("LoginPlugin.open error: $e");
+      debugPrint("WebviewPlugin.open error: $e");
       return null;
     } finally {
       onProgress = null;
@@ -79,7 +88,28 @@ class LoginPlugin {
         'height': bounds.height,
       });
     } catch (e) {
-      debugPrint("LoginPlugin.updateBounds error: $e");
+      debugPrint("WebviewPlugin.updateBounds error: $e");
+    }
+  }
+
+  /// Loads a new URL in the current WebKit view.
+  static Future<void> loadUrl(String url) async {
+    try {
+      await _channel.invokeMethod('loadUrl', {'url': url});
+    } catch (e) {
+      debugPrint("WebviewPlugin.loadUrl error: $e");
+    }
+  }
+
+  /// Loads an HTML string in the current WebKit view.
+  static Future<void> loadHtml(String html, {String? baseUrl}) async {
+    try {
+      await _channel.invokeMethod('loadHtml', {
+        'html': html,
+        if (baseUrl != null) 'baseUrl': baseUrl,
+      });
+    } catch (e) {
+      debugPrint("WebviewPlugin.loadHtml error: $e");
     }
   }
 
@@ -88,7 +118,7 @@ class LoginPlugin {
     try {
       await _channel.invokeMethod('close');
     } catch (e) {
-      debugPrint("LoginPlugin.close error: $e");
+      debugPrint("WebviewPlugin.close error: $e");
     }
   }
 
@@ -97,7 +127,7 @@ class LoginPlugin {
     try {
       await _channel.invokeMethod('goBack');
     } catch (e) {
-      debugPrint("LoginPlugin.goBack error: $e");
+      debugPrint("WebviewPlugin.goBack error: $e");
     }
   }
 
@@ -106,7 +136,7 @@ class LoginPlugin {
     try {
       await _channel.invokeMethod('reload');
     } catch (e) {
-      debugPrint("LoginPlugin.reload error: $e");
+      debugPrint("WebviewPlugin.reload error: $e");
     }
   }
 }

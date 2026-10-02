@@ -2,7 +2,7 @@
 
 #include "plugins/clipboard_plugin.h"
 #include "plugins/document_plugin.h"
-#include "plugins/login_plugin.h"
+#include "plugins/webview_plugin.h"
 #include "plugins/paths_plugin.h"
 #include "plugins/single_instance_plugin.h"
 #include "plugins/weiss_plugin.h"
@@ -32,7 +32,7 @@ void RegisterPixEzPlugins(FlView* view, GtkWindow* window,
       fl_plugin_registry_get_registrar_for_plugin(registry, "WeissPlugin");
   Weiss::Initialize(weiss_registrar);
 
-  g_autoptr(FlPluginRegistrar) login_registrar =
-      fl_plugin_registry_get_registrar_for_plugin(registry, "LoginPlugin");
-  LoginPlugin::Initialize(login_registrar, overlay, view);
+  g_autoptr(FlPluginRegistrar) webview_registrar =
+      fl_plugin_registry_get_registrar_for_plugin(registry, "WebviewPlugin");
+  WebviewPlugin::Initialize(webview_registrar, overlay, view);
 }

@@ -17,7 +17,7 @@ add_executable(${BINARY_NAME}
   "plugins/paths_plugin.cc"
   "plugins/single_instance_plugin.cc"
   "plugins/weiss_plugin.cc"
-  "plugins/login_plugin.cc"
+  "plugins/webview_plugin.cc"
   "${FLUTTER_MANAGED_DIR}/generated_plugin_registrant.cc"
 )
 
