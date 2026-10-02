@@ -1,4 +1,4 @@
-#include "login_plugin.h"
+#include "webview_plugin.h"
 
 #include <webkit2/webkit2.h>
 
@@ -6,15 +6,15 @@
 #include <cmath>
 #include <string>
 
-std::string LoginPlugin::name = "com.perol.dev/login";
-GtkOverlay* LoginPlugin::s_overlay = nullptr;
-FlView* LoginPlugin::s_fl_view = nullptr;
-FlMethodChannel* LoginPlugin::s_channel = nullptr;
+std::string WebviewPlugin::name = "com.perol.dev/webview";
+GtkOverlay* WebviewPlugin::s_overlay = nullptr;
+FlView* WebviewPlugin::s_fl_view = nullptr;
+FlMethodChannel* WebviewPlugin::s_channel = nullptr;
 
 namespace {
 
-struct LoginSession;
-static LoginSession* s_active_session = nullptr;
+struct WebviewSession;
+static WebviewSession* s_active_session = nullptr;
 
 static double get_double_from_map(FlValue* map, const gchar* key,
                                   double def_val = 0.0) {
@@ -31,7 +31,7 @@ static double get_double_from_map(FlValue* map, const gchar* key,
   return def_val;
 }
 
-struct LoginSession {
+struct WebviewSession {
   FlMethodCall* method_call = nullptr;
   GtkWidget* container = nullptr;
   GtkWidget* web_view = nullptr;
@@ -40,8 +40,9 @@ struct LoginSession {
   int width = 0;
   int height = 0;
   bool handled = false;
+  bool handle_pixiv_login = false;
 
-  ~LoginSession() {
+  ~WebviewSession() {
     if (method_call != nullptr) {
       g_object_unref(method_call);
       method_call = nullptr;
@@ -58,20 +59,32 @@ struct LoginSession {
     }
     std::string url(uri);
 
-    // Pixiv scheme: pixiv://account/login?code=...
-    if (url.rfind("pixiv://", 0) == 0) {
-      FinishWithResult(url);
-      return true;
-    }
+    if (handle_pixiv_login) {
+      // Pixiv scheme: pixiv://account/login?code=...
+      if (url.rfind("pixiv://", 0) == 0) {
+        FinishWithResult(url);
+        return true;
+      }
 
-    // HTTPS callback:
-    // https://app-api.pixiv.net/web/v1/users/auth/pixiv/callback?...
-    if (url.find("/web/v1/users/auth/pixiv/callback") != std::string::npos) {
-      size_t qpos = url.find('?');
-      std::string query = (qpos != std::string::npos) ? url.substr(qpos) : "";
-      std::string pixiv_uri = "pixiv://account/login" + query;
-      FinishWithResult(pixiv_uri);
-      return true;
+      // HTTPS callback:
+      // https://app-api.pixiv.net/web/v1/users/auth/pixiv/callback?...
+      if (url.find("/web/v1/users/auth/pixiv/callback") != std::string::npos) {
+        size_t qpos = url.find('?');
+        std::string query = (qpos != std::string::npos) ? url.substr(qpos) : "";
+        std::string pixiv_uri = "pixiv://account/login" + query;
+        FinishWithResult(pixiv_uri);
+        return true;
+      }
+    } else {
+      // General webview: intercept custom pixiv:// protocol to avoid WebKit error
+      if (url.rfind("pixiv://", 0) == 0) {
+        if (WebviewPlugin::s_channel != nullptr) {
+          g_autoptr(FlValue) val = fl_value_new_string(url.c_str());
+          fl_method_channel_invoke_method(WebviewPlugin::s_channel, "onUrlChanged",
+                                          val, nullptr, nullptr, nullptr);
+        }
+        return true;
+      }
     }
 
     return false;
@@ -99,11 +112,11 @@ struct LoginSession {
                       }),
                       c, nullptr);
     }
-    if (LoginPlugin::s_fl_view != nullptr) {
-      gtk_widget_grab_focus(GTK_WIDGET(LoginPlugin::s_fl_view));
+    if (WebviewPlugin::s_fl_view != nullptr) {
+      gtk_widget_grab_focus(GTK_WIDGET(WebviewPlugin::s_fl_view));
     }
-    if (LoginPlugin::s_overlay != nullptr) {
-      gtk_widget_queue_resize(GTK_WIDGET(LoginPlugin::s_overlay));
+    if (WebviewPlugin::s_overlay != nullptr) {
+      gtk_widget_queue_resize(GTK_WIDGET(WebviewPlugin::s_overlay));
     }
   }
 
@@ -149,7 +162,7 @@ struct LoginSession {
   void ScheduleDelete() {
     g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,
                     G_SOURCE_FUNC(+[](gpointer data) -> gboolean {
-                      LoginSession* s = static_cast<LoginSession*>(data);
+                      WebviewSession* s = static_cast<WebviewSession*>(data);
                       delete s;
                       return G_SOURCE_REMOVE;
                     }),
@@ -168,7 +181,7 @@ static gboolean on_decide_policy(WebKitWebView* web_view,
         webkit_navigation_policy_decision_get_navigation_action(nav_decision);
     WebKitURIRequest* request = webkit_navigation_action_get_request(action);
     const gchar* uri = webkit_uri_request_get_uri(request);
-    LoginSession* session = static_cast<LoginSession*>(user_data);
+    WebviewSession* session = static_cast<WebviewSession*>(user_data);
     if (session != nullptr && session->CheckAndHandleRedirect(uri)) {
       webkit_policy_decision_ignore(decision);
       return TRUE;
@@ -185,7 +198,7 @@ static gboolean on_load_failed(WebKitWebView* web_view,
                       WEBKIT_NETWORK_ERROR_CANCELLED)) {
     return FALSE;
   }
-  LoginSession* session = static_cast<LoginSession*>(user_data);
+  WebviewSession* session = static_cast<WebviewSession*>(user_data);
   if (session != nullptr && session->CheckAndHandleRedirect(failing_uri)) {
     return TRUE;
   }
@@ -197,14 +210,14 @@ static void on_uri_changed(GObject* object, GParamSpec* pspec,
   WebKitWebView* web_view = WEBKIT_WEB_VIEW(object);
   const gchar* uri = webkit_web_view_get_uri(web_view);
   std::string uri_str = (uri != nullptr) ? uri : "";
-  LoginSession* session = static_cast<LoginSession*>(user_data);
+  WebviewSession* session = static_cast<WebviewSession*>(user_data);
   if (session != nullptr && !uri_str.empty()) {
     session->CheckAndHandleRedirect(uri_str.c_str());
   }
-  if (!uri_str.empty() && LoginPlugin::s_channel != nullptr) {
+  if (!uri_str.empty() && WebviewPlugin::s_channel != nullptr) {
     g_autoptr(FlValue) val = fl_value_new_string(uri_str.c_str());
-    fl_method_channel_invoke_method(LoginPlugin::s_channel, "onUrlChanged", val,
-                                    nullptr, nullptr, nullptr);
+    fl_method_channel_invoke_method(WebviewPlugin::s_channel, "onUrlChanged",
+                                    val, nullptr, nullptr, nullptr);
   }
 }
 
@@ -212,9 +225,9 @@ static void on_progress_changed(GObject* object, GParamSpec* pspec,
                                 gpointer user_data) {
   WebKitWebView* web_view = WEBKIT_WEB_VIEW(object);
   gdouble progress = webkit_web_view_get_estimated_load_progress(web_view);
-  if (LoginPlugin::s_channel != nullptr) {
+  if (WebviewPlugin::s_channel != nullptr) {
     g_autoptr(FlValue) val = fl_value_new_float(progress);
-    fl_method_channel_invoke_method(LoginPlugin::s_channel, "onProgress", val,
+    fl_method_channel_invoke_method(WebviewPlugin::s_channel, "onProgress", val,
                                     nullptr, nullptr, nullptr);
   }
 }
@@ -223,9 +236,9 @@ static void on_title_changed(GObject* object, GParamSpec* pspec,
                              gpointer user_data) {
   WebKitWebView* web_view = WEBKIT_WEB_VIEW(object);
   const gchar* title = webkit_web_view_get_title(web_view);
-  if (title != nullptr && LoginPlugin::s_channel != nullptr) {
+  if (title != nullptr && WebviewPlugin::s_channel != nullptr) {
     g_autoptr(FlValue) val = fl_value_new_string(title);
-    fl_method_channel_invoke_method(LoginPlugin::s_channel, "onTitle", val,
+    fl_method_channel_invoke_method(WebviewPlugin::s_channel, "onTitle", val,
                                     nullptr, nullptr, nullptr);
   }
 }
@@ -243,9 +256,9 @@ static GtkWidget* on_create_web_view(WebKitWebView* web_view,
 
 }  // namespace
 
-void LoginPlugin::HandleMethodCall(FlMethodChannel* channel,
-                                   FlMethodCall* method_call,
-                                   gpointer user_data) {
+void WebviewPlugin::HandleMethodCall(FlMethodChannel* channel,
+                                     FlMethodCall* method_call,
+                                     gpointer user_data) {
   const gchar* method = fl_method_call_get_name(method_call);
   FlValue* args = fl_method_call_get_args(method_call);
 
@@ -255,14 +268,22 @@ void LoginPlugin::HandleMethodCall(FlMethodChannel* channel,
                                    "Expected argument map", nullptr, nullptr);
       return;
     }
+
     FlValue* url_val = fl_value_lookup_string(args, "url");
-    if (url_val == nullptr ||
-        fl_value_get_type(url_val) != FL_VALUE_TYPE_STRING) {
+    FlValue* html_val = fl_value_lookup_string(args, "html");
+    FlValue* base_url_val = fl_value_lookup_string(args, "baseUrl");
+    FlValue* login_val = fl_value_lookup_string(args, "handlePixivLogin");
+
+    bool has_url = (url_val != nullptr && fl_value_get_type(url_val) == FL_VALUE_TYPE_STRING);
+    bool has_html = (html_val != nullptr && fl_value_get_type(html_val) == FL_VALUE_TYPE_STRING);
+
+    if (!has_url && !has_html) {
       fl_method_call_respond_error(method_call, "BAD_ARGS",
-                                   "Expected 'url' string", nullptr, nullptr);
+                                   "Expected 'url' or 'html' string", nullptr,
+                                   nullptr);
       return;
     }
-    if (LoginPlugin::s_overlay == nullptr) {
+    if (WebviewPlugin::s_overlay == nullptr) {
       fl_method_call_respond_error(method_call, "NO_OVERLAY",
                                    "GtkOverlay not initialized", nullptr,
                                    nullptr);
@@ -273,9 +294,11 @@ void LoginPlugin::HandleMethodCall(FlMethodChannel* channel,
       s_active_session->FinishWithNull();
     }
 
-    const gchar* url = fl_value_get_string(url_val);
-    LoginSession* session = new LoginSession();
+    WebviewSession* session = new WebviewSession();
     session->method_call = FL_METHOD_CALL(g_object_ref(method_call));
+    if (login_val != nullptr && fl_value_get_type(login_val) == FL_VALUE_TYPE_BOOL) {
+      session->handle_pixiv_login = fl_value_get_bool(login_val);
+    }
     s_active_session = session;
 
     double x = get_double_from_map(args, "x", 0.0);
@@ -320,13 +343,23 @@ void LoginPlugin::HandleMethodCall(FlMethodChannel* channel,
     gtk_box_pack_start(GTK_BOX(session->container), web_view, TRUE, TRUE, 0);
     gtk_widget_show_all(session->container);
 
-    gtk_overlay_add_overlay(LoginPlugin::s_overlay, session->container);
-    gtk_overlay_set_overlay_pass_through(LoginPlugin::s_overlay,
+    gtk_overlay_add_overlay(WebviewPlugin::s_overlay, session->container);
+    gtk_overlay_set_overlay_pass_through(WebviewPlugin::s_overlay,
                                          session->container, FALSE);
-    gtk_widget_queue_resize(GTK_WIDGET(LoginPlugin::s_overlay));
+    gtk_widget_queue_resize(GTK_WIDGET(WebviewPlugin::s_overlay));
     gtk_widget_grab_focus(web_view);
 
-    webkit_web_view_load_uri(WEBKIT_WEB_VIEW(web_view), url);
+    if (has_html) {
+      const gchar* html = fl_value_get_string(html_val);
+      const gchar* base_uri = (base_url_val != nullptr &&
+                               fl_value_get_type(base_url_val) == FL_VALUE_TYPE_STRING)
+                                  ? fl_value_get_string(base_url_val)
+                                  : nullptr;
+      webkit_web_view_load_html(WEBKIT_WEB_VIEW(web_view), html, base_uri);
+    } else {
+      const gchar* url = fl_value_get_string(url_val);
+      webkit_web_view_load_uri(WEBKIT_WEB_VIEW(web_view), url);
+    }
   } else if (strcmp(method, "updateBounds") == 0) {
     if (s_active_session != nullptr && args != nullptr &&
         fl_value_get_type(args) == FL_VALUE_TYPE_MAP) {
@@ -341,8 +374,37 @@ void LoginPlugin::HandleMethodCall(FlMethodChannel* channel,
       s_active_session->width = static_cast<int>(std::round(width));
       s_active_session->height = static_cast<int>(std::round(height));
 
-      if (LoginPlugin::s_overlay != nullptr) {
-        gtk_widget_queue_resize(GTK_WIDGET(LoginPlugin::s_overlay));
+      if (WebviewPlugin::s_overlay != nullptr) {
+        gtk_widget_queue_resize(GTK_WIDGET(WebviewPlugin::s_overlay));
+      }
+    }
+    fl_method_call_respond_success(method_call, nullptr, nullptr);
+  } else if (strcmp(method, "loadUrl") == 0) {
+    if (s_active_session != nullptr && s_active_session->web_view != nullptr &&
+        args != nullptr && fl_value_get_type(args) == FL_VALUE_TYPE_MAP) {
+      FlValue* url_val = fl_value_lookup_string(args, "url");
+      if (url_val != nullptr &&
+          fl_value_get_type(url_val) == FL_VALUE_TYPE_STRING) {
+        webkit_web_view_load_uri(WEBKIT_WEB_VIEW(s_active_session->web_view),
+                                 fl_value_get_string(url_val));
+      }
+    }
+    fl_method_call_respond_success(method_call, nullptr, nullptr);
+  } else if (strcmp(method, "loadHtml") == 0) {
+    if (s_active_session != nullptr && s_active_session->web_view != nullptr &&
+        args != nullptr && fl_value_get_type(args) == FL_VALUE_TYPE_MAP) {
+      FlValue* html_val = fl_value_lookup_string(args, "html");
+      FlValue* base_url_val = fl_value_lookup_string(args, "baseUrl");
+      if (html_val != nullptr &&
+          fl_value_get_type(html_val) == FL_VALUE_TYPE_STRING) {
+        const gchar* html = fl_value_get_string(html_val);
+        const gchar* base_uri =
+            (base_url_val != nullptr &&
+             fl_value_get_type(base_url_val) == FL_VALUE_TYPE_STRING)
+                ? fl_value_get_string(base_url_val)
+                : nullptr;
+        webkit_web_view_load_html(WEBKIT_WEB_VIEW(s_active_session->web_view),
+                                  html, base_uri);
       }
     }
     fl_method_call_respond_success(method_call, nullptr, nullptr);
@@ -366,8 +428,8 @@ void LoginPlugin::HandleMethodCall(FlMethodChannel* channel,
   }
 }
 
-void LoginPlugin::Initialize(FlPluginRegistrar* registrar, GtkOverlay* overlay,
-                             FlView* view) {
+void WebviewPlugin::Initialize(FlPluginRegistrar* registrar, GtkOverlay* overlay,
+                               FlView* view) {
   s_overlay = overlay;
   s_fl_view = view;
 

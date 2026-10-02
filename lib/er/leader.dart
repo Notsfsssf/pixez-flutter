@@ -366,6 +366,7 @@ class Leader {
     Widget? icon,
     Widget? title,
     bool forceSkipWrap = false,
+    bool animated = true,
   }) {
     if (Constants.isFluent) {
       return FluentLeader.push(
@@ -374,6 +375,7 @@ class Leader {
         icon: icon,
         title: title,
         forceSkipWrap: forceSkipWrap,
+        animated: animated,
       );
     }
     return Navigator.of(
