@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
@@ -16,7 +17,7 @@ import 'package:pixez/fluent/page/user/users_page.dart';
 import 'package:pixez/fluent/page/saucenao/sauce_nao_modal.dart';
 import 'package:pixez/page/search/suggest/suggestion_store.dart';
 import 'package:pixez/page/search/trend_tags_store.dart';
-import 'package:pixez/page/webview/saucenao_webview_page.dart';
+import 'package:pixez/fluent/page/webview/saucenao_webview_page.dart';
 
 part 'item.dart';
 
@@ -68,6 +69,7 @@ class _PixEzSearchBoxState extends State<StatefulWidget> {
         SauncenaoWebview(),
         icon: const Icon(FluentIcons.image_search),
         title: const Text('SauceNAO'),
+        animated: !Platform.isLinux,
       );
     } else {
       SauceNaoModal.show(context);

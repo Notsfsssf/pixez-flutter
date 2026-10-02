@@ -1,8 +1,8 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/rendering.dart';
 import 'package:pixez/custom_tab_plugin.dart';
+import 'package:pixez/fluent/component/bounds_reporting_widget.dart';
 import 'package:pixez/fluent/navigation_framework.dart';
-import 'package:pixez/login_plugin.dart';
+import 'package:pixez/webview_plugin.dart';
 
 class LinuxLoginPage extends StatefulWidget {
   final String url;
@@ -37,7 +37,7 @@ class _LinuxLoginPageState extends State<LinuxLoginPage> with RouteAware {
   void dispose() {
     _isClosed = true;
     _routeObserver?.unsubscribe(this);
-    LoginPlugin.close();
+    WebviewPlugin.close();
     super.dispose();
   }
 
@@ -45,7 +45,7 @@ class _LinuxLoginPageState extends State<LinuxLoginPage> with RouteAware {
   void didPushNext() {
     // 切换到其他页面，主动销毁 WebKit（因为他不会自动销毁xD）
     _isClosed = true;
-    LoginPlugin.close();
+    WebviewPlugin.close();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         final route = _subscribedRoute;
@@ -63,14 +63,15 @@ class _LinuxLoginPageState extends State<LinuxLoginPage> with RouteAware {
       _started = true;
       _startLogin();
     } else {
-      LoginPlugin.updateBounds(rect);
+      WebviewPlugin.updateBounds(rect);
     }
   }
 
   Future<void> _startLogin() async {
-    final resultUri = await LoginPlugin.open(
-      widget.url,
+    final resultUri = await WebviewPlugin.open(
+      url: widget.url,
       bounds: _currentBounds,
+      handlePixivLogin: true,
       progressCallback: (progress) {
         if (mounted && !_isClosed) {
           setState(() {
@@ -101,12 +102,12 @@ class _LinuxLoginPageState extends State<LinuxLoginPage> with RouteAware {
           children: [
             IconButton(
               icon: const Icon(FluentIcons.back),
-              onPressed: () => LoginPlugin.goBack(),
+              onPressed: () => WebviewPlugin.goBack(),
             ),
             const SizedBox(width: 8.0),
             IconButton(
               icon: const Icon(FluentIcons.refresh),
-              onPressed: () => LoginPlugin.reload(),
+              onPressed: () => WebviewPlugin.reload(),
             ),
             const SizedBox(width: 8.0),
             IconButton(
@@ -117,61 +118,16 @@ class _LinuxLoginPageState extends State<LinuxLoginPage> with RouteAware {
             ),
             const SizedBox(width: 16.0),
             if (_progress < 1.0)
-              Expanded(
-                child: ProgressBar(value: _progress * 100),
-              ),
+              Expanded(child: ProgressBar(value: _progress * 100)),
           ],
         ),
       ),
-      content: _BoundsReportingWidget(
+      content: BoundsReportingWidget(
         onBoundsChanged: _onBoundsChanged,
         child: Container(
           color: FluentTheme.of(context).scaffoldBackgroundColor,
         ),
       ),
     );
-  }
-}
-
-class _BoundsReportingWidget extends SingleChildRenderObjectWidget {
-  final ValueChanged<Rect> onBoundsChanged;
-
-  const _BoundsReportingWidget({
-    required this.onBoundsChanged,
-    super.child,
-  });
-
-  @override
-  RenderObject createRenderObject(BuildContext context) {
-    return _RenderBoundsReporter(onBoundsChanged);
-  }
-
-  @override
-  void updateRenderObject(
-    BuildContext context,
-    covariant _RenderBoundsReporter renderObject,
-  ) {
-    renderObject.onBoundsChanged = onBoundsChanged;
-  }
-}
-
-class _RenderBoundsReporter extends RenderProxyBox {
-  ValueChanged<Rect> onBoundsChanged;
-  Rect? _lastRect;
-
-  _RenderBoundsReporter(this.onBoundsChanged);
-
-  @override
-  void performLayout() {
-    super.performLayout();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!attached) return;
-      final offset = localToGlobal(Offset.zero);
-      final rect = offset & size;
-      if (_lastRect != rect) {
-        _lastRect = rect;
-        onBoundsChanged(rect);
-      }
-    });
   }
 }

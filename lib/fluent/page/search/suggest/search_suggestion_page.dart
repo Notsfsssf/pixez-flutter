@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/er/leader.dart';
@@ -25,7 +27,7 @@ import 'package:pixez/fluent/page/user/users_page.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/search/suggest/suggestion_store.dart';
-import 'package:pixez/page/webview/saucenao_webview_page.dart';
+import 'package:pixez/fluent/page/webview/saucenao_webview_page.dart';
 
 class SearchSuggestionPage extends StatefulWidget {
   final String? preword;
@@ -69,6 +71,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
         SauncenaoWebview(),
         icon: const Icon(FluentIcons.image_search),
         title: const Text('SauceNAO'),
+        animated: !Platform.isLinux,
       );
     } else {
       SauceNaoModal.show(context);
