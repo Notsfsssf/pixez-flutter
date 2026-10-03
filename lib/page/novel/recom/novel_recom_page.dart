@@ -16,15 +16,14 @@
 
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:pixez/component/pixez_default_header.dart';
-import 'package:pixez/exts.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/i18n.dart';
-import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
 import 'package:pixez/page/novel/component/novel_lighting_store.dart';
+import 'package:pixez/page/novel/viewer/novel_store.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 import 'package:pixez/utils/haptic_util.dart';
 
@@ -95,23 +94,67 @@ class _NovelRecomPageState extends State<NovelRecomPage>
               backgroundColor: Colors.transparent,
               title: _buildFirstRow(context),
             ),
-            if (_store.novels.isNotEmpty) _buildSliverList(),
+            if (_store.errorMessage != null)
+              _buildErrorSliver(context)
+            else if (_store.novels.isNotEmpty)
+              _buildSliverList()
+            else
+              _buildLoadingSliver(context),
           ],
         );
       }),
     );
   }
 
+  /// 刷新失败时给出错误页和重试按钮，而不是继续显示旧内容，
+  /// 否则用户看到"下拉刷新转完圈什么都没变"，无法分辨是不是出错。
+  Widget _buildErrorSliver(BuildContext context) {
+    return SliverFillRemaining(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child:
+                  Text(':(', style: Theme.of(context).textTheme.headlineMedium),
+            ),
+            TextButton(
+                onPressed: () {
+                  _easyRefreshController.callRefresh();
+                },
+                child: Text(I18n.of(context).retry)),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text('${_store.errorMessage}'),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 首屏 / 刷新中的占位，避免列表为空时整个页面一片空白。
+  Widget _buildLoadingSliver(BuildContext context) {
+    return SliverFillRemaining(
+      child: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+
   SliverList _buildSliverList() {
-    _store.novels.removeWhere((element) => element.novel?.hateByUser() == true);
+    // 屏蔽项已经在 NovelLightingStore 里过滤掉了，这里不要再对
+    // 被观察列表做 removeWhere（build 期间修改 ObservableList 是反模式）。
     return SliverList(
         delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-      Novel novel = _store.novels[index].novel!;
-      return _buildItem(context, novel, index);
+      return _buildItem(context, _store.novels[index]);
     }, childCount: _store.novels.length));
   }
 
-  Widget _buildItem(BuildContext context, Novel novel, int index) {
+  Widget _buildItem(BuildContext context, NovelStore novelStore) {
+    final novel = novelStore.novel!;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4.0),
       child: InkWell(
@@ -120,7 +163,7 @@ class _NovelRecomPageState extends State<NovelRecomPage>
           Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
               builder: (BuildContext context) => NovelViewerPage(
                     id: novel.id,
-                    novelStore: _store.novels[index],
+                    novelStore: novelStore,
                   )));
         },
         child: Card(
