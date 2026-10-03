@@ -61,6 +61,7 @@ dependencies:
   # Desktop Support
   flutter_acrylic: ^1.1.4
   window_manager: ^0.5.1
+  tray_manager: ^0.7.0
   rhttp:
     path: ./plugins/rhttp/rhttp
   dio_compatibility_layer: ^0.1.1
