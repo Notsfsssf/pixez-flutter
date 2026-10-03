@@ -22,6 +22,7 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
+import 'package:pixez/page/novel/component/novel_item_menu.dart';
 import 'package:pixez/page/novel/component/novel_lighting_store.dart';
 import 'package:pixez/page/novel/viewer/novel_store.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
@@ -166,6 +167,7 @@ class _NovelRecomPageState extends State<NovelRecomPage>
                     novelStore: novelStore,
                   )));
         },
+        onLongPress: () => showNovelItemMenu(context, novel),
         child: Card(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,

@@ -23,6 +23,7 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
+import 'package:pixez/page/novel/component/novel_item_menu.dart';
 import 'package:pixez/page/novel/component/novel_lighting_store.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 
@@ -113,6 +114,7 @@ class _NovelLightingListState extends State<NovelLightingList> {
                         novelStore: _store.novels[index],
                       )));
             },
+            onLongPress: () => showNovelItemMenu(context, novel),
             child: Card(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
