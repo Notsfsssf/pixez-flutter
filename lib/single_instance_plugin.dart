@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/main.dart';
 
+import 'package:pixez/utils/tray_manager_helper.dart';
+
 class SingleInstancePlugin {
   static final platform = const EventChannel("pixez/single_instance");
   static bool _isInitialized = false;
@@ -17,6 +19,7 @@ class SingleInstancePlugin {
       (event) {
         final args = event.toString().split('\n');
         debugPrint("从另一实例接收到的参数: $args");
+        TrayManagerHelper.instance.showWindow();
         argsParser(args, callback: callback);
       },
     );
