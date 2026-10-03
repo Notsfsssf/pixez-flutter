@@ -100,6 +100,7 @@ abstract class _UserSetting with Store {
   static const String DRAG_START_X_KEY = "drag_start_x";
   static const String AUTO_TAG_WHEN_STAR_KEY = "auto_tag_when_star";
   static const String HAPTIC_FEEDBACK_KEY = "haptic_feedback";
+  static const String FOLD_MULTIPAGE_KEY = "fold_multipage_illust";
 
   @observable
   double dragStartX = 0;
@@ -135,6 +136,8 @@ abstract class _UserSetting with Store {
   String? storePath = null;
   @observable
   bool isBangs = false;
+  @observable
+  bool foldMultiPage = true;
   @observable
   int zoomQuality = 0;
   @observable
@@ -336,6 +339,12 @@ abstract class _UserSetting with Store {
   setIsBangs(bool v) async {
     await prefs.setBool(IS_BANGS_KEY, v);
     isBangs = v;
+  }
+
+  @action
+  setFoldMultiPage(bool v) async {
+    await prefs.setBool(FOLD_MULTIPAGE_KEY, v);
+    foldMultiPage = v;
   }
 
   @action
@@ -556,6 +565,7 @@ abstract class _UserSetting with Store {
     pictureQuality = prefs.getInt(PICTURE_QUALITY_KEY) ?? 0;
     mangaQuality = prefs.getInt(MANGA_QUALITY_KEY) ?? 0;
     isBangs = prefs.getBool(IS_BANGS_KEY) ?? false;
+    foldMultiPage = prefs.getBool(FOLD_MULTIPAGE_KEY) ?? true;
     isHelplessWay = prefs.getBool(ISHELPLESSWAY_KEY);
     maxRunningTask = prefs.getInt(MAX_RUNNING_TASK_KEY) ?? 2;
     isReturnAgainToExit = prefs.getBool(IS_RETURN_AGAIN_TO_EXIT_KEY) ?? false;

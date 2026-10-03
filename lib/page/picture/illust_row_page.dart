@@ -21,6 +21,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/ban_page.dart';
 import 'package:pixez/component/common_back_area.dart';
+import 'package:pixez/component/fold_button.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -72,6 +73,7 @@ class _IllustRowPageState extends State<IllustRowPage>
   late ScrollController _scrollController;
   late EasyRefreshController _refreshController;
   bool tempView = false;
+  bool _folded = userSetting.foldMultiPage;
   @override
   void initState() {
     _refreshController = EasyRefreshController(
@@ -322,6 +324,15 @@ class _IllustRowPageState extends State<IllustRowPage>
                       child: CustomScrollView(
                         slivers: [
                           ..._buildPhotoList(data, centerType, height),
+                          if (data.pageCount > 1)
+                            SliverToBoxAdapter(
+                              child: FoldButton(
+                                folded: _folded,
+                                remainingPages: data.metaPages.length - 1,
+                                onToggle: () =>
+                                    setState(() => _folded = !_folded),
+                              ),
+                            ),
                           SliverToBoxAdapter(
                             child: Container(
                               height: MediaQuery.of(context).padding.bottom,
@@ -461,7 +472,7 @@ class _IllustRowPageState extends State<IllustRowPage>
                     },
                     child: _buildIllustsItem(index, data, height),
                   );
-                }, childCount: data.metaPages.length),
+                }, childCount: _folded ? 1 : data.metaPages.length),
               ),
     ];
   }
