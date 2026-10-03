@@ -23,9 +23,9 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
+import 'package:pixez/page/novel/component/novel_item_menu.dart';
 import 'package:pixez/page/novel/component/novel_lighting_store.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
-import 'package:pixez/exts.dart';
 
 class NovelLightingList extends StatefulWidget {
   final FutureGet futureGet;
@@ -98,7 +98,8 @@ class _NovelLightingListState extends State<NovelLightingList> {
   }
 
   ListView _buildListBody() {
-    _store.novels.removeWhere((element) => element.novel?.hateByUser() == true);
+    // 屏蔽项已经在 NovelLightingStore 里过滤掉了，这里不要再对
+    // 被观察列表做 removeWhere（build 期间修改 ObservableList 是反模式）。
     return ListView.builder(
       padding: EdgeInsets.all(0),
       itemBuilder: (context, index) {
@@ -113,6 +114,7 @@ class _NovelLightingListState extends State<NovelLightingList> {
                         novelStore: _store.novels[index],
                       )));
             },
+            onLongPress: () => showNovelItemMenu(context, novel),
             child: Card(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
