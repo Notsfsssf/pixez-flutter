@@ -360,6 +360,13 @@
   "date_preset_1year": "1 year",
   "date_preset_custom": "Custom range",
   "expand_remaining_pages": "Expand remaining {count}",
+  "@expand_remaining_pages": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "collapse_pages": "Collapse",
   "fold_multipage_illust": "Collapse multi-page works by default"
 }
