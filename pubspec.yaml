@@ -23,25 +23,25 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  dio: ^5.10.0
+  dio: ^5.11.1
   crypto: ^3.0.7
   path_provider: ^2.1.6
   shared_preferences: ^2.5.5
-  share_plus: ^13.3.0
-  permission_handler: ^13.0.1
+  share_plus: ^13.3.1
+  permission_handler: ^13.0.2
   archive: ^4.0.9
-  url_launcher: ^6.3.2
+  url_launcher: ^6.3.3
   bot_toast: ^4.1.3
   package_info_plus: ^10.2.0
   mobx: ^2.3.3+2
   flutter_mobx: ^2.2.1+1
   in_app_purchase: ^3.3.0
-  flutter_widget_from_html: ^0.17.2
-  device_info_plus: ^13.2.0
+  flutter_widget_from_html: ^0.17.4
+  device_info_plus: ^13.3.0
   flutter_displaymode: ^0.7.0
   receive_sharing_intent: ^1.9.0 
-  cached_network_image: ^3.4.1
-  flutter_cache_manager: ^3.4.1
+  cached_network_image: ^4.0.4
+  flutter_cache_manager: ^3.4.5
   waterfall_flow: ^3.1.1
   animations: ^2.1.0
   font_awesome_flutter: ^11.0.0
@@ -53,7 +53,7 @@ dependencies:
   dio_cache_interceptor: ^4.0.6
   photo_view: ^0.15.0
   image: ^4.7.2
-  easy_refresh: ^3.5.1
+  easy_refresh: ^4.0.0
   sqflite: ^2.4.3
   dynamic_color: ^1.9.0
   # Design Style
@@ -65,7 +65,7 @@ dependencies:
     path: ./plugins/rhttp/rhttp
   dio_compatibility_layer: ^0.1.1
   flutter_cache_manager_dio: ^4.0.0
-  file_picker: ^12.0.0
+  file_picker: ^13.1.0
   flutter_riverpod: ^3.0.3
   riverpod_annotation: ^4.0.0
   freezed_annotation: ^3.1.0
@@ -74,8 +74,8 @@ dependencies:
   webview_flutter: ^4.14.1
   # sqlite3: 3.1.6
   sqflite_common_ffi: ^2.4.2+1
-  material_ui: ^1.0.0
-  cupertino_ui: ^1.0.0
+  material_ui: ^1.5.0
+  cupertino_ui: ^1.1.1
 
 dev_dependencies:
   flutter_test:
