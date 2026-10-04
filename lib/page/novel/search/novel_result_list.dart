@@ -1,11 +1,13 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/novel/component/novel_lighting_list.dart';
+import 'package:pixez/page/novel/search/novel_search_page.dart';
 
 enum SearchDatePreset {
   none,
@@ -43,7 +45,10 @@ class _NovelResultListState extends State<NovelResultList> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Leader.push(
+                      context, NovelSearchPage(initialQuery: widget.word));
+                },
                 child: Container(
                   width: MediaQuery.of(context).size.width * 2 / 3,
                   child: Align(

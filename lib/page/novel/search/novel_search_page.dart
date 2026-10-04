@@ -32,6 +32,10 @@ import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 
 class NovelSearchPage extends StatefulWidget {
+  final String? initialQuery;
+
+  const NovelSearchPage({Key? key, this.initialQuery}) : super(key: key);
+
   @override
   _NovelSearchPageState createState() => _NovelSearchPageState();
 }
@@ -43,7 +47,8 @@ class _NovelSearchPageState extends State<NovelSearchPage> {
   @override
   void initState() {
     tagHistoryStore.fetch();
-    _textEditingController = TextEditingController();
+    _textEditingController =
+        TextEditingController(text: widget.initialQuery ?? '');
     super.initState();
     fetch();
   }
