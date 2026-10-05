@@ -179,6 +179,10 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                       value: 0,
                     ),
                     ComboBoxItem(child: Text(I18n.of(context).large), value: 1),
+                    ComboBoxItem(
+                      child: Text(I18n.of(context).source),
+                      value: 2,
+                    ),
                   ],
                   onChanged: (selected) {
                     userSetting.setPictureQuality(selected ?? 0);
