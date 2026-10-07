@@ -50,9 +50,13 @@ class ApiSource extends LightSource {
 
 class ApiForceSource extends LightSource {
   FutureRefreshGet futureGet;
+  final FutureGet? futureNext;
 
-  ApiForceSource({required this.futureGet, String? glanceKey = null})
-    : super() {
+  ApiForceSource({
+    required this.futureGet,
+    this.futureNext,
+    String? glanceKey = null,
+  }) : super() {
     this.glanceKey = glanceKey;
   }
 
@@ -76,6 +80,7 @@ abstract class _LightingStoreBase with Store {
       GlanceIllustPersistProvider();
 
   dispose() {
+    _disposed = true;
     // iStores.forEach((element) {
     //   final provider = ExtendedNetworkImageProvider(
     //     element.illusts.imageUrls.medium,
@@ -112,10 +117,11 @@ abstract class _LightingStoreBase with Store {
   }
 
   bool _lock = false;
+  bool _disposed = false;
 
   @action
   Future<bool> fetch({String? url, bool force = false}) async {
-    if (_lock) return false;
+    if (_lock || _disposed) return false;
     _lock = true;
     nextUrl = null;
     errorMessage = null;
@@ -128,6 +134,7 @@ abstract class _LightingStoreBase with Store {
         result = await (source as ApiForceSource).fetch(force);
       }
 
+      if (_disposed) return false;
       Recommend recommend = Recommend.fromJson(result!.data);
       //https://app-api.pixiv.net/v1/user/illusts?filter=for_android&user_id=${user_id}&type=illust&offset=30
       nextUrl = recommend.nextUrl;
@@ -149,6 +156,7 @@ abstract class _LightingStoreBase with Store {
       easyRefreshController?.finishRefresh(IndicatorResult.success);
       return true;
     } catch (e) {
+      if (_disposed) return false;
       refreshing = false;
       errorMessage = e.toString();
       easyRefreshController?.finishRefresh(IndicatorResult.fail);
@@ -166,12 +174,18 @@ abstract class _LightingStoreBase with Store {
 
   @action
   Future<bool> fetchNext() async {
-    if (_lock) return false;
+    if (_lock || _disposed) return false;
     _lock = true;
     errorMessage = null;
     try {
-      if (nextUrl != null && nextUrl!.isNotEmpty) {
-        Response result = await apiClient.getNext(nextUrl!);
+      final futureNext = source is ApiForceSource
+          ? (source as ApiForceSource).futureNext
+          : null;
+      if (futureNext != null || (nextUrl != null && nextUrl!.isNotEmpty)) {
+        Response result = await (futureNext != null
+            ? futureNext()
+            : apiClient.getNext(nextUrl!));
+        if (_disposed) return false;
         Recommend recommend = Recommend.fromJson(result.data);
         nextUrl = recommend.nextUrl;
         var map = recommend.illusts.map((e) => IllustStore(e.id, e));
@@ -186,6 +200,7 @@ abstract class _LightingStoreBase with Store {
       }
       return true;
     } catch (e) {
+      if (_disposed) return false;
       easyRefreshController?.finishLoad(IndicatorResult.fail);
       return false;
     } finally {
