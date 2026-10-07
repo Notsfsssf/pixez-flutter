@@ -197,7 +197,7 @@ class _UsersPageState extends State<UsersPage>
                 icon: Icon(FluentIcons.bookmarks),
                 title: Text(I18n.of(context).bookmark),
                 body: BookmarkPage(
-                  isNested: true,
+                  isNested: false,
                   id: widget.id,
                   relay: _bookmarkPageMethodRelay,
                 ),
