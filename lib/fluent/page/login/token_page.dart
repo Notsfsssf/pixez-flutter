@@ -63,13 +63,13 @@ class _TokenPageState extends State<TokenPage> {
         maxWidth: 368.0,
         maxHeight: 320.0,
       ),
-      title: const Text('Token'),
+      title: Text(I18n.of(context).login_with_token),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           InfoLabel(
-            label: 'Token',
+            label: I18n.of(context).login_with_token,
             child: TextFormBox(
               maxLines: 1,
               autofocus: true,
@@ -77,7 +77,7 @@ class _TokenPageState extends State<TokenPage> {
                 padding: EdgeInsets.symmetric(horizontal: 8),
                 child: Icon(FluentIcons.password_field),
               ),
-              placeholder: 'Pixiv token',
+              placeholder: I18n.of(context).login_with_token_input_placeholder,
               controller: userNameController,
               autofillHints: [AutofillHints.username],
               onFieldSubmitted: (_) => _submit(),

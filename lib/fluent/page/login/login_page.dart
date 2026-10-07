@@ -68,12 +68,12 @@ class _LoginPageState extends State<LoginPage> {
             },
           ),
           CommandBarButton(
-            icon: Icon(FluentIcons.message),
+            icon: Icon(FluentIcons.info),
             onPressed: () {
               Leader.push(
                 context,
                 AboutPage(),
-                icon: Icon(FluentIcons.message),
+                icon: Icon(FluentIcons.info),
                 title: Text(I18n.of(context).about),
               );
             },
@@ -140,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
                               builder: (context) => TokenPage(),
                             );
                           },
-                          child: Text("Token"),
+                          child: Text(I18n.of(context).login_with_token),
                         ),
                         SizedBox(height: 4),
                         HyperlinkButton(

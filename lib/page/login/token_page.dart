@@ -61,7 +61,7 @@ class _TokenPageState extends State<TokenPage> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Token'),
+      title: Text(I18n.of(context).login_with_token),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -69,7 +69,7 @@ class _TokenPageState extends State<TokenPage> {
           TextFormField(
             maxLines: 1,
             autofocus: true,
-            decoration: const InputDecoration(hintText: 'Pixiv token'),
+            decoration: InputDecoration(hintText: I18n.of(context).login_with_token_input_placeholder),
             controller: userNameController,
             autofillHints: [AutofillHints.username],
             onFieldSubmitted: (_) => _submit(),
