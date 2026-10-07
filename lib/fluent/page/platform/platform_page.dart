@@ -60,6 +60,17 @@ class _PlatformPageStateWindow extends State<PlatformPage> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 ListTile(
+                  leading: Icon(FluentIcons.mini_expand),
+                  title: Text(I18n.of(context).minimize_on_exit),
+                  subtitle: Text(I18n.of(context).minimize_on_exit_message),
+                  trailing: ToggleSwitch(
+                    checked: userSetting.minimizeOnExit,
+                    onChanged: (bool value) async {
+                      await userSetting.setMinimizeOnExit(value);
+                    },
+                  ),
+                ),
+                ListTile(
                   leading: Icon(FluentIcons.folder),
                   title: Text(I18n.of(context).save_path),
                   subtitle: Text(path),
