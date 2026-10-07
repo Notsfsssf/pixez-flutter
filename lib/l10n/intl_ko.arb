@@ -357,5 +357,10 @@
   "date_preset_1month": "1개월",
   "date_preset_6months": "6개월",
   "date_preset_1year": "1년",
-  "date_preset_custom": "기간 지정"
+  "date_preset_custom": "기간 지정",
+  "download_novel_series": "소설 시리즈 다운로드",
+  "downloading": "다운로드 중",
+  "select_all": "전체 선택",
+  "cancel_select_all": "전체 선택 취소",
+  "selected": "선택됨"
 }
