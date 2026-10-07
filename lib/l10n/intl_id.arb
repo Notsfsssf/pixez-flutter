@@ -357,5 +357,8 @@
   "date_preset_1month": "1 bulan",
   "date_preset_6months": "6 bulan",
   "date_preset_1year": "1 tahun",
-  "date_preset_custom": "Rentang khusus"
+  "date_preset_custom": "Rentang khusus",
+  "expand_remaining_pages": "Buka {count} sisanya",
+  "collapse_pages": "Tutup",
+  "fold_multipage_illust": "Lipat karya multi-halaman secara bawaan"
 }

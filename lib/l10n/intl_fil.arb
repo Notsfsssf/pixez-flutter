@@ -357,5 +357,8 @@
   "date_preset_1month": "1 buwan",
   "date_preset_6months": "6 na buwan",
   "date_preset_1year": "1 taon",
-  "date_preset_custom": "Pumili ng saklaw ng petsa"
+  "date_preset_custom": "Pumili ng saklaw ng petsa",
+  "expand_remaining_pages": "Ipakita ang {count} pa",
+  "collapse_pages": "I-collapse",
+  "fold_multipage_illust": "I-collapse ang maramihang-pahinang gawa bilang default"
 }
