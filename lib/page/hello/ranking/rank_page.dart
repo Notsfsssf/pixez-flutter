@@ -19,6 +19,7 @@ import 'dart:io';
 
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/hello/ranking/rank_store.dart';
@@ -35,7 +36,8 @@ class RankPage extends StatefulWidget {
 class _RankPageState extends State<RankPage>
     with AutomaticKeepAliveClientMixin {
   late RankStore rankStore;
-  final modeList = [
+
+  final List<String> modeList = [
     "day",
     "day_male",
     "day_female",
@@ -47,9 +49,9 @@ class _RankPageState extends State<RankPage>
     "day_r18_ai",
     "day_r18",
     "week_r18",
-    "week_r18g"
+    "week_r18g",
   ];
-  var boolList = Map<int, bool>();
+
   late DateTime nowDate;
   late StreamSubscription<String> subscription;
   String? dateTime;
@@ -63,12 +65,8 @@ class _RankPageState extends State<RankPage>
   @override
   void initState() {
     nowDate = DateTime.now();
-    rankStore = RankStore()..init();
-    int i = 0;
-    modeList.forEach((element) {
-      boolList[i] = false;
-      i++;
-    });
+    rankStore = RankStore();
+
     super.initState();
     subscription = topStore.topStream.listen((event) {
       if (event == "200") {
@@ -88,149 +86,139 @@ class _RankPageState extends State<RankPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final rankListMean = I18n.of(context).mode_list.split(' ');
-    return Observer(builder: (_) {
-      if (rankStore.inChoice) {
-        return _buildChoicePage(context, rankListMean);
-      }
-      if (rankStore.modeList.isNotEmpty) {
-        var list = I18n.of(context).mode_list.split(' ');
-        List<String> titles = [];
-        for (var i = 0; i < rankStore.modeList.length; i++) {
-          int index = modeList.indexOf(rankStore.modeList[i]);
-          titles.add(list[index]);
-        }
-        return DefaultTabController(
-          length: rankStore.modeList.length,
-          child: Column(
-            children: <Widget>[
-              AnimatedContainer(
-                duration: Duration(milliseconds: 400),
-                height: !fullScreenStore.fullscreen
-                    ? (kToolbarHeight + MediaQuery.of(context).padding.top)
-                    : 0,
-                child: AppBar(
-                  title: TabBar(
-                    onTap: (i) {
-                      HapticUtil.selectionClick();
-                      setState(() {
-                        this.index = i;
-                      });
-                    },
-                    tabAlignment: TabAlignment.start,
-                    indicatorSize: TabBarIndicatorSize.label,
-                    isScrollable: true,
-                    tabs: <Widget>[
-                      for (var i in titles)
-                        Tab(
-                          text: i,
-                        ),
-                    ],
-                  ),
-                  actions: <Widget>[
-                    if (Platform.isAndroid)
-                      IconButton(
-                        icon: Icon(Icons.fullscreen),
-                        onPressed: () {
-                          fullScreenStore.toggle();
-                        },
-                      ),
-                    Visibility(
-                      visible: index < rankStore.modeList.length,
-                      child: IconButton(
-                        icon: Icon(Icons.date_range),
-                        onPressed: () async {
-                          await _showTimePicker(context);
-                        },
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.undo),
-                      onPressed: () {
-                        rankStore.reset();
-                      },
-                    )
-                  ],
-                ),
-              ),
-              Expanded(
-                child: TabBarView(children: [
-                  for (var element in rankStore.modeList)
-                    RankModePage(
-                      date: dateTime,
-                      mode: element,
-                      index: rankStore.modeList.indexOf(element),
-                    ),
-                ]),
-              )
-            ],
-          ),
-        );
-      } else {
-        return _buildChoicePage(context, rankListMean);
-      }
-    });
-  }
+    return Observer(
+      builder: (_) {
+        List<String> activeTabs = rankStore.filterState.entries
+            .where((entry) => entry.value == true)
+            .map((entry) => entry.key)
+            .toList();
 
-  Widget _buildChoicePage(BuildContext context, List<String> rankListMean) {
-    return Container(
-      child: Column(
-        children: <Widget>[
-          AppBar(
-            elevation: 0.0,
-            title: Text(I18n.of(context).choice_you_like),
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.save),
-                onPressed: () async {
-                  await rankStore.saveChange(boolList);
-                  rankStore.inChoice = false;
+        return DefaultTabController(
+          length: activeTabs.length,
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text(I18n.of(context).rank),
+              bottom: TabBar(
+                onTap: (i) {
+                  HapticUtil.selectionClick();
+                  setState(() {
+                    this.index = i;
+                  });
                 },
-              )
-            ],
-          ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Wrap(
-                spacing: 4,
-                children: [
-                  for (var e in rankListMean)
-                    FilterChip(
-                        label: Text(e),
-                        selected: _rankFilters.contains(e),
-                        onSelected: (v) {
-                          boolList[rankListMean.indexOf(e)] = v;
-                          if (v) {
-                            setState(() {
-                              _rankFilters.add(e);
-                            });
-                          } else {
-                            setState(() {
-                              _rankFilters.remove(e);
-                            });
-                          }
-                        }),
+                tabAlignment: TabAlignment.start,
+                indicatorSize: TabBarIndicatorSize.label,
+                isScrollable: true,
+                tabs: <Widget>[
+                  for (var i in activeTabs)
+                    Tab(
+                      text: I18n.of(
+                        context,
+                      ).mode_list.split(' ')[modeList.indexOf(i)],
+                    ),
                 ],
               ),
+              actions: <Widget>[
+                if (Platform.isAndroid)
+                  IconButton(
+                    icon: Icon(Icons.fullscreen),
+                    onPressed: () {
+                      fullScreenStore.toggle();
+                    },
+                  ),
+                Visibility(
+                  visible: index < activeTabs.length,
+                  child: IconButton(
+                    icon: Icon(Icons.date_range),
+                    onPressed: () async {
+                      await _showTimePicker(context);
+                    },
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.filter_alt),
+                  onPressed: () {
+                    showModalBottomSheet<void>(
+                      context: context,
+                      showDragHandle: true,
+                      builder: (context) {
+                        return Container(
+                          width: double.infinity,
+                          child: Observer(
+                            builder: (_) => Padding(
+                              padding: EdgeInsetsGeometry.fromLTRB(
+                                16,
+                                0,
+                                16,
+                                32,
+                              ),
+                              child: Wrap(
+                                spacing: 4,
+                                children: [
+                                  for (var e in modeList)
+                                    FilterChip(
+                                      label: Text(
+                                        I18n.of(context).mode_list.split(
+                                          ' ',
+                                        )[modeList.indexOf(e)],
+                                      ),
+                                      selected:
+                                          rankStore.filterState[e] ?? false,
+                                      onSelected: (v) {
+                                        rankStore.filterState[e] = v;
+                                      },
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Container(
+                    height: 26,
+                    width: 26,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 1.0),
+                    ),
+                    child: PainterAvatar(
+                      url: accountStore.now!.userImage,
+                      id: int.parse(accountStore.now!.userId),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          )
-        ],
-      ),
+            body: TabBarView(
+              children: [
+                for (var element in activeTabs)
+                  RankModePage(
+                    date: dateTime,
+                    mode: element,
+                    index: activeTabs.indexOf(element),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
-
-  List<String> _rankFilters = [];
 
   Future _showTimePicker(BuildContext context) async {
     var nowdate = DateTime.now();
     var date = await showDatePicker(
-        context: context,
-        initialDate: nowDateTime,
-        locale: userSetting.locale,
-        firstDate: DateTime(2007, 8),
-        //pixiv于2007年9月10日由上谷隆宏等人首次推出第一个测试版...
-        lastDate: nowdate);
+      context: context,
+      initialDate: nowDateTime,
+      locale: userSetting.locale,
+      firstDate: DateTime(2007, 8),
+      //pixiv于2007年9月10日由上谷隆宏等人首次推出第一个测试版...
+      lastDate: nowdate,
+    );
     if (date != null && mounted) {
       nowDateTime = date;
       setState(() {
