@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart' show MethodChannel;
 
-class FileService {
+class FileServicePlugin {
   static const _safChannel = MethodChannel('com.perol.dev/saf');
 
   /// 弹窗选择文件并读取其二进制字节。

@@ -28,7 +28,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/document_plugin.dart';
-import 'package:pixez/file_service.dart';
+import 'package:pixez/file_service_plugin.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/store/save_store.dart';
@@ -70,7 +70,7 @@ abstract class _UgoiraStoreBase with Store {
         zipFileName = applySingleFolder(illusts, zipFileName);
         if (Platform.isAndroid) {
           try {
-            final saved = await FileService.saveFileAs(
+            final saved = await FileServicePlugin.saveFileAs(
               data: data,
               fileName: zipFileName,
               mimeType: 'application/zip',

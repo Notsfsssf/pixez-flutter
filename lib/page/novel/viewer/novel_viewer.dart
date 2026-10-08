@@ -41,7 +41,7 @@ import 'package:pixez/page/novel/series/novel_series_page.dart';
 import 'package:pixez/page/novel/user/novel_users_page.dart';
 import 'package:pixez/page/novel/viewer/image_text.dart';
 import 'package:pixez/page/novel/viewer/novel_store.dart';
-import 'package:pixez/file_service.dart';
+import 'package:pixez/file_service_plugin.dart';
 import 'package:pixez/supportor_plugin.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path/path.dart' as Path;
@@ -740,7 +740,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
       // File(fileInAllPath).writeAsStringSync(data);
       // BotToast.showText(text: "export ${filePath}");
       final data = _novelStore.novelTextResponse!.text;
-      final saved = await FileService.saveFileAs(
+      final saved = await FileServicePlugin.saveFileAs(
         data: utf8.encode(data),
         fileName: "${_novelStore.novel!.title.trim().toLegal()}.txt",
         mimeType: 'text/plain',

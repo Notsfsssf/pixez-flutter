@@ -26,7 +26,7 @@ import 'package:pixez/models/ban_illust_id.dart';
 import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/ban_user_id.dart';
 import 'package:pixez/models/comment_response.dart';
-import 'package:pixez/file_service.dart';
+import 'package:pixez/file_service_plugin.dart';
 
 part 'mute_store.g.dart';
 
@@ -174,7 +174,7 @@ abstract class _MuteStoreBase with Store {
     if (Platform.isIOS) {
       await Sharer.exportUint8List(context, uint8List, fileName);
     } else {
-      await FileService.saveFileAs(
+      await FileServicePlugin.saveFileAs(
         data: uint8List,
         fileName: fileName,
         mimeType: 'application/json',
@@ -183,7 +183,7 @@ abstract class _MuteStoreBase with Store {
   }
 
   importFile() async {
-    final uri = await FileService.pickFileBytes(
+    final uri = await FileServicePlugin.pickFileBytes(
       mimeType: 'application/json',
       allowedExtensions: ['json'],
     );

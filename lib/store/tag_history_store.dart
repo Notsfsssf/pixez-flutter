@@ -23,7 +23,7 @@ import 'package:pixez/constants.dart';
 import 'package:pixez/er/sharer.dart';
 import 'package:pixez/models/export_tag_history_data.dart';
 import 'package:pixez/models/tags.dart';
-import 'package:pixez/file_service.dart';
+import 'package:pixez/file_service_plugin.dart';
 
 part 'tag_history_store.g.dart';
 
@@ -73,7 +73,7 @@ abstract class _TagHistoryStoreBase with Store {
   String _tagKey(TagsPersist tag) => '${tag.name}\u0000${tag.type ?? 0}';
 
   Future<void> importData() async {
-    final result = await FileService.pickFileBytes(
+    final result = await FileServicePlugin.pickFileBytes(
       mimeType: 'application/json',
       allowedExtensions: ['json'],
     );
@@ -107,7 +107,7 @@ abstract class _TagHistoryStoreBase with Store {
     if (Platform.isIOS) {
       await Sharer.exportUint8List(context, uint8List, 'search_history.json');
     } else {
-      await FileService.saveFileAs(
+      await FileServicePlugin.saveFileAs(
         data: uint8List,
         fileName: 'search_history.json',
         mimeType: 'application/json',
