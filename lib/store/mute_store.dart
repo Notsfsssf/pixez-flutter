@@ -19,7 +19,6 @@ import 'dart:io';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:mobx/mobx.dart';
-import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/er/prefer.dart';
 import 'package:pixez/er/sharer.dart';
 import 'package:pixez/models/ban_comment_persist.dart';
@@ -27,7 +26,7 @@ import 'package:pixez/models/ban_illust_id.dart';
 import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/ban_user_id.dart';
 import 'package:pixez/models/comment_response.dart';
-import 'package:pixez/saf_plugin.dart';
+import 'package:pixez/file_service_plugin.dart';
 
 part 'mute_store.g.dart';
 
@@ -169,22 +168,25 @@ abstract class _MuteStoreBase with Store {
     };
     final exportJson = jsonEncode(entity);
     final uint8List = utf8.encode(exportJson);
+    // Windows 下文件名不能包含 ':'，否则会被识别为盘符(
+    final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-');
+    final fileName = 'pixez_mute_$timestamp.json';
     if (Platform.isIOS) {
-      await Sharer.exportUint8List(context, uint8List,
-          "pixez_mute_${DateTime.now().toIso8601String()}.json");
+      await Sharer.exportUint8List(context, uint8List, fileName);
     } else {
-      final uri = await SAFPlugin.createFile(
-          "pixez_mute_${DateTime.now().toIso8601String()}.json",
-          "application/json");
-      LPrinter.d("exportJson:$exportJson");
-      if (uri != null) {
-        await SAFPlugin.writeUri(uri, uint8List);
-      }
+      await FileServicePlugin.saveFileAs(
+        data: uint8List,
+        fileName: fileName,
+        mimeType: 'application/json',
+      );
     }
   }
 
   importFile() async {
-    final uri = await SAFPlugin.openFile();
+    final uri = await FileServicePlugin.pickFileBytes(
+      mimeType: 'application/json',
+      allowedExtensions: ['json'],
+    );
     if (uri != null) {
       final data = utf8.decode(uri);
       final entity = jsonDecode(data);

@@ -6,7 +6,7 @@ import 'package:mobx/mobx.dart';
 import 'package:pixez/er/prefer.dart';
 import 'package:pixez/er/sharer.dart';
 import 'package:pixez/models/export_tag_history_data.dart';
-import 'package:pixez/saf_plugin.dart';
+import 'package:pixez/file_service_plugin.dart';
 
 part 'book_tag_store.g.dart';
 
@@ -52,7 +52,10 @@ abstract class _BookTagStoreBase with Store {
   final EXPORT_TYPE = "book_tags";
 
   Future<void> importData() async {
-    final result = await SAFPlugin.openFile();
+    final result = await FileServicePlugin.pickFileBytes(
+      mimeType: 'application/json',
+      allowedExtensions: ['json'],
+    );
     if (result == null) return;
     final json = utf8.decode(result);
     final decoder = JsonDecoder();
@@ -72,10 +75,11 @@ abstract class _BookTagStoreBase with Store {
     if (Platform.isIOS) {
       await Sharer.exportUint8List(context, uint8List, '${EXPORT_TYPE}.json');
     } else {
-      final uriStr =
-          await SAFPlugin.createFile("${EXPORT_TYPE}.json", "application/json");
-      if (uriStr == null) return;
-      await SAFPlugin.writeUri(uriStr, uint8List);
+      await FileServicePlugin.saveFileAs(
+        data: uint8List,
+        fileName: '${EXPORT_TYPE}.json',
+        mimeType: 'application/json',
+      );
     }
   }
 }

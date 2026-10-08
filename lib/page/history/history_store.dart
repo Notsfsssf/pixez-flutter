@@ -7,7 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pixez/er/sharer.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/illust_persist.dart';
-import 'package:pixez/saf_plugin.dart';
+import 'package:pixez/file_service_plugin.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'history_store.freezed.dart';
@@ -82,7 +82,10 @@ class History extends Notifier<HistoryState> {
   }
 
   Future<void> importData() async {
-    final result = await SAFPlugin.openFile();
+    final result = await FileServicePlugin.pickFileBytes(
+      mimeType: 'application/json',
+      allowedExtensions: ['json'],
+    );
     if (result == null) return;
     final json = utf8.decode(result);
     final decoder = JsonDecoder();
@@ -108,12 +111,11 @@ class History extends Notifier<HistoryState> {
     if (Platform.isIOS) {
       await Sharer.exportUint8List(context, uint8List, "illustpersist.json");
     } else {
-      final uriStr = await SAFPlugin.createFile(
-        "illustpersist.json",
-        "application/json",
+      await FileServicePlugin.saveFileAs(
+        data: uint8List,
+        fileName: 'illustpersist.json',
+        mimeType: 'application/json',
       );
-      if (uriStr == null) return;
-      await SAFPlugin.writeUri(uriStr, uint8List);
     }
   }
 }
