@@ -37,13 +37,17 @@ class WorksPage extends StatefulWidget {
   final String workType;
   final ValueChanged<String> onWorkTypeChange;
 
+  /// Opens the user's novels; the button is hidden when null.
+  final VoidCallback? onNovelTap;
+
   const WorksPage(
       {Key? key,
       required this.id,
       required this.store,
       required this.portal,
       required this.workType,
-      required this.onWorkTypeChange})
+      required this.onWorkTypeChange,
+      this.onNovelTap})
       : super(key: key);
 
   @override
@@ -157,7 +161,22 @@ class _WorksPageState extends State<WorksPage> {
                             delegate: SliverChipDelegate(
                                 Container(
                                   child: Center(
-                                    child: _buildSortChip(),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        _buildSortChip(),
+                                        if (widget.onNovelTap != null)
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 8),
+                                            child: OutlinedButton(
+                                              onPressed: widget.onNovelTap,
+                                              child: Text(
+                                                  I18n.of(context).novel),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 height: 52),
