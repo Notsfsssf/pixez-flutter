@@ -230,6 +230,7 @@
   },
   "save_painter_avatar": "儲存繪師頭貼",
   "favorited_tag": "標籤收藏",
+  "favorited_tag_empty_hint": "還沒有收藏標籤。在作品詳情頁長按標籤，選擇「收藏」即可新增。",
   "legacy_mode_warning": "Android 10 及之後的作業系統不推薦使用舊版方式",
   "clear_old_format_file": "刪除舊版軟體儲存的圖像",
   "clear_old_format_file_message": "儲存圖像的同時刪除來自舊版軟體 (未標示投稿內編號) 的圖像，防止圖像被重複儲存",

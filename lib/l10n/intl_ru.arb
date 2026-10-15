@@ -228,6 +228,7 @@
   },
   "save_painter_avatar": "Сохранить аватар автора",
   "favorited_tag": "Избранные метки",
+  "favorited_tag_empty_hint": "Избранных меток пока нет. Нажмите и удерживайте метку на странице работы и выберите «Избранное», чтобы добавить её.",
   "legacy_mode_warning": "Устаревший режим недоступен с Android 9",
   "clear_old_format_file": "Очистить файл старого формата",
   "clear_old_format_file_message": "Без _p0",

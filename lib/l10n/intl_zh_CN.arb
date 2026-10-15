@@ -230,6 +230,7 @@
   },
   "save_painter_avatar": "保存画师头像",
   "favorited_tag": "收藏标签",
+  "favorited_tag_empty_hint": "还没有收藏标签。在作品详情页长按标签，选择「收藏」即可添加。",
   "legacy_mode_warning": "传统模式从Android10开始不推荐使用",
   "clear_old_format_file": "删除老格式的图片",
   "clear_old_format_file_message": "在保存时删除旧版不带p0格式的图片",

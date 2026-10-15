@@ -228,6 +228,7 @@
   },
   "save_painter_avatar": "프로필 이미지를 저장",
   "favorited_tag": "마음에 들어하는 태그",
+  "favorited_tag_empty_hint": "아직 마음에 들어하는 태그가 없습니다. 작품 상세 페이지에서 태그를 길게 누르고 \"북마크\"를 선택하면 추가됩니다.",
   "legacy_mode_warning": "안드로이드 10 이후 버전의 경우 추천하지 않습니다",
   "clear_old_format_file": "오래된 형식의 파일을 삭제",
   "clear_old_format_file_message": "_p0가 없는 파일을 삭제합니다",

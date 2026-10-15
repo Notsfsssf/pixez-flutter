@@ -219,6 +219,7 @@
   "save_format_lose_part_warning": "El formato de guardado debe incluir {part},de lo contrario, las obras de multi-p se guardarán incorrectamente！",
   "save_painter_avatar": "Guardar avatar de pintor",
   "favorited_tag": "Etiqueta favorita",
+  "favorited_tag_empty_hint": "Aún no hay etiquetas favoritas. Mantén pulsada una etiqueta en la página de detalles de una obra y elige «Colecciones» para añadirla.",
   "legacy_mode_warning": "El modo heredado no está disponible desde  Android9",
   "clear_old_format_file": "Borrar archivo de formato antiguo",
   "clear_old_format_file_message": "sin _p0",
