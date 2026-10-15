@@ -357,5 +357,8 @@
   "date_preset_1month": "1 bulan",
   "date_preset_6months": "6 bulan",
   "date_preset_1year": "1 tahun",
-  "date_preset_custom": "Rentang khusus"
+  "date_preset_custom": "Rentang khusus",
+  "upload_year": "Tahun unggah (mis. 2026)",
+  "upload_month": "Bulan unggah (01-12)",
+  "upload_day": "Tanggal unggah (01-31)"
 }
