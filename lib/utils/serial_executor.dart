@@ -16,11 +16,22 @@
 
 /// Runs async tasks one after another, in the order they were submitted.
 class SerialExecutor {
+  SerialExecutor({this.maxWait});
+
+  /// When set, a task that has been running for this long no longer holds
+  /// back the tasks after it, e.g. when a platform call never replies.
+  final Duration? maxWait;
+
   Future<void> _tail = Future.value();
 
   Future<T> run<T>(Future<T> Function() task) {
-    final result = _tail.then((_) => task());
-    _tail = result.then<void>((_) {}, onError: (_) {});
+    final previous = _tail;
+    final result = previous.then((_) => task());
+    _tail = previous.then((_) {
+      final done = result.then<void>((_) {}, onError: (_) {});
+      final limit = maxWait;
+      return limit == null ? done : done.timeout(limit, onTimeout: () {});
+    });
     return result;
   }
 }

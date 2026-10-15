@@ -437,7 +437,10 @@ abstract class _SaveStoreBase with Store {
 
   // Each save awaits several platform and database calls before it joins the
   // download queue; run them in call order so multi-select saves keep order.
-  final SerialExecutor _saveExecutor = SerialExecutor();
+  // A platform call that never replies must not block later saves forever.
+  final SerialExecutor _saveExecutor = SerialExecutor(
+    maxWait: const Duration(seconds: 10),
+  );
 
   @action
   Future<void> saveImage(
