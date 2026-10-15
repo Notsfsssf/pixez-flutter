@@ -14,16 +14,21 @@
  *
  */
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/exts.dart';
+import 'package:pixez/i18n.dart';
+import 'package:pixez/main.dart';
 import 'package:pixez/models/amwork.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/soup/soup_store.dart';
+import 'package:pixez/utils/haptic_util.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class SoupPage extends StatefulWidget {
@@ -110,9 +115,9 @@ class _SoupPageState extends State<SoupPage> {
           }
           AmWork amWork = _soupStore.amWorks[index - 1];
           return InkWell(
+            onLongPress: () => _onLongPressSave(amWork),
             onTap: () {
-              int id = int.parse(Uri.parse(amWork.arworkLink!).pathSegments[
-                  Uri.parse(amWork.arworkLink!).pathSegments.length - 1]);
+              int id = _illustIdOf(amWork);
               Navigator.of(context, rootNavigator: true)
                   .push(MaterialPageRoute(builder: (BuildContext context) {
                 return IllustLightingPage(
@@ -143,5 +148,50 @@ class _SoupPageState extends State<SoupPage> {
       },
       itemCount: _soupStore.amWorks.length + 1,
     );
+  }
+
+  int _illustIdOf(AmWork amWork) {
+    final segments = Uri.parse(amWork.arworkLink!).pathSegments;
+    return int.parse(segments[segments.length - 1]);
+  }
+
+  // Same as long-pressing an illust card elsewhere. The card only has a link,
+  // so load the illust first; muted works always ask before saving.
+  Future<void> _onLongPressSave(AmWork amWork) async {
+    HapticUtil.heavy();
+    final store = IllustStore(_illustIdOf(amWork), null);
+    await store.fetch();
+    final illust = store.illusts;
+    if (!mounted) return;
+    if (illust == null) {
+      BotToast.showText(text: store.errorMessage ?? I18n.of(context).failed);
+      return;
+    }
+    final muted = illust.hateByUser();
+    if (muted || userSetting.longPressSaveConfirm) {
+      final result = await showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(I18n.of(context).save),
+            content: Text(muted
+                ? I18n.of(context).shield_message(illust.title)
+                : illust.title),
+            actions: <Widget>[
+              TextButton(
+                child: Text(I18n.of(context).cancel),
+                onPressed: () => Navigator.of(context).pop(false),
+              ),
+              TextButton(
+                child: Text(I18n.of(context).ok),
+                onPressed: () => Navigator.of(context).pop(true),
+              ),
+            ],
+          );
+        },
+      );
+      if (result != true) return;
+    }
+    saveStore.saveImage(illust);
   }
 }
