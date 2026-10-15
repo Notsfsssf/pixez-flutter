@@ -129,6 +129,17 @@ abstract class _UgoiraStoreBase with Store {
     }
   }
 
+  /// Downloads the frames when needed and encodes them into a GIF, for
+  /// callers that save an ugoira without opening the detail page.
+  Future<void> downloadAndEncodeGif(Illusts illusts) async {
+    await downloadAndUnzip();
+    if (status != UgoiraStatus.play) {
+      BotToast.showText(text: "ugoira download failed");
+      return;
+    }
+    await encodeGif(illusts);
+  }
+
   Future<void> _autoBookmarkAfterSave(Illusts illusts) async {
     if (!userSetting.starAfterSave) return;
     final illustStore = IllustStore(illusts.id, illusts);
@@ -206,21 +217,17 @@ abstract class _UgoiraStoreBase with Store {
         if (userSetting.networkMode.usesCompatibleConnection) {
           dio.httpClientAdapter = await ApiClient.createCompatibleClient();
         }
-        dio.download(
+        await dio.download(
           sourceZipUrl,
           fullPath,
           onReceiveProgress: (int count, int total) {
             this.count = count;
             this.total = total;
-            if (count / total == 1) {
-              unZip();
-            }
           },
           deleteOnError: true,
         );
-      } else {
-        unZip();
       }
+      await unZip();
     } catch (e) {
       if (fullPathFile.existsSync()) fullPathFile.deleteSync();
       if (Directory('$tempPath/$id/').existsSync()) {
