@@ -179,7 +179,8 @@ class _WorksPageState extends State<WorksPage> {
                                     ),
                                   ),
                                 ),
-                                height: 52),
+                                height: 52,
+                                rebuildKey: widget.onNovelTap != null),
                             pinned: true),
                         if (_store.refreshing && _store.iStores.isEmpty)
                           SliverToBoxAdapter(
@@ -352,8 +353,10 @@ class RenderSliverPinnedOverlapInjector extends RenderSliver {
 class SliverChipDelegate extends SliverPersistentHeaderDelegate {
   final Widget child;
   double height = 45;
+  // The header only rebuilds when this value changes.
+  final Object? rebuildKey;
 
-  SliverChipDelegate(this.child, {this.height = 45});
+  SliverChipDelegate(this.child, {this.height = 45, this.rebuildKey});
 
   @override
   double get minExtent => height;
@@ -369,6 +372,6 @@ class SliverChipDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(SliverChipDelegate oldDelegate) {
-    return false;
+    return oldDelegate.rebuildKey != rebuildKey;
   }
 }
