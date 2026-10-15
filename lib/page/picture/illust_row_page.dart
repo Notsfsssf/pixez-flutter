@@ -206,7 +206,11 @@ class _IllustRowPageState extends State<IllustRowPage>
               child: FloatingActionButton(
                 heroTag: widget.id,
                 backgroundColor: Colors.white,
-                onPressed: () => _illustStore.star(),
+                onPressed: () => _illustStore.star(
+                  restrict: userSetting.defaultPrivateLike
+                      ? "private"
+                      : "public",
+                ),
                 child: Observer(
                   builder: (_) {
                     return StarIcon(state: _illustStore.state);
