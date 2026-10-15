@@ -23,7 +23,9 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/network/api_client.dart';
 import 'package:pixez/models/amwork.dart';
+import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/spotlight_response.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
@@ -156,17 +158,19 @@ class _SoupPageState extends State<SoupPage> {
   }
 
   // Same as long-pressing an illust card elsewhere. The card only has a link,
-  // so load the illust first; muted works always ask before saving.
+  // so load the illust first (without adding it to the browsing history);
+  // muted works always ask before saving.
   Future<void> _onLongPressSave(AmWork amWork) async {
     HapticUtil.heavy();
-    final store = IllustStore(_illustIdOf(amWork), null);
-    await store.fetch();
-    final illust = store.illusts;
-    if (!mounted) return;
-    if (illust == null) {
-      BotToast.showText(text: store.errorMessage ?? I18n.of(context).failed);
+    Illusts illust;
+    try {
+      final response = await apiClient.getIllustDetail(_illustIdOf(amWork));
+      illust = Illusts.fromJson(response.data['illust']);
+    } catch (e) {
+      if (mounted) BotToast.showText(text: I18n.of(context).failed);
       return;
     }
+    if (!mounted) return;
     final muted = illust.hateByUser();
     if (muted || userSetting.longPressSaveConfirm) {
       final result = await showDialog<bool>(
