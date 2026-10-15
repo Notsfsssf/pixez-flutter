@@ -38,9 +38,7 @@ fun Context.save(byteArray: ByteArray, name: String): String? {
             targetFile.createNewFile()
         else
             targetFile.delete()
-        targetFile.outputStream().use {
-            it.write(byteArray)
-        }
+        targetFile.writeBytesOrDelete(byteArray)
         return targetFile.absolutePath
     }
     val values = ContentValues();
@@ -67,6 +65,19 @@ fun Context.save(byteArray: ByteArray, name: String): String? {
         }
     }
     return null
+}
+
+/**
+ * Writes [bytes] to this file. If writing fails (e.g. no space left on the
+ * device), the file is deleted so that no empty or partial image is left.
+ */
+fun File.writeBytesOrDelete(bytes: ByteArray) {
+    try {
+        outputStream().use { it.write(bytes) }
+    } catch (e: Throwable) {
+        delete()
+        throw e
+    }
 }
 
 fun Context.exist(name: String): Boolean {
