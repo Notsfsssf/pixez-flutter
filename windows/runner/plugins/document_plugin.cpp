@@ -36,46 +36,59 @@ void Document::Initialize(BinaryMessenger *messenger, const StandardMethodCodec 
       {
         init_apartment(apartment_type::single_threaded);
 
-        const auto *arguments = get_if<EncodableMap>(call.arguments());
-        if (call.method_name().compare("save") == 0)
+        // Reply with an error instead of never replying, otherwise the Dart
+        // side awaits forever (e.g. when the saved folder no longer exists).
+        try
         {
-          auto data = get<vector<uint8_t>>(arguments->find(EncodableValue("data"))->second);
-          auto name = to_hstring(get<string>(arguments->find(EncodableValue("name"))->second));
-          auto resultData = co_await SaveAsync(data, name);
-          result->Success(resultData);
+          const auto *arguments = get_if<EncodableMap>(call.arguments());
+          if (call.method_name().compare("save") == 0)
+          {
+            auto data = get<vector<uint8_t>>(arguments->find(EncodableValue("data"))->second);
+            auto name = to_hstring(get<string>(arguments->find(EncodableValue("name"))->second));
+            auto resultData = co_await SaveAsync(data, name);
+            result->Success(resultData);
+          }
+          else if (call.method_name().compare("openSave") == 0)
+          {
+            auto data = get<vector<uint8_t>>(arguments->find(EncodableValue("data"))->second);
+            auto name = to_hstring(get<string>(arguments->find(EncodableValue("name"))->second));
+            auto resultData = co_await OpenSaveAsync(data, name, hWnd);
+            result->Success(resultData);
+          }
+          else if (call.method_name().compare("permissionStatus") == 0)
+          {
+            // 不实现
+            result->Success();
+          }
+          else if (call.method_name().compare("requestPermission") == 0)
+          {
+            // 不实现
+            result->Success();
+          }
+          else if (call.method_name().compare("exist") == 0)
+          {
+            auto name = to_hstring(get<string>(arguments->find(EncodableValue("name"))->second));
+            auto resultData = co_await ExistAsync(name);
+            result->Success(resultData);
+          }
+          else if (call.method_name().compare("get_path") == 0)
+          {
+            auto resultData = co_await GetPathAsync();
+            result->Success(to_string(resultData));
+          }
+          else if (call.method_name().compare("choice_folder") == 0)
+          {
+            auto resultData = co_await ChoiceFolderAsync(hWnd);
+            result->Success(to_string(resultData));
+          }
         }
-        else if (call.method_name().compare("openSave") == 0)
+        catch (hresult_error const &e)
         {
-          auto data = get<vector<uint8_t>>(arguments->find(EncodableValue("data"))->second);
-          auto name = to_hstring(get<string>(arguments->find(EncodableValue("name"))->second));
-          auto resultData = co_await OpenSaveAsync(data, name, hWnd);
-          result->Success(resultData);
+          result->Error("document_error", to_string(e.message()));
         }
-        else if (call.method_name().compare("permissionStatus") == 0)
+        catch (...)
         {
-          // 不实现
-          result->Success();
-        }
-        else if (call.method_name().compare("requestPermission") == 0)
-        {
-          // 不实现
-          result->Success();
-        }
-        else if (call.method_name().compare("exist") == 0)
-        {
-          auto name = to_hstring(get<string>(arguments->find(EncodableValue("name"))->second));
-          auto resultData = co_await ExistAsync(name);
-          result->Success(resultData);
-        }
-        else if (call.method_name().compare("get_path") == 0)
-        {
-          auto resultData = co_await GetPathAsync();
-          result->Success(to_string(resultData));
-        }
-        else if (call.method_name().compare("choice_folder") == 0)
-        {
-          auto resultData = co_await ChoiceFolderAsync(hWnd);
-          result->Success(to_string(resultData));
+          result->Error("document_error");
         }
 
         uninit_apartment();
