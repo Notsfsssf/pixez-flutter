@@ -32,6 +32,7 @@ import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/models/task_persist.dart';
 import 'package:pixez/page/task/job_page.dart';
+import 'package:pixez/utils/serial_executor.dart';
 
 part 'save_store.g.dart';
 
@@ -289,7 +290,7 @@ abstract class _SaveStoreBase with Store {
     );
     try {
       await fetcher.taskPersistProvider.insert(taskPersist);
-      fetcher.save(url, illusts, fileName);
+      await fetcher.save(url, illusts, fileName);
     } catch (e) {}
   }
 
@@ -313,7 +314,7 @@ abstract class _SaveStoreBase with Store {
       } catch (e) {}
     }
     streamController.add(SaveStream(SaveState.JOIN, illusts, index: index));
-    _joinQueue(url, illusts, fileName);
+    await _joinQueue(url, illusts, fileName);
   }
 
   Future<void> saveToGalleryWithUser(
@@ -434,8 +435,22 @@ abstract class _SaveStoreBase with Store {
     return buildSaveFileName(illust, index, memType);
   }
 
+  // Each save awaits several platform and database calls before it joins the
+  // download queue; run them in call order so multi-select saves keep order.
+  final SerialExecutor _saveExecutor = SerialExecutor();
+
   @action
   Future<void> saveImage(
+    Illusts illusts, {
+    int? index,
+    bool redo = false,
+  }) {
+    return _saveExecutor.run(
+      () => _saveImageInOrder(illusts, index: index, redo: redo),
+    );
+  }
+
+  Future<void> _saveImageInOrder(
     Illusts illusts, {
     int? index,
     bool redo = false,
@@ -452,20 +467,20 @@ abstract class _SaveStoreBase with Store {
       String url = illusts.metaSinglePage!.originalImageUrl!;
       memType = url.contains('.png') ? '.png' : '.jpg';
       String fileName = await _handleFileName(illusts, 0, memType);
-      _saveInternal(url, illusts, fileName, 0, redo: redo);
+      await _saveInternal(url, illusts, fileName, 0, redo: redo);
     } else {
       if (index != null) {
         var url = illusts.metaPages[index].imageUrls!.original;
         memType = url.contains('.png') ? '.png' : '.jpg';
         String fileName = await _handleFileName(illusts, index, memType);
-        _saveInternal(url, illusts, fileName, index, redo: redo);
+        await _saveInternal(url, illusts, fileName, index, redo: redo);
       } else {
         int index = 0;
         for (var f in illusts.metaPages) {
           String url = f.imageUrls!.original;
           memType = url.contains('.png') ? '.png' : '.jpg';
           String fileName = await _handleFileName(illusts, index, memType);
-          _saveInternal(url, illusts, fileName, index, redo: redo);
+          await _saveInternal(url, illusts, fileName, index, redo: redo);
           index++;
         }
       }
