@@ -68,6 +68,38 @@ void main() {
     tempDir.deleteSync(recursive: true);
   });
 
+  test('stores of the same illust do not prepare frames concurrently', () async {
+    _writeZip(tempDir);
+    var inFlight = 0;
+    var maxInFlight = 0;
+    apiClient.httpClient = Dio(BaseOptions(baseUrl: 'https://app-api.pixiv.net'))
+      ..interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) async {
+            inFlight++;
+            if (inFlight > maxInFlight) maxInFlight = inFlight;
+            await Future<void>.delayed(const Duration(milliseconds: 20));
+            inFlight--;
+            handler.resolve(
+              Response(
+                requestOptions: options,
+                statusCode: 200,
+                data: _metadata(),
+              ),
+            );
+          },
+        ),
+      );
+    final first = UgoiraStore(_illustId);
+    final second = UgoiraStore(_illustId);
+
+    await Future.wait([first.downloadAndUnzip(), second.downloadAndUnzip()]);
+
+    expect(maxInFlight, 1);
+    expect(first.status, UgoiraStatus.play);
+    expect(second.status, UgoiraStatus.play);
+  });
+
   test('downloadAndUnzip completes after the frames are extracted', () async {
     _writeZip(tempDir);
     final store = UgoiraStore(_illustId);

@@ -132,12 +132,20 @@ abstract class _UgoiraStoreBase with Store {
   /// Downloads the frames when needed and encodes them into a GIF, for
   /// callers that save an ugoira without opening the detail page.
   Future<void> downloadAndEncodeGif(Illusts illusts) async {
-    await downloadAndUnzip();
-    if (status != UgoiraStatus.play) {
-      BotToast.showText(text: "ugoira download failed");
+    if (!_savingIds.add(id)) {
+      BotToast.showText(text: "already saving this ugoira");
       return;
     }
-    await encodeGif(illusts);
+    try {
+      await downloadAndUnzip();
+      if (status != UgoiraStatus.play) {
+        BotToast.showText(text: "ugoira download failed");
+        return;
+      }
+      await encodeGif(illusts);
+    } finally {
+      _savingIds.remove(id);
+    }
   }
 
   Future<void> _autoBookmarkAfterSave(Illusts illusts) async {
@@ -191,9 +199,26 @@ abstract class _UgoiraStoreBase with Store {
     }
   }
 
+  // Stores of the same illust share the temporary zip and frame folder, so
+  // their downloads run one after another.
+  static final Map<int, Future<void>> _pendingDownloads = {};
+  static final Set<int> _savingIds = {};
+
   @action
   downloadAndUnzip() async {
     status = UgoiraStatus.progress;
+    final previous = (_pendingDownloads[id] ?? Future<void>.value())
+        .catchError((_) {});
+    final task = previous.then((_) => _downloadAndUnzip());
+    _pendingDownloads[id] = task;
+    try {
+      await task;
+    } finally {
+      if (identical(_pendingDownloads[id], task)) _pendingDownloads.remove(id);
+    }
+  }
+
+  Future<void> _downloadAndUnzip() async {
     Directory tempDir = await getTemporaryDirectory();
     String tempPath = tempDir.path;
     String fullPath = "$tempPath/$id.zip";
