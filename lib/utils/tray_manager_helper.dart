@@ -51,7 +51,9 @@ class TrayManagerHelper with WindowListener {
 
       _trayIcon = TrayIcon.create();
       if (_trayIcon == null) {
-        debugPrint('[TrayManager] Failed to create TrayIcon, tray not supported');
+        debugPrint(
+          '[TrayManager] Failed to create TrayIcon, tray not supported',
+        );
         return;
       }
 
@@ -61,12 +63,7 @@ class TrayManagerHelper with WindowListener {
         _trayIcon!.icon = image;
       }
       _trayIcon!.setTooltip('PixEz');
-      // TODO: 统一为 rightClicked
-      if (Platform.isLinux) {
-        _trayIcon!.setContextMenuTrigger(ContextMenuTrigger.clicked);
-      } else {
-        _trayIcon!.setContextMenuTrigger(ContextMenuTrigger.rightClicked);
-      }
+      _trayIcon!.setContextMenuTrigger(ContextMenuTrigger.rightClicked);
 
       // 创建上下文菜单
       _menu = Menu.create();
@@ -101,7 +98,7 @@ class TrayManagerHelper with WindowListener {
         _trayIcon!.setContextMenu(_menu);
       }
 
-      // 监听托盘图标点击（Windows/macOS）
+      // 监听托盘图标点击
       _trayIcon!.addListener((event) {
         if (event is TrayIconClickedEvent) {
           toggleWindow();
