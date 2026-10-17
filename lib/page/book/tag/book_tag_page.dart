@@ -79,6 +79,28 @@ class _BookTagPageState extends State<BookTagPage>
             length: bookTagStore.bookTagList.length,
             vsync: this);
       }
+      if (bookTagStore.bookTagList.isEmpty) {
+        // Tags are added from the tag long-press menu on the detail page;
+        // without a hint the empty page looks broken.
+        return Scaffold(
+          appBar: AppBar(elevation: 0.0),
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Text(
+                I18n.of(context).favorited_tag_empty_hint,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Icon(Icons.close),
+          ),
+        );
+      }
       return Scaffold(
         appBar: AppBar(
           elevation: 0.0,
