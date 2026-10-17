@@ -358,5 +358,11 @@
   "date_preset_1month": "1 ay",
   "date_preset_6months": "6 ay",
   "date_preset_1year": "1 yıl",
-  "date_preset_custom": "Özel tarih aralığı"
+  "date_preset_custom": "Özel tarih aralığı",
+  "download_novel_series": "Roman serisini indir",
+  "downloading": "İndiriliyor",
+  "select_all": "Tümünü seç",
+  "cancel_select_all": "Tüm seçimleri kaldır",
+  "selected": "Seçildi"
+
 }
