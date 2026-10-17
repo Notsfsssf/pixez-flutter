@@ -361,12 +361,12 @@ class _SearchPageState extends State<SearchPage>
               ),
             ),
           ),
-          if (_trendTagsStore.trendTags.isNotEmpty)
+          if (_trendTagsStore.visibleTrendTags.isNotEmpty)
             SliverPadding(
               padding: EdgeInsets.all(8.0),
               sliver: SliverGrid(
                 delegate: SliverChildBuilderDelegate((context, index) {
-                  final tags = _trendTagsStore.trendTags;
+                  final tags = _trendTagsStore.visibleTrendTags;
                   return GestureDetector(
                     onTap: () {
                       Navigator.of(context, rootNavigator: true).push(
@@ -438,7 +438,7 @@ class _SearchPageState extends State<SearchPage>
                       ),
                     ),
                   );
-                }, childCount: _trendTagsStore.trendTags.length),
+                }, childCount: _trendTagsStore.visibleTrendTags.length),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: rowCount,
                 ),
