@@ -29,6 +29,7 @@ class DataExportPage extends HookConsumerWidget {
               await tagHistoryStore.exportData(context);
             } catch (e) {
               print(e);
+              BotToast.showText(text: e.toString());
             }
           },
           () async {
@@ -49,6 +50,7 @@ class DataExportPage extends HookConsumerWidget {
               await bookTagStore.exportData(context);
             } catch (e) {
               print(e);
+              BotToast.showText(text: e.toString());
             }
           },
           () async {
@@ -70,6 +72,7 @@ class DataExportPage extends HookConsumerWidget {
               await ref.read(historyProvider.notifier).exportData(context);
             } catch (e) {
               print(e);
+              BotToast.showText(text: e.toString());
             }
           },
           () async {
@@ -92,6 +95,7 @@ class DataExportPage extends HookConsumerWidget {
               await novelHistoryStore.exportData(context);
             } catch (e) {
               print(e);
+              BotToast.showText(text: e.toString());
             }
           },
           () async {
@@ -113,6 +117,7 @@ class DataExportPage extends HookConsumerWidget {
               await muteStore.export(context);
             } catch (e) {
               print(e);
+              BotToast.showText(text: e.toString());
             }
           },
           () async {
