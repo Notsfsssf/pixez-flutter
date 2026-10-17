@@ -359,5 +359,8 @@
   "date_preset_1month": "1个月",
   "date_preset_6months": "6个月",
   "date_preset_1year": "1年",
-  "date_preset_custom": "指定期间"
+  "date_preset_custom": "指定期间",
+  "bookmark_order": "收藏顺序",
+  "bookmark_order_normal": "正序",
+  "bookmark_order_random": "随机"
 }
