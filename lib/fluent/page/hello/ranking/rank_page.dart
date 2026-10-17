@@ -41,11 +41,12 @@ class _RankPageState extends State<RankPage>
     "week_rookie",
     "week",
     "month",
+    "day_ai",
+    "day_r18_ai",
     "day_r18",
     "week_r18",
     "week_r18g",
   ];
-  var boolList = Map<int, bool>();
   late DateTime nowDate;
   late StreamSubscription<String> subscription;
   String? dateTime;
@@ -62,12 +63,7 @@ class _RankPageState extends State<RankPage>
   @override
   void initState() {
     nowDate = DateTime.now();
-    rankStore = RankStore()..init();
-    int i = 0;
-    modeList.forEach((element) {
-      boolList[i] = false;
-      i++;
-    });
+    rankStore = RankStore();
     super.initState();
     subscription = topStore.topStream.listen((event) {
       if (event == "200") {
@@ -76,7 +72,7 @@ class _RankPageState extends State<RankPage>
     });
 
     Future.delayed(Duration.zero, () {
-      if (rankStore.inChoice || rankStore.modeList.isEmpty) {
+      if (rankStore.filterState.isEmpty) {
         final rankListMean = I18n.of(context).mode_list.split(' ');
         _choicePage(context, rankListMean);
       }
@@ -110,7 +106,11 @@ class _RankPageState extends State<RankPage>
     final rankListMean = I18n.of(context).mode_list.split(' ');
     return Observer(
       builder: (_) {
-        if (rankStore.inChoice) {
+        List<String> activeTabs = rankStore.filterState.entries
+            .where((entry) => entry.value)
+            .map((entry) => entry.key)
+            .toList();
+        if (activeTabs.isEmpty) {
           return Container(
             child: Center(
               child: FilledButton(
@@ -120,68 +120,57 @@ class _RankPageState extends State<RankPage>
             ),
           );
         }
-        if (rankStore.modeList.isNotEmpty) {
-          var list = I18n.of(context).mode_list.split(' ');
-          List<String> titles = [];
-          for (var i = 0; i < rankStore.modeList.length; i++) {
-            int index = modeList.indexOf(rankStore.modeList[i]);
-            if (index < 0) {
-              debugPrint(rankStore.modeList[i] + ' is -1');
-              continue;
-            }
-            titles.add(list[index]);
+        var list = I18n.of(context).mode_list.split(' ');
+        List<String> titles = [];
+        for (var i = 0; i < activeTabs.length; i++) {
+          int index = modeList.indexOf(activeTabs[i]);
+          if (index < 0) {
+            debugPrint(activeTabs[i] + ' is -1');
+            continue;
           }
-          return NavigationView(
-            pane: NavigationPane(
-              header: IconButton(
-                icon: Icon(WindowsIcons.return_to_window),
-                onPressed: () {
-                  rankStore.reset();
-                  _choicePage(context, rankListMean);
-                },
-              ),
-              selected: index,
-              onChanged: (value) => setState(() => index = value),
-              displayMode: PaneDisplayMode.top,
-              items: [
-                for (int i = 0; i < titles.length; i++)
-                  PaneItem(
-                    icon: Icon(FluentIcons.context_menu),
-                    title: Text(titles[i]),
-                    body: RankModePage(
-                      date: dateTime,
-                      mode: rankStore.modeList[i],
-                      index: i,
-                    ),
-                  ),
-              ],
-              footerItems: [
-                PaneItemWidgetAdapter(
-                  child: CalendarDatePicker(
-                    initialStart: nowDateTime,
-                    onSelectionChanged: (value) {
-                      nowDateTime = value.selectedDates[0];
-                      this.dateTime = toRequestDate(nowDateTime);
-                    },
-                    locale: userSetting.locale,
-                    minDate: DateTime(2007, 8),
-                    //pixiv于2007年9月10日由上谷隆宏等人首次推出第一个测试版...
-                    maxDate: DateTime.now(),
+          titles.add(list[index]);
+        }
+        return NavigationView(
+          pane: NavigationPane(
+            header: IconButton(
+              icon: Icon(WindowsIcons.return_to_window),
+              onPressed: () {
+                rankStore.filterState.clear();
+                _choicePage(context, rankListMean);
+              },
+            ),
+            selected: index,
+            onChanged: (value) => setState(() => index = value),
+            displayMode: PaneDisplayMode.top,
+            items: [
+              for (int i = 0; i < titles.length; i++)
+                PaneItem(
+                  icon: Icon(FluentIcons.context_menu),
+                  title: Text(titles[i]),
+                  body: RankModePage(
+                    date: dateTime,
+                    mode: activeTabs[i],
+                    index: i,
                   ),
                 ),
-              ],
-            ),
-          );
-        } else {
-          return Container(
-            child: Center(
-              child: FilledButton(
-                child: Text(I18n.of(context).choice_you_like),
-                onPressed: () => _choicePage(context, rankListMean),
+            ],
+            footerItems: [
+              PaneItemWidgetAdapter(
+                child: CalendarDatePicker(
+                  initialStart: nowDateTime,
+                  onSelectionChanged: (value) {
+                    nowDateTime = value.selectedDates[0];
+                    this.dateTime = toRequestDate(nowDateTime);
+                  },
+                  locale: userSetting.locale,
+                  minDate: DateTime(2007, 8),
+                  //pixiv于2007年9月10日由上谷隆宏等人首次推出第一个测试版...
+                  maxDate: DateTime.now(),
+                ),
               ),
-            ),
-          );
-        }
+            ],
+          ),
+        );
       },
     );
   }
@@ -198,26 +187,19 @@ class _RankPageState extends State<RankPage>
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                for (var value in rankListMean)
+                for (var i = 0; i < modeList.length; i++)
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 8.0,
                       vertical: 2.0,
                     ),
                     child: Checkbox(
-                      content: Text(value),
-                      checked: _rankFilters.contains(value),
+                      content: Text(rankListMean[i]),
+                      checked: rankStore.filterState[modeList[i]] ?? false,
                       onChanged: (v) {
-                        boolList[rankListMean.indexOf(value)] = v ?? false;
-                        if (v ?? false) {
-                          setState(() {
-                            _rankFilters.add(value);
-                          });
-                        } else {
-                          setState(() {
-                            _rankFilters.remove(value);
-                          });
-                        }
+                        setState(() {
+                          rankStore.filterState[modeList[i]] = v ?? false;
+                        });
                       },
                     ),
                   ),
@@ -228,9 +210,7 @@ class _RankPageState extends State<RankPage>
         actions: [
           FilledButton(
             child: Text(I18n.of(context).ok),
-            onPressed: () async {
-              await rankStore.saveChange(boolList);
-              rankStore.inChoice = false;
+            onPressed: () {
               Navigator.of(context).pop();
             },
           ),
@@ -238,8 +218,6 @@ class _RankPageState extends State<RankPage>
       ),
     );
   }
-
-  List<String> _rankFilters = [];
 
   @override
   bool get wantKeepAlive => true;

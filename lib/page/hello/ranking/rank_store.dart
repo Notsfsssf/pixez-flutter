@@ -23,52 +23,31 @@ class RankStore = _RankStoreBase with _$RankStore;
 
 abstract class _RankStoreBase with Store {
   static const MODE_LIST = 'mode_list';
-  List<String> intialModeList = [
-    "day",
-    "day_male",
-    "day_female",
-    "week_original",
-    "week_rookie",
-    "week",
-    "month",
-    "day_ai",
-    "day_r18_ai",
-    "day_r18",
-    "week_r18",
-    "week_r18g"
-  ];
+
   @observable
-  ObservableList<String> modeList = ObservableList();
-  @observable
-  bool inChoice = false;
+  ObservableMap<String, bool> filterState = ObservableMap<String, bool>();
 
-  @action
-  Future<void> reset() async {
-    await Prefer.remove(MODE_LIST);
-    modeList.clear();
-    inChoice = true;
+  bool _loaded = false;
+
+  _RankStoreBase() {
+    reaction((_) => Map<String, bool>.of(filterState), (_) => _save());
+    _init();
   }
 
-  @action
-  setInChoice(bool v) {
-    inChoice = v;
+  Future<void> _init() async {
+    final list = Prefer.getStringList(MODE_LIST) ?? [];
+    filterState
+      ..clear()
+      ..addEntries(list.map((mode) => MapEntry(mode, true)));
+    _loaded = true;
   }
 
-  @action
-  Future<void> init() async {
-    var list = Prefer.getStringList(MODE_LIST) ?? [];
-    modeList.clear();
-    modeList.addAll(list);
-  }
-
-  @action
-  Future<void> saveChange(Map<int, bool> selectMap) async {
-    List<String> saveList = [];
-    selectMap.forEach((s, b) {
-      if (b) saveList.add(intialModeList[s]);
-    });
+  Future<void> _save() async {
+    if (!_loaded) return;
+    final saveList = filterState.entries
+        .where((entry) => entry.value)
+        .map((entry) => entry.key)
+        .toList();
     await Prefer.setStringList(MODE_LIST, saveList);
-    modeList.clear();
-    modeList.addAll(saveList);
   }
 }
