@@ -76,6 +76,8 @@
   "loading_failed_retry_message": "加载失败，点击重试",
   "login": "登录",
   "login_message": "登录，发现新世界",
+  "login_with_token": "使用 token 登录",
+  "login_with_token_input_placeholder": "输入您的账户 token",
   "logout": "登出",
   "logout_message": "这将清除此 app 的登录的账户信息并回到登录页",
   "manga": "漫画",

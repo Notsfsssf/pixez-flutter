@@ -114,73 +114,63 @@ class _SettingPageState extends State<SettingPage> {
                                 }));
                               },
                               child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                spacing: 12.0,
                                 children: [
                                   PainterAvatar(
                                     url: accountStore.now!.userImage,
                                     id: int.parse(accountStore.now!.userId),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 8.0),
-                                          child: Text(accountStore.now!.name,
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(accountStore.now!.name,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium),
+                                      if (accountStore
+                                          .now!.mailAddress.isNotEmpty)
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              hideEmail
+                                                  ? accountStore.now!
+                                                      .hiddenEmail()
+                                                  : accountStore
+                                                      .now!.mailAddress,
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .titleMedium),
-                                        ),
-                                        if (accountStore
-                                            .now!.mailAddress.isNotEmpty)
-                                          Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                hideEmail
-                                                    ? accountStore.now!
-                                                        .hiddenEmail()
-                                                    : accountStore
-                                                        .now!.mailAddress,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodySmall,
-                                              ),
-                                              SizedBox(
-                                                width: 6,
-                                              ),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  setState(() {
-                                                    hideEmail = !hideEmail;
-                                                  });
-                                                },
-                                                child: Text(
-                                                    hideEmail
-                                                        ? I18n.of(context)
-                                                            .reveal
-                                                        : I18n.of(context).hide,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodySmall!
-                                                        .copyWith(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .colorScheme
-                                                                .primary)),
-                                              )
-                                            ],
-                                          )
-                                      ],
-                                    ),
+                                                  .bodySmall,
+                                            ),
+                                            SizedBox(
+                                              width: 6,
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  hideEmail = !hideEmail;
+                                                });
+                                              },
+                                              child: Text(
+                                                  hideEmail
+                                                      ? I18n.of(context)
+                                                          .reveal
+                                                      : I18n.of(context).hide,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodySmall!
+                                                      .copyWith(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .colorScheme
+                                                              .primary)),
+                                            )
+                                          ],
+                                        )
+                                    ],
                                   )
                                 ],
                               ),
@@ -264,7 +254,7 @@ class _SettingPageState extends State<SettingPage> {
                               builder: (context) => NovelRail())),
                     ),
                     ListTile(
-                      leading: Icon(Icons.message),
+                      leading: Icon(Icons.info),
                       title: Text(I18n.of(context).about),
                       onTap: () => Leader.push(
                         context,

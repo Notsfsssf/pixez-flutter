@@ -89,7 +89,7 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
           _buildCommentTextArea(context, _illusts),
           Padding(
             padding:
-                const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 4.0),
+                const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 12.0),
             child: Text(I18n.of(context).about_picture),
           )
         ],
@@ -143,7 +143,7 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
             children: <Widget>[
               Icon(
                 Icons.remove_red_eye,
-                color: Theme.of(context).colorScheme.onSurface,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 size: 12,
               ),
               Padding(
@@ -152,15 +152,15 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
                   data.totalView.toString(),
                   style: TextStyle(
                       fontSize: 12,
-                      color: Theme.of(context).colorScheme.onSurface),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant),
                 ),
               ),
               Container(
-                width: 4.0,
+                width: 10.0,
               ),
               Icon(
                 Icons.favorite,
-                color: Theme.of(context).colorScheme.onSurface,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 size: 12.0,
               ),
               Padding(
@@ -168,14 +168,14 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
                 child: Text("${data.totalBookmarks}",
                     style: TextStyle(
                         fontSize: 12,
-                        color: Theme.of(context).colorScheme.onSurface)),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant)),
               ),
               Container(
-                width: 4.0,
+                width: 10.0,
               ),
               Icon(
                 Icons.timelapse_rounded,
-                color: Theme.of(context).colorScheme.onSurface,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 size: 12.0,
               ),
               Padding(
@@ -183,7 +183,7 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
                 child: Text(data.createDate.toShortTime(),
                     style: TextStyle(
                         fontSize: 12,
-                        color: Theme.of(context).colorScheme.onSurface)),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant)),
               )
             ],
           ),
@@ -192,13 +192,15 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: .baseline,
+            textBaseline: .ideographic,
             children: <Widget>[
               Container(
                   child: Text(
                 I18n.of(context).illust_id,
                 style: TextStyle(
                     fontSize: 12,
-                    color: Theme.of(context).colorScheme.onSurface),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
               )),
               Container(
                 width: 4.0,
@@ -212,7 +214,7 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
                 I18n.of(context).pixel,
                 style: TextStyle(
                     fontSize: 12,
-                    color: Theme.of(context).colorScheme.onSurface),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
               )),
               Container(
                 width: 4.0,
