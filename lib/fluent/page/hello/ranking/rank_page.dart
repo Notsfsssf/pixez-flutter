@@ -33,18 +33,8 @@ class RankPage extends StatefulWidget {
 class _RankPageState extends State<RankPage>
     with AutomaticKeepAliveClientMixin {
   late RankStore rankStore;
-  final modeList = [
-    "day",
-    "day_male",
-    "day_female",
-    "week_original",
-    "week_rookie",
-    "week",
-    "month",
-    "day_r18",
-    "week_r18",
-    "week_r18g",
-  ];
+  // Must match the order of I18n mode_list and what RankStore saves.
+  List<String> get modeList => rankStore.intialModeList;
   var boolList = Map<int, bool>();
   late DateTime nowDate;
   late StreamSubscription<String> subscription;
