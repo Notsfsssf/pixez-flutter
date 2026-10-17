@@ -17,6 +17,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/er/leader.dart';
+import 'package:pixez/fluent/component/desktop_route_auto_dispose.dart';
 import 'package:pixez/fluent/page/picture/illust_lighting_page.dart';
 import 'package:pixez/fluent/page/saucenao/sauce_nao_modal.dart';
 import 'package:pixez/fluent/page/search/result_page.dart';
@@ -66,7 +67,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
     if (userSetting.useSaunceNaoWebview) {
       Leader.push(
         context,
-        SauncenaoWebview(),
+        const DesktopRouteAutoDispose(child: SauncenaoWebview()),
         icon: const Icon(FluentIcons.image_search),
         title: const Text('SauceNAO'),
       );
