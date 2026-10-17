@@ -83,13 +83,17 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                       event.scrollDelta.dy / 1000;
                 }
               },
-              child: PhotoView(
-                filterQuality: FilterQuality.high,
-                initialScale: PhotoViewComputedScale.contained,
-                heroAttributes: PhotoViewHeroAttributes(tag: url),
-                imageProvider: PixivProvider.url(url),
-                loadingBuilder: (context, event) => _buildLoading(event),
-                controller: _photoViewController,
+              // PhotoView does not clip a zoomed image (the gallery does),
+              // so keep it from painting over the command bar.
+              child: ClipRect(
+                child: PhotoView(
+                  filterQuality: FilterQuality.high,
+                  initialScale: PhotoViewComputedScale.contained,
+                  heroAttributes: PhotoViewHeroAttributes(tag: url),
+                  imageProvider: PixivProvider.url(url),
+                  loadingBuilder: (context, event) => _buildLoading(event),
+                  controller: _photoViewController,
+                ),
               ),
             );
           } else {
