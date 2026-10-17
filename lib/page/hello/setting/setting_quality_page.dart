@@ -338,6 +338,14 @@ class _SettingQualityPageState extends State<SettingQualityPage>
                     userSetting.setSwipeChangeArtwork(value);
                   },
                 ),
+                SwitchListTile(
+                  value: userSetting.foldMultiPage,
+                  title: Text(I18n.of(context).fold_multipage_illust),
+                  onChanged: (value) async {
+                    HapticUtil.light();
+                    userSetting.setFoldMultiPage(value);
+                  },
+                ),
                 if (Platform.isAndroid || Platform.isIOS)
                   SwitchListTile(
                     value: userSetting.hapticFeedback,

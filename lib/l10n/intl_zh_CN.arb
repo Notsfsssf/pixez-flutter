@@ -359,5 +359,8 @@
   "date_preset_1month": "1个月",
   "date_preset_6months": "6个月",
   "date_preset_1year": "1年",
-  "date_preset_custom": "指定期间"
+  "date_preset_custom": "指定期间",
+  "expand_remaining_pages": "展开剩余 {count} 张",
+  "collapse_pages": "收起",
+  "fold_multipage_illust": "多页作品默认折叠"
 }

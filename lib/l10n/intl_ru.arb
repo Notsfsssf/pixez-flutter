@@ -357,5 +357,8 @@
   "date_preset_1month": "1 месяц",
   "date_preset_6months": "6 месяцев",
   "date_preset_1year": "1 год",
-  "date_preset_custom": "Указать период"
+  "date_preset_custom": "Указать период",
+  "expand_remaining_pages": "Развернуть ещё {count}",
+  "collapse_pages": "Свернуть",
+  "fold_multipage_illust": "Сворачивать многостраничные работы по умолчанию"
 }

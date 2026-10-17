@@ -93,7 +93,7 @@
   },
   "muti_choice_save": "Seçilenleri kaydet",
   "my": "Benim",
-    "need_to_restart_app": "Uygulamayı yeniden başlatman gerekiyor",
+  "need_to_restart_app": "Uygulamayı yeniden başlatman gerekiyor",
   "news": "Aktiviteler",
   "new_password": "Yeni şifre",
   "change_password": "Şifre değiştir",
@@ -104,7 +104,7 @@
   "no_more_data": "Daha fazla veri yok",
   "not_bookmarked": "Favorilere eklenmedi",
   "ok": "Tamam",
- "painter": "Çizer",
+  "painter": "Çizer",
   "painter_id": "Çizer ID",
   "painter_name": "Çizer adı",
   "partial_match_for_tag": "Kısmi eşleşen etiketler",
@@ -358,5 +358,8 @@
   "date_preset_1month": "1 ay",
   "date_preset_6months": "6 ay",
   "date_preset_1year": "1 yıl",
-  "date_preset_custom": "Özel tarih aralığı"
+  "date_preset_custom": "Özel tarih aralığı",
+  "expand_remaining_pages": "Kalan {count} görüntüyü aç",
+  "collapse_pages": "Daralt",
+  "fold_multipage_illust": "Çok sayfalı eserleri varsayılan olarak daralt"
 }

@@ -358,5 +358,8 @@
   "date_preset_1month": "1ヶ月",
   "date_preset_6months": "6ヶ月",
   "date_preset_1year": "1年",
-  "date_preset_custom": "期間指定"
+  "date_preset_custom": "期間指定",
+  "expand_remaining_pages": "残り{count}枚を展開",
+  "collapse_pages": "折りたたむ",
+  "fold_multipage_illust": "複数ページ作品を既定で折りたたむ"
 }
