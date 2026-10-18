@@ -32,8 +32,10 @@ IAsyncOperation<hstring> Settings::TryGetValueAsync(hstring key)
   auto settingsFile = co_await dataFolder.CreateFileAsync(L"settings.json", CreationCollisionOption::OpenIfExists);
   auto jsonString = co_await FileIO::ReadTextAsync(settingsFile);
   JsonObject json{};
+  // Return an empty string, not (wchar_t *) nullptr: constructing an hstring
+  // from a null pointer calls wcslen(nullptr) and crashes.
   if (jsonString.empty() || !JsonObject::TryParse(jsonString, json) || !json.HasKey(key))
-    co_return (wchar_t *) nullptr;
+    co_return hstring{};
 
   co_return json.GetNamedString(key);
 }
