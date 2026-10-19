@@ -27,6 +27,10 @@ dependencies:
   crypto: ^3.0.7
   path_provider: ^2.1.6
   shared_preferences: ^2.5.5
+  # 2.5.0 uses Pigeon JNI. R8 renames Kotlin coroutine classes in release
+  # builds and SharedPreferences.getAll throws NoSuchMethodError.
+  # https://github.com/flutter/flutter/issues/194649
+  shared_preferences_android: ">=2.4.28 <2.5.0"
   share_plus: ^13.3.1
   permission_handler: ^13.0.2
   archive: ^4.0.9
