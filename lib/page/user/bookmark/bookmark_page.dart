@@ -29,6 +29,7 @@ import 'package:pixez/lighting/lighting_page.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/network/api_client.dart';
+import 'package:pixez/page/user/bookmark/random_bookmark_loader.dart';
 import 'package:pixez/page/user/bookmark/tag/user_bookmark_tag_page.dart';
 import 'package:pixez/page/user/works/works_page.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
@@ -55,14 +56,54 @@ class _BookmarkPageState extends State<BookmarkPage> {
   late ScrollController _scrollController;
   late StreamSubscription<String> subscription;
   String? currentTag;
+  bool randomOrder = false;
+
+  LightSource _createSource() {
+    final selectedRestrict = restrict;
+    final selectedTag = currentTag;
+    if (randomOrder) {
+      final loader = RandomBookmarkLoader(
+        (boundary) => apiClient.getBookmarksIllust(
+          widget.id,
+          selectedRestrict,
+          selectedTag,
+          maxBookmarkId: boundary,
+        ),
+      );
+      return ApiForceSource(
+        futureGet: (_) => loader.refresh(),
+        futureNext: loader.nextPage,
+      );
+    }
+    return ApiForceSource(
+      futureGet: (_) => apiClient.getBookmarksIllust(
+        widget.id,
+        selectedRestrict,
+        selectedTag,
+      ),
+    );
+  }
+
+  void _reload() {
+    if (_scrollController.hasClients) _scrollController.jumpTo(0);
+    setState(() => futureGet = _createSource());
+  }
+
+  @override
+  void didUpdateWidget(BookmarkPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.id != widget.id) {
+      restrict = widget.restrict;
+      currentTag = null;
+      futureGet = _createSource();
+    }
+  }
 
   @override
   void initState() {
     _scrollController = ScrollController();
     restrict = widget.restrict;
-    futureGet = ApiForceSource(
-      futureGet: (e) => apiClient.getBookmarksIllust(widget.id, restrict, null),
-    );
+    futureGet = _createSource();
     super.initState();
     subscription = topStore.topStream.listen((event) {
       if (event == "302") {
@@ -85,6 +126,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
         return Stack(
           children: [
             LightingList(
+              key: ObjectKey(futureGet),
               source: futureGet,
               scrollController: _scrollController,
               isNested: widget.isNested,
@@ -112,73 +154,90 @@ class _BookmarkPageState extends State<BookmarkPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SortGroup(
+            key: ValueKey(restrict),
+            initIndex: restrict == 'private' ? 1 : 0,
             children: [I18n.of(context).public, I18n.of(context).private],
             onChange: (index) {
-              if (index == 0)
-                setState(() {
-                  futureGet = ApiForceSource(
-                    futureGet: (bool e) => apiClient.getBookmarksIllust(
-                      widget.id,
-                      restrict = 'public',
-                      currentTag,
-                    ),
-                  );
-                });
-              if (index == 1)
-                setState(() {
-                  futureGet = ApiForceSource(
-                    futureGet: (bool e) => apiClient.getBookmarksIllust(
-                      widget.id,
-                      restrict = 'private',
-                      currentTag,
-                    ),
-                  );
-                });
+              restrict = index == 0 ? 'public' : 'private';
+              _reload();
             },
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: GestureDetector(
-              onTap: () async {
-                final result = await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => UserBookmarkTagPage(currentTag: currentTag),
-                  ),
-                );
-                if (result != null) {
-                  String? tag = result['tag'];
-                  String restrict = result['restrict'];
-                  setState(() {
-                    currentTag = tag;
-                    futureGet = ApiForceSource(
-                      futureGet: (bool e) => apiClient.getBookmarksIllust(
-                        widget.id,
-                        restrict,
-                        tag,
-                      ),
-                    );
-                  });
-                }
-              },
-              behavior: HitTestBehavior.opaque,
-              child: Chip(
-                label: Row(
-                  children: [
-                    Icon(Icons.tag, size: 18),
-                    if (currentTag != null)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Text(
-                          currentTag!,
-                          style: Theme.of(context).textTheme.bodySmall,
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: GestureDetector(
+                onTap: () async {
+                  final result = await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          UserBookmarkTagPage(currentTag: currentTag),
+                    ),
+                  );
+                  if (result != null && mounted) {
+                    currentTag = result['tag'];
+                    restrict = result['restrict'];
+                    _reload();
+                  }
+                },
+                behavior: HitTestBehavior.opaque,
+                child: Chip(
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.tag, size: 18),
+                      if (currentTag != null)
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              currentTag!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
+                  backgroundColor: Theme.of(context).cardColor,
+                  elevation: 4.0,
+                  padding: EdgeInsets.all(0.0),
                 ),
-                backgroundColor: Theme.of(context).cardColor,
-                elevation: 4.0,
-                padding: EdgeInsets.all(0.0),
               ),
+            ),
+          ),
+          PopupMenuButton<bool>(
+            tooltip: I18n.of(context).bookmark_order,
+            position: PopupMenuPosition.under,
+            initialValue: randomOrder,
+            onSelected: (value) {
+              if (value == randomOrder) return;
+              randomOrder = value;
+              _reload();
+            },
+            itemBuilder: (_) => [
+              CheckedPopupMenuItem(
+                value: false,
+                checked: !randomOrder,
+                child: Text(I18n.of(context).bookmark_order_normal),
+              ),
+              CheckedPopupMenuItem(
+                value: true,
+                checked: randomOrder,
+                child: Text(I18n.of(context).bookmark_order_random),
+              ),
+            ],
+            child: Chip(
+              label: Icon(
+                randomOrder ? Icons.shuffle : Icons.sort,
+                size: 18,
+                color: randomOrder
+                    ? Theme.of(context).colorScheme.primary
+                    : null,
+              ),
+              backgroundColor: Theme.of(context).cardColor,
+              elevation: 4.0,
+              padding: EdgeInsets.zero,
             ),
           ),
         ],
