@@ -82,7 +82,7 @@ class History extends Notifier<HistoryState> {
   }
 
   Future<void> importData() async {
-    final result = await FileServicePlugin.pickFileBytes(
+    final result = await FileServicePlugin.pickBytes(
       mimeType: 'application/json',
       allowedExtensions: ['json'],
     );
@@ -111,7 +111,7 @@ class History extends Notifier<HistoryState> {
     if (Platform.isIOS) {
       await Sharer.exportUint8List(context, uint8List, "illustpersist.json");
     } else {
-      await FileServicePlugin.saveFileAs(
+      await FileServicePlugin.saveBytesAs(
         data: uint8List,
         fileName: 'illustpersist.json',
         mimeType: 'application/json',

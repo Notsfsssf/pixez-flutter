@@ -65,7 +65,7 @@ abstract class _NovelHistoryStoreBase with Store {
   }
 
   Future<void> importData() async {
-    final result = await FileServicePlugin.pickFileBytes(
+    final result = await FileServicePlugin.pickBytes(
       mimeType: 'application/json',
       allowedExtensions: ['json'],
     );
@@ -93,7 +93,7 @@ abstract class _NovelHistoryStoreBase with Store {
     if (Platform.isIOS) {
       await Sharer.exportUint8List(context, uint8List, "novelpersist.json");
     } else {
-      await FileServicePlugin.saveFileAs(
+      await FileServicePlugin.saveBytesAs(
         data: uint8List,
         fileName: 'novelpersist.json',
         mimeType: 'application/json',

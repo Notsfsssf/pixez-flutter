@@ -73,7 +73,7 @@ abstract class _TagHistoryStoreBase with Store {
   String _tagKey(TagsPersist tag) => '${tag.name}\u0000${tag.type ?? 0}';
 
   Future<void> importData() async {
-    final result = await FileServicePlugin.pickFileBytes(
+    final result = await FileServicePlugin.pickBytes(
       mimeType: 'application/json',
       allowedExtensions: ['json'],
     );
@@ -107,7 +107,7 @@ abstract class _TagHistoryStoreBase with Store {
     if (Platform.isIOS) {
       await Sharer.exportUint8List(context, uint8List, 'search_history.json');
     } else {
-      await FileServicePlugin.saveFileAs(
+      await FileServicePlugin.saveBytesAs(
         data: uint8List,
         fileName: 'search_history.json',
         mimeType: 'application/json',

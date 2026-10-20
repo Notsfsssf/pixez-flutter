@@ -52,7 +52,7 @@ abstract class _BookTagStoreBase with Store {
   final EXPORT_TYPE = "book_tags";
 
   Future<void> importData() async {
-    final result = await FileServicePlugin.pickFileBytes(
+    final result = await FileServicePlugin.pickBytes(
       mimeType: 'application/json',
       allowedExtensions: ['json'],
     );
@@ -75,7 +75,7 @@ abstract class _BookTagStoreBase with Store {
     if (Platform.isIOS) {
       await Sharer.exportUint8List(context, uint8List, '${EXPORT_TYPE}.json');
     } else {
-      await FileServicePlugin.saveFileAs(
+      await FileServicePlugin.saveBytesAs(
         data: uint8List,
         fileName: '${EXPORT_TYPE}.json',
         mimeType: 'application/json',

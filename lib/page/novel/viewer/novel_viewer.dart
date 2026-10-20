@@ -740,7 +740,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
       // File(fileInAllPath).writeAsStringSync(data);
       // BotToast.showText(text: "export ${filePath}");
       final data = _novelStore.novelTextResponse!.text;
-      final saved = await FileServicePlugin.saveFileAs(
+      final saved = await FileServicePlugin.saveBytesAs(
         data: utf8.encode(data),
         fileName: "${_novelStore.novel!.title.trim().toLegal()}.txt",
         mimeType: 'text/plain',

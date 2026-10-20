@@ -174,7 +174,7 @@ abstract class _MuteStoreBase with Store {
     if (Platform.isIOS) {
       await Sharer.exportUint8List(context, uint8List, fileName);
     } else {
-      await FileServicePlugin.saveFileAs(
+      await FileServicePlugin.saveBytesAs(
         data: uint8List,
         fileName: fileName,
         mimeType: 'application/json',
@@ -183,7 +183,7 @@ abstract class _MuteStoreBase with Store {
   }
 
   importFile() async {
-    final uri = await FileServicePlugin.pickFileBytes(
+    final uri = await FileServicePlugin.pickBytes(
       mimeType: 'application/json',
       allowedExtensions: ['json'],
     );
