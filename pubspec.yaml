@@ -13,7 +13,7 @@ publish_to: none
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.9.88+513
+version: 1.9.89+514
 
 environment:
   sdk: ">=3.11.5"
@@ -27,6 +27,10 @@ dependencies:
   crypto: ^3.0.7
   path_provider: ^2.1.6
   shared_preferences: ^2.5.5
+  # 2.5.0 uses Pigeon JNI. R8 renames Kotlin coroutine classes in release
+  # builds and SharedPreferences.getAll throws NoSuchMethodError.
+  # https://github.com/flutter/flutter/issues/194649
+  shared_preferences_android: ">=2.4.28 <2.5.0"
   share_plus: ^13.3.1
   permission_handler: ^13.0.2
   archive: ^4.0.9
@@ -75,8 +79,8 @@ dependencies:
   webview_flutter: ^4.14.1
   # sqlite3: 3.1.6
   sqflite_common_ffi: ^2.4.2+1
-  material_ui: ^1.5.0
-  cupertino_ui: ^1.1.1
+  material_ui: ^1.7.0
+  cupertino_ui: ^1.1.3
 
 dev_dependencies:
   flutter_test:
