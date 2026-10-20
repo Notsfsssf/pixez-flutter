@@ -358,5 +358,10 @@
   "date_preset_1month": "1 month",
   "date_preset_6months": "6 months",
   "date_preset_1year": "1 year",
-  "date_preset_custom": "Custom range"
+  "date_preset_custom": "Custom range",
+  "download_novel_series": "Download novel series",
+  "downloading": "Downloading",
+  "select_all": "Select all",
+  "cancel_select_all": "Deselect all",
+  "selected": "Selected"
 }

@@ -357,5 +357,10 @@
   "date_preset_1month": "1 bulan",
   "date_preset_6months": "6 bulan",
   "date_preset_1year": "1 tahun",
-  "date_preset_custom": "Rentang khusus"
+  "date_preset_custom": "Rentang khusus",
+  "download_novel_series": "Unduh seri novel",
+  "downloading": "Sedang mengunduh",
+  "select_all": "Pilih semua",
+  "cancel_select_all": "Batalkan pilih semua",
+  "selected": "Dipilih"
 }

@@ -359,5 +359,10 @@
   "date_preset_1month": "1个月",
   "date_preset_6months": "6个月",
   "date_preset_1year": "1年",
-  "date_preset_custom": "指定期间"
+  "date_preset_custom": "指定期间",
+  "download_novel_series": "下载系列小说",
+  "downloading": "下载中",
+  "select_all": "全选",
+  "cancel_select_all":"取消全选",
+  "selected":"已选择"
 }

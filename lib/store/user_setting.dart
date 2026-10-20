@@ -474,6 +474,7 @@ abstract class _UserSetting with Store {
     await Hoster.initMap();
     themeInitState = 1;
     fetcher.start(pictureSource!);
+    novelSeriesFetcher.start();
   }
 
   Future<void> _applyNetworkClients() async {
