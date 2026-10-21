@@ -29,6 +29,7 @@ import 'package:pixez/er/prefer.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/ban_illust_id.dart';
 import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
@@ -83,7 +84,13 @@ class _IllustCardState extends State<IllustCard> {
         if (store.illusts!.tags[i].name.startsWith('R-18')) {
           return InkWell(
             onTap: () => _buildTap(context),
-            onLongPress: () => _onLongPressSave(),
+            onLongPress: () async {
+              if (userSetting.longPressCardMenu) {
+                await _showCardMenu();
+              } else {
+                await _onLongPressSave();
+              }
+            },
             child: Card(
               margin: EdgeInsets.all(8.0),
               elevation: 8.0,
@@ -288,14 +295,103 @@ class _IllustCardState extends State<IllustCard> {
 
   Widget _buildAnimationWraper(BuildContext context, Widget child) {
     return InkWell(
-      onLongPress: () {
-        _buildLongPressToSaveHint();
+      onLongPress: () async {
+        if (userSetting.longPressCardMenu) {
+          await _showCardMenu();
+        } else {
+          await _buildLongPressToSaveHint();
+        }
       },
       onTap: () {
         _buildInkTap(context, tag);
       },
       child: child,
     );
+  }
+
+  _showCardMenu() async {
+    HapticUtil.heavy();
+    await showModalBottomSheet(
+      context: context,
+      clipBehavior: Clip.hardEdge,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.save_alt),
+                title: Text(I18n.of(sheetContext).save),
+                onTap: () {
+                  Navigator.of(sheetContext).pop();
+                  _onLongPressSave();
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.brightness_auto),
+                title: Text(I18n.of(sheetContext).ban),
+                onTap: () {
+                  Navigator.of(sheetContext).pop();
+                  _onBanIllust();
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.person_off),
+                title: Text(I18n.of(sheetContext).block_user),
+                onTap: () {
+                  Navigator.of(sheetContext).pop();
+                  _onBanUser();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  _onBanIllust() async {
+    await muteStore.insertBanIllusts(
+      BanIllustIdPersist(
+        illustId: store.illusts!.id.toString(),
+        name: store.illusts!.title,
+      ),
+    );
+  }
+
+  _onBanUser() async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('${I18n.of(context).block_user}?'),
+          content: Text(store.illusts!.user.name),
+          actions: <Widget>[
+            TextButton(
+              child: Text(I18n.of(context).cancel),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            TextButton(
+              child: Text(I18n.of(context).ok),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+    if (result == true) {
+      await muteStore.insertBanUserId(
+        store.illusts!.user.id.toString(),
+        store.illusts!.user.name,
+      );
+    }
   }
 
   _buildLongPressToSaveHint() async {

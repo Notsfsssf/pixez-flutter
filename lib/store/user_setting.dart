@@ -89,6 +89,7 @@ abstract class _UserSetting with Store {
   static const String DEFAULT_PRIVATE_LIKE_KEY = "default_private_like";
   static const String IMAGE_PICKER_TYPE_KEY = "image_picker_type_renew";
   static const String LONG_PRESS_SAVE_CONFIRM_KEY = "long_press_save_confirm";
+  static const String LONG_PRESS_CARD_MENU_KEY = "long_press_card_menu";
   static const String USE_DYNAMIC_COLOR_KEY = "use_dynamic_color";
   static const String SEED_COLOR_KEY = "seed_color";
   static const String SWIPE_CHANGE_ARTWORK_KEY = "swipe_change_artwork";
@@ -197,6 +198,8 @@ abstract class _UserSetting with Store {
   bool defaultPrivateLike = false;
   @observable
   bool longPressSaveConfirm = false;
+  @observable
+  bool longPressCardMenu = false;
   @observable
   int imagePickerType = 0;
   @observable
@@ -579,6 +582,7 @@ abstract class _UserSetting with Store {
     nameEval = prefs.getString(NAME_EVAL_KEY);
     defaultPrivateLike = prefs.getBool(DEFAULT_PRIVATE_LIKE_KEY) ?? false;
     longPressSaveConfirm = prefs.getBool(LONG_PRESS_SAVE_CONFIRM_KEY) ?? false;
+    longPressCardMenu = prefs.getBool(LONG_PRESS_CARD_MENU_KEY) ?? false;
     imagePickerType = prefs.getInt(IMAGE_PICKER_TYPE_KEY) ?? 0;
     swipeChangeArtwork = prefs.getBool(SWIPE_CHANGE_ARTWORK_KEY) ?? true;
     useSaunceNaoWebview = prefs.getBool(USE_SAUNCE_NAO_WEBVIEW) ?? false;
@@ -800,6 +804,12 @@ abstract class _UserSetting with Store {
   Future<void> setLongPressSaveConfirm(bool value) async {
     await prefs.setBool(LONG_PRESS_SAVE_CONFIRM_KEY, value);
     longPressSaveConfirm = value;
+  }
+
+  @action
+  Future<void> setLongPressCardMenu(bool value) async {
+    await prefs.setBool(LONG_PRESS_CARD_MENU_KEY, value);
+    longPressCardMenu = value;
   }
 
   String illustToShareInfoText(Illusts illusts) {

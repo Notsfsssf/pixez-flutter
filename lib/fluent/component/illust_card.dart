@@ -30,6 +30,7 @@ import 'package:pixez/fluent/component/pixiv_image.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/models/ban_illust_id.dart';
 import 'package:pixez/fluent/page/picture/illust_lighting_page.dart';
 import 'package:pixez/fluent/page/picture/picture_list_page.dart';
 import 'package:pixez/fluent/page/picture/tag_for_illust_page.dart';
@@ -133,8 +134,61 @@ class _IllustCardState extends State<IllustCard> {
             }
           },
         ),
+        MenuFlyoutItem(
+          leading: Icon(FluentIcons.brightness),
+          text: Text(I18n.of(context).ban),
+          onPressed: () async {
+            await _onBanIllust();
+          },
+        ),
+        MenuFlyoutItem(
+          leading: Icon(FluentIcons.blocked),
+          text: Text(I18n.of(context).block_user),
+          onPressed: () async {
+            await _onBanUser();
+          },
+        ),
       ],
     );
+  }
+
+  _onBanIllust() async {
+    await muteStore.insertBanIllusts(
+      BanIllustIdPersist(
+        illustId: store.illusts!.id.toString(),
+        name: store.illusts!.title,
+      ),
+    );
+  }
+
+  _onBanUser() async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => ContentDialog(
+        title: Text('${I18n.of(context).block_user}?'),
+        content: Text(store.illusts!.user.name),
+        actions: <Widget>[
+          FilledButton(
+            child: Text(I18n.of(context).ok),
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+          ),
+          Button(
+            child: Text(I18n.of(context).cancel),
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+          ),
+        ],
+      ),
+    );
+    if (result == true) {
+      await muteStore.insertBanUserId(
+        store.illusts!.user.id.toString(),
+        store.illusts!.user.name,
+      );
+    }
   }
 
   Widget _build(BuildContext context) {
