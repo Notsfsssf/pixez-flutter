@@ -357,5 +357,6 @@
   "date_preset_1month": "1개월",
   "date_preset_6months": "6개월",
   "date_preset_1year": "1년",
-  "date_preset_custom": "기간 지정"
+  "date_preset_custom": "기간 지정",
+  "related_users": "관련 유저"
 }

@@ -358,5 +358,6 @@
   "date_preset_1month": "1 ay",
   "date_preset_6months": "6 ay",
   "date_preset_1year": "1 yıl",
-  "date_preset_custom": "Özel tarih aralığı"
+  "date_preset_custom": "Özel tarih aralığı",
+  "related_users": "İlgili kullanıcılar"
 }
