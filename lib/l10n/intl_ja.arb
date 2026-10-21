@@ -358,5 +358,6 @@
   "date_preset_1month": "1ヶ月",
   "date_preset_6months": "6ヶ月",
   "date_preset_1year": "1年",
-  "date_preset_custom": "期間指定"
+  "date_preset_custom": "期間指定",
+  "related_users": "関連ユーザー"
 }

@@ -357,5 +357,6 @@
   "date_preset_1month": "1 tháng",
   "date_preset_6months": "6 tháng",
   "date_preset_1year": "1 năm",
-  "date_preset_custom": "Khoảng thời gian tùy chỉnh"
+  "date_preset_custom": "Khoảng thời gian tùy chỉnh",
+  "related_users": "Người dùng liên quan"
 }
