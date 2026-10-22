@@ -207,6 +207,7 @@ class _UsersPageState extends State<UsersPage>
             footerItems: [
               PaneItemAction(
                 icon: Icon(FluentIcons.people),
+                title: Text(I18n.of(context).related_users),
                 onTap: () => Leader.push(
                   context,
                   ScaffoldPage(
