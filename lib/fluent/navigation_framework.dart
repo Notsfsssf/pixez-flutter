@@ -220,7 +220,7 @@ class PixEzNavigator extends StatefulWidget {
   @override
   PixEzNavigatorState createState() => PixEzNavigatorState();
 
-  static PixEzNavigatorState of(
+  static PixEzNavigatorState? _maybeOf(
     BuildContext context, {
     bool rootNavigator = false,
   }) {
@@ -236,17 +236,22 @@ class PixEzNavigator extends StatefulWidget {
 
     navigator ??= _first?.currentState;
 
-    assert(() {
-      if (navigator == null) {
-        throw FlutterError(
-          'Navigator operation requested with a context that does not include a Navigator.\n'
-          'The context used to push or pop routes from the Navigator must be that of a '
-          'widget that is a descendant of a Navigator widget.',
-        );
-      }
-      return true;
-    }());
-    return navigator!;
+    return navigator;
+  }
+
+  static PixEzNavigatorState of(
+    BuildContext context, {
+    bool rootNavigator = false,
+  }) {
+    final navigator = _maybeOf(context, rootNavigator: rootNavigator);
+    if (navigator == null) {
+      throw FlutterError(
+        'Navigator operation requested with a context that does not include a Navigator.\n'
+        'The context used to push or pop routes from the Navigator must be that of a '
+        'widget that is a descendant of a Navigator widget.',
+      );
+    }
+    return navigator;
   }
 
   static Future<T?> push<T extends Object?>(
@@ -255,9 +260,22 @@ class PixEzNavigator extends StatefulWidget {
     required Widget title,
     required Widget Function(BuildContext) builder,
     bool animated = true,
-  }) => PixEzNavigator.of(
-    context,
-  ).push(icon: icon, title: title, builder: builder, animated: animated);
+  }) async {
+    var navigator = _maybeOf(context);
+    if (navigator == null) {
+      await WidgetsBinding.instance.endOfFrame;
+      if (!context.mounted) return null;
+      navigator = _maybeOf(context);
+    }
+    if (navigator == null) return null;
+
+    return navigator.push(
+      icon: icon,
+      title: title,
+      builder: builder,
+      animated: animated,
+    );
+  }
 
   static Future<T?> pushIndex<T extends Object?>(
     BuildContext context, {
@@ -287,8 +305,7 @@ class PixEzNavigatorState extends State<PixEzNavigator> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   RouteObserver<ModalRoute<dynamic>> get routeObserver => _navigatorObserver;
-  NavigatorState get navigator => navigatorKey.currentState!;
-  bool get canGoBack => navigator.canPop();
+  bool get canGoBack => navigatorKey.currentState?.canPop() ?? false;
   // bool get canForward => _navigatorObserver.canForward;
   bool get isTemporary => _navigatorObserver.isTemporary;
   int get currentIndex => _navigatorObserver.currentIndex;
@@ -299,10 +316,21 @@ class PixEzNavigatorState extends State<PixEzNavigator> {
   void initState() {
     super.initState();
 
+    final key = widget.key;
+    if (key is GlobalKey<PixEzNavigatorState>) PixEzNavigator._first ??= key;
+
     _navigatorObserver = _PixEzNavigatorObserver(
       initIndex: widget.initIndex,
       onUpdate: widget.onUpdate,
     );
+  }
+
+  @override
+  void dispose() {
+    if (identical(PixEzNavigator._first, widget.key)) {
+      PixEzNavigator._first = null;
+    }
+    super.dispose();
   }
 
   @override
@@ -319,31 +347,51 @@ class PixEzNavigatorState extends State<PixEzNavigator> {
     required Widget title,
     required Widget Function(BuildContext) builder,
     bool animated = true,
-  }) => navigator.push(
-    PixEzPageRoute.temporary<T>(
-      builder: builder,
-      icon: icon,
-      title: title,
-      animated: animated,
-    ),
-  );
+  }) async {
+    final activeNavigator = await _navigatorAfterLayout();
+    if (activeNavigator == null) return null;
+
+    return activeNavigator.push(
+      PixEzPageRoute.temporary<T>(
+        builder: builder,
+        icon: icon,
+        title: title,
+        animated: animated,
+      ),
+    );
+  }
 
   Future<T?> pushIndex<T extends Object?>({
     required int index,
     required Widget Function(BuildContext) builder,
   }) async {
+    final activeNavigator = await _navigatorAfterLayout();
+    if (activeNavigator == null) return null;
+
     if (isTemporary &&
         widget.temporaryIndex >= 0 &&
         widget.temporaryIndex < index)
       index--;
 
-    return await navigator.push(
+    return await activeNavigator.push(
       PixEzPageRoute.index<T>(builder: builder, index: index),
     );
   }
 
   void pop<T>([T? result]) {
-    if (navigator.canPop()) navigator.pop(result);
+    final activeNavigator = navigatorKey.currentState;
+    if (activeNavigator != null && activeNavigator.canPop()) {
+      activeNavigator.pop(result);
+    }
+  }
+
+  Future<NavigatorState?> _navigatorAfterLayout() async {
+    var activeNavigator = navigatorKey.currentState;
+    if (activeNavigator != null || !mounted) return activeNavigator;
+
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted) return null;
+    return navigatorKey.currentState;
   }
 
   // Future<dynamic> forward() => _navigatorObserver.forward();
