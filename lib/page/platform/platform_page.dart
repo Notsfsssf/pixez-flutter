@@ -20,7 +20,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:pixez/document_plugin.dart';
+import 'package:pixez/file_service_plugin.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -84,7 +84,7 @@ class _PlatformPageState extends State<PlatformPage> {
       version = packageInfo.version;
     });
     fetchModes();
-    String path = (await DocumentPlugin.getPath())!;
+    String path = (await FileServicePlugin.getSaveDir())!;
     if (mounted) {
       setState(() {
         this.path = path;
@@ -124,7 +124,7 @@ class _PlatformPageState extends State<PlatformPage> {
                 subtitle: Text(path),
                 onTap: () async {
                   await showPathDialog(context);
-                  final path = await DocumentPlugin.getPath();
+                  final path = await FileServicePlugin.getSaveDir();
                   if (mounted) {
                     setState(() {
                       this.path = path!;

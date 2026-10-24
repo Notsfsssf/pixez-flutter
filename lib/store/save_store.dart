@@ -23,7 +23,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pixez/document_plugin.dart';
+import 'package:pixez/file_service_plugin.dart';
 import 'package:pixez/er/toaster.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
@@ -303,7 +303,7 @@ abstract class _SaveStoreBase with Store {
     if (Platform.isAndroid || Platform.isWindows || Platform.isLinux) {
       try {
         String targetFileName = applySingleFolder(illusts, fileName);
-        final isExist = await DocumentPlugin.exist(targetFileName);
+        final isExist = await FileServicePlugin.exists(targetFileName);
         if (isExist! && !redo) {
           streamController.add(
             SaveStream(SaveState.ALREADY, illusts, index: index),
@@ -339,19 +339,19 @@ abstract class _SaveStoreBase with Store {
         }
 
         if (userSetting.isClearOldFormatFile)
-          DocumentPlugin.save(
+          FileServicePlugin.saveBytes(
             uint8list,
             fileName,
             clearOld: userSetting.isClearOldFormatFile,
           );
         else
-          DocumentPlugin.save(uint8list, fileName);
+          FileServicePlugin.saveBytes(uint8list, fileName);
       } catch (e) {
         print(e);
       }
       return;
     } else {
-      DocumentPlugin.save(uint8list, fileName);
+      FileServicePlugin.saveBytes(uint8list, fileName);
     }
   }
 
@@ -442,9 +442,9 @@ abstract class _SaveStoreBase with Store {
   }) async {
     if (Platform.isIOS) {
       //IOS APP STORE REVIEW
-      final status = await DocumentPlugin.permissionStatus() ?? false;
+      final status = await FileServicePlugin.checkPermission() ?? false;
       if (!status) {
-        await DocumentPlugin.requestPermission();
+        await FileServicePlugin.requestPermission();
       }
     }
     String memType;

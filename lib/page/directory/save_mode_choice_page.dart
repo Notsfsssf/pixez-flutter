@@ -18,7 +18,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:pixez/constants.dart';
-import 'package:pixez/document_plugin.dart';
+import 'package:pixez/file_service_plugin.dart';
 import 'package:pixez/er/prefer.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -265,7 +265,7 @@ class _SaveModeChoicePageState extends State<SaveModeChoicePage>
 
 Future _saffun(BuildContext context) async {
   await userSetting.setSaveMode(1);
-  await DocumentPlugin.choiceFolder();
+  await FileServicePlugin.pickSaveDir();
 }
 
 Future _helplessfun(BuildContext context, {bool isFirst = false}) async {

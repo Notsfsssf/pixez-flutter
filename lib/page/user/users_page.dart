@@ -27,7 +27,7 @@ import 'package:pixez/component/common_back_area.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
-import 'package:pixez/document_plugin.dart';
+import 'package:pixez/file_service_plugin.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/er/pixiv_image_source.dart';
 import 'package:pixez/i18n.dart';
@@ -816,7 +816,7 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
         authHeaders: {'referer': 'https://app-api.pixiv.net/'},
       );
       final bytes = await result.file.readAsBytes();
-      await DocumentPlugin.save(bytes, "${widget.id}_bg.jpg");
+      await FileServicePlugin.saveBytes(bytes, "${widget.id}_bg.jpg");
       BotToast.showText(text: I18n.of(context).saved);
     } catch (e) {
       print(e);
