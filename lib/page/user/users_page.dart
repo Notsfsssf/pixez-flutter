@@ -38,6 +38,7 @@ import 'package:pixez/models/illust.dart';
 import 'package:pixez/network/api_client.dart';
 import 'package:pixez/page/follow/follow_list.dart';
 import 'package:pixez/page/novel/user/novel_users_page.dart';
+import 'package:pixez/page/painter/painter_list.dart';
 import 'package:pixez/page/picture/user_follow_button.dart';
 import 'package:pixez/page/report/report_items_page.dart';
 import 'package:pixez/page/shield/shield_page.dart';
@@ -563,6 +564,21 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
                 },
               ),
             );
+          case 5:
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return Scaffold(
+                    appBar: AppBar(
+                      title: Text(I18n.of(context).related_users),
+                    ),
+                    body: PainterList(
+                      futureGet: () => apiClient.getUserRelated(widget.id),
+                    ),
+                  );
+                },
+              ),
+            );
           default:
         }
       },
@@ -585,6 +601,10 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
           PopupMenuItem<int>(
             value: 4,
             child: Text(I18n.of(context).novel_page),
+          ),
+          PopupMenuItem<int>(
+            value: 5,
+            child: Text(I18n.of(context).related_users),
           ),
         ];
       },

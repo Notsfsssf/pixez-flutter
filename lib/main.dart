@@ -49,6 +49,8 @@ import 'package:pixez/win32_plugin.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
+import 'package:pixez/utils/tray_manager_helper.dart';
+
 final RouteObserver<ModalRoute<void>> routeObserver =
     RouteObserver<ModalRoute<void>>();
 final UserSetting userSetting = UserSetting();
@@ -85,6 +87,9 @@ main(List<String> args) async {
     SingleInstancePlugin.initialize();
   }
   await initFluent(args);
+  if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
+    await TrayManagerHelper.instance.init();
+  }
 
   runApp(ProviderScope(child: MyApp(arguments: args)));
 }
@@ -111,6 +116,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    TrayManagerHelper.instance.dispose();
     saveStore.dispose();
     topStore.dispose();
     fetcher.stop();

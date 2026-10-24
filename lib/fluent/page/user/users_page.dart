@@ -32,6 +32,7 @@ import 'package:pixez/fluent/component/context_menu.dart';
 import 'package:pixez/fluent/component/painter_avatar.dart';
 import 'package:pixez/fluent/component/pixiv_image.dart';
 import 'package:pixez/fluent/page/follow/follow_list.dart';
+import 'package:pixez/fluent/page/painter/painter_list.dart';
 import 'package:pixez/fluent/page/report/report_items_page.dart';
 import 'package:pixez/fluent/page/shield/shield_page.dart';
 import 'package:pixez/fluent/page/user/bookmark/bookmark_page.dart';
@@ -204,6 +205,23 @@ class _UsersPageState extends State<UsersPage>
               ),
             ],
             footerItems: [
+              PaneItemAction(
+                icon: Icon(FluentIcons.people),
+                title: Text(I18n.of(context).related_users),
+                onTap: () => Leader.push(
+                  context,
+                  ScaffoldPage(
+                    header: PageHeader(
+                      title: Text(I18n.of(context).related_users),
+                    ),
+                    content: PainterList(
+                      futureGet: () => apiClient.getUserRelated(widget.id),
+                    ),
+                  ),
+                  icon: Icon(FluentIcons.people),
+                  title: Text(I18n.of(context).related_users),
+                ),
+              ),
               PaneItemAction(
                 icon: Icon(FluentIcons.share),
                 onTap: () => SharePlus.instance.share(

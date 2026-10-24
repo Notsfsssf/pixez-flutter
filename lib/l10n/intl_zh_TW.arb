@@ -359,5 +359,6 @@
   "date_preset_1month": "1個月",
   "date_preset_6months": "6個月",
   "date_preset_1year": "1年",
-  "date_preset_custom": "指定期間"
+  "date_preset_custom": "指定期間",
+  "related_users": "相關繪師"
 }

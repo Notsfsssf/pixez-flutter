@@ -359,5 +359,6 @@
   "date_preset_1month": "1 Monat",
   "date_preset_6months": "6 Monate",
   "date_preset_1year": "1 Jahr",
-  "date_preset_custom": "Zeitraum auswählen"
+  "date_preset_custom": "Zeitraum auswählen",
+  "related_users": "Ähnliche Nutzer"
 }

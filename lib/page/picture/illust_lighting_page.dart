@@ -24,6 +24,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/ban_page.dart';
 import 'package:pixez/component/common_back_area.dart';
+import 'package:pixez/component/detail_jump_button.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixez_default_header.dart';
@@ -220,19 +221,9 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  IconButton(
-                    icon: Icon(Icons.expand_less),
-                    onPressed: () async {
-                      final context = _detailKey.currentContext;
-                      if (context != null) {
-                        await Scrollable.ensureVisible(
-                          context,
-                          duration: Duration(milliseconds: 0),
-                          curve: Curves.easeInOut,
-                          alignment: 0.5,
-                        );
-                      }
-                    },
+                  DetailJumpButton(
+                    anchorKey: _detailKey,
+                    scrollController: _scrollController,
                   ),
                   Builder(
                     builder: (buttonContext) {
@@ -438,8 +429,6 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
     );
   }
 
-  ScrollController scrollController = ScrollController();
-
   Widget _buildContent(BuildContext context, Illusts? data) {
     if (_illustStore.errorMessage != null) return _buildErrorContent(context);
     if (data == null)
@@ -466,7 +455,9 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
               child: Container(height: MediaQuery.of(context).padding.top),
             ),
           ..._buildPhotoList(data),
-          SliverToBoxAdapter(key: _detailKey, child: SizedBox.shrink()),
+          SliverToBoxAdapter(
+            child: SizedBox.shrink(key: _detailKey),
+          ),
           SliverToBoxAdapter(
             child: IllustDetailContent(
               illusts: data,
@@ -744,7 +735,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
             ),
             fade: false,
             placeWidget: Container(
-              height: 150,
+              height: height,
               child: Center(
                 child: Text(
                   '$index',

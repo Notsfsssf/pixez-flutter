@@ -357,5 +357,6 @@
   "date_preset_1month": "1 bulan",
   "date_preset_6months": "6 bulan",
   "date_preset_1year": "1 tahun",
-  "date_preset_custom": "Rentang khusus"
+  "date_preset_custom": "Rentang khusus",
+  "related_users": "Pengguna terkait"
 }
