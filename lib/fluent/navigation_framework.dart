@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
@@ -103,6 +105,7 @@ class _NavigationFrameworkState extends State<NavigationFramework>
       autofocus: true,
       child: Listener(
         child: NavigationView(
+          clipBehavior: Platform.isLinux ? Clip.none : Clip.antiAlias,
           titleBar: TitleBar(
             title:
                 _navigatorKey.currentState?.currentTitle ?? widget.defaultTitle,
@@ -254,10 +257,9 @@ class PixEzNavigator extends StatefulWidget {
     required Widget icon,
     required Widget title,
     required Widget Function(BuildContext) builder,
-    bool animated = true,
   }) => PixEzNavigator.of(
     context,
-  ).push(icon: icon, title: title, builder: builder, animated: animated);
+  ).push(icon: icon, title: title, builder: builder);
 
   static Future<T?> pushIndex<T extends Object?>(
     BuildContext context, {
@@ -268,17 +270,6 @@ class PixEzNavigator extends StatefulWidget {
   static void pop<T>(BuildContext context, [T? result]) =>
       of(context).pop(result);
 
-  static RouteObserver<ModalRoute<dynamic>>? routeObserverOf(
-    BuildContext context, {
-    bool rootNavigator = false,
-  }) {
-    try {
-      return of(context, rootNavigator: rootNavigator).routeObserver;
-    } catch (_) {
-      return null;
-    }
-  }
-
   // static Future<dynamic> forward(BuildContext context) => of(context).forward();
 }
 
@@ -286,7 +277,6 @@ class PixEzNavigatorState extends State<PixEzNavigator> {
   late final _PixEzNavigatorObserver _navigatorObserver;
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-  RouteObserver<ModalRoute<dynamic>> get routeObserver => _navigatorObserver;
   NavigatorState get navigator => navigatorKey.currentState!;
   bool get canGoBack => navigator.canPop();
   // bool get canForward => _navigatorObserver.canForward;
@@ -318,14 +308,8 @@ class PixEzNavigatorState extends State<PixEzNavigator> {
     required Widget icon,
     required Widget title,
     required Widget Function(BuildContext) builder,
-    bool animated = true,
   }) => navigator.push(
-    PixEzPageRoute.temporary<T>(
-      builder: builder,
-      icon: icon,
-      title: title,
-      animated: animated,
-    ),
+    PixEzPageRoute.temporary<T>(builder: builder, icon: icon, title: title),
   );
 
   Future<T?> pushIndex<T extends Object?>({
@@ -349,7 +333,7 @@ class PixEzNavigatorState extends State<PixEzNavigator> {
   // Future<dynamic> forward() => _navigatorObserver.forward();
 }
 
-class _PixEzNavigatorObserver extends RouteObserver<ModalRoute<dynamic>> {
+class _PixEzNavigatorObserver extends NavigatorObserver {
   late int _cacheIndex;
   Widget? _cacheTitle = null;
   Widget? _cacheIcon = null;
@@ -413,24 +397,6 @@ class _PixEzNavigatorObserver extends RouteObserver<ModalRoute<dynamic>> {
     _updateIndex(previousRoute);
   }
 
-  @override
-  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
-    super.didRemove(route, previousRoute);
-    if (_current == route) {
-      _current = previousRoute;
-      _updateIndex(previousRoute);
-    }
-  }
-
-  @override
-  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
-    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
-    if (_current == oldRoute) {
-      _current = newRoute;
-      _updateIndex(newRoute);
-    }
-  }
-
   void _updateIndex(Route<dynamic>? route) {
     if (route is _PixEzTemporaryRoute) {
       _cacheIndex = -1;
@@ -448,45 +414,9 @@ class _PixEzNavigatorObserver extends RouteObserver<ModalRoute<dynamic>> {
 }
 
 class PixEzPageRoute<T> extends FluentPageRoute<T> {
-  final WidgetBuilder widgetBuilder;
-  final bool animated;
-
-  PixEzPageRoute({
-    required WidgetBuilder builder,
-    this.animated = true,
-    super.maintainState,
-    super.barrierLabel,
-    super.settings,
-    super.fullscreenDialog,
-  })  : widgetBuilder = builder,
-        super(builder: builder);
+  PixEzPageRoute({required super.builder});
 
   bool get isTemporary => this is _PixEzTemporaryRoute;
-
-  @override
-  Duration get transitionDuration =>
-      animated ? super.transitionDuration : Duration.zero;
-
-  @override
-  Duration get reverseTransitionDuration =>
-      animated ? super.reverseTransitionDuration : Duration.zero;
-
-  @override
-  Widget buildPage(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-  ) {
-    if (!animated) {
-      assert(debugCheckHasFluentTheme(context));
-      return Semantics(
-        scopesRoute: true,
-        explicitChildNodes: true,
-        child: widgetBuilder(context),
-      );
-    }
-    return super.buildPage(context, animation, secondaryAnimation);
-  }
 
   static PixEzPageRoute<T> index<T>({
     required Widget Function(BuildContext) builder,
@@ -497,13 +427,7 @@ class PixEzPageRoute<T> extends FluentPageRoute<T> {
     required Widget Function(BuildContext) builder,
     required Widget icon,
     required Widget title,
-    bool animated = true,
-  }) => _PixEzTemporaryRoute<T>(
-    builder: builder,
-    icon: icon,
-    title: title,
-    animated: animated,
-  );
+  }) => _PixEzTemporaryRoute<T>(builder: builder, icon: icon, title: title);
 }
 
 class _PixEzIndexRoute<T> extends PixEzPageRoute<T> {
@@ -518,6 +442,5 @@ class _PixEzTemporaryRoute<T> extends PixEzPageRoute<T> {
     required super.builder,
     required this.icon,
     required this.title,
-    super.animated,
   });
 }

@@ -77,6 +77,10 @@ dependencies:
   hooks_riverpod: ^3.0.3
   flutter_hooks: ^0.21.3+1
   webview_flutter: ^4.14.1
+  webview_flutter_linux:
+    git:
+      url: https://github.com/Tobiichi-Origuchi/webview_flutter_linux.git
+      ref: main
   # sqlite3: 3.1.6
   sqflite_common_ffi: ^2.4.2+1
   material_ui: ^1.7.0

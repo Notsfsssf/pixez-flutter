@@ -2103,6 +2103,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.14.1"
+  webview_flutter_linux:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: main
+      resolved-ref: b50d2a1b0f7b4f9eaac35a5e125462c17d31d457
+      url: "https://github.com/Tobiichi-Origuchi/webview_flutter_linux.git"
+    source: git
+    version: "0.1.0"
   webview_flutter_platform_interface:
     dependency: transitive
     description:
