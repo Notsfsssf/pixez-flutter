@@ -228,6 +228,7 @@
   },
   "save_painter_avatar": "I-save ang avatar ng taga gawa",
   "favorited_tag": "Mga Paboritong Tag",
+  "favorited_tag_empty_hint": "Wala pang paboritong tag. Pindutin nang matagal ang isang tag sa pahina ng detalye ng isang likha at piliin ang \"Mga koleksyon\" para idagdag ito.",
   "legacy_mode_warning": "Hindi available ang legacy mode mula noong Android 9",
   "clear_old_format_file": "I-clear ang lumang format file",
   "clear_old_format_file_message": "Walang _p0",

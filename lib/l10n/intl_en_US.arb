@@ -233,6 +233,7 @@
   },
   "save_painter_avatar": "Save painter avatar",
   "favorited_tag": "Favorited Tags",
+  "favorited_tag_empty_hint": "No favorited tags yet. Long-press a tag on a work's detail page and choose \"Collections\" to add it here.",
   "legacy_mode_warning": "Legacy mode is not available since Android9",
   "clear_old_format_file": "Clear old format file",
   "clear_old_format_file_message": "Without _p0",

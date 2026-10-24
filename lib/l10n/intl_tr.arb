@@ -228,6 +228,7 @@
   },
   "save_painter_avatar": "Profil fotoğrafı cihaza kaydedilsin mi?",
   "favorited_tag": "Favori etiketler",
+  "favorited_tag_empty_hint": "Henüz favori etiket yok. Eklemek için bir eserin ayrıntı sayfasında bir etikete uzun basın ve \"Favoriler\"i seçin.",
   "legacy_mode_warning": "Legacy modu Android 9'dan beri kullanılamıyor",
   "clear_old_format_file": "Eski formatlı dosyaları temizle",
   "clear_old_format_file_message": "'_p0' uzantısı olmayan dosyalar",
