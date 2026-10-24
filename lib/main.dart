@@ -45,7 +45,6 @@ import 'package:pixez/store/save_store.dart';
 import 'package:pixez/store/tag_history_store.dart';
 import 'package:pixez/store/top_store.dart';
 import 'package:pixez/store/user_setting.dart';
-import 'package:pixez/webview_flutter_linux.dart';
 import 'package:pixez/win32_plugin.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -68,10 +67,6 @@ main(List<String> args) async {
   await Rhttp.init();
   await MmapCache.init();
   WidgetsFlutterBinding.ensureInitialized();
-
-  if (Platform.isLinux) {
-    LinuxWebViewFlutterPlatform.registerWith();
-  }
 
   if (Platform.isWindows || Platform.isLinux) {
     // sqflite ffi init

@@ -18,7 +18,6 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:pixez/custom_tab_plugin.dart';
 import 'package:pixez/er/leader.dart';
-import 'package:pixez/fluent/component/desktop_route_auto_dispose.dart';
 import 'package:pixez/fluent/page/login/token_page.dart';
 import 'package:pixez/fluent/page/webview/webview_page.dart';
 import 'package:pixez/i18n.dart';
@@ -171,8 +170,8 @@ class _LoginPageState extends State<LoginPage> {
       // await WeissPlugin.proxy();
       Leader.push(
         context,
-        DesktopRouteAutoDispose(child: WebViewPage(url: url)),
-        icon: const Icon(FluentIcons.signin),
+        WebViewPage(url: url),
+        icon: Icon(FluentIcons.signin),
         title: Text(I18n.of(context).login),
       );
     } else {

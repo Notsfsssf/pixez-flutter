@@ -270,17 +270,6 @@ class PixEzNavigator extends StatefulWidget {
   static void pop<T>(BuildContext context, [T? result]) =>
       of(context).pop(result);
 
-  static RouteObserver<ModalRoute<dynamic>>? routeObserverOf(
-    BuildContext context, {
-    bool rootNavigator = false,
-  }) {
-    try {
-      return of(context, rootNavigator: rootNavigator).routeObserver;
-    } catch (_) {
-      return null;
-    }
-  }
-
   // static Future<dynamic> forward(BuildContext context) => of(context).forward();
 }
 
@@ -288,7 +277,6 @@ class PixEzNavigatorState extends State<PixEzNavigator> {
   late final _PixEzNavigatorObserver _navigatorObserver;
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-  RouteObserver<ModalRoute<dynamic>> get routeObserver => _navigatorObserver;
   NavigatorState get navigator => navigatorKey.currentState!;
   bool get canGoBack => navigator.canPop();
   // bool get canForward => _navigatorObserver.canForward;
@@ -345,7 +333,7 @@ class PixEzNavigatorState extends State<PixEzNavigator> {
   // Future<dynamic> forward() => _navigatorObserver.forward();
 }
 
-class _PixEzNavigatorObserver extends RouteObserver<ModalRoute<dynamic>> {
+class _PixEzNavigatorObserver extends NavigatorObserver {
   late int _cacheIndex;
   Widget? _cacheTitle = null;
   Widget? _cacheIcon = null;
@@ -407,24 +395,6 @@ class _PixEzNavigatorObserver extends RouteObserver<ModalRoute<dynamic>> {
 
     // 更新当前页面索引
     _updateIndex(previousRoute);
-  }
-
-  @override
-  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
-    super.didRemove(route, previousRoute);
-    if (_current == route) {
-      _current = previousRoute;
-      _updateIndex(previousRoute);
-    }
-  }
-
-  @override
-  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
-    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
-    if (_current == oldRoute) {
-      _current = newRoute;
-      _updateIndex(newRoute);
-    }
   }
 
   void _updateIndex(Route<dynamic>? route) {

@@ -2055,14 +2055,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.1"
-  webview_all_linux:
-    dependency: "direct main"
-    description:
-      name: webview_all_linux
-      sha256: "7330af208db409d1c240ff08a4c7df647a204db536a4415a33b36f7b722acec9"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.4.4"
   webview_flutter:
     dependency: "direct main"
     description:
@@ -2079,6 +2071,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.14.0"
+  webview_flutter_linux:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: main
+      resolved-ref: b50d2a1b0f7b4f9eaac35a5e125462c17d31d457
+      url: "https://github.com/Tobiichi-Origuchi/webview_flutter_linux.git"
+    source: git
+    version: "0.1.0"
   webview_flutter_platform_interface:
     dependency: transitive
     description:
@@ -2095,14 +2096,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.26.0"
-  webview_platform_interface:
-    dependency: transitive
-    description:
-      name: webview_platform_interface
-      sha256: c214c5b44d26a590c8b7192eb9e9cd8142590a17a85a2a32d3d6445caa0f937d
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.4.4"
   win32:
     dependency: transitive
     description:
