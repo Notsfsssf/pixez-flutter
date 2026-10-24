@@ -206,7 +206,38 @@ class _IllustRowPageState extends State<IllustRowPage>
               child: FloatingActionButton(
                 heroTag: widget.id,
                 backgroundColor: Colors.white,
-                onPressed: () => _illustStore.star(),
+                onPressed: () async {
+                  if (userSetting.saveAfterStar && (_illustStore.state == 0)) {
+                    saveStore.saveImage(_illustStore.illusts!);
+                  }
+                  final List<String>? tags;
+                  if (userSetting.autoTagWhenStar) {
+                    final filters = [RegExp(r"\d+users入り")];
+                    tags = _illustStore.illusts!.tags
+                        .map((tag) => tag.name)
+                        .where(
+                          (tag) => !filters.any((regex) => regex.hasMatch(tag)),
+                        )
+                        .toList();
+                  } else {
+                    tags = null;
+                  }
+                  bool success = await _illustStore.star(
+                    restrict:
+                        userSetting.defaultPrivateLike ? "private" : "public",
+                    tags: tags,
+                  );
+                  if (success && userSetting.followAfterStar) {
+                    bool followSuccess = await _illustStore.followAfterStar();
+                    if (followSuccess) {
+                      userStore?.isFollow = true;
+                      BotToast.showText(
+                        text:
+                            "${_illustStore.illusts!.user.name} ${I18n.of(context).followed}",
+                      );
+                    }
+                  }
+                },
                 child: Observer(
                   builder: (_) {
                     return StarIcon(state: _illustStore.state);
