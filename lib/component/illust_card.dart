@@ -34,6 +34,8 @@ import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
 import 'package:pixez/page/picture/tag_for_illust_page.dart';
 import 'package:pixez/page/series/illust_series_page.dart';
+import 'package:pixez/translation/thumbnail_translation.dart';
+import 'package:pixez/translation/widgets/inline_translation_overlay.dart';
 import 'package:pixez/utils/haptic_util.dart';
 
 class IllustCard extends StatefulWidget {
@@ -58,6 +60,9 @@ class _IllustCardState extends State<IllustCard> {
   late List<IllustStore>? iStores;
   late String tag;
   late LightingStore _lightingStore;
+
+  /// 该卡片当前是否显示原文（就地翻译完成后点击角标切换）。
+  bool _showOriginal = false;
 
   @override
   void initState() {
@@ -168,15 +173,30 @@ class _IllustCardState extends State<IllustCard> {
     return Text('');
   }
 
-  Widget _buildPic(String tag, bool tooLong) {
-    final url = switch (userSetting.feedPreviewQuality) {
-      0 => store.illusts!.imageUrls.medium,
-      1 => store.illusts!.imageUrls.large,
-      2 =>
-        store.illusts!.metaSinglePage?.originalImageUrl ??
-            store.illusts!.metaPages[0].imageUrls!.original,
-      _ => store.illusts!.imageUrls.medium,
-    };
+  /// 卡片显示的预览图 URL（跟随「信息流预览画质」设置）。
+  String _previewUrl() => switch (userSetting.feedPreviewQuality) {
+    0 => store.illusts!.imageUrls.medium,
+    1 => store.illusts!.imageUrls.large,
+    2 =>
+      store.illusts!.metaSinglePage?.originalImageUrl ??
+          store.illusts!.metaPages[0].imageUrls!.original,
+    _ => store.illusts!.imageUrls.medium,
+  };
+
+  /// 就地翻译（OCR）用的图：优先 large——比 medium 清晰，比 original 省内存。
+  ///
+  /// 译文坐标记录的是这张图解码后的真实像素尺寸，与卡片显示尺寸无关，
+  /// 所以切换预览画质不会让译文错位。
+  String _translationUrl() {
+    final illusts = store.illusts!;
+    if (illusts.imageUrls.large.isNotEmpty) return illusts.imageUrls.large;
+    return illusts.metaSinglePage?.originalImageUrl ??
+        (illusts.metaPages.isNotEmpty
+            ? illusts.metaPages[0].imageUrls?.original ?? ''
+            : '');
+  }
+
+  Widget _buildPic(String tag, bool tooLong, String url) {
     final quality = IllustQualityExtension.fromValue(
       userSetting.feedPreviewQuality,
     );
@@ -204,6 +224,8 @@ class _IllustCardState extends State<IllustCard> {
     var radio = (tooLong)
         ? 1.0
         : store.illusts!.width.toDouble() / store.illusts!.height.toDouble();
+    final previewUrl = _previewUrl();
+    final translationUrl = _translationUrl();
     return Card(
       margin: EdgeInsets.all(8.0),
       clipBehavior: Clip.antiAlias,
@@ -216,7 +238,31 @@ class _IllustCardState extends State<IllustCard> {
               aspectRatio: radio,
               child: Stack(
                 children: [
-                  Positioned.fill(child: _buildPic(tag, tooLong)),
+                  Positioned.fill(child: _buildPic(tag, tooLong, previewUrl)),
+                  // 就地翻译覆盖层：块坐标从原图像素换算到卡片显示尺寸，
+                  // 因为它在卡片内部，滚动时自然跟随，不需要全局浮层。
+                  if (!tooLong)
+                    Positioned.fill(
+                      child: AnimatedBuilder(
+                        animation: ThumbnailTranslationService.instance,
+                        builder: (context, _) {
+                          final entry = ThumbnailTranslationService.instance
+                              .entryFor(translationUrl);
+                          if (entry.blocks.isEmpty) {
+                            return const SizedBox.shrink();
+                          }
+                          return InlineTranslationOverlay(
+                            blocks: entry.blocks,
+                            originalSize: entry.originalSize,
+                            showOriginal: _showOriginal,
+                            // 点任一块切换整图译文 / 原文：卡片太小，
+                            // 逐块切换容易误触。
+                            onBlockTap: (_) =>
+                                setState(() => _showOriginal = !_showOriginal),
+                          );
+                        },
+                      ),
+                    ),
                   Positioned(
                     top: 5.0,
                     right: 5.0,
@@ -225,6 +271,7 @@ class _IllustCardState extends State<IllustCard> {
                         if (userSetting.feedAIBadge &&
                             store.illusts!.illustAIType == 2)
                           _buildAIBadge(),
+                        if (!tooLong) _buildTranslateChip(translationUrl),
                         _buildVisibility(),
                       ],
                     ),
@@ -283,6 +330,95 @@ class _IllustCardState extends State<IllustCard> {
         padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 4.0),
         child: Text("AI", style: TextStyle(color: Colors.white)),
       ),
+    );
+  }
+
+  /// 翻译角标：点击翻译 / 切换译文原文，长按丢弃译文重新翻译。
+  ///
+  /// 只翻「当前这一张」，不做信息流自动翻译：端侧一张图要跑 OCR + 多批
+  /// 推理（十几秒），自动翻整屏会把队列彻底堵死。
+  Widget _buildTranslateChip(String url) {
+    final service = ThumbnailTranslationService.instance;
+    return AnimatedBuilder(
+      animation: service,
+      builder: (context, _) {
+        final entry = service.entryFor(url);
+        final running =
+            service.isRunning(url) ||
+            entry.state == ThumbTranslationState.running;
+        final done = entry.state == ThumbTranslationState.done;
+        final failed =
+            entry.state == ThumbTranslationState.error ||
+            entry.state == ThumbTranslationState.empty;
+        final label = failed
+            ? '!'
+            : done
+            ? (_showOriginal ? '原' : '译')
+            : '译';
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: running
+              ? null
+              : () {
+                  if (done) {
+                    setState(() => _showOriginal = !_showOriginal);
+                    return;
+                  }
+                  if (entry.state == ThumbTranslationState.error) {
+                    // 失败原因（模型未安装 / 解码失败等）直接弹出来，
+                    // 否则角标只有一个「!」没法排障。
+                    final reason = entry.error ?? '';
+                    BotToast.showText(
+                      text: reason.length > 160
+                          ? reason.substring(0, 160)
+                          : reason,
+                    );
+                    service.forget(url);
+                    return;
+                  }
+                  if (entry.state == ThumbTranslationState.empty) {
+                    service.forget(url);
+                  }
+                  service.translate(url);
+                },
+          onLongPress: running
+              ? null
+              : () {
+                  if (!done) return;
+                  HapticUtil.heavy();
+                  service.forget(url);
+                  if (_showOriginal) setState(() => _showOriginal = false);
+                },
+          child: Container(
+            margin: EdgeInsets.only(left: 4.0),
+            padding: const EdgeInsets.symmetric(
+              vertical: 1.0,
+              horizontal: 6.0,
+            ),
+            decoration: BoxDecoration(
+              color: done
+                  ? Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.9)
+                  : Colors.black26,
+              borderRadius: BorderRadius.all(Radius.circular(4.0)),
+            ),
+            child: running
+                ? SizedBox(
+                    width: 11,
+                    height: 11,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 1.4,
+                      color: Colors.white,
+                    ),
+                  )
+                : Text(
+                    label,
+                    style: TextStyle(color: Colors.white, fontSize: 11),
+                  ),
+          ),
+        );
+      },
     );
   }
 

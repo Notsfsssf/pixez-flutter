@@ -88,6 +88,24 @@ android {
         ndk {
             abiFilters.addAll(arrayOf("armeabi-v7a", "arm64-v8a", "x86_64"))
         }
+        externalNativeBuild {
+            cmake {
+                // llama.cpp（端侧翻译推理）：CMakeLists 内已关
+                // OPENMP/NATIVE/TESTS/EXAMPLES 等开关，这里无需额外参数。
+                arguments += listOf("-DANDROID_STL=c++_shared")
+                // 显式只建 llamashim：armeabi-v7a 分支不定义 ggml/llama
+                // target（空占位库），AGP 自动收集全量 target 会致 ninja 报错。
+                targets += listOf("llamashim")
+            }
+        }
+    }
+
+    // 端侧翻译推理：llama.cpp v0.7.0 + llama_shim（源码位置见 CMakeLists 注释）
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+            version = "3.22.1"
+        }
     }
 
 
@@ -115,6 +133,10 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
+        }
+
+        getByName("release") {
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
 
         if (keystorePropertiesFile.exists()) {
@@ -153,6 +175,9 @@ flutter {
 
 dependencies {
     implementation(project(":androidndkgif"))
+    // 图片翻译（规格 §3）：ML Kit 各语言模型库为 compileOnly，需 app 按需引入日/中。
+    implementation("com.google.mlkit:text-recognition-japanese:16.0.1")
+    implementation("com.google.mlkit:text-recognition-chinese:16.0.1")
     implementation("androidx.core:core-remoteviews:1.1.0")
     implementation("androidx.annotation:annotation:1.9.1")
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))

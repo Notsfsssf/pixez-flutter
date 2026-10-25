@@ -43,6 +43,9 @@ import 'package:pixez/page/novel/viewer/image_text.dart';
 import 'package:pixez/page/novel/viewer/novel_store.dart';
 import 'package:pixez/saf_plugin.dart';
 import 'package:pixez/supportor_plugin.dart';
+import 'package:pixez/translation/novel_translation_store.dart';
+import 'package:pixez/translation/translation_service.dart';
+import 'package:pixez/translation/widgets/text_translation_entry.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path/path.dart' as Path;
 
@@ -66,6 +69,41 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
   String _selectedText = "";
   NovelSpansGenerator novelSpansGenerator = NovelSpansGenerator();
 
+  /// 小说段落翻译状态（规格 §8.2，不持久化）。
+  final NovelTranslationStore _translationStore = NovelTranslationStore();
+
+  /// normal 段落的 (spanIndex, text) 列表（其它类型跳过）。
+  List<(int, String)> _translatableParagraphs() {
+    final result = <(int, String)>[];
+    final spans = _novelStore.spans;
+    for (var i = 0; i < spans.length; i++) {
+      final span = spans[i];
+      if (span.type != NovelSpansType.normal) continue;
+      final text = span.text.trim();
+      if (text.isEmpty) continue;
+      result.add((i, text));
+    }
+    return result;
+  }
+
+  Future<void> _toggleNovelTranslation() async {
+    if (_translationStore.translating.value) return;
+    final willEnable = !_translationStore.enabled.value;
+    TranslationService.instance.prewarm(); // 进入翻译时预热（规格 §8.2）
+    await _translationStore.toggle(_translatableParagraphs());
+    if (!mounted || !willEnable) return;
+    // 失败必须说出来：以前只写 log，用户看到的就是「转圈结束、正文没变」。
+    final error = _translationStore.lastError.value;
+    if (error != null) {
+      BotToast.showText(text: error);
+    } else {
+      // 说明「原文已被替换」：否则用户会以为只是加了一层、找不到原文去哪了。
+      BotToast.showText(
+        text: '已翻译 ${_translationStore.translatedCount.value} 段，正文已替换为译文',
+      );
+    }
+  }
+
   Future<void> initMethod() async {
     if (!Platform.isAndroid) return;
     bool results = await SupportorPlugin.processText();
@@ -79,6 +117,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
   @override
   void initState() {
     _novelStore = widget.novelStore ?? NovelStore(widget.id, null);
+    _translationStore.resetFor(widget.id);
     _offsetDisposer = reaction((_) => _novelStore.bookedOffset, (_) {
       LPrinter.d("jump to ${_novelStore.bookedOffset}");
       _controller?.jumpTo(_novelStore.bookedOffset);
@@ -209,12 +248,63 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
           Navigator.of(context).pop();
         },
       ),
-      title: Text(
-        _novelStore.novelTextResponse!.text.length.toString(),
-        style: Theme.of(context).textTheme.bodyLarge,
+      // 翻译中把「字数」换成进度：整章逐段翻译要跑几分钟，只转圈看不出
+      // 到底有没有在动、还剩多少。
+      title: Observer(
+        builder: (context) {
+          final style = Theme.of(context).textTheme.bodyLarge;
+          if (!_translationStore.translating.value) {
+            return Text(
+              _novelStore.novelTextResponse!.text.length.toString(),
+              style: style,
+            );
+          }
+          final done = _translationStore.translatedCount.value;
+          final total = _translationStore.totalCount.value;
+          return Text('翻译中 $done/$total', style: style);
+        },
       ),
       backgroundColor: Colors.transparent,
       actions: <Widget>[
+        Observer(
+          builder: (context) => IconButton(
+            tooltip: I18n.of(context).translation,
+            onPressed: _toggleNovelTranslation,
+            icon: _translationStore.translating.value
+                ? SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Icon(
+                    Icons.translate,
+                    color: Theme.of(context)
+                        .textTheme
+                        .bodyLarge!
+                        .color!
+                        .withAlpha(
+                          _translationStore.enabled.value ? 225 : 120,
+                        ),
+                  ),
+          ),
+        ),
+        Observer(
+          builder: (context) {
+            if (!_translationStore.enabled.value) return SizedBox.shrink();
+            return IconButton(
+              tooltip: _translationStore.showOnlyTranslation.value
+                  ? I18n.of(context).translation_show_source
+                  : I18n.of(context).translation_show_translation,
+              onPressed: _translationStore.toggleShowMode,
+              icon: Icon(
+                _translationStore.showOnlyTranslation.value
+                    ? Icons.subject
+                    : Icons.notes,
+                color: Theme.of(context).textTheme.bodyLarge!.color,
+              ),
+            );
+          },
+        ),
         NovelBookmarkButton(novel: _novelStore.novel!),
         IconButton(
           onPressed: () {
@@ -252,22 +342,71 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
   ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: SelectionArea(
-        onSelectionChanged: (value) {
-          _selectedText = value?.plainText ?? "";
+      child: Observer(
+        builder: (context) {
+          final enabled = _translationStore.enabled.value;
+          final translated =
+              enabled ? _translationStore.translations[index] : null;
+          final hasTranslation = translated != null && translated.isNotEmpty;
+          // 替换模式（默认）：译文顶掉原文，页面上只剩中文——开翻译就是为了
+          // 读懂，把日文继续留在上面容易被当成「没翻成功」。
+          // 对照模式：原文在上、译文在下，中间一条细线分隔。
+          final replace = _translationStore.showOnlyTranslation.value;
+          if (hasTranslation && replace) {
+            return _translatedText(translated);
+          }
+          if (hasTranslation) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _spanRichText(context, spanDatas[index]),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
+                  child: Divider(height: 1.0, thickness: 0.5),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
+                  child: _translatedText(translated),
+                ),
+              ],
+            );
+          }
+          return _spanRichText(context, spanDatas[index]);
         },
-        contextMenuBuilder: (context, editableTextState) {
-          return _buildSelectionMenu(editableTextState, context);
-        },
-        child: Text.rich(
-          novelSpansGenerator.novelSpansDatatoInlineSpan(
-            context,
-            spanDatas[index],
-          ),
-          style: _textStyle,
-          textHeightBehavior: TextHeightBehavior(
-            applyHeightToLastDescent: true,
-          ),
+      ),
+    );
+  }
+
+  /// 译文正文：字号跟随「小说字号」设置，可长按选中复制。
+  Widget _translatedText(String text) {
+    return SelectionArea(
+      child: Text(
+        text,
+        style: _textStyle,
+        textHeightBehavior: TextHeightBehavior(
+          applyHeightToLastDescent: true,
+        ),
+      ),
+    );
+  }
+
+  Widget _spanRichText(BuildContext context, NovelSpansData spanData) {
+    return SelectionArea(
+      onSelectionChanged: (value) {
+        _selectedText = value?.plainText ?? "";
+      },
+      contextMenuBuilder: (context, editableTextState) {
+        return _buildSelectionMenu(editableTextState, context);
+      },
+      child: Text.rich(
+        novelSpansGenerator.novelSpansDatatoInlineSpan(
+          context,
+          spanData,
+        ),
+        style: _textStyle,
+        textHeightBehavior: TextHeightBehavior(
+          applyHeightToLastDescent: true,
         ),
       ),
     );
@@ -372,14 +511,22 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
             child: Card(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: SelectionArea(
-                  onSelectionChanged: (value) {
-                    _selectedText = value?.plainText ?? "";
-                  },
-                  contextMenuBuilder: (context, editableTextState) {
-                    return _buildSelectionMenu(editableTextState, context);
-                  },
-                  child: SelectableHtml(data: _novelStore.novel?.caption ?? ""),
+                // 简介也接翻译：译文直接替换 HTML 原文（与正文同一套交互——
+                // 点了就换，不再「原文 + 译文」叠两层）。
+                child: TextTranslationEntry(
+                  source: _novelStore.novel?.caption ?? "",
+                  textColor: _textStyle?.color,
+                  original: SelectionArea(
+                    onSelectionChanged: (value) {
+                      _selectedText = value?.plainText ?? "";
+                    },
+                    contextMenuBuilder: (context, editableTextState) {
+                      return _buildSelectionMenu(editableTextState, context);
+                    },
+                    child: SelectableHtml(
+                      data: _novelStore.novel?.caption ?? "",
+                    ),
+                  ),
                 ),
               ),
               shape: RoundedRectangleBorder(

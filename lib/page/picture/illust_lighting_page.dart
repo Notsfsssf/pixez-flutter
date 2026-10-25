@@ -14,7 +14,9 @@
  *
  */
 
+import 'dart:async';
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:easy_refresh/easy_refresh.dart';
@@ -53,6 +55,8 @@ import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/users_page.dart';
 import 'package:pixez/page/zoom/photo_zoom_page.dart';
 import 'package:pixez/supportor_plugin.dart';
+import 'package:pixez/translation/thumbnail_translation.dart';
+import 'package:pixez/translation/widgets/inline_translation_overlay.dart';
 import 'package:share_plus/share_plus.dart';
 
 class IllustLightingPage extends StatefulWidget {
@@ -140,6 +144,18 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
   bool tempView = false;
   final _detailKey = GlobalKey<ScaffoldState>();
 
+  // ---- 多页漫画就地翻译 ------------------------------------------------
+  // 只处理「视口中心所在页 + 下一页」：漫画可能有几十页，整篇预翻会长时间
+  // 占住端侧模型；这里按滚动位置懒加载，翻到哪翻到哪、只预取即将看到的一页。
+  final Map<int, GlobalKey> _pageKeys = {};
+  final Set<int> _translationErrorNotified = {};
+  Timer? _pageProbeTimer;
+  bool _autoTranslate = false;
+  bool _showOriginalAll = false;
+  bool _windowRunning = false;
+  int? _focusPage;
+  int? _pendingFocus;
+
   @override
   void initState() {
     _focusNode = FocusNode();
@@ -162,6 +178,13 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
       _illustStore = widget.store ?? IllustStore(widget.id, null);
       _illustStore.fetch();
       _aboutStore = IllustAboutStore(widget.id, _refreshController);
+      // 换作品：页码/尺寸/译文全部作废，连译如果开着就按新作品重新起一轮。
+      _pageKeys.clear();
+      _translationErrorNotified.clear();
+      _focusPage = null;
+      _pendingFocus = null;
+      _showOriginalAll = false;
+      if (_autoTranslate) _startPageProbe();
       LPrinter.d("state change");
     }
   }
@@ -200,11 +223,219 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
 
   @override
   void dispose() {
+    _pageProbeTimer?.cancel();
     _illustStore.dispose();
     _scrollController.dispose();
     _refreshController.dispose();
     _focusNode.dispose();
     super.dispose();
+  }
+
+  // ---- 多页漫画就地翻译的实现 -----------------------------------------
+
+  bool _translationSupported(Illusts? illust) =>
+      illust != null && illust.type != 'ugoira';
+
+  int _translationPageCount(Illusts illust) =>
+      illust.metaPages.isEmpty ? 1 : illust.metaPages.length;
+
+  /// 单页翻译用的图：固定 large（比 medium 清晰、比 original 省内存）。
+  /// 覆盖层坐标来自这张图解码后的真实像素，与页面显示的画质设置无关。
+  String _translationUrlFor(Illusts illust, int index) {
+    if (index >= 0 && index < illust.metaPages.length) {
+      final urls = illust.metaPages[index].imageUrls;
+      if (urls != null) {
+        if (urls.large.isNotEmpty) return urls.large;
+        if (urls.original.isNotEmpty) return urls.original;
+      }
+    }
+    if (index == 0) {
+      final single = illust.metaSinglePage?.originalImageUrl;
+      if (single != null && single.isNotEmpty) return single;
+    }
+    return '';
+  }
+
+  GlobalKey _pageKey(int index) =>
+      _pageKeys.putIfAbsent(index, () => GlobalKey());
+
+  /// 视口中心落在哪一页：用已构建条目的 RenderBox 实测，而不是按元数据
+  /// 推算高度——漫画每页长短不一，元数据只有第一页的尺寸。
+  /// 没构建（离屏）的条目没有 Key 上下文，自然不在候选里，这正好实现
+  /// 「只加载当前页与即将划到的一页」。
+  int? _visiblePageIndex() {
+    if (_pageKeys.isEmpty) return null;
+    final size = MediaQuery.of(context).size;
+    final center = size.height / 2;
+    int? best;
+    var bestOverlap = 0.0;
+    for (final entry in _pageKeys.entries) {
+      final render = entry.value.currentContext?.findRenderObject();
+      if (render is! RenderBox || !render.attached || !render.hasSize) continue;
+      final origin = render.localToGlobal(Offset.zero);
+      // 横向也要判断：PageView 里左右相邻的作品被 KeepAlive 保活，
+      // 纵向行高同样覆盖屏幕中心，不排掉的话会在后台替别的作品翻译。
+      if (origin.dx + render.size.width <= 0 || origin.dx >= size.width) {
+        continue;
+      }
+      final top = origin.dy;
+      final bottom = top + render.size.height;
+      if (top <= center && bottom >= center) return entry.key;
+      final overlap = math.min(bottom, size.height) - math.max(top, 0.0);
+      if (overlap > bestOverlap) {
+        bestOverlap = overlap;
+        best = entry.key;
+      }
+    }
+    return best;
+  }
+
+  void _toggleAutoTranslate() {
+    final enabled = !_autoTranslate;
+    setState(() {
+      _autoTranslate = enabled;
+      if (enabled) {
+        _showOriginalAll = false;
+        _focusPage = null;
+        _pendingFocus = null;
+      }
+    });
+    if (enabled) {
+      _startPageProbe();
+      BotToast.showText(text: '连译已开启：只翻当前页，并预取下一页');
+    } else {
+      _pageProbeTimer?.cancel();
+      _pageProbeTimer = null;
+    }
+  }
+
+  /// 400ms 轮询一次视口中心页：图片加载会改变列表高度，只靠滚动事件
+  /// 会漏掉「停在原地但布局变了」的情况。开销只是遍历十几个 Key 的
+  /// RenderBox，可忽略。
+  void _startPageProbe() {
+    _pageProbeTimer?.cancel();
+    _pageProbeTimer = Timer.periodic(
+      const Duration(milliseconds: 400),
+      (_) => _updateFocusPage(),
+    );
+    WidgetsBinding.instance.addPostFrameCallback((_) => _updateFocusPage());
+  }
+
+  void _updateFocusPage() {
+    if (!mounted || !_autoTranslate) return;
+    final illust = _illustStore.illusts;
+    if (!_translationSupported(illust)) return;
+    final index = _visiblePageIndex();
+    if (index == null) {
+      _focusPage = null;
+      return;
+    }
+    if (index == _focusPage) return;
+    _focusPage = index;
+    _pendingFocus = index;
+    _runTranslateWindow();
+  }
+
+  /// 串行窗口：先翻当前页，再预取下一页；期间用户滚走就丢弃旧页的预取。
+  Future<void> _runTranslateWindow() async {
+    if (_windowRunning) return;
+    _windowRunning = true;
+    try {
+      while (mounted && _autoTranslate && _pendingFocus != null) {
+        final target = _pendingFocus!;
+        _pendingFocus = null;
+        final illust = _illustStore.illusts;
+        if (!_translationSupported(illust)) break;
+        await _translatePage(illust!, target, reportError: true);
+        if (!mounted || !_autoTranslate) break;
+        // 期间用户已经滚到别的页：以新页为准，别再花时间预取旧页。
+        if (_pendingFocus != null) continue;
+        final next = target + 1;
+        if (next >= _translationPageCount(illust)) break;
+        // 当前页已离开视口（快速滑过），跳过预取。
+        if (_visiblePageIndex() != target) break;
+        await _translatePage(illust, next, reportError: false);
+        break;
+      }
+    } finally {
+      _windowRunning = false;
+      if (mounted && _autoTranslate && _pendingFocus != null) {
+        _runTranslateWindow();
+      }
+    }
+  }
+
+  Future<void> _translatePage(
+    Illusts illust,
+    int index, {
+    required bool reportError,
+  }) async {
+    final url = _translationUrlFor(illust, index);
+    if (url.isEmpty) return;
+    final service = ThumbnailTranslationService.instance;
+    final entry = service.entryFor(url);
+    if (entry.state == ThumbTranslationState.done ||
+        entry.state == ThumbTranslationState.empty ||
+        entry.state == ThumbTranslationState.running ||
+        service.isRunning(url)) {
+      return;
+    }
+    await service.translate(url);
+    if (!mounted) return;
+    final after = service.entryFor(url);
+    if (after.state == ThumbTranslationState.error) {
+      if (reportError && _translationErrorNotified.add(index)) {
+        final reason = after.error ?? '';
+        BotToast.showText(
+          text:
+              '第 ${index + 1} 页翻译失败'
+              '${reason.isEmpty ? '' : '：${reason.length > 120 ? reason.substring(0, 120) : reason}'}',
+        );
+      }
+    } else {
+      _translationErrorNotified.remove(index);
+    }
+  }
+
+  bool _hasAnyBlocks(Illusts illust) {
+    final service = ThumbnailTranslationService.instance;
+    final count = _translationPageCount(illust);
+    for (var i = 0; i < count; i++) {
+      final url = _translationUrlFor(illust, i);
+      if (url.isNotEmpty && service.hasBlocks(url)) return true;
+    }
+    return false;
+  }
+
+  /// 把译文覆盖层贴到单页上。覆盖层不接手势，点图仍然进 zoom。
+  Widget _withInlineTranslation(Illusts illust, int index, Widget child) {
+    if (!_translationSupported(illust)) return child;
+    final url = _translationUrlFor(illust, index);
+    if (url.isEmpty) return child;
+    return Stack(
+      children: [
+        child,
+        Positioned.fill(
+          child: IgnorePointer(
+            child: AnimatedBuilder(
+              animation: ThumbnailTranslationService.instance,
+              builder: (context, _) {
+                final entry = ThumbnailTranslationService.instance.entryFor(
+                  url,
+                );
+                if (entry.blocks.isEmpty || _showOriginalAll) {
+                  return const SizedBox.shrink();
+                }
+                return InlineTranslationOverlay(
+                  blocks: entry.blocks,
+                  originalSize: entry.originalSize,
+                );
+              },
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildAppbar() {
@@ -221,6 +452,64 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  if (_translationSupported(_illustStore.illusts))
+                    AnimatedBuilder(
+                      animation: ThumbnailTranslationService.instance,
+                      builder: (context, _) {
+                        final illust = _illustStore.illusts;
+                        if (illust == null) return const SizedBox.shrink();
+                        final hasBlocks = _hasAnyBlocks(illust);
+                        final service = ThumbnailTranslationService.instance;
+                        final focusUrl = _focusPage == null
+                            ? ''
+                            : _translationUrlFor(illust, _focusPage!);
+                        final running =
+                            _autoTranslate &&
+                            focusUrl.isNotEmpty &&
+                            (service.isRunning(focusUrl) ||
+                                service.entryFor(focusUrl).state ==
+                                    ThumbTranslationState.running);
+                        return Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (hasBlocks)
+                              IconButton(
+                                tooltip: _showOriginalAll ? '显示译文' : '显示原文',
+                                icon: Icon(
+                                  _showOriginalAll
+                                      ? Icons.g_translate
+                                      : Icons.image_outlined,
+                                ),
+                                onPressed: () => setState(
+                                  () => _showOriginalAll = !_showOriginalAll,
+                                ),
+                              ),
+                            IconButton(
+                              tooltip: _autoTranslate
+                                  ? '停止连译'
+                                  : '连译：只翻当前页，并预取下一页',
+                              icon: running
+                                  ? const SizedBox(
+                                      width: 18,
+                                      height: 18,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : Icon(
+                                      Icons.translate,
+                                      color: _autoTranslate
+                                          ? Theme.of(
+                                              context,
+                                            ).colorScheme.primary
+                                          : null,
+                                    ),
+                              onPressed: _toggleAutoTranslate,
+                            ),
+                          ],
+                        );
+                      },
+                    ),
                   DetailJumpButton(
                     anchorKey: _detailKey,
                     scrollController: _scrollController,
@@ -575,28 +864,35 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                         ),
                       );
                     },
-                    child: NullHero(
-                      tag: widget.heroString,
-                      child: PixivImage(
-                        url,
-                        fade: false,
-                        width: MediaQuery.of(context).size.width,
-                        cacheHeaderData: PixEzCacheHeaderData(
-                          key: '${data.id}_0',
-                          quality: IllustQualityExtension.fromValue(
-                            data.type == "manga"
-                                ? userSetting.mangaQuality
-                                : userSetting.pictureQuality,
+                    child: KeyedSubtree(
+                      key: _pageKey(0),
+                      child: _withInlineTranslation(
+                        data,
+                        0,
+                        NullHero(
+                          tag: widget.heroString,
+                          child: PixivImage(
+                            url,
+                            fade: false,
+                            width: MediaQuery.of(context).size.width,
+                            cacheHeaderData: PixEzCacheHeaderData(
+                              key: '${data.id}_0',
+                              quality: IllustQualityExtension.fromValue(
+                                data.type == "manga"
+                                    ? userSetting.mangaQuality
+                                    : userSetting.pictureQuality,
+                              ),
+                            ),
+                            placeWidget: (url != data.imageUrls.medium)
+                                ? PixivImage(
+                                    data.imageUrls.medium,
+                                    width: MediaQuery.of(context).size.width,
+                                    placeWidget: placeWidget,
+                                    fade: false,
+                                  )
+                                : placeWidget,
                           ),
                         ),
-                        placeWidget: (url != data.imageUrls.medium)
-                            ? PixivImage(
-                                data.imageUrls.medium,
-                                width: MediaQuery.of(context).size.width,
-                                placeWidget: placeWidget,
-                                fade: false,
-                              )
-                            : placeWidget,
                       ),
                     ),
                   );
@@ -621,7 +917,14 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                         ),
                       );
                     },
-                    child: _buildIllustsItem(index, data, height),
+                    child: KeyedSubtree(
+                      key: _pageKey(index),
+                      child: _withInlineTranslation(
+                        data,
+                        index,
+                        _buildIllustsItem(index, data, height),
+                      ),
+                    ),
                   );
                 }, childCount: data.metaPages.length),
               ),

@@ -36,6 +36,7 @@ import 'package:pixez/page/book/tag/book_tag_page.dart';
 import 'package:pixez/page/hello/recom/recom_manga_page.dart';
 import 'package:pixez/page/hello/setting/data_export_page.dart';
 import 'package:pixez/page/hello/setting/setting_quality_page.dart';
+import 'package:pixez/page/hello/setting/setting_translate_page.dart';
 import 'package:pixez/page/history/history_page.dart';
 import 'package:pixez/page/login/login_page.dart';
 import 'package:pixez/page/novel/history/novel_history_page.dart';
@@ -245,6 +246,15 @@ class _SettingPageState extends State<SettingPage> {
                       onTap: () => Leader.push(context, DataExportPage()),
                       title: Text(I18n.of(context).app_data),
                       leading: Icon(Icons.folder_open_rounded),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.translate),
+                      title: Text(I18n.of(context).translation),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                SettingTranslatePage()));
+                      },
                     ),
                   ],
                 ),

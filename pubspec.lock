@@ -466,7 +466,7 @@ packages:
     source: hosted
     version: "1.3.3"
   ffi:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: ffi
       sha256: "6d7fd89431262d8f3125e81b50d3847a091d846eafcd4fdb88dd06f36d705a45"
@@ -789,6 +789,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
+  google_mlkit_commons:
+    dependency: transitive
+    description:
+      name: google_mlkit_commons
+      sha256: "621e94de22fd0f1e902e593b892746d80ab7542b39c2552aa091d904eb82fc6f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.13.0"
+  google_mlkit_text_recognition:
+    dependency: "direct main"
+    description:
+      name: google_mlkit_text_recognition
+      sha256: e13685af5093c8be009a3555909b72a80e10cfe8f97752bcbdf99fa0ccbda810
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.17.1"
   graphs:
     dependency: transitive
     description:
@@ -1864,6 +1880,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.18"
+  translator:
+    dependency: "direct main"
+    description:
+      path: "packages/translator"
+      relative: true
+    source: path
+    version: "0.1.0"
   tray_manager:
     dependency: "direct main"
     description:

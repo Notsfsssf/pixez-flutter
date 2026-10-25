@@ -11,6 +11,9 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Android 17（API 37）起，访问局域网（TCP/UDP、.local 解析）默认被系统
+         拦截，必须持有该运行时权限；云端翻译接口填局域网地址时依赖它。 -->
+    <uses-permission android:name="android.permission.ACCESS_LOCAL_NETWORK" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.android.vending.BILLING" />
@@ -30,7 +33,8 @@
         android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher"
         android:label="PixEz"
-        android:requestLegacyExternalStorage="true">
+        android:requestLegacyExternalStorage="true"
+        android:usesCleartextTraffic="true">
         <receiver
             android:name=".IllustCardAppWidget"
             android:exported="false">

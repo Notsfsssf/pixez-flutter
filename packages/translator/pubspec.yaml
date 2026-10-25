@@ -1,0 +1,20 @@
+name: translator
+description: >-
+  PixEz translation feature — pure Dart strategy & pipeline layer:
+  Hy-MT2 prompt/output policies, OCR geometry, translation engines
+  (on-device llama.cpp via injected host, or OpenAI-compatible cloud API).
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: '>=3.8.0 <4.0.0'
+
+# 约束（规格 §4 分层硬约束）：不依赖 flutter / plugin_platform_interface / path_provider，
+# 仅允许 dio（下载）、crypto（哈希）、meta；平台能力全部接口注入，保证无 Flutter 环境可 dart test。
+dependencies:
+  dio: '>=5.0.0 <6.0.0'
+  crypto: '>=3.0.0 <4.0.0'
+  meta: '>=1.9.0 <2.0.0'
+
+dev_dependencies:
+  test: '>=1.24.0 <2.0.0'

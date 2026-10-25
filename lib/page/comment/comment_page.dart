@@ -27,6 +27,7 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
+import 'package:pixez/translation/translation_service.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/comment_response.dart';
 import 'package:pixez/network/api_client.dart';
@@ -65,6 +66,38 @@ class _CommentPageState extends State<CommentPage> {
   late EasyRefreshController easyRefreshController;
   late CommentStore _store;
   String _commentText = "";
+
+  /// 评论翻译状态（规格 §8.4）：commentId → 译文（null = 失败）；
+  /// 「原文」切换集合。
+  final Map<int, String?> _commentTranslations = {};
+  final Set<int> _showOriginalComments = {};
+
+  Future<void> _toggleCommentTranslation(Comment comment) async {
+    final id = comment.id;
+    if (id == null) return;
+    if (_commentTranslations.containsKey(id) &&
+        !_showOriginalComments.contains(id)) {
+      // 已显示译文 → 切回原文
+      setState(() => _showOriginalComments.add(id));
+      return;
+    }
+    if (!_commentTranslations.containsKey(id)) {
+      try {
+        final translator =
+            await TranslationService.instance.getTextTranslator();
+        final request = await TranslationService.instance.buildRequest();
+        final result =
+            await translator.translateText(comment.comment ?? '', request);
+        if (!mounted) return;
+        setState(() => _commentTranslations[id] = result);
+      } catch (e) {
+        if (!mounted) return;
+        BotToast.showText(text: e.toString());
+        return;
+      }
+    }
+    setState(() => _showOriginalComments.remove(id));
+  }
 
   List<String> banList = [
     "bb8.news",
@@ -470,7 +503,38 @@ class _CommentPageState extends State<CommentPage> {
     );
   }
 
-  SelectionArea _buildCommentContent(BuildContext context, Comment comment) {
+  Widget _buildCommentContent(BuildContext context, Comment comment) {
+    final id = comment.id;
+    final hasTranslation =
+        id != null && _commentTranslations.containsKey(id);
+    final showTranslation =
+        hasTranslation && !_showOriginalComments.contains(id);
+    if (showTranslation) {
+      // 原地把评论替换为译文，并显示「原文」小按钮切回（规格 §8.4）
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SelectionArea(
+            focusNode: _focusNode,
+            child: CommentEmojiText(
+              text: _commentTranslations[id] ?? '',
+            ),
+          ),
+          const SizedBox(height: 4),
+          InkWell(
+            onTap: () => setState(() => _showOriginalComments.add(id!)),
+            child: Text(
+              I18n.of(context).translation_show_source,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.secondary,
+                fontSize: 11,
+              ),
+            ),
+          ),
+        ],
+      );
+    }
     return SelectionArea(
       focusNode: _focusNode,
       contextMenuBuilder: (context, selectableRegionState) {
@@ -542,7 +606,20 @@ class _CommentPageState extends State<CommentPage> {
                       });
                 },
                 child: Icon(Icons.more_horiz, color: Theme.of(context).colorScheme.secondary)),
-          )
+          ),
+        InkWell(
+          // 评论翻译入口（规格 §8.4：trailing 行 reply / ban / report 旁）
+          onTap: () => _toggleCommentTranslation(comment),
+          child: Icon(
+            Icons.translate,
+            size: 14,
+            color: comment.id != null &&
+                    _commentTranslations.containsKey(comment.id) &&
+                    !_showOriginalComments.contains(comment.id)
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.secondary,
+          ),
+        )
       ],
     );
   }

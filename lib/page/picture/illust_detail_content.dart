@@ -20,6 +20,7 @@ import 'package:pixez/page/user/user_store.dart';
 import 'package:pixez/page/user/users_page.dart';
 import 'package:pixez/supportor_plugin.dart';
 import 'package:pixez/component/painter_avatar.dart';
+import 'package:pixez/translation/widgets/text_translation_entry.dart';
 import 'package:pixez/utils/haptic_util.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -321,19 +322,32 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
             child: Container(
               width: double.infinity,
-              child: SelectionArea(
-                focusNode: _focusNode,
-                onSelectionChanged: (value) {
-                  _selectedText = value?.plainText ?? "";
-                },
-                contextMenuBuilder: (context, selectableRegionState) {
-                  return _buildSelectionMenu(selectableRegionState, context);
-                },
-                child: SelectionHorizontalScroll(
-                  child: SelectableHtml(
-                    data: caption.isEmpty ? "~" : caption,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // caption 翻译（规格 §8.3：右上角入口，原地展开译文区）。
+                  // 原文交给翻译组件托管：显示译文时它会隐藏原文，避免
+                  // 「译文 + 原文」两段同时铺在简介区。
+                  TextTranslationEntry(
+                    source: caption,
+                    cacheKey: 'caption|${data.id}',
+                    original: SelectionArea(
+                      focusNode: _focusNode,
+                      onSelectionChanged: (value) {
+                        _selectedText = value?.plainText ?? "";
+                      },
+                      contextMenuBuilder: (context, selectableRegionState) {
+                        return _buildSelectionMenu(
+                            selectableRegionState, context);
+                      },
+                      child: SelectionHorizontalScroll(
+                        child: SelectableHtml(
+                          data: caption.isEmpty ? "~" : caption,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           ),
