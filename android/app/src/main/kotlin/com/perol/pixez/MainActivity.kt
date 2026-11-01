@@ -81,6 +81,10 @@ class MainActivity : FlutterActivity() {
 
     private val savingPools = Collections.synchronizedList(arrayListOf<String>())
 
+    // Saves run concurrently on Dispatchers.IO; finding or creating a SAF
+    // folder must not interleave, or the provider creates "name (1)" copies.
+    private val safFolderLock = Any()
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         flutterEngine.plugins.add(DeepLinkPlugin())
@@ -611,9 +615,11 @@ class MainActivity : FlutterActivity() {
                     var folderDocument: DocumentFile? = treeDocument
                     val fName = names.last()
                     val list = names.subList(0, names.size - 1)
-                    for (name in list) {
-                        folderDocument = folderDocument!!.findFile(name)
-                            ?: folderDocument.createDirectory(name)!!
+                    synchronized(safFolderLock) {
+                        for (name in list) {
+                            folderDocument = folderDocument!!.findFile(name)
+                                ?: folderDocument!!.createDirectory(name)!!
+                        }
                     }
                     return folderDocument?.createFile(mimeType, fName)?.uri
                 } catch (e: Throwable) {
