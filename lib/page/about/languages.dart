@@ -151,4 +151,15 @@ const Languages = const [
       ),
     ],
   ),
+  Language(
+    language: 'fa',
+    locale: Locale('fa'),
+    sponsors: [
+      Sponsor(
+        name: 'aliafshany',
+        avatar: 'https://avatars.githubusercontent.com/u/40741745?v=4',
+        uri: 'https://github.com/aliafshany',
+      ),
+    ],
+  ),
 ];
