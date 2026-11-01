@@ -27,6 +27,7 @@ import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
 import 'package:pixez/page/novel/component/novel_lighting_store.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 import 'package:pixez/utils/haptic_util.dart';
+import 'package:pixez/page/novel/user/novel_users_page.dart';
 
 class NovelRecomPage extends StatefulWidget {
   @override
@@ -159,16 +160,24 @@ class _NovelRecomPageState extends State<NovelRecomPage>
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text(
-                                  novel.user.name,
-                                  maxLines: 1,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall!
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary),
+                                GestureDetector(
+                                  behavior: HitTestBehavior.opaque,
+                                  onTap: () {
+                                    Navigator.of(context, rootNavigator: true).push(
+                                        MaterialPageRoute(
+                                            builder: (_) => NovelUsersPage(id: novel.user.id)));
+                                  },
+                                  child: Text(
+                                    novel.user.name,
+                                    maxLines: 1,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall!
+                                        .copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondary),
+                                  ),
                                 ),
                                 Padding(
                                   padding: EdgeInsets.only(left: 8),
