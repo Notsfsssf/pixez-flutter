@@ -486,13 +486,13 @@ class _PixEzSearchBoxState extends State<StatefulWidget> {
         setState(() => _loading = true);
         await _trendTagsStore.fetch();
         if (!mounted) return;
-        if (_trendTagsStore.trendTags.isEmpty) {
+        if (_trendTagsStore.visibleTrendTags.isEmpty) {
           setState(() => _loading = false);
           return;
         }
         _items.clear();
 
-        _trendTagsStore.trendTags.forEach(
+        _trendTagsStore.visibleTrendTags.forEach(
           (tag) => _items.add(_NextPixEzSearchBoxItem.trendTags(context, tag)),
         );
 
