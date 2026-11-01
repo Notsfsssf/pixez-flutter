@@ -54,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return ScaffoldPage(
-      bottomBar: CommandBar(
+      footer: CommandBar(
         primaryItems: [
           CommandBarButton(
             icon: Icon(FluentIcons.settings),

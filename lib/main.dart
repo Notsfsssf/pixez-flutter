@@ -18,7 +18,6 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dynamic_color/dynamic_color.dart';
-import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter/material.dart' as legacy_material show ColorScheme;
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
@@ -248,12 +247,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                     dialogTheme: DialogThemeData(
                       backgroundColor: lightColorScheme.surfaceContainer,
                     ),
-                    pageTransitionsTheme: PageTransitionsTheme(
-                      builders: {
-                        TargetPlatform.android: ZoomPageTransitionsBuilder(),
-                        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-                      },
-                    ),
                   ),
                   darkTheme: ThemeData(
                     brightness: Brightness.dark,
@@ -261,12 +254,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                     scaffoldBackgroundColor: userSetting.isAMOLED
                         ? Colors.black
                         : null,
-                    pageTransitionsTheme: PageTransitionsTheme(
-                      builders: {
-                        TargetPlatform.android: ZoomPageTransitionsBuilder(),
-                        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-                      },
-                    ),
                     // tabBarTheme: TabBarTheme(dividerColor: Colors.transparent),
                     tabBarTheme: TabBarThemeData(
                       dividerColor: Colors.transparent,

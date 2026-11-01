@@ -1,0 +1,18 @@
+[toolchain]
+# native_toolchain_rust requires an exact channel version for reproducible builds.
+channel = "1.98.1"
+targets = [
+  "aarch64-apple-darwin",
+  "aarch64-apple-ios",
+  "aarch64-apple-ios-sim",
+  "aarch64-linux-android",
+  "aarch64-pc-windows-msvc",
+  "aarch64-unknown-linux-gnu",
+  "armv7-linux-androideabi",
+  "wasm32-unknown-unknown",
+  "x86_64-apple-darwin",
+  "x86_64-apple-ios",
+  "x86_64-linux-android",
+  "x86_64-pc-windows-msvc",
+  "x86_64-unknown-linux-gnu",
+]

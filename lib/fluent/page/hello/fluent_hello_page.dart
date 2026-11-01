@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:material_ui/material_ui.dart' show CircleAvatar;
 import 'package:pixez/constants.dart';
 import 'package:pixez/custom_icon.dart';
 import 'package:pixez/er/leader.dart';

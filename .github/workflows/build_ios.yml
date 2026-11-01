@@ -10,10 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
+      - name: Setup mise
+        uses: jdx/mise-action@v5
 
       - name: Flutter version
         run: flutter --version

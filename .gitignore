@@ -57,8 +57,6 @@ local.properties
 **/ios/**/.vagrant/
 **/ios/**/DerivedData/
 **/ios/**/Icon?
-**/ios/**/Pods/
-**/ios/**/.symlinks/
 **/ios/**/profile
 **/ios/**/xcuserdata
 **/ios/.generated/
@@ -117,6 +115,4 @@ msic
 # Ignore Certificate
 *.pfx
 
-# FVM Version Cache
-.fvm/
 /lib/src/generated/

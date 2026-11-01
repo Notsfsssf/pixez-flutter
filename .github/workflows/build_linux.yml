@@ -28,11 +28,8 @@ jobs:
             assembly-versioning-scheme=MajorMinorPatchTag
             assembly-file-versioning-format="{Major}.{Minor}.{Patch}.{BuildMetaData ?? 0}"
 
-      - name: 初始化 Flutter 环境
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version-file: .fvmrc
-          cache: true
+      - name: 初始化 mise
+        uses: jdx/mise-action@v5
 
       - name: 初始化 Rust 工具链
         uses: actions-rust-lang/setup-rust-toolchain@v1

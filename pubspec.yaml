@@ -154,11 +154,6 @@ msix_config:
   publisher: CN=Notsfsssf, C=CN
 
 dependency_overrides:
-  # Local fork of permission_handler_apple: strips CoreLocation/location
-  # permission support (avoids ITMS-90683) and resolves permission defines
-  # from Info.plist via Package.swift. See ios/permission_handler_apple_override/.
-  permission_handler_apple:
-    path: ios/permission_handler_apple_override
   wakelock_plus:
     path: ./plugins/wakelock_plus_stub
 

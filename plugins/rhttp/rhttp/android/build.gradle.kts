@@ -67,13 +67,6 @@ project.extensions.configure(org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjec
     }
 }
 
-apply(from = "../cargokit/gradle/plugin.gradle")
-
-extensions.getByName("cargokit").withGroovyBuilder {
-    setProperty("manifestDir", "../rust")
-    setProperty("libname", "rhttp")
-}
-
 fun findCargo(): String {
     val isWindows = System.getProperty("os.name").lowercase().contains("win")
     val exe = if (isWindows) "cargo.exe" else "cargo"
