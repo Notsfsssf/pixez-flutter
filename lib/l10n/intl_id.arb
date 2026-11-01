@@ -78,8 +78,8 @@
   "logout_message": "Ini akan menghapus info akun dan kembali ke halaman Login.",
   "manga": "Manga",
   "medium": "Menengah",
-  "mode_list": "Harian Untuk_laki-laki Untuk_perempuan Asli Pemula Mingguan Bulanan AI XVIII_AI XVIII_MINGGU XVIII_G",
-  "novel_mode_list": "Harian Untuk_laki-laki Untuk_perempuan Mingguan AI XVIII_AI XVIII_MINGGU XVIII_G",
+  "mode_list": "Harian Untuk_laki-laki Untuk_perempuan Asli Pemula Mingguan Bulanan AI XVIII_AI XVIII XVIII_MINGGU XVIII_G",
+  "novel_mode_list": "Harian Untuk_laki-laki Untuk_perempuan Mingguan AI XVIII_AI XVIII XVIII_MINGGU XVIII_G",
   "more": "Lebih banyak",
   "more_then_starnum_bookmark": "Lebih banyak {starNum} seperti(s)",
   "@more_then_starnum_bookmark": {
