@@ -58,7 +58,9 @@ extension TimeExts on String {
         .replaceAll("?", "")
         .replaceAll(">", "")
         .replaceAll("|", "")
-        .replaceAll("<", "");
+        .replaceAll("<", "")
+        .replaceAll('"', "")
+        .replaceAll(RegExp(r'[\x00-\x1F\x7F]'), "");
   }
 }
 
