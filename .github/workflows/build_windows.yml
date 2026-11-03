@@ -55,7 +55,7 @@ jobs:
             --release `
             --no-pub `
             --build-name=${{ steps.gitversion.outputs.majorMinorPatch }} `
-            --build-number=${{ steps.gitversion.outputs.buildMetaData }}
+            --build-number=${{ steps.gitversion.outputs.buildMetaData || '0' }}
 
       - name: 上传产物
         id: binary-artifact
