@@ -99,17 +99,13 @@ jobs:
         shell: pwsh
         if: steps.restore-cert.conclusion == 'success'
         env:
+          CERTIFICATE_PATH: ${{ steps.restore-cert.outputs.CERTIFICATE_PATH }}
           CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
+          CERTIFICATE_SUBJECT: ${{ steps.restore-cert.outputs.CERTIFICATE_SUBJECT }}
+          MSIX_VERSION: ${{ steps.gitversion.outputs.assemblySemVer }}
         run: |-
-          dart run msix:create `
-            --certificate-path '${{ steps.restore-cert.outputs.CERTIFICATE_PATH }}' `
-            --certificate-password $env:CERTIFICATE_PASSWORD `
-            --build-windows false `
-            --version '${{ steps.gitversion.outputs.assemblySemVer }}' `
-            --publisher '${{ steps.restore-cert.outputs.CERTIFICATE_SUBJECT }}'
-          Move-Item `
-            -LiteralPath build/windows/x64/runner/Release/pixez.msix `
-            -Destination build/windows/x64/runner/Release/windows-x86_64-release.msix
+          dart run create_msix.dart
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: 上传 MSIX
         id: msix-artifact
