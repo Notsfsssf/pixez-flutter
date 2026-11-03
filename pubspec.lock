@@ -2112,6 +2112,62 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.1"
+  webview_all:
+    dependency: "direct main"
+    description:
+      name: webview_all
+      sha256: e9136289b9392ba4e27daae1507b2624d7f18b8a2a17b5e9a6a4f09c43e45429
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.11"
+  webview_all_android:
+    dependency: transitive
+    description:
+      name: webview_all_android
+      sha256: "2e62f31bef9718b46f9e31fe7d2d874b6d6c23f4be66c8e6c8a3a42cff27b66c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.11"
+  webview_all_linux:
+    dependency: "direct main"
+    description:
+      name: webview_all_linux
+      sha256: c427c5ef8039fac436cafc6b9f02a9de744bfad64e2ed709b5f9e134bee46842
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.11"
+  webview_all_ohos:
+    dependency: transitive
+    description:
+      name: webview_all_ohos
+      sha256: "5d368400d4ede48a126eea1debd156cd5004ce2c7ff5f9b314487dff91c747ee"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.11"
+  webview_all_web:
+    dependency: transitive
+    description:
+      name: webview_all_web
+      sha256: "3d5fb0bccd567630b1019a0e5380db14112b96dbe3c682aa9fc0c9d7182ebdde"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.11"
+  webview_all_windows:
+    dependency: "direct main"
+    description:
+      name: webview_all_windows
+      sha256: "6d28ec465bd8c67083b34bbece410f31708712bf15105abefda0f6524a190ef6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.11"
+  webview_all_wkwebview:
+    dependency: transitive
+    description:
+      name: webview_all_wkwebview
+      sha256: b4e5bfb3de72e4eda7a38648a338682dac4a522a5b74fa3187d72d41dcb8b063
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.11"
   webview_flutter:
     dependency: "direct main"
     description:
@@ -2144,6 +2200,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.27.2"
+  webview_platform_interface:
+    dependency: transitive
+    description:
+      name: webview_platform_interface
+      sha256: "7a781f85ec173e2f1df94f90b4b9a3480176e5027e808557edac795ab56c6b40"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.11"
   win32:
     dependency: transitive
     description:

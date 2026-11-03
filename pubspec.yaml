@@ -77,6 +77,9 @@ dependencies:
   hooks_riverpod: ^3.0.3
   flutter_hooks: ^0.21.3+1
   webview_flutter: ^4.14.1
+  webview_all: ^1.4.11
+  webview_all_linux: ^1.4.11
+  webview_all_windows: ^1.4.11
   # sqlite3: 3.1.6
   sqflite_common_ffi: ^2.4.2+1
   material_ui: ^1.7.0
