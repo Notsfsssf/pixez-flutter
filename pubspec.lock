@@ -2116,10 +2116,10 @@ packages:
     dependency: "direct main"
     description:
       name: webview_all_linux
-      sha256: "7330af208db409d1c240ff08a4c7df647a204db536a4415a33b36f7b722acec9"
+      sha256: be506cbf90a140d54e0ccde4e43d5f0795309242fd85ba3cc7564382087e443c
       url: "https://pub.dev"
     source: hosted
-    version: "1.4.4"
+    version: "1.4.9"
   webview_flutter:
     dependency: "direct main"
     description:
@@ -2156,10 +2156,10 @@ packages:
     dependency: transitive
     description:
       name: webview_platform_interface
-      sha256: c214c5b44d26a590c8b7192eb9e9cd8142590a17a85a2a32d3d6445caa0f937d
+      sha256: "1972aec36e718faa216df014917bf760bf18eb5bad8e73a73833345836da64b6"
       url: "https://pub.dev"
     source: hosted
-    version: "1.4.4"
+    version: "1.4.9"
   win32:
     dependency: transitive
     description:
