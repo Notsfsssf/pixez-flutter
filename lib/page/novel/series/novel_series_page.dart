@@ -14,6 +14,8 @@ import 'package:pixez/page/novel/new/novel_watch_list_notifier.dart';
 import 'package:pixez/page/novel/user/novel_users_page.dart';
 import 'package:pixez/page/novel/viewer/novel_store.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
+import 'package:pixez/page/novel/component/novel_long_press_save.dart';
+import 'package:pixez/utils/novel_series_download.dart';
 import 'package:share_plus/share_plus.dart';
 
 final novelSeriesProvider =
@@ -138,6 +140,17 @@ class NovelSeriesPage extends HookConsumerWidget {
           ]
         ]),
         actions: [
+          IconButton(
+            tooltip: "下载整个系列",
+            onPressed: data == null
+                ? null
+                : () => NovelSeriesDownload.start(
+                      context,
+                      seriesId: id,
+                      seriesTitle: data.novelSeriesDetail.title,
+                    ),
+            icon: Icon(Icons.download),
+          ),
           Builder(builder: (context) {
             return IconButton(
                 onPressed: () {
@@ -293,6 +306,11 @@ class NovelSeriesPage extends HookConsumerWidget {
                         )));
             refreshState.value = refreshState.value + 1;
           },
+          onLongPress: () => novelLongPressSave(
+            context,
+            id: novel.id,
+            title: novel.title,
+          ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -19,6 +19,7 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 import 'package:pixez/utils/haptic_util.dart';
+import 'package:pixez/page/novel/component/novel_long_press_save.dart';
 
 class NovelHistory extends StatefulWidget {
   @override
@@ -81,6 +82,11 @@ class _NovelHistoryState extends State<NovelHistory> {
                       HapticUtil.selectionClick();
                       Leader.push(context, NovelViewerPage(id: novel.novelId));
                     },
+                    onLongPress: () => novelLongPressSave(
+                      context,
+                      id: novel.novelId,
+                      title: novel.title,
+                    ),
                     trailing: IconButton(
                         icon: Icon(Icons.delete),
                         onPressed: () {

@@ -42,6 +42,7 @@ import 'package:pixez/page/novel/user/novel_users_page.dart';
 import 'package:pixez/page/novel/viewer/image_text.dart';
 import 'package:pixez/page/novel/viewer/novel_store.dart';
 import 'package:pixez/saf_plugin.dart';
+import 'package:pixez/utils/novel_save_target.dart';
 import 'package:pixez/supportor_plugin.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path/path.dart' as Path;
@@ -228,6 +229,22 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
             _novelStore.positionBooked ? 225 : 120,
           ),
         ),
+        if (Platform.isAndroid)
+          GestureDetector(
+            onLongPress: () {
+              _export();
+            },
+            child: IconButton(
+              tooltip: "一键保存到 Download/PixEz（长按另存为）",
+              onPressed: () {
+                _quickExport(context);
+              },
+              icon: Icon(
+                Icons.download_rounded,
+                color: Theme.of(context).textTheme.bodyLarge!.color,
+              ),
+            ),
+          ),
         Builder(
           builder: (context) {
             return IconButton(
@@ -708,6 +725,33 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
             }
           : null,
     );
+  }
+
+  Future<void> _quickExport(BuildContext context) async {
+    final response = _novelStore.novelTextResponse;
+    if (response == null) return;
+    if (response.text.trim().isEmpty) {
+      BotToast.showText(text: "正文为空，无法保存");
+      return;
+    }
+    final title = (_novelStore.novel?.title ?? "novel_${widget.id}")
+        .trim()
+        .toLegal();
+    final savedPath = await NovelSaveTarget.save(
+      "$title.txt",
+      "text/plain",
+      response.text,
+    );
+    if (savedPath != null && savedPath.isNotEmpty) {
+      BotToast.showText(text: "已保存：$savedPath");
+      return;
+    }
+    // 直接写入失败时回退到系统「另存为」（Android SAF / iOS 文档目录）
+    if (Platform.isAndroid || Platform.isIOS) {
+      _export();
+    } else {
+      BotToast.showText(text: "保存失败，请检查保存位置是否可写");
+    }
   }
 
   void _export() async {

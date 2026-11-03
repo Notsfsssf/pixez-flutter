@@ -38,6 +38,7 @@ import 'package:pixez/page/hello/setting/data_export_page.dart';
 import 'package:pixez/page/hello/setting/setting_quality_page.dart';
 import 'package:pixez/page/history/history_page.dart';
 import 'package:pixez/page/login/login_page.dart';
+import 'package:pixez/page/hello/setting/novel_save_location_tile.dart';
 import 'package:pixez/page/novel/history/novel_history_page.dart';
 import 'package:pixez/page/novel/novel_rail.dart';
 import 'package:pixez/page/shield/shield_page.dart';
@@ -251,6 +252,7 @@ class _SettingPageState extends State<SettingPage> {
                 Divider(),
                 Column(
                   children: <Widget>[
+                    NovelSaveLocationTile(),
                     ListTile(
                       leading: Icon(Icons.library_books),
                       title: Text(I18n.of(context).manga),

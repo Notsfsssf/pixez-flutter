@@ -24,6 +24,7 @@ import 'package:pixez/models/novel_recom_response.dart';
 import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
 import 'package:pixez/page/novel/component/novel_lighting_store.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
+import 'package:pixez/page/novel/component/novel_long_press_save.dart';
 import 'package:pixez/page/user/works/works_page.dart';
 import 'package:pixez/exts.dart';
 
@@ -113,6 +114,11 @@ class _NovelUserWorkPageState extends State<NovelUserWorkPage> {
                       novelStore: _store.novels[index],
                     )));
           },
+          onLongPress: () => novelLongPressSave(
+            context,
+            id: novel.id,
+            title: novel.title,
+          ),
           child: Card(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
