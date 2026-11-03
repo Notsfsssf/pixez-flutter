@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
@@ -105,8 +103,6 @@ class _NavigationFrameworkState extends State<NavigationFramework>
       autofocus: true,
       child: Listener(
         child: NavigationView(
-          // Native GTK WebViews cannot be displayed inside Flutter ClipPaths.
-          clipBehavior: Platform.isLinux ? Clip.none : Clip.antiAlias,
           titleBar: TitleBar(
             title:
                 _navigatorKey.currentState?.currentTitle ?? widget.defaultTitle,
