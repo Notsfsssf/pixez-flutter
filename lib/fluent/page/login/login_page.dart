@@ -174,7 +174,6 @@ class _LoginPageState extends State<LoginPage> {
         icon: const Icon(FluentIcons.signin),
         title: Text(I18n.of(context).login),
         forceSkipWrap: true,
-        animated: false,
       );
       final resultUri = result is String ? result : null;
       if (resultUri != null && resultUri.isNotEmpty && mounted) {
