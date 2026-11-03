@@ -14,14 +14,11 @@
  *
  */
 
-import 'dart:io';
-
 import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:pixez/custom_tab_plugin.dart';
-import 'package:pixez/er/fluent_leader.dart';
 import 'package:pixez/er/leader.dart';
-import 'package:pixez/fluent/page/login/linux_login_page.dart';
+import 'package:pixez/fluent/component/desktop_route_auto_dispose.dart';
 import 'package:pixez/fluent/page/login/token_page.dart';
 import 'package:pixez/fluent/page/webview/webview_page.dart';
 import 'package:pixez/i18n.dart';
@@ -168,32 +165,14 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _launch(url) async {
-    if (Platform.isLinux) {
-      final result = await FluentLeader.push(
-        context,
-        LinuxLoginPage(url: url),
-        icon: const Icon(FluentIcons.signin),
-        title: Text(I18n.of(context).login),
-        forceSkipWrap: true,
-        animated: false, // 加载动画会导致错位，禁用
-      );
-      final resultUri = result is String ? result : null;
-      if (resultUri != null && resultUri.isNotEmpty && mounted) {
-        final parsedUri = Uri.tryParse(resultUri);
-        if (parsedUri != null) {
-          await Leader.pushWithUri(context, parsedUri);
-        }
-      }
-      return;
-    }
     if (userSetting.oauthNetworkMode.usesCompatibleConnection) {
       // await WeissServer.listener();
       // await WeissPlugin.start();
       // await WeissPlugin.proxy();
       Leader.push(
         context,
-        WebViewPage(url: url),
-        icon: Icon(FluentIcons.signin),
+        DesktopRouteAutoDispose(child: WebViewPage(url: url)),
+        icon: const Icon(FluentIcons.signin),
         title: Text(I18n.of(context).login),
       );
     } else {
