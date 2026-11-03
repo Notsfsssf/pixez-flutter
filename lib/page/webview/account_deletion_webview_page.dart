@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:pixez/utils/webview.dart';
 import 'package:pixez/i18n.dart';
 
 class AccountDeletionPage extends StatefulWidget {
@@ -15,9 +15,20 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
   @override
   void initState() {
     super.initState();
-    _controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..loadRequest(Uri.parse("https://www.pixiv.net/leave_pixiv.php"));
+    _controller = WebViewController();
+    initializeWebViewController(
+      _controller,
+      isActive: () => mounted,
+      load: () => _controller.loadRequest(
+        Uri.parse("https://www.pixiv.net/leave_pixiv.php"),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    disposeWebViewController(_controller);
+    super.dispose();
   }
 
   @override
