@@ -103,28 +103,7 @@ class _NavigationFrameworkState extends State<NavigationFramework>
       autofocus: true,
       child: Listener(
         child: NavigationView(
-          titleBar: TitleBar(
-            title:
-                _navigatorKey.currentState?.currentTitle ?? widget.defaultTitle,
-            onDragStarted: () => windowManager.startDragging(),
-            onDoubleTap: () async {
-              bool isMaximized = await windowManager.isMaximized();
-              if (!isMaximized) {
-                windowManager.maximize();
-              } else {
-                windowManager.unmaximize();
-              }
-            },
-            onBackRequested: _onGoBackPress,
-            isBackButtonEnabled: _navigatorKey.currentState?.canGoBack ?? false,
-            captionControls: SizedBox(
-              width: 138,
-              child: WindowCaption(
-                brightness: FluentTheme.of(context).brightness,
-                backgroundColor: Colors.transparent,
-              ),
-            ),
-          ),
+          titleBar: Builder(builder: _buildTitleBar),
           pane: NavigationPane(
             displayMode: widget.displayMode,
             header: widget.header,
@@ -165,6 +144,54 @@ class _NavigationFrameworkState extends State<NavigationFramework>
         onPointerDown: _onPointerDown,
       ),
       onKeyEvent: _onKeyEvent,
+    );
+  }
+
+  Widget _buildTitleBar(BuildContext context) {
+    const captionWidth = 138.0;
+    final view = NavigationView.dataOf(context);
+    final navigationButtonWidth =
+        view.pane?.size?.compactWidth ?? kCompactNavigationPaneWidth;
+    final navigationControlsWidth =
+        navigationButtonWidth *
+        (view.toggleButtonPosition == PaneToggleButtonPosition.titleBar
+            ? 2
+            : 1);
+
+    return Stack(
+      children: [
+        TitleBar(
+          title:
+              _navigatorKey.currentState?.currentTitle ?? widget.defaultTitle,
+          onBackRequested: _onGoBackPress,
+          isBackButtonEnabled: _navigatorKey.currentState?.canGoBack ?? false,
+          captionControls: SizedBox(
+            width: captionWidth,
+            child: WindowCaption(
+              brightness: FluentTheme.of(context).brightness,
+              backgroundColor: Colors.transparent,
+            ),
+          ),
+        ),
+        // Restrict window gestures to the title area between the buttons.
+        PositionedDirectional(
+          top: 0,
+          bottom: 0,
+          start: navigationControlsWidth,
+          end: captionWidth,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onPanStart: (_) => windowManager.startDragging(),
+            onDoubleTap: () async {
+              if (await windowManager.isMaximized()) {
+                await windowManager.unmaximize();
+              } else {
+                await windowManager.maximize();
+              }
+            },
+          ),
+        ),
+      ],
     );
   }
 
