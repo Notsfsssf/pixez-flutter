@@ -11,8 +11,8 @@ jobs:
     runs-on: windows-2022
     outputs:
       binary-artifact: ${{ steps.binary-artifact.outputs.artifact-url }}
-      msix-conclusion: ${{ steps.msix.conclusion }}
-      installer-conclusion: ${{ steps.installer.conclusion }}
+      msix-conclusion: ${{ steps.msix-artifact.conclusion }}
+      installer-conclusion: ${{ steps.installer-artifact.conclusion }}
     steps:
       - name: 签出仓库
         uses: actions/checkout@v7
@@ -55,7 +55,7 @@ jobs:
             --release `
             --no-pub `
             --build-name=${{ steps.gitversion.outputs.majorMinorPatch }} `
-            --build-number=${{ steps.gitversion.outputs.buildMetaData }}
+            --build-number=${{ steps.gitversion.outputs.buildMetaData || '0' }}
 
       - name: 上传产物
         id: binary-artifact
@@ -63,6 +63,7 @@ jobs:
         with:
           name: windows-x86_64-release
           path: build/windows/x64/runner/Release/**/*
+          if-no-files-found: error
           compression-level: 9
 
       - name: 还原证书
@@ -99,17 +100,13 @@ jobs:
         shell: pwsh
         if: steps.restore-cert.conclusion == 'success'
         env:
+          CERTIFICATE_PATH: ${{ steps.restore-cert.outputs.CERTIFICATE_PATH }}
           CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
+          CERTIFICATE_SUBJECT: ${{ steps.restore-cert.outputs.CERTIFICATE_SUBJECT }}
+          MSIX_VERSION: ${{ steps.gitversion.outputs.assemblySemVer }}
         run: |-
-          dart run msix:create `
-            --certificate-path '${{ steps.restore-cert.outputs.CERTIFICATE_PATH }}' `
-            --certificate-password $env:CERTIFICATE_PASSWORD `
-            --build-windows false `
-            --version '${{ steps.gitversion.outputs.assemblySemVer }}' `
-            --publisher '${{ steps.restore-cert.outputs.CERTIFICATE_SUBJECT }}'
-          Move-Item `
-            -LiteralPath build/windows/x64/runner/Release/pixez.msix `
-            -Destination build/windows/x64/runner/Release/windows-x86_64-release.msix
+          dart run create_msix.dart
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: 上传 MSIX
         id: msix-artifact
@@ -118,6 +115,7 @@ jobs:
         with:
           name: windows-x86_64-release.msix
           path: build/windows/x64/runner/Release/windows-x86_64-release.msix
+          if-no-files-found: error
           compression-level: 9
 
       - name: 生成 MSIX 安装器
@@ -135,12 +133,16 @@ jobs:
         with:
           name: windows-x86_64-release.msix.exe
           path: ${{ steps.installer.outputs.path }}
+          if-no-files-found: error
           compression-level: 9
 
       - name: 生成校验和
+        if: ${{ !cancelled() && steps.binary-artifact.conclusion == 'success' }}
+        env:
+          CERTIFICATE_SUBJECT: ${{ steps.restore-cert.outputs.CERTIFICATE_SUBJECT }}
         shell: pwsh
         run: |-
-          Write-Output '### Build Success :rocket:' >> $env:GITHUB_STEP_SUMMARY
+          Write-Output '### Windows 构建产物' >> $env:GITHUB_STEP_SUMMARY
 
           if ($env:CERTIFICATE_SUBJECT) {
             Write-Output "Publisher: $env:CERTIFICATE_SUBJECT" >> $env:GITHUB_STEP_SUMMARY  
@@ -158,14 +160,16 @@ jobs:
             Write-Output "|[installer](${{ steps.installer-artifact.outputs.artifact-url }})|${{ steps.installer-artifact.outputs.artifact-digest }}|" >> $env:GITHUB_STEP_SUMMARY  
           }
 
-          Write-Output '' >> $env:GITHUB_STEP_SUMMARY
-          Write-Output '### MSIX 安装教程' >> $env:GITHUB_STEP_SUMMARY
-          Write-Output '![image](https://github.com/Notsfsssf/pixez-flutter/assets/42184238/f1956682-f527-487d-997b-523319cd78d3)' >> $env:GITHUB_STEP_SUMMARY
+          if ('${{ steps.msix-artifact.conclusion }}' -eq 'success') {
+            Write-Output '' >> $env:GITHUB_STEP_SUMMARY
+            Write-Output '### MSIX 安装教程' >> $env:GITHUB_STEP_SUMMARY
+            Write-Output '![image](https://github.com/Notsfsssf/pixez-flutter/assets/42184238/f1956682-f527-487d-997b-523319cd78d3)' >> $env:GITHUB_STEP_SUMMARY
+          }
 
   publish:
     needs: build
     name: 发布
-    if: startsWith(github.ref, 'refs/tags/')
+    if: ${{ !cancelled() && startsWith(github.ref, 'refs/tags/') && needs.build.outputs.binary-artifact != '' }}
     permissions:
       contents: write
       discussions: write
@@ -175,7 +179,6 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Download Loose Artifact
-        if: needs.build.outputs.msix-conclusion == 'success'
         uses: actions/download-artifact@v8
         with:
           name: windows-x86_64-release
