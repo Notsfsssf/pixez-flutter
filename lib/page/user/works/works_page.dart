@@ -37,13 +37,17 @@ class WorksPage extends StatefulWidget {
   final String workType;
   final ValueChanged<String> onWorkTypeChange;
 
+  /// Opens the user's novels; the button is hidden when null.
+  final VoidCallback? onNovelTap;
+
   const WorksPage(
       {Key? key,
       required this.id,
       required this.store,
       required this.portal,
       required this.workType,
-      required this.onWorkTypeChange})
+      required this.onWorkTypeChange,
+      this.onNovelTap})
       : super(key: key);
 
   @override
@@ -157,10 +161,26 @@ class _WorksPageState extends State<WorksPage> {
                             delegate: SliverChipDelegate(
                                 Container(
                                   child: Center(
-                                    child: _buildSortChip(),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        _buildSortChip(),
+                                        if (widget.onNovelTap != null)
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 8),
+                                            child: OutlinedButton(
+                                              onPressed: widget.onNovelTap,
+                                              child: Text(
+                                                  I18n.of(context).novel),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                                height: 52),
+                                height: 52,
+                                rebuildKey: widget.onNovelTap != null),
                             pinned: true),
                         if (_store.refreshing && _store.iStores.isEmpty)
                           SliverToBoxAdapter(
@@ -333,8 +353,10 @@ class RenderSliverPinnedOverlapInjector extends RenderSliver {
 class SliverChipDelegate extends SliverPersistentHeaderDelegate {
   final Widget child;
   double height = 45;
+  // The header only rebuilds when this value changes.
+  final Object? rebuildKey;
 
-  SliverChipDelegate(this.child, {this.height = 45});
+  SliverChipDelegate(this.child, {this.height = 45, this.rebuildKey});
 
   @override
   double get minExtent => height;
@@ -350,6 +372,6 @@ class SliverChipDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(SliverChipDelegate oldDelegate) {
-    return false;
+    return oldDelegate.rebuildKey != rebuildKey;
   }
 }
