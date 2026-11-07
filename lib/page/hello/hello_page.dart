@@ -15,10 +15,10 @@
  */
 
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/component/floating_glass_nav_bar.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/deep_link_plugin.dart';
@@ -122,7 +122,7 @@ class _HelloPageState extends State<HelloPage> {
   @override
   Widget build(BuildContext context) {
     if (bottomNavigatorHeight == null) {
-      bottomNavigatorHeight = MediaQuery.of(context).padding.bottom + 80;
+      bottomNavigatorHeight = FloatingGlassNavBar.occupiedHeight(context);
     }
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -232,49 +232,48 @@ class _HelloPageState extends State<HelloPage> {
   }
 
   Widget _buildNavigationBar(BuildContext context) {
-    return ClipRRect(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: NavigationBar(
-          height: 68,
-          backgroundColor: Theme.of(
-            context,
-          ).colorScheme.surface.withValues(alpha: 0.9),
-          destinations: [
-            NavigationDestination(
-              icon: Icon(Icons.home),
-              label: I18n.of(context).home,
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.leaderboard),
-              label: I18n.of(context).rank,
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.favorite),
-              label: I18n.of(context).quick_view,
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.search),
-              label: I18n.of(context).search,
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.more_horiz),
-              label: I18n.of(context).more,
-            ),
-          ],
-          selectedIndex: index,
-          onDestinationSelected: (value) {
-            HapticUtil.selectionClick();
-            if (this.index == value) {
-              topStore.setTop("${value + 1}00");
-            }
-            setState(() {
-              this.index = value;
-            });
-            if (_pageController.hasClients) _pageController.jumpToPage(value);
-          },
+    return FloatingGlassNavBar(
+      currentIndex: index,
+      destinations: [
+        GlassNavDestination(
+          icon: Icons.home_outlined,
+          activeIcon: Icons.home,
+          label: I18n.of(context).home,
         ),
-      ),
+        GlassNavDestination(
+          icon: Icons.leaderboard_outlined,
+          activeIcon: Icons.leaderboard,
+          label: I18n.of(context).rank,
+        ),
+        GlassNavDestination(
+          icon: Icons.favorite_border,
+          activeIcon: Icons.favorite,
+          label: I18n.of(context).quick_view,
+        ),
+        GlassNavDestination(
+          icon: Icons.search_outlined,
+          activeIcon: Icons.search,
+          label: I18n.of(context).search,
+        ),
+        GlassNavDestination(
+          icon: Icons.more_horiz_outlined,
+          activeIcon: Icons.more_horiz,
+          label: I18n.of(context).more,
+        ),
+      ],
+      onDestinationSelected: (value) {
+        HapticUtil.selectionClick();
+        if (this.index == value) {
+          // 再点一次当前标签：回到顶部。
+          topStore.setTop("${value + 1}00");
+        }
+        if (this.index != value) {
+          setState(() {
+            this.index = value;
+          });
+        }
+        if (_pageController.hasClients) _pageController.jumpToPage(value);
+      },
     );
   }
 
