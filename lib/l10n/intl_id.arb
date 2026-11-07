@@ -228,6 +228,7 @@
   },
   "save_painter_avatar": "Simpan avatar pelukis",
   "favorited_tag": "Tag favorit",
+  "favorited_tag_empty_hint": "Belum ada tag favorit. Tekan lama sebuah tag di halaman detail karya, lalu pilih \"Koleksi\" untuk menambahkannya.",
   "legacy_mode_warning": "Mode lawas tidak tersedia sejak Android versi 9",
   "clear_old_format_file": "Hapus file format lama",
   "clear_old_format_file_message": "Menghapus gambar tanpa format p0 saat menyimpan.",

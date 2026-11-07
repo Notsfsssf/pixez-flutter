@@ -228,6 +228,7 @@
   },
   "save_painter_avatar": "Profilbild des Nutzers speichern",
   "favorited_tag": "Favorisierte Tags",
+  "favorited_tag_empty_hint": "Noch keine favorisierten Tags. Halte auf der Detailseite eines Werks einen Tag gedrückt und wähle „Favoriten“, um ihn hinzuzufügen.",
   "legacy_mode_warning": "Der Legacy-Modus ist seit Android 9 nicht mehr verfügbar",
   "clear_old_format_file": "Dateien im alten Format löschen",
   "clear_old_format_file_message": "Ohne _p0",

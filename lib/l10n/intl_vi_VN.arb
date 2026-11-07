@@ -228,6 +228,7 @@
   },
   "save_painter_avatar": "Lưu ảnh dại diện của người dùng",
   "favorited_tag": "Tags yêu thích",
+  "favorited_tag_empty_hint": "Chưa có tag yêu thích. Nhấn giữ một tag trong trang chi tiết tác phẩm và chọn \"Dấu trang\" để thêm.",
   "legacy_mode_warning": "Legacy mode không còn hoạt động kể từ Android 9",
   "clear_old_format_file": "Dọn dẹp tệp tin dịnh dạng cũ",
   "clear_old_format_file_message": "Trừ _p0",
