@@ -63,7 +63,15 @@ class _UserDetailPageState extends State<UserDetailPage> {
                 children: [
                   TableRow(children: [
                     Text(I18n.of(context).nickname),
-                    Text(detail.user.name, textAlign: TextAlign.center)
+                    HyperlinkButton(
+                        child: Text(detail.user.name),
+                        onPressed: () {
+                          try {
+                            Clipboard.setData(
+                              ClipboardData(text: detail.user.name),
+                            );
+                          } catch (e) {}
+                        }),
                   ]),
                   TableRow(children: [
                     Text(I18n.of(context).painter_id),
