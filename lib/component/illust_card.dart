@@ -33,6 +33,7 @@ import 'package:pixez/page/picture/illust_lighting_page.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 import 'package:pixez/page/picture/picture_list_page.dart';
 import 'package:pixez/page/picture/tag_for_illust_page.dart';
+import 'package:pixez/page/picture/ugoira_store.dart';
 import 'package:pixez/page/series/illust_series_page.dart';
 import 'package:pixez/utils/haptic_util.dart';
 
@@ -129,7 +130,14 @@ class _IllustCardState extends State<IllustCard> {
         return;
       }
     }
-    saveStore.saveImage(store.illusts!);
+    final illusts = store.illusts!;
+    // The GIF encoder channel is only implemented on Android and iOS.
+    if (illusts.type == "ugoira" && (Platform.isAndroid || Platform.isIOS)) {
+      BotToast.showText(text: I18n.of(context).encode_message);
+      UgoiraStore(illusts.id).downloadAndEncodeGif(illusts);
+    } else {
+      saveStore.saveImage(illusts);
+    }
     if (userSetting.starAfterSave && (store.state == 0)) {
       bool success = await store.star(
         restrict: userSetting.defaultPrivateLike ? "private" : "public",
