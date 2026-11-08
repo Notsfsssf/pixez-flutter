@@ -15,6 +15,7 @@
 import 'dart:io';
 
 import 'package:material_ui/material_ui.dart';
+import 'package:pixez/component/floating_glass_nav_bar.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -82,6 +83,7 @@ class _NovelRailState extends State<NovelRail> {
           _preTime != null &&
               DateTime.now().difference(_preTime!) <= Duration(seconds: 2),
       child: Scaffold(
+        extendBody: true,
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -107,32 +109,47 @@ class _NovelRailState extends State<NovelRail> {
     );
   }
 
-  NavigationBar _buildNavigationBar(BuildContext context) {
-    return NavigationBar(
+  Widget _buildNavigationBar(BuildContext context) {
+    return FloatingGlassNavBar(
+      currentIndex: selectedIndex,
       destinations: [
-        NavigationDestination(
-            icon: Icon(Icons.home), label: I18n.of(context).home),
-        NavigationDestination(
-            icon: Icon(
-              Icons.leaderboard,
-            ),
-            label: I18n.of(context).rank),
-        NavigationDestination(
-            icon: Icon(Icons.favorite), label: I18n.of(context).news),
-        NavigationDestination(
-            icon: Icon(Icons.search), label: I18n.of(context).search),
-        NavigationDestination(
-            icon: Icon(Icons.settings), label: I18n.of(context).setting)
+        GlassNavDestination(
+          icon: Icons.home_outlined,
+          activeIcon: Icons.home,
+          label: I18n.of(context).home,
+        ),
+        GlassNavDestination(
+          icon: Icons.leaderboard_outlined,
+          activeIcon: Icons.leaderboard,
+          label: I18n.of(context).rank,
+        ),
+        GlassNavDestination(
+          icon: Icons.favorite_border,
+          activeIcon: Icons.favorite,
+          label: I18n.of(context).news,
+        ),
+        GlassNavDestination(
+          icon: Icons.search_outlined,
+          activeIcon: Icons.search,
+          label: I18n.of(context).search,
+        ),
+        GlassNavDestination(
+          icon: Icons.settings_outlined,
+          activeIcon: Icons.settings,
+          label: I18n.of(context).setting,
+        ),
       ],
-      selectedIndex: selectedIndex,
       onDestinationSelected: (index) {
         HapticUtil.selectionClick();
         if (this.selectedIndex == index) {
+          // 再点一次当前标签：回到顶部。
           topStore.setTop("${index + 1}00");
         }
-        setState(() {
-          this.selectedIndex = index;
-        });
+        if (this.selectedIndex != index) {
+          setState(() {
+            this.selectedIndex = index;
+          });
+        }
         if (_pageController.hasClients) _pageController.jumpToPage(index);
       },
     );

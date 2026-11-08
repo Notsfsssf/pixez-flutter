@@ -16,7 +16,6 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -24,6 +23,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:pixez/component/floating_glass_nav_bar.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/deep_link_plugin.dart';
@@ -78,7 +78,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
 
   Widget _buildScaffold(BuildContext context) {
     if (bottomNavigatorHeight == null) {
-      bottomNavigatorHeight = MediaQuery.of(context).padding.bottom + 80;
+      bottomNavigatorHeight = FloatingGlassNavBar.occupiedHeight(context);
     }
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -111,7 +111,7 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
             body: Row(
               children: [
                 if (wide) ..._buildRail(context),
-                Expanded(child: _buildPageView(context)),
+                Expanded(child: _buildPageView(context, wide)),
               ],
             ),
             extendBody: true,
@@ -138,12 +138,14 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
     );
   }
 
-  Widget _buildPageView(BuildContext context) {
+  Widget _buildPageView(BuildContext context, bool wide) {
     return Stack(
       children: [
         _buildPageContent(context),
         Positioned(
-          bottom: MediaQuery.of(context).padding.bottom + 16,
+          bottom: wide
+              ? MediaQuery.of(context).padding.bottom + 16
+              : FloatingGlassNavBar.occupiedHeight(context) + 12,
           right: 16,
           child: Observer(
             builder: (context) {
@@ -159,49 +161,48 @@ class _AndroidHelloPageState extends State<AndroidHelloPage> {
   }
 
   Widget _buildNavigationBar(BuildContext context) {
-    return ClipRRect(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: NavigationBar(
-          height: 68,
-          backgroundColor: Theme.of(
-            context,
-          ).colorScheme.surface.withValues(alpha: 0.9),
-          destinations: [
-            NavigationDestination(
-              icon: Icon(Icons.home),
-              label: I18n.of(context).home,
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.leaderboard),
-              label: I18n.of(context).rank,
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.favorite),
-              label: I18n.of(context).quick_view,
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.search),
-              label: I18n.of(context).search,
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.more_horiz),
-              label: I18n.of(context).more,
-            ),
-          ],
-          selectedIndex: index,
-          onDestinationSelected: (index) {
-            HapticUtil.selectionClick();
-            if (this.index == index) {
-              topStore.setTop("${index + 1}00");
-            }
-            setState(() {
-              this.index = index;
-            });
-            if (_pageController.hasClients) _pageController.jumpToPage(index);
-          },
+    return FloatingGlassNavBar(
+      currentIndex: index,
+      destinations: [
+        GlassNavDestination(
+          icon: Icons.home_outlined,
+          activeIcon: Icons.home,
+          label: I18n.of(context).home,
         ),
-      ),
+        GlassNavDestination(
+          icon: Icons.leaderboard_outlined,
+          activeIcon: Icons.leaderboard,
+          label: I18n.of(context).rank,
+        ),
+        GlassNavDestination(
+          icon: Icons.favorite_border,
+          activeIcon: Icons.favorite,
+          label: I18n.of(context).quick_view,
+        ),
+        GlassNavDestination(
+          icon: Icons.search_outlined,
+          activeIcon: Icons.search,
+          label: I18n.of(context).search,
+        ),
+        GlassNavDestination(
+          icon: Icons.more_horiz_outlined,
+          activeIcon: Icons.more_horiz,
+          label: I18n.of(context).more,
+        ),
+      ],
+      onDestinationSelected: (selected) {
+        HapticUtil.selectionClick();
+        if (this.index == selected) {
+          // 再点一次当前标签：回到顶部。
+          topStore.setTop("${selected + 1}00");
+        }
+        if (this.index != selected) {
+          setState(() {
+            this.index = selected;
+          });
+        }
+        if (_pageController.hasClients) _pageController.jumpToPage(selected);
+      },
     );
   }
 
