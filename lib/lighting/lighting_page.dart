@@ -86,6 +86,7 @@ class _LightingListState extends State<LightingList> {
   }
 
   _fetch() async {
+    _filteredAutoLoadCount = 0;
     await _store.fetch(force: true);
     if (!_isNested &&
         _store.errorMessage == null &&
@@ -135,7 +136,10 @@ class _LightingListState extends State<LightingList> {
 
   late EasyRefreshController _refreshController;
 
-  Widget _buildWithoutHeader(context) {
+  static const int _maxFilteredAutoLoad = 10;
+  int _filteredAutoLoadCount = 0;
+
+  void _removeFilteredItems() {
     _store.iStores.removeWhere((element) {
       if (element.illusts!.hateByUser(ai: _ai)) return true;
       if (widget.filter != null && !widget.filter!(element.illusts!)) {
@@ -143,6 +147,29 @@ class _LightingListState extends State<LightingList> {
       }
       return false;
     });
+    _loadMoreIfAllFiltered();
+  }
+
+  // When a filter removes every loaded item, the list is empty and can no
+  // longer trigger onLoad, so fetch the next page automatically (bounded).
+  void _loadMoreIfAllFiltered() {
+    if (widget.filter == null) return;
+    if (_store.iStores.isNotEmpty) {
+      _filteredAutoLoadCount = 0;
+      return;
+    }
+    if (_store.refreshing || _store.errorMessage != null) return;
+    final nextUrl = _store.nextUrl;
+    if (nextUrl == null || nextUrl.isEmpty) return;
+    if (_filteredAutoLoadCount >= _maxFilteredAutoLoad) return;
+    _filteredAutoLoadCount++;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _store.fetchNext();
+    });
+  }
+
+  Widget _buildWithoutHeader(context) {
+    _removeFilteredItems();
     return NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification notification) {
           if (widget.isNested == true) {
@@ -162,6 +189,7 @@ class _LightingListState extends State<LightingList> {
           footer: PixezDefault.footer(context),
           scrollController: _scrollController,
           onRefresh: () {
+            _filteredAutoLoadCount = 0;
             _store.fetch(force: true);
           },
           onLoad: () {
@@ -196,6 +224,7 @@ class _LightingListState extends State<LightingList> {
   }
 
   Widget _buildContent(context) {
+    if (_store.iStores.isEmpty) _loadMoreIfAllFiltered();
     return _store.errorMessage != null
         ? _buildErrorContent(context)
         : _store.iStores.isNotEmpty
@@ -264,6 +293,7 @@ class _LightingListState extends State<LightingList> {
         footer:
             PixezDefault.footer(context, position: IndicatorPosition.locator),
         onRefresh: () {
+          _filteredAutoLoadCount = 0;
           _store.fetch(force: true);
         },
         onLoad: () {
@@ -291,13 +321,7 @@ class _LightingListState extends State<LightingList> {
 
   SliverChildBuilderDelegate _buildSliverChildBuilderDelegate(
       BuildContext context) {
-    _store.iStores.removeWhere((element) {
-      if (element.illusts!.hateByUser(ai: _ai)) return true;
-      if (widget.filter != null && !widget.filter!(element.illusts!)) {
-        return true;
-      }
-      return false;
-    });
+    _removeFilteredItems();
     return SliverChildBuilderDelegate((BuildContext context, int index) {
       return IllustCard(
         lightingStore: _store,
