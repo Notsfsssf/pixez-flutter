@@ -17,6 +17,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:cupertino_ui/cupertino_ui.dart'
+    show CupertinoPageTransitionsBuilder;
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart' as legacy_material show ColorScheme;
 import 'package:material_ui/material_ui.dart';
@@ -236,6 +238,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   theme: ThemeData(
                     brightness: Brightness.light,
                     useMaterial3: true,
+                    pageTransitionsTheme: const PageTransitionsTheme(
+                      builders: {
+                        TargetPlatform.android: ZoomPageTransitionsBuilder(),
+                        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+                      },
+                    ),
                     primaryColor: lightColorScheme.primary,
                     colorScheme: lightColorScheme,
                     scaffoldBackgroundColor: lightColorScheme.surface,
@@ -251,6 +259,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   darkTheme: ThemeData(
                     brightness: Brightness.dark,
                     useMaterial3: true,
+                    pageTransitionsTheme: const PageTransitionsTheme(
+                      builders: {
+                        TargetPlatform.android: ZoomPageTransitionsBuilder(),
+                        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+                      },
+                    ),
                     scaffoldBackgroundColor: userSetting.isAMOLED
                         ? Colors.black
                         : null,
