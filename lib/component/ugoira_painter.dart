@@ -16,11 +16,11 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
+import 'dart:math' as math;
 import 'dart:ui' as ui;
 
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
-import 'package:pixez/main.dart';
 import 'package:pixez/models/ugoira_metadata_response.dart';
 
 class UgoiraWidget extends StatefulWidget {
@@ -29,309 +29,476 @@ class UgoiraWidget extends StatefulWidget {
   final Size size;
   final UgoiraMetadataResponse ugoiraMetadataResponse;
 
-  const UgoiraWidget(
-      {Key? key,
-      required this.drawPools,
-      required this.delay,
-      required this.size,
-      required this.ugoiraMetadataResponse})
-      : super(key: key);
+  const UgoiraWidget({
+    Key? key,
+    required this.drawPools,
+    required this.delay,
+    required this.size,
+    required this.ugoiraMetadataResponse,
+  }) : super(key: key);
 
   @override
   _UgoiraWidgetState createState() => _UgoiraWidgetState();
 }
 
-class _UgoiraWidgetState extends State<UgoiraWidget> with RouteAware {
-  static const int _allFrameLimit = 15;
-  static const int _streamWindowSize = 4;
+class _UgoiraWidgetState extends State<UgoiraWidget>
+    with SingleTickerProviderStateMixin {
+  /// Decoded RGBA bytes kept resident. Short loops stay fully decoded; longer
+  /// ones keep a forward window and dispose frames that fall behind it.
+  static const int _budgetBytes = 48 * 1024 * 1024;
+  static const int _minWindow = 4;
+  static const int _offstageWindow = 3;
 
-  int get _effectiveCacheSize {
-    final total = widget.drawPools.length;
-    return total <= _allFrameLimit ? total : _streamWindowSize;
-  }
+  /// A muted ticker does not fire, but its clock keeps running. The first
+  /// callback after a covered route or a backgrounded app is one long gap.
+  static const Duration _maxTickGap = Duration(milliseconds: 100);
 
-  final Map<int, ui.Image> _frameCache = <int, ui.Image>{};
-  final Map<int, Future<ui.Image?>> _loadingFutures = <int, Future<ui.Image?>>{};
+  late final Ticker _ticker;
 
-  int point = 0;
-  ui.Image? image;
-  bool _stopPainting = false;
+  List<File?> _files = const [];
+  List<int> _delays = const [];
+  List<ui.Image?> _images = const [];
+  List<bool> _failed = const [];
+  final Set<int> _decoding = <int>{};
+  final List<ui.Image> _pendingDispose = <ui.Image>[];
+
+  ui.Image? _shown;
+  int _count = 0;
+  int _index = 0;
+  int _intoFrameUs = 0;
+  int _limit = 0;
+  int _sampleBytes = 0;
+  int _targetWidth = 1;
+  int _appliedTargetWidth = -1;
+  int _generation = 0;
+  Duration? _lastElapsed;
+  bool _offstage = false;
+  bool _pumping = false;
+  bool _pumpAgain = false;
+  bool _retireScheduled = false;
   bool _disposed = false;
-  int _playSessionId = 0;
-  int _cacheEpoch = 0;
-  Timer? _timer;
-  final Stopwatch _stopwatch = Stopwatch();
-  int _expectedFrameTime = 0;
 
   @override
   void initState() {
     super.initState();
-    _startPlayback();
+    _ticker = createTicker(_onTick);
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    routeObserver.subscribe(this, ModalRoute.of(context)!);
-  }
-
-  @override
-  void didPopNext() {
-    super.didPopNext();
-    _startPlayback();
-  }
-
-  @override
-  void didPushNext() {
-    super.didPushNext();
-    _pausePlayback();
-    _trimCacheForBackground();
+    final offstage = !TickerMode.valuesOf(context).enabled;
+    final enteredStage = _offstage && !offstage;
+    _offstage = offstage;
+    final restarted = _syncTarget();
+    if (_offstage) {
+      _applyWindow();
+      if (!_windowReady()) _schedulePump();
+    } else if (enteredStage && !restarted) {
+      _schedulePump();
+    }
   }
 
   @override
   void didUpdateWidget(covariant UgoiraWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.drawPools != widget.drawPools) {
-      _pausePlayback();
-      _clearCache();
-      point = 0;
-      _startPlayback();
+    if (oldWidget.drawPools != widget.drawPools ||
+        oldWidget.ugoiraMetadataResponse != widget.ugoiraMetadataResponse ||
+        oldWidget.delay != widget.delay ||
+        oldWidget.size != widget.size) {
+      _syncTarget(force: true);
     }
   }
 
   @override
   void dispose() {
     _disposed = true;
-    routeObserver.unsubscribe(this);
-    _pausePlayback();
-    _clearCache();
+    _generation++;
+    _pumpAgain = false;
+    _stopTicker();
+    _ticker.dispose();
+    _disposeAllNow();
     super.dispose();
   }
 
-  int _getFrameDelay(int index) {
+  bool _syncTarget({bool force = false}) {
+    final target = _decodeTargetWidth();
+    if (!force && target == _appliedTargetWidth && _generation != 0) {
+      return false;
+    }
+    _appliedTargetWidth = target;
+    _targetWidth = target;
+    _restart();
+    return true;
+  }
+
+  int _decodeTargetWidth() {
+    final width = widget.size.width;
+    if (!width.isFinite || width <= 0) return 1;
+    final target = (width * View.of(context).devicePixelRatio).round();
+    if (target < 1) return 1;
+    if (target > 4096) return 4096;
+    return target;
+  }
+
+  void _restart() {
+    _generation++;
+    _decoding.clear();
+    _stopTicker();
+    _retireCachedImages();
+    _captureSources();
+    _index = 0;
+    _intoFrameUs = 0;
+    _lastElapsed = null;
+    _sampleBytes = 0;
+    _limit = math.min(_count, _minWindow);
+    if (_count == 0) {
+      _pumpAgain = false;
+      final shown = _shown;
+      if (shown != null) {
+        _shown = null;
+        _retireImage(shown);
+      }
+      return;
+    }
+    _schedulePump();
+  }
+
+  void _captureSources() {
+    final pools = widget.drawPools;
+    _count = pools.length;
+    _files = List<File?>.generate(pools.length, (index) {
+      final entity = pools[index];
+      return entity is File ? entity : null;
+    });
+    _delays = List<int>.generate(pools.length, _delayAt);
+    _images = List<ui.Image?>.filled(pools.length, null);
+    _failed = List<bool>.filled(pools.length, false);
+  }
+
+  int _delayAt(int index) {
     final frames = widget.ugoiraMetadataResponse.ugoiraMetadata.frames;
-    if (index >= 0 && index < frames.length) {
-      final d = frames[index].delay;
-      if (d > 0) return d;
+    if (index >= 0 && index < frames.length && frames[index].delay > 0) {
+      return frames[index].delay;
     }
-    return widget.delay > 0 ? widget.delay : 100;
+    if (widget.delay > 0) return widget.delay;
+    return 100;
   }
 
-  ui.Image? _getFromCache(int index) {
-    final img = _frameCache.remove(index);
-    if (img != null) {
-      _frameCache[index] = img;
-      return img;
-    }
-    return null;
+  int _limitFor(int count) {
+    if (count <= 0) return 0;
+    if (_sampleBytes <= 0) return math.min(count, _minWindow);
+    final affordable = _budgetBytes ~/ _sampleBytes;
+    final lower = math.min(_minWindow, count);
+    if (affordable < lower) return lower;
+    if (affordable > count) return count;
+    return affordable;
   }
 
-  void _putInCache(int index, ui.Image img) {
-    _frameCache.remove(index);
-    _frameCache[index] = img;
-    _evictIfNeeded();
+  int _span() {
+    if (_count == 0) return 0;
+    if (_offstage) return math.min(_offstageWindow, _count);
+    if (_limit < 1) return 1;
+    return _limit > _count ? _count : _limit;
   }
 
-  void _evictIfNeeded() {
-    final limit = _effectiveCacheSize;
-    if (_frameCache.length <= limit) return;
-
-    for (final idx in _frameCache.keys) {
-      if (_frameCache[idx] == image) continue;
-      final img = _frameCache.remove(idx);
-      img?.dispose();
-      break;
+  Set<int> _wantedIndices() {
+    final result = <int>{};
+    final span = _span();
+    for (var i = 0; i < span; i++) {
+      result.add((_index + i) % _count);
     }
+    return result;
   }
 
-  Future<ui.Image?> _getOrLoadFrame(int index) async {
-    final cached = _getFromCache(index);
-    if (cached != null) {
-      return cached;
-    }
-    if (_loadingFutures.containsKey(index)) {
-      return _loadingFutures[index];
-    }
-    if (index < 0 || index >= widget.drawPools.length) return null;
+  List<int> _orderedFromCurrent(Set<int> indices) {
+    final ordered = indices.toList();
+    ordered.sort((a, b) {
+      final da = (a - _index) % _count;
+      final db = (b - _index) % _count;
+      return da.compareTo(db);
+    });
+    return ordered;
+  }
 
-    final entity = widget.drawPools[index];
-    if (entity is! File) return null;
+  bool _alive(int generation) =>
+      mounted && !_disposed && generation == _generation;
 
-    final currentEpoch = _cacheEpoch;
-    final future = _decodeFile(entity);
-    _loadingFutures[index] = future;
+  void _schedulePump() {
+    if (_disposed || _count == 0) return;
+    _pumpAgain = true;
+    if (_pumping) return;
+    _pumping = true;
+    scheduleMicrotask(() async {
+      await _runPump();
+    });
+  }
 
+  Future<void> _runPump() async {
+    final generation = _generation;
     try {
-      final decodedImage = await future;
-      if (_disposed || currentEpoch != _cacheEpoch) {
-        decodedImage?.dispose();
-        return null;
+      while (_pumpAgain && _alive(generation)) {
+        _pumpAgain = false;
+        await _fillWindow(generation);
       }
-      if (decodedImage != null) {
-        _putInCache(index, decodedImage);
-      }
-      return decodedImage;
-    } catch (_) {
-      return null;
     } finally {
-      if (currentEpoch == _cacheEpoch) {
-        _loadingFutures.remove(index);
+      _pumping = false;
+    }
+    if (_pumpAgain && !_disposed && mounted) {
+      _schedulePump();
+    }
+  }
+
+  Future<void> _fillWindow(int generation) async {
+    if (!_alive(generation) || _count == 0) return;
+    final wanted = _wantedIndices();
+    _evictExcept(wanted);
+    for (final index in _orderedFromCurrent(wanted)) {
+      if (!_alive(generation)) return;
+      await _decodeInto(index, generation);
+    }
+    if (_alive(generation) && !_hasPendingOrReady()) _stopTicker();
+  }
+
+  bool _hasPendingOrReady() {
+    for (var i = 0; i < _count; i++) {
+      if (_images[i] != null || !_failed[i]) return true;
+    }
+    return false;
+  }
+
+  Future<void> _decodeInto(int index, int generation) async {
+    if (_images[index] != null || _failed[index] || _decoding.contains(index)) {
+      return;
+    }
+    final file = _files[index];
+    if (file == null) {
+      _failed[index] = true;
+      _showCurrentIfReady();
+      return;
+    }
+    _decoding.add(index);
+    ui.Image? image;
+    var stored = false;
+    try {
+      image = await _decodeFile(file);
+      if (!_alive(generation) || !_wantedIndices().contains(index)) return;
+      if (image == null) {
+        _failed[index] = true;
+        _showCurrentIfReady();
+        return;
       }
+      final existing = _images[index];
+      _images[index] = image;
+      stored = true;
+      if (existing != null) _retireImage(existing);
+      if (_sampleBytes == 0) {
+        _sampleBytes = image.width * image.height * 4;
+        final limit = _limitFor(_count);
+        if (limit != _limit) {
+          _limit = limit;
+          _pumpAgain = true;
+        }
+      }
+      _showCurrentIfReady();
+    } finally {
+      if (generation == _generation) _decoding.remove(index);
+      if (!stored) image?.dispose();
     }
   }
 
   Future<ui.Image?> _decodeFile(File file) async {
     try {
-      final Uint8List data = await file.readAsBytes();
-      return await decodeImageFromList(data);
+      final bytes = await file.readAsBytes();
+      if (bytes.isEmpty) return null;
+      final codec = await ui.instantiateImageCodec(
+        bytes,
+        targetWidth: _targetWidth,
+        allowUpscaling: false,
+      );
+      try {
+        final frame = await codec.getNextFrame();
+        return frame.image;
+      } finally {
+        codec.dispose();
+      }
     } catch (_) {
       return null;
     }
   }
 
-  void _prefetch(int index) {
-    if (_disposed || _stopPainting) return;
-    if (index < 0 || index >= widget.drawPools.length) return;
-    if (!_frameCache.containsKey(index) && !_loadingFutures.containsKey(index)) {
-      _getOrLoadFrame(index);
+  void _showCurrentIfReady() {
+    if (_count == 0) return;
+    final start = _index;
+    for (var hop = 0; hop < _count; hop++) {
+      final frame = _images[_index];
+      if (frame != null) {
+        _setShown(frame);
+        _ensureTicking();
+        if (_index != start) _schedulePump();
+        return;
+      }
+      if (!_failed[_index]) return;
+      _index = (_index + 1) % _count;
+      _intoFrameUs = 0;
+    }
+    _stopTicker();
+  }
+
+  void _ensureTicking() {
+    if (_disposed || _count <= 1 || _ticker.isActive) return;
+    _lastElapsed = null;
+    _ticker.start();
+  }
+
+  void _stopTicker() {
+    _lastElapsed = null;
+    if (_ticker.isActive) _ticker.stop();
+  }
+
+  void _onTick(Duration elapsed) {
+    if (_disposed || _count <= 1) return;
+    final last = _lastElapsed;
+    _lastElapsed = elapsed;
+    if (last == null) return;
+    final delta = elapsed - last;
+    if (delta <= Duration.zero || delta > _maxTickGap) return;
+    _advance(delta.inMicroseconds);
+  }
+
+  void _advance(int deltaUs) {
+    if (_count <= 1) return;
+    _intoFrameUs += deltaUs;
+    for (var hop = 0; hop <= _count; hop++) {
+      if (_failed[_index] && _images[_index] == null) {
+        _index = (_index + 1) % _count;
+        _intoFrameUs = 0;
+        continue;
+      }
+      final frame = _images[_index];
+      if (frame == null) {
+        _schedulePump();
+        return;
+      }
+      if (!identical(_shown, frame)) _setShown(frame);
+      final delayUs = _delays[_index] * 1000;
+      if (_intoFrameUs < delayUs) return;
+      final next = (_index + 1) % _count;
+      if (_images[next] == null && !_failed[next]) {
+        _intoFrameUs = delayUs;
+        _schedulePump();
+        return;
+      }
+      _intoFrameUs -= delayUs;
+      _index = next;
+      final nextFrame = _images[_index];
+      if (nextFrame != null) _setShown(nextFrame);
+      if (_limit < _count || _offstage) {
+        _applyWindow();
+        if (!_windowReady()) _schedulePump();
+      }
     }
   }
 
-  void _startPlayback() {
-    _stopPainting = false;
-    _timer?.cancel();
-    _timer = null;
-    _playSessionId++;
-    final session = _playSessionId;
-    _stopwatch.reset();
-    _stopwatch.start();
-    _expectedFrameTime = 0;
-    _tick(session);
-  }
-
-  void _pausePlayback() {
-    _stopPainting = true;
-    _playSessionId++;
-    _timer?.cancel();
-    _timer = null;
-    _stopwatch.stop();
-  }
-
-  void _clearCache() {
-    _cacheEpoch++;
-    _loadingFutures.clear();
-    final Set<ui.Image> allImages = {..._frameCache.values};
-    if (image != null) allImages.add(image!);
-    for (final img in allImages) {
-      img.dispose();
+  bool _windowReady() {
+    for (final index in _wantedIndices()) {
+      if (_images[index] == null && !_failed[index]) return false;
     }
-    _frameCache.clear();
-    image = null;
+    return true;
   }
 
-  void _trimCacheForBackground() {
-    final total = widget.drawPools.length;
-    if (total == 0) return;
+  void _applyWindow() {
+    if (_count == 0) return;
+    _evictExcept(_wantedIndices());
+  }
 
-    // 保留恢复播放时最先需要的 3 帧缓冲，以及当前屏幕上展示的静止帧 image
-    final keepIndices = <int>{
-      point % total,
-      (point + 1) % total,
-      (point + 2) % total,
+  void _evictExcept(Set<int> keep) {
+    for (var i = 0; i < _images.length; i++) {
+      if (keep.contains(i)) continue;
+      final image = _images[i];
+      if (image == null) continue;
+      _images[i] = null;
+      _retireImage(image);
+    }
+  }
+
+  void _setShown(ui.Image image) {
+    if (identical(_shown, image)) return;
+    final previous = _shown;
+    _shown = image;
+    if (previous != null && !_images.contains(previous)) {
+      _retireImage(previous);
+    }
+    if (mounted) setState(() {});
+  }
+
+  void _retireImage(ui.Image image) {
+    if (identical(image, _shown)) return;
+    _pendingDispose.add(image);
+    _scheduleRetire();
+  }
+
+  void _retireCachedImages() {
+    for (final image in _images) {
+      if (image != null && !identical(image, _shown)) {
+        _pendingDispose.add(image);
+      }
+    }
+    _images = const [];
+    _scheduleRetire();
+  }
+
+  void _scheduleRetire() {
+    if (_retireScheduled || _pendingDispose.isEmpty || _disposed) return;
+    _retireScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) => _flushRetired());
+  }
+
+  void _flushRetired() {
+    _retireScheduled = false;
+    if (_disposed) return;
+    final batch = List<ui.Image>.of(_pendingDispose);
+    _pendingDispose.clear();
+    final live = <ui.Image>{
+      if (_shown != null) _shown!,
+      for (final image in _images)
+        if (image != null) image,
     };
-
-    _frameCache.removeWhere((idx, img) {
-      if (!keepIndices.contains(idx) && img != image) {
-        img.dispose();
-        return true;
-      }
-      return false;
-    });
+    final disposed = <ui.Image>{};
+    for (final image in batch) {
+      if (!disposed.add(image) || live.contains(image)) continue;
+      image.dispose();
+    }
   }
 
-  Future<void> _tick(int session) async {
-    if (session != _playSessionId ||
-        _stopPainting ||
-        !mounted ||
-        _disposed ||
-        widget.drawPools.isEmpty) {
-      return;
+  void _disposeAllNow() {
+    final images = <ui.Image>{..._pendingDispose};
+    _pendingDispose.clear();
+    for (final image in _images) {
+      if (image != null) images.add(image);
     }
-
-    final currentIndex = point;
-    final duration = _getFrameDelay(currentIndex);
-
-    final nextImage = await _getOrLoadFrame(currentIndex);
-
-    if (session != _playSessionId || _stopPainting || !mounted || _disposed) {
-      return;
+    if (_shown != null) images.add(_shown!);
+    _images = const [];
+    _shown = null;
+    for (final image in images) {
+      image.dispose();
     }
-
-    if (nextImage != null && mounted) {
-      setState(() {
-        image = nextImage;
-      });
-    }
-
-    final total = widget.drawPools.length;
-    if (total > 1) {
-      _prefetch((currentIndex + 1) % total);
-      _prefetch((currentIndex + 2) % total);
-    }
-
-    if (_expectedFrameTime == 0) {
-      _expectedFrameTime = _stopwatch.elapsedMilliseconds + duration;
-    } else {
-      _expectedFrameTime += duration;
-    }
-
-    final now = _stopwatch.elapsedMilliseconds;
-    int delayMs = _expectedFrameTime - now;
-
-    if (delayMs < -100) {
-      _expectedFrameTime = now + duration;
-      delayMs = duration;
-    } else if (delayMs < 0) {
-      delayMs = 0;
-    }
-
-    point = (currentIndex + 1) % total;
-
-    _timer = Timer(Duration(milliseconds: delayMs), () {
-      if (session == _playSessionId && !_stopPainting && mounted && !_disposed) {
-        _tick(session);
-      }
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return image != null
-        ? CustomPaint(
-            painter: UgoiraPainter(image!),
-            size: widget.size,
-          )
-        : Container();
-  }
-}
-
-class UgoiraPainter extends CustomPainter {
-  final ui.Image image;
-  static final Paint _paint = Paint()..filterQuality = FilterQuality.low;
-
-  UgoiraPainter(this.image);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final Rect srcRect =
-        Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble());
-    final Rect dstRect =
-        Rect.fromLTWH(0, 0, size.width, size.height);
-    canvas.drawImageRect(image, srcRect, dstRect, _paint);
-  }
-
-  @override
-  bool shouldRepaint(UgoiraPainter oldDelegate) {
-    return oldDelegate.image != image;
+    final shown = _shown;
+    return SizedBox.fromSize(
+      size: widget.size,
+      child: shown == null
+          ? null
+          : RawImage(
+              image: shown,
+              width: widget.size.width,
+              height: widget.size.height,
+              fit: BoxFit.fill,
+              filterQuality: FilterQuality.medium,
+            ),
+    );
   }
 }
