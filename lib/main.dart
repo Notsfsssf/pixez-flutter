@@ -17,8 +17,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:cupertino_ui/cupertino_ui.dart'
+    show CupertinoPageTransitionsBuilder;
 import 'package:dynamic_color/dynamic_color.dart';
-import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter/material.dart' as legacy_material show ColorScheme;
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
@@ -48,6 +49,8 @@ import 'package:pixez/store/user_setting.dart';
 import 'package:pixez/win32_plugin.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
+import 'package:pixez/utils/tray_manager_helper.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver =
     RouteObserver<ModalRoute<void>>();
@@ -85,6 +88,9 @@ main(List<String> args) async {
     SingleInstancePlugin.initialize();
   }
   await initFluent(args);
+  if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
+    await TrayManagerHelper.instance.init();
+  }
 
   runApp(ProviderScope(child: MyApp(arguments: args)));
 }
@@ -111,6 +117,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    TrayManagerHelper.instance.dispose();
     saveStore.dispose();
     topStore.dispose();
     fetcher.stop();
@@ -231,6 +238,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   theme: ThemeData(
                     brightness: Brightness.light,
                     useMaterial3: true,
+                    pageTransitionsTheme: const PageTransitionsTheme(
+                      builders: {
+                        TargetPlatform.android: ZoomPageTransitionsBuilder(),
+                        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+                      },
+                    ),
                     primaryColor: lightColorScheme.primary,
                     colorScheme: lightColorScheme,
                     scaffoldBackgroundColor: lightColorScheme.surface,
@@ -242,25 +255,19 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                     dialogTheme: DialogThemeData(
                       backgroundColor: lightColorScheme.surfaceContainer,
                     ),
-                    pageTransitionsTheme: PageTransitionsTheme(
-                      builders: {
-                        TargetPlatform.android: ZoomPageTransitionsBuilder(),
-                        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-                      },
-                    ),
                   ),
                   darkTheme: ThemeData(
                     brightness: Brightness.dark,
                     useMaterial3: true,
-                    scaffoldBackgroundColor: userSetting.isAMOLED
-                        ? Colors.black
-                        : null,
-                    pageTransitionsTheme: PageTransitionsTheme(
+                    pageTransitionsTheme: const PageTransitionsTheme(
                       builders: {
                         TargetPlatform.android: ZoomPageTransitionsBuilder(),
                         TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
                       },
                     ),
+                    scaffoldBackgroundColor: userSetting.isAMOLED
+                        ? Colors.black
+                        : null,
                     // tabBarTheme: TabBarTheme(dividerColor: Colors.transparent),
                     tabBarTheme: TabBarThemeData(
                       dividerColor: Colors.transparent,

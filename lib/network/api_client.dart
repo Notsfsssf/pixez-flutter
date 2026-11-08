@@ -218,6 +218,13 @@ class ApiClient {
     );
   }
 
+  Future<Response> getUserRelated(int seed_user_id) async {
+    return httpClient.get(
+      "/v1/user/related?filter=for_android",
+      queryParameters: {"seed_user_id": seed_user_id},
+    );
+  }
+
   Future<Response> getUser(int id) async {
     return httpClient.get(
       "/v1/user/detail?filter=for_android",

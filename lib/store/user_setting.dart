@@ -33,6 +33,7 @@ import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/about/languages.dart';
 import 'package:pixez/secure_plugin.dart';
 import 'package:pixez/store/welcome_page_type.dart';
+import 'package:pixez/utils/tray_manager_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'user_setting.g.dart';
@@ -100,7 +101,10 @@ abstract class _UserSetting with Store {
   static const String DRAG_START_X_KEY = "drag_start_x";
   static const String AUTO_TAG_WHEN_STAR_KEY = "auto_tag_when_star";
   static const String HAPTIC_FEEDBACK_KEY = "haptic_feedback";
+  static const String MINIMIZE_ON_EXIT_KEY = "minimize_on_exit";
 
+  @observable
+  bool minimizeOnExit = true;
   @observable
   double dragStartX = 0;
   @observable
@@ -461,6 +465,9 @@ abstract class _UserSetting with Store {
     apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader] =
         ApiClient.Accept_Language;
     locale = iSupportedLocales[languageNum];
+    if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
+      TrayManagerHelper.instance.updateMenuLabels();
+    }
     crossAdapt = prefs.getBool(CROSS_ADAPT_KEY) ?? false;
     hCrossAdapt = prefs.getBool(H_CROSS_ADAPT_KEY) ?? false;
     final crossAdapterV = prefs.getInt(CROSS_ADAPT_WIDTH_KEY) ?? 100;
@@ -588,6 +595,7 @@ abstract class _UserSetting with Store {
     ignoreUpdateVersion = prefs.getString(IGNORE_UPDATE_VERSION_KEY);
     illustDetailSaveSkipLongPress =
         prefs.getBool(ILLUST_DETAIL_SAVE_SKIP_LONG_PRESS_KEY) ?? false;
+    minimizeOnExit = prefs.getBool(MINIMIZE_ON_EXIT_KEY) ?? true;
     if (Platform.isAndroid) {
       try {
         await SecurePlugin.configSecureWindow(nsfwMask);
@@ -728,6 +736,9 @@ abstract class _UserSetting with Store {
     apiClient.httpClient.options.headers[HttpHeaders.acceptLanguageHeader] =
         ApiClient.Accept_Language;
     locale = iSupportedLocales[languageNum];
+    if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
+      TrayManagerHelper.instance.updateMenuLabels();
+    }
   }
 
   @action
@@ -800,6 +811,12 @@ abstract class _UserSetting with Store {
   Future<void> setLongPressSaveConfirm(bool value) async {
     await prefs.setBool(LONG_PRESS_SAVE_CONFIRM_KEY, value);
     longPressSaveConfirm = value;
+  }
+
+  @action
+  Future<void> setMinimizeOnExit(bool value) async {
+    minimizeOnExit = value;
+    await prefs.setBool(MINIMIZE_ON_EXIT_KEY, value);
   }
 
   String illustToShareInfoText(Illusts illusts) {

@@ -219,6 +219,7 @@
   "save_format_lose_part_warning": "El formato de guardado debe incluir {part},de lo contrario, las obras de multi-p se guardarán incorrectamente！",
   "save_painter_avatar": "Guardar avatar de pintor",
   "favorited_tag": "Etiqueta favorita",
+  "favorited_tag_empty_hint": "Aún no hay etiquetas favoritas. Mantén pulsada una etiqueta en la página de detalles de una obra y elige «Colecciones» para añadirla.",
   "legacy_mode_warning": "El modo heredado no está disponible desde  Android9",
   "clear_old_format_file": "Borrar archivo de formato antiguo",
   "clear_old_format_file_message": "sin _p0",
@@ -349,6 +350,7 @@
   "date_preset_6months": "6 meses",
   "date_preset_1year": "1 año",
   "date_preset_custom": "Intervalo personalizado",
+  "related_users": "Usuarios relacionados",
   "upload_year": "Año de publicación (p. ej. 2026)",
   "upload_month": "Mes de publicación (01-12)",
   "upload_day": "Día de publicación (01-31)"

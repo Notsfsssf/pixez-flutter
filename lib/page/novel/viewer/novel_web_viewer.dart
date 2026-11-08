@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:pixez/utils/webview.dart';
 import 'package:pixez/network/api_client.dart';
 
 class NovelWebViewer extends StatefulWidget {
@@ -27,12 +27,22 @@ class _NovelWebViewerState extends State<NovelWebViewer> {
       if (mounted) {
         setState(() {
           initNovelHtml = response.data;
-          _controller = WebViewController()
-            ..setJavaScriptMode(JavaScriptMode.unrestricted)
-            ..loadHtmlString(initNovelHtml ?? "");
+          final controller = WebViewController();
+          _controller = controller;
+          initializeWebViewController(
+            controller,
+            isActive: () => mounted,
+            load: () => controller.loadHtmlString(initNovelHtml ?? ""),
+          );
         });
       }
     } catch (e) {}
+  }
+
+  @override
+  void dispose() {
+    disposeWebViewController(_controller);
+    super.dispose();
   }
 
   @override

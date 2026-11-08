@@ -1,0 +1,25 @@
+# reqwest's http3 API is behind this cfg. Android arm64/x64 also need
+# 16 KB pages; NDK < 28 does not default to that alignment.
+# Target rustflags replace [build] rustflags, so the cfg is repeated there.
+#
+# Flutter builds set RUSTFLAGS / IPHONEOS_DEPLOYMENT_TARGET from hook/build.dart,
+# which overrides this file. Manual `cargo` for aarch64-apple-ios needs
+# IPHONEOS_DEPLOYMENT_TARGET>=13 (app uses 15) or linking fails on
+# ___chkstk_darwin. This config covers `cargo` when that variable is unset.
+
+[build]
+rustflags = ["--cfg", "reqwest_unstable"]
+
+[target.aarch64-linux-android]
+rustflags = [
+  "--cfg", "reqwest_unstable",
+  "-C", "link-arg=-Wl,--hash-style=both",
+  "-C", "link-arg=-Wl,-z,max-page-size=16384",
+]
+
+[target.x86_64-linux-android]
+rustflags = [
+  "--cfg", "reqwest_unstable",
+  "-C", "link-arg=-Wl,--hash-style=both",
+  "-C", "link-arg=-Wl,-z,max-page-size=16384",
+]

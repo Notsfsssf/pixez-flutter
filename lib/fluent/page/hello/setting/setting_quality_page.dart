@@ -19,7 +19,7 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:material_ui/material_ui.dart' show Icons;
+import 'package:material_ui/material_ui.dart' show CircleAvatar, Icons;
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/fluent/component/pixez_button.dart';
 import 'package:pixez/constants.dart';

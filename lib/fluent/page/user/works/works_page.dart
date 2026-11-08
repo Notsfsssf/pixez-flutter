@@ -47,7 +47,7 @@ class _WorksPageState extends State<WorksPage> {
     return Stack(
       children: [
         LightingList(
-          isNested: true,
+          isNested: false,
           source: futureGet,
           header: Container(
             height: 50,

@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:pixez/utils/webview.dart';
 import 'package:image/image.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/custom_tab_plugin.dart';
@@ -32,38 +32,38 @@ class _SauncenaoWebviewState extends State<SauncenaoWebview> {
         ? "https://saucenao.com/"
         : "https://saucenao.com/search.php";
     super.initState();
-    _webViewController = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onProgress: (int progress) {
-            setState(() {
-              progressValue = progress / 100;
-            });
-          },
-          onPageStarted: (String url) {},
-          onPageFinished: (String url) {},
-          onWebResourceError: (WebResourceError error) {},
-          onNavigationRequest: (NavigationRequest request) {
-            var uri = Uri.parse(request.url);
-            if (uri.scheme == "pixiv") {
-              Leader.pushWithUri(context, uri);
-              Navigator.of(context).pop("OK");
-              return NavigationDecision.prevent;
-            } else if (uri.host.contains("pixiv")) {
-              Leader.pushWithUri(context, uri);
-              return NavigationDecision.prevent;
-            }
-            return NavigationDecision.navigate;
-          },
-        ),
-      );
-
-    if (_path != null) {
-      _loadSearch();
-    } else {
-      _webViewController.loadRequest(Uri.parse(_url));
-    }
+    _webViewController = WebViewController();
+    initializeWebViewController(
+      _webViewController,
+      isActive: () => mounted,
+      navigationDelegate: NavigationDelegate(
+        onProgress: (int progress) {
+          if (!mounted) return;
+          setState(() {
+            progressValue = progress / 100;
+          });
+        },
+        onPageStarted: (String url) {},
+        onPageFinished: (String url) {},
+        onWebResourceError: (WebResourceError error) {},
+        onNavigationRequest: (NavigationRequest request) {
+          if (!mounted) return NavigationDecision.prevent;
+          var uri = Uri.parse(request.url);
+          if (uri.scheme == "pixiv") {
+            Leader.pushWithUri(context, uri);
+            Navigator.of(context).pop("OK");
+            return NavigationDecision.prevent;
+          } else if (uri.host.contains("pixiv")) {
+            Leader.pushWithUri(context, uri);
+            return NavigationDecision.prevent;
+          }
+          return NavigationDecision.navigate;
+        },
+      ),
+      load: _path != null
+          ? _loadSearch
+          : () => _webViewController.loadRequest(Uri.parse(_url)),
+    );
   }
 
   Future<void> _loadSearch() async {
@@ -94,12 +94,23 @@ class _SauncenaoWebviewState extends State<SauncenaoWebview> {
       ]);
 
       Response response = await dio.post('/search.php', data: formData);
+      if (!mounted) return;
       String html = response.data;
-      _webViewController.loadHtmlString(html, baseUrl: "https://saucenao.com/");
+      await _webViewController.loadHtmlString(
+        html,
+        baseUrl: "https://saucenao.com/",
+      );
     } catch (e) {
+      if (!mounted) return;
       BotToast.showText(text: e.toString());
       print(e);
     }
+  }
+
+  @override
+  void dispose() {
+    disposeWebViewController(_webViewController);
+    super.dispose();
   }
 
   @override

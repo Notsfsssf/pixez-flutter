@@ -65,7 +65,10 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
 
   initMethod() async {
     await taskPersistProvider.open();
+    if (!mounted) return;
     _refresh();
+    // initMethod also runs after every menu action; keep a single timer.
+    _timer?.cancel();
     _timer = Timer.periodic(Duration(seconds: 1), (time) {
       _fetchLocal();
     });

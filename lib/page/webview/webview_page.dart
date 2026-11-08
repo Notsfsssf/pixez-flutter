@@ -1,6 +1,8 @@
+import 'dart:io';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:pixez/utils/webview.dart';
 import 'package:pixez/custom_tab_plugin.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/main.dart';
@@ -22,21 +24,24 @@ class _WebViewPageState extends State<WebViewPage> {
   @override
   void initState() {
     super.initState();
-    _webViewController = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onProgress: (int progress) {
-            setState(() {
-              progressValue = progress / 100;
-            });
-          },
-          onPageStarted: (String url) {},
-          onPageFinished: (String url) async {
-            final uri = Uri.parse(url);
-            if (userSetting.oauthNetworkMode.usesCompatibleConnection &&
-                uri.host == "accounts.pixiv.net") {
-              _webViewController.runJavaScript("""
+    _webViewController = WebViewController();
+    initializeWebViewController(
+      _webViewController,
+      isActive: () => mounted,
+      navigationDelegate: NavigationDelegate(
+        onProgress: (int progress) {
+          if (!mounted) return;
+          setState(() {
+            progressValue = progress / 100;
+          });
+        },
+        onPageStarted: (String url) {},
+        onPageFinished: (String url) async {
+          if (!mounted) return;
+          final uri = Uri.parse(url);
+          if (userSetting.oauthNetworkMode.usesCompatibleConnection &&
+              uri.host == "accounts.pixiv.net") {
+            _webViewController.runJavaScript("""
 javascript:(function() {
  let forms = document.getElementsByTagName('form'); 
  for (let name of forms) {
@@ -51,27 +56,29 @@ javascript:(function() {
 } 
   })()
 """);
-            }
-          },
-          onWebResourceError: (WebResourceError error) {},
-          onNavigationRequest: (NavigationRequest request) {
-            var uri = Uri.parse(request.url);
-            if (uri.scheme == "pixiv") {
-              Leader.pushWithUri(context, uri);
-              Navigator.of(context).pop("OK");
-              return NavigationDecision.prevent;
-            }
-            return NavigationDecision.navigate;
-          },
-        ),
-      )
-      ..loadRequest(Uri.parse(widget.url));
+          }
+        },
+        onWebResourceError: (WebResourceError error) {},
+        onNavigationRequest: (NavigationRequest request) {
+          if (!mounted) return NavigationDecision.prevent;
+          var uri = Uri.parse(request.url);
+          if (uri.scheme == "pixiv") {
+            Leader.pushWithUri(context, uri);
+            Navigator.of(context).pop("OK");
+            return NavigationDecision.prevent;
+          }
+          return NavigationDecision.navigate;
+        },
+      ),
+      load: () => _webViewController.loadRequest(Uri.parse(widget.url)),
+    );
   }
 
   @override
   void dispose() {
+    disposeWebViewController(_webViewController);
+    if (Platform.isAndroid) WeissPlugin.stop();
     super.dispose();
-    WeissPlugin.stop();
   }
 
   @override

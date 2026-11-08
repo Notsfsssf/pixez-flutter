@@ -2,6 +2,7 @@
 #include "paths_plugin.h"
 #include "../settings.h"
 
+#include <algorithm>
 #include <future>
 #include <Shobjidl.h>
 #include <flutter/method_channel.h>
@@ -36,46 +37,59 @@ void Document::Initialize(BinaryMessenger *messenger, const StandardMethodCodec 
       {
         init_apartment(apartment_type::single_threaded);
 
-        const auto *arguments = get_if<EncodableMap>(call.arguments());
-        if (call.method_name().compare("save") == 0)
+        // Reply with an error instead of never replying, otherwise the Dart
+        // side awaits forever (e.g. when the saved folder no longer exists).
+        try
         {
-          auto data = get<vector<uint8_t>>(arguments->find(EncodableValue("data"))->second);
-          auto name = to_hstring(get<string>(arguments->find(EncodableValue("name"))->second));
-          auto resultData = co_await SaveAsync(data, name);
-          result->Success(resultData);
+          const auto *arguments = get_if<EncodableMap>(call.arguments());
+          if (call.method_name().compare("save") == 0)
+          {
+            auto data = get<vector<uint8_t>>(arguments->find(EncodableValue("data"))->second);
+            auto name = to_hstring(get<string>(arguments->find(EncodableValue("name"))->second));
+            auto resultData = co_await SaveAsync(data, name);
+            result->Success(resultData);
+          }
+          else if (call.method_name().compare("openSave") == 0)
+          {
+            auto data = get<vector<uint8_t>>(arguments->find(EncodableValue("data"))->second);
+            auto name = to_hstring(get<string>(arguments->find(EncodableValue("name"))->second));
+            auto resultData = co_await OpenSaveAsync(data, name, hWnd);
+            result->Success(resultData);
+          }
+          else if (call.method_name().compare("permissionStatus") == 0)
+          {
+            // 不实现
+            result->Success();
+          }
+          else if (call.method_name().compare("requestPermission") == 0)
+          {
+            // 不实现
+            result->Success();
+          }
+          else if (call.method_name().compare("exist") == 0)
+          {
+            auto name = to_hstring(get<string>(arguments->find(EncodableValue("name"))->second));
+            auto resultData = co_await ExistAsync(name);
+            result->Success(resultData);
+          }
+          else if (call.method_name().compare("get_path") == 0)
+          {
+            auto resultData = co_await GetPathAsync();
+            result->Success(to_string(resultData));
+          }
+          else if (call.method_name().compare("choice_folder") == 0)
+          {
+            auto resultData = co_await ChoiceFolderAsync(hWnd);
+            result->Success(to_string(resultData));
+          }
         }
-        else if (call.method_name().compare("openSave") == 0)
+        catch (hresult_error const &e)
         {
-          auto data = get<vector<uint8_t>>(arguments->find(EncodableValue("data"))->second);
-          auto name = to_hstring(get<string>(arguments->find(EncodableValue("name"))->second));
-          auto resultData = co_await OpenSaveAsync(data, name, hWnd);
-          result->Success(resultData);
+          result->Error("document_error", to_string(e.message()));
         }
-        else if (call.method_name().compare("permissionStatus") == 0)
+        catch (...)
         {
-          // 不实现
-          result->Success();
-        }
-        else if (call.method_name().compare("requestPermission") == 0)
-        {
-          // 不实现
-          result->Success();
-        }
-        else if (call.method_name().compare("exist") == 0)
-        {
-          auto name = to_hstring(get<string>(arguments->find(EncodableValue("name"))->second));
-          auto resultData = co_await ExistAsync(name);
-          result->Success(resultData);
-        }
-        else if (call.method_name().compare("get_path") == 0)
-        {
-          auto resultData = co_await GetPathAsync();
-          result->Success(to_string(resultData));
-        }
-        else if (call.method_name().compare("choice_folder") == 0)
-        {
-          auto resultData = co_await ChoiceFolderAsync(hWnd);
-          result->Success(to_string(resultData));
+          result->Error("document_error");
         }
 
         uninit_apartment();
@@ -101,12 +115,41 @@ IAsyncOperation<StorageFolder> GetFolderAsync()
   co_return co_await StorageFolder::GetFolderFromPathAsync(value);
 }
 
+// File names may contain sub folders ("artist_id/name.jpg" when saving into
+// separate folders), but CreateFileAsync only accepts a bare name.
+static IAsyncOperation<StorageFolder> CreateParentFoldersAsync(StorageFolder folder, hstring fileName)
+{
+  wstring path{fileName};
+  size_t start = 0;
+  size_t end;
+  while ((end = path.find(L'/', start)) != wstring::npos)
+  {
+    if (end > start)
+    {
+      folder = co_await folder.CreateFolderAsync(
+          hstring{path.substr(start, end - start)},
+          CreationCollisionOption::OpenIfExists);
+    }
+    start = end + 1;
+  }
+  co_return folder;
+}
+
+static hstring BaseFileName(hstring fileName)
+{
+  wstring path{fileName};
+  auto pos = path.rfind(L'/');
+  if (pos == wstring::npos)
+    return fileName;
+  return hstring{path.substr(pos + 1)};
+}
+
 IAsyncOperation<bool> Document::SaveAsync(const vector<uint8_t> &data, hstring fileName)
 {
-  auto folder = co_await GetFolderAsync();
+  auto folder = co_await CreateParentFoldersAsync(co_await GetFolderAsync(), fileName);
 
   auto file = co_await folder.CreateFileAsync(
-      fileName,
+      BaseFileName(fileName),
       CreationCollisionOption::ReplaceExisting);
   if (!file)
     co_return false;
@@ -144,17 +187,12 @@ IAsyncOperation<bool> Document::ExistAsync(hstring fileName)
 {
   auto folder = co_await GetFolderAsync();
 
-  auto list = co_await folder.CreateFileQuery().GetFilesAsync();
+  // TryGetItemAsync accepts a path relative to the folder.
+  wstring path{fileName};
+  std::replace(path.begin(), path.end(), L'/', L'\\');
+  auto item = co_await folder.TryGetItemAsync(hstring{path});
 
-  for (uint32_t i = 0; i < list.Size(); i++)
-  {
-    auto file = list.GetAt(i);
-
-    if (file.Name() == fileName)
-      co_return true;
-  }
-
-  co_return false;
+  co_return item != nullptr && item.IsOfType(StorageItemTypes::File);
 }
 
 IAsyncOperation<hstring> Document::GetPathAsync()

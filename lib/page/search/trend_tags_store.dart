@@ -16,6 +16,8 @@
 
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
+import 'package:pixez/main.dart';
+import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/trend_tags.dart';
 import 'package:pixez/network/api_client.dart';
 
@@ -28,6 +30,11 @@ abstract class _TrendTagsStoreBase with Store {
   ObservableList<TrendTags> trendTags = ObservableList();
 
   _TrendTagsStoreBase();
+
+  /// Trend tags without the ones muted by the user.
+  List<TrendTags> get visibleTrendTags => trendTags
+      .where((tag) => !muteStore.banTags.any((ban) => ban.isRegexMatch(tag.tag)))
+      .toList();
 
   @action
   fetch() async {
