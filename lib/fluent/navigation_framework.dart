@@ -103,28 +103,7 @@ class _NavigationFrameworkState extends State<NavigationFramework>
       autofocus: true,
       child: Listener(
         child: NavigationView(
-          titleBar: TitleBar(
-            title:
-                _navigatorKey.currentState?.currentTitle ?? widget.defaultTitle,
-            onDragStarted: () => windowManager.startDragging(),
-            onDoubleTap: () async {
-              bool isMaximized = await windowManager.isMaximized();
-              if (!isMaximized) {
-                windowManager.maximize();
-              } else {
-                windowManager.unmaximize();
-              }
-            },
-            onBackRequested: _onGoBackPress,
-            isBackButtonEnabled: _navigatorKey.currentState?.canGoBack ?? false,
-            captionControls: SizedBox(
-              width: 138,
-              child: WindowCaption(
-                brightness: FluentTheme.of(context).brightness,
-                backgroundColor: Colors.transparent,
-              ),
-            ),
-          ),
+          titleBar: Builder(builder: _buildTitleBar),
           pane: NavigationPane(
             displayMode: widget.displayMode,
             header: widget.header,
@@ -165,6 +144,54 @@ class _NavigationFrameworkState extends State<NavigationFramework>
         onPointerDown: _onPointerDown,
       ),
       onKeyEvent: _onKeyEvent,
+    );
+  }
+
+  Widget _buildTitleBar(BuildContext context) {
+    const captionWidth = 138.0;
+    final view = NavigationView.dataOf(context);
+    final navigationButtonWidth =
+        view.pane?.size?.compactWidth ?? kCompactNavigationPaneWidth;
+    final navigationControlsWidth =
+        navigationButtonWidth *
+        (view.toggleButtonPosition == PaneToggleButtonPosition.titleBar
+            ? 2
+            : 1);
+
+    return Stack(
+      children: [
+        TitleBar(
+          title:
+              _navigatorKey.currentState?.currentTitle ?? widget.defaultTitle,
+          onBackRequested: _onGoBackPress,
+          isBackButtonEnabled: _navigatorKey.currentState?.canGoBack ?? false,
+          captionControls: SizedBox(
+            width: captionWidth,
+            child: WindowCaption(
+              brightness: FluentTheme.of(context).brightness,
+              backgroundColor: Colors.transparent,
+            ),
+          ),
+        ),
+        // Restrict window gestures to the title area between the buttons.
+        PositionedDirectional(
+          top: 0,
+          bottom: 0,
+          start: navigationControlsWidth,
+          end: captionWidth,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onPanStart: (_) => windowManager.startDragging(),
+            onDoubleTap: () async {
+              if (await windowManager.isMaximized()) {
+                await windowManager.unmaximize();
+              } else {
+                await windowManager.maximize();
+              }
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -254,10 +281,9 @@ class PixEzNavigator extends StatefulWidget {
     required Widget icon,
     required Widget title,
     required Widget Function(BuildContext) builder,
-    bool animated = true,
   }) => PixEzNavigator.of(
     context,
-  ).push(icon: icon, title: title, builder: builder, animated: animated);
+  ).push(icon: icon, title: title, builder: builder);
 
   static Future<T?> pushIndex<T extends Object?>(
     BuildContext context, {
@@ -318,14 +344,8 @@ class PixEzNavigatorState extends State<PixEzNavigator> {
     required Widget icon,
     required Widget title,
     required Widget Function(BuildContext) builder,
-    bool animated = true,
   }) => navigator.push(
-    PixEzPageRoute.temporary<T>(
-      builder: builder,
-      icon: icon,
-      title: title,
-      animated: animated,
-    ),
+    PixEzPageRoute.temporary<T>(builder: builder, icon: icon, title: title),
   );
 
   Future<T?> pushIndex<T extends Object?>({
@@ -448,45 +468,15 @@ class _PixEzNavigatorObserver extends RouteObserver<ModalRoute<dynamic>> {
 }
 
 class PixEzPageRoute<T> extends FluentPageRoute<T> {
-  final WidgetBuilder widgetBuilder;
-  final bool animated;
-
   PixEzPageRoute({
-    required WidgetBuilder builder,
-    this.animated = true,
+    required super.builder,
     super.maintainState,
     super.barrierLabel,
     super.settings,
     super.fullscreenDialog,
-  })  : widgetBuilder = builder,
-        super(builder: builder);
+  });
 
   bool get isTemporary => this is _PixEzTemporaryRoute;
-
-  @override
-  Duration get transitionDuration =>
-      animated ? super.transitionDuration : Duration.zero;
-
-  @override
-  Duration get reverseTransitionDuration =>
-      animated ? super.reverseTransitionDuration : Duration.zero;
-
-  @override
-  Widget buildPage(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-  ) {
-    if (!animated) {
-      assert(debugCheckHasFluentTheme(context));
-      return Semantics(
-        scopesRoute: true,
-        explicitChildNodes: true,
-        child: widgetBuilder(context),
-      );
-    }
-    return super.buildPage(context, animation, secondaryAnimation);
-  }
 
   static PixEzPageRoute<T> index<T>({
     required Widget Function(BuildContext) builder,
@@ -497,13 +487,7 @@ class PixEzPageRoute<T> extends FluentPageRoute<T> {
     required Widget Function(BuildContext) builder,
     required Widget icon,
     required Widget title,
-    bool animated = true,
-  }) => _PixEzTemporaryRoute<T>(
-    builder: builder,
-    icon: icon,
-    title: title,
-    animated: animated,
-  );
+  }) => _PixEzTemporaryRoute<T>(builder: builder, icon: icon, title: title);
 }
 
 class _PixEzIndexRoute<T> extends PixEzPageRoute<T> {
@@ -518,6 +502,5 @@ class _PixEzTemporaryRoute<T> extends PixEzPageRoute<T> {
     required super.builder,
     required this.icon,
     required this.title,
-    super.animated,
   });
 }

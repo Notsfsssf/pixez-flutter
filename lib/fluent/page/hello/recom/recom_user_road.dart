@@ -1,4 +1,5 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:material_ui/material_ui.dart' show CircleAvatar;
 import 'package:pixez/fluent/component/pixiv_image.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';

@@ -18,6 +18,7 @@ import 'dart:async';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:material_ui/material_ui.dart' show DateTimeRange;
 import 'package:pixez/i18n.dart';
 import 'package:pixez/fluent/lighting/fluent_lighting_page.dart';
 import 'package:pixez/lighting/lighting_store.dart';

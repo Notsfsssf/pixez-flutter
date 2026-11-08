@@ -47,6 +47,7 @@ import com.perol.pixez.plugin.SupporterPlugin
 import com.perol.pixez.plugin.Weiss
 import com.perol.pixez.plugin.exist
 import com.perol.pixez.plugin.save
+import com.perol.pixez.plugin.writeBytesOrDelete
 import com.waynejo.androidndkgif.GifEncoder
 import io.flutter.Log
 import io.flutter.embedding.android.FlutterActivity
@@ -80,6 +81,10 @@ class MainActivity : FlutterActivity() {
     }
 
     private val savingPools = Collections.synchronizedList(arrayListOf<String>())
+
+    // Saves run concurrently on Dispatchers.IO; finding or creating a SAF
+    // folder must not interleave, or the provider creates "name (1)" copies.
+    private val safFolderLock = Any()
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -175,7 +180,7 @@ class MainActivity : FlutterActivity() {
                                         if (!file.exists()) {
                                             file.createNewFile()
                                         }
-                                        file.outputStream().write(data)
+                                        file.writeBytesOrDelete(data)
                                         if (clearOld && name.contains("_p0")) {
                                             val oldFileName = name.replace("_p0", "")
                                             val oldFile = File("$helplessPath", oldFileName)
@@ -263,7 +268,12 @@ class MainActivity : FlutterActivity() {
                                         if (!dirFile.exists()) {
                                             dirFile.mkdirs()
                                         }
-                                        sourceFile.copyTo(target, overwrite = true)
+                                        try {
+                                            sourceFile.copyTo(target, overwrite = true)
+                                        } catch (e: Throwable) {
+                                            target.delete()
+                                            throw e
+                                        }
                                     }
                                     saved = true
                                     MediaScannerConnection.scanFile(
@@ -611,9 +621,11 @@ class MainActivity : FlutterActivity() {
                     var folderDocument: DocumentFile? = treeDocument
                     val fName = names.last()
                     val list = names.subList(0, names.size - 1)
-                    for (name in list) {
-                        folderDocument = folderDocument!!.findFile(name)
-                            ?: folderDocument.createDirectory(name)!!
+                    synchronized(safFolderLock) {
+                        for (name in list) {
+                            folderDocument = folderDocument!!.findFile(name)
+                                ?: folderDocument!!.createDirectory(name)!!
+                        }
                     }
                     return folderDocument?.createFile(mimeType, fName)?.uri
                 } catch (e: Throwable) {
@@ -635,8 +647,17 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun wr(data: ByteArray, uri: Uri) {
-        contentResolver.openOutputStream(uri, "w")?.use {
-            it.write(data)
+        try {
+            contentResolver.openOutputStream(uri, "w")?.use {
+                it.write(data)
+            }
+        } catch (e: Throwable) {
+            // Don't leave an empty document behind, e.g. when out of space.
+            try {
+                DocumentsContract.deleteDocument(contentResolver, uri)
+            } catch (_: Throwable) {
+            }
+            throw e
         }
     }
 }
