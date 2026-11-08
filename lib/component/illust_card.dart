@@ -131,7 +131,10 @@ class _IllustCardState extends State<IllustCard> {
       }
     }
     final illusts = store.illusts!;
-    // The GIF encoder channel is only implemented on Android and iOS.
+    // This card is Material-only (Fluent uses lib/fluent/component/illust_card.dart),
+    // but Material UI also runs on macOS. The native GIF encoder channel only
+    // exists in MainActivity.kt and AppDelegate.swift, so macOS keeps the
+    // existing saveImage behaviour instead of hitting MissingPluginException.
     if (illusts.type == "ugoira" && (Platform.isAndroid || Platform.isIOS)) {
       BotToast.showText(text: I18n.of(context).encode_message);
       UgoiraStore(illusts.id).downloadAndEncodeGif(illusts);
