@@ -230,6 +230,7 @@
   },
   "save_painter_avatar": "プロフィール画像を保存",
   "favorited_tag": "お気に入りタグ",
+  "favorited_tag_empty_hint": "お気に入りタグはまだありません。作品詳細ページでタグを長押しし、「ブックマーク」を選ぶと追加できます。",
   "legacy_mode_warning": "Android 10 以降では推奨しません",
   "clear_old_format_file": "古い形式の画像を削除",
   "clear_old_format_file_message": "保存時に p0 形式のない画像を削除する",
