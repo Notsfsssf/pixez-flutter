@@ -83,7 +83,7 @@
   "medium": "中等",
   "minimize_on_exit": "退出时最小化",
   "minimize_on_exit_message": "关闭窗口时最小化到系统托盘",
-  "mode_list": "每日 男性向 女性向 原创 新人 每周 每月 AI XVIII_AI XVIII XVIII_WEEK XVIII_G",
+  "mode_list": "每日 男性向 女性向 原创 新人 每周 每月 AI XVIII_AI XVIII XVIII_男性向 XVIII_女性向 XVIII_WEEK XVIII_G",
   "novel_mode_list": "每日 男性向 女性向 每周 AI XVIII_AI XVIII XVIII_WEEK XVIII_G",
   "more": "更多",
   "more_then_starnum_bookmark": "超过 {starNum} 的收藏",
