@@ -170,7 +170,12 @@ class _PixivImageState extends State<PixivImage> {
           ),
         ),
       ),
-      fadeOutDuration: widget.fade ? const Duration(milliseconds: 1000) : null,
+      fadeOutDuration: widget.fade
+          ? const Duration(milliseconds: 1000)
+          : Duration.zero,
+      fadeInDuration: widget.fade
+          ? const Duration(milliseconds: 500)
+          : Duration.zero,
       // memCacheWidth: width?.toInt(),
       // memCacheHeight: height?.toInt(),
       imageUrl: url,
