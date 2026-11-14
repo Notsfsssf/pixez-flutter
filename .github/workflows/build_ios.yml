@@ -1,25 +1,71 @@
-name: Build IOS
+name: Build iOS IPA with Cealing-Host
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # 支持在 iPad Safari 上手动一键触发
+  schedule:
+    - cron: '0 20 * * 0' # 每周一凌晨 04:00 (北京时间) 自动拉取最新规则并构建
 
 jobs:
   Build_IOS:
     runs-on: macos-26
-
     steps:
-      - uses: actions/checkout@v7
+      - name: Checkout pixez-flutter source
+        uses: actions/checkout@v7
 
-      - name: Setup mise
+      - name: Sync Latest IPs from SpaceTimee/Cealing-Host
+        run: |
+          python3 - << 'EOF'
+          import json, re, urllib.request
+          from pathlib import Path
+
+          url = "https://raw.githubusercontent.com/SpaceTimee/Cealing-Host/main/Cealing-Host.json"
+          req = urllib.request.Request(url, headers={"User-Agent": "PixEz-Cealer-CI/1.0"})
+          rules = json.loads(urllib.request.urlopen(req, timeout=15).read().decode("utf-8"))
+
+          pixiv_ip, pximg_ip = "210.140.139.155", "210.140.139.133"
+          for entry in rules:
+              domains, target_ip = entry[0], entry[2]
+              if not target_ip:
+                  continue
+              if any("pixiv.net" in d for d in domains):
+                  pixiv_ip = target_ip
+              elif any("pximg.net" in d for d in domains):
+                  pximg_ip = target_ip
+
+          hoster_file = Path("lib/er/hoster.dart")
+          code = hoster_file.read_text(encoding="utf-8")
+          replacement = (
+              'static Map<String, dynamic> _constMap = {\n'
+              f'    "app-api.pixiv.net": "{pixiv_ip}",\n'
+              f'    "oauth.secure.pixiv.net": "{pixiv_ip}",\n'
+              f'    "accounts.pixiv.net": "{pixiv_ip}",\n'
+              f'    "www.pixiv.net": "{pixiv_ip}",\n'
+              f'    "i.pximg.net": "{pximg_ip}",\n'
+              f'    "s.pximg.net": "{pximg_ip}",\n'
+              '    "doh": "doh.dns.sb",\n'
+              '  };'
+          )
+          code = re.sub(
+              r"static\s+Map<String,\s*dynamic>\s+_constMap\s*=\s*\{[^}]*\};",
+              replacement,
+              code,
+              count=1,
+              flags=re.DOTALL,
+          )
+          hoster_file.write_text(code, encoding="utf-8")
+          print(f"Injected Cealing-Host IPs -> API: {pixiv_ip}, Image: {pximg_ip}")
+          EOF
+
+      - name: Setup mise & Flutter Toolchain
         uses: jdx/mise-action@v5
 
-      - name: Flutter version
+      - name: Verify Flutter version
         run: flutter --version
 
       - name: Get app dependencies
         run: flutter pub get
 
-      - name: Get rhttp dependencies
+      - name: Get rhttp native dependencies
         working-directory: plugins/rhttp/rhttp
         run: flutter pub get
 
@@ -27,23 +73,21 @@ jobs:
         working-directory: plugins/rhttp/rhttp
         run: dart run build_runner build
 
-      - name: Generate app files
+      - name: Generate app model files
         run: dart run build_runner build
 
-      - name: Build iOS
+      - name: Build Unsigned iOS Release (ARM64 for iPad mini 8 A20 Pro)
         run: flutter build ios --release --no-codesign
 
-      - name: Create Payload directory and move Runner.app
+      - name: Package Runner.app into IPA
         run: |
           mkdir -p build/ios/iphoneos/Payload
           mv build/ios/iphoneos/Runner.app build/ios/iphoneos/Payload
-
-      - name: Zip ipa
-        run: |
           cd build/ios/iphoneos
-          zip -r pixez-ios.ipa Payload
+          zip -r pixez-cealer-ipad.ipa Payload
 
-      - uses: actions/upload-artifact@v7
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v7
         with:
-          name: pixez-ios.ipa
-          path: build/ios/iphoneos/pixez-ios.ipa
+          name: pixez-cealer-ipad.ipa
+          path: build/ios/iphoneos/pixez-cealer-ipad.ipa
