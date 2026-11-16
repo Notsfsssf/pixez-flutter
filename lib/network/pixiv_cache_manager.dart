@@ -5,10 +5,20 @@ import 'package:flutter_cache_manager_dio/flutter_cache_manager_dio.dart';
 /// Keep the existing disk cache, but normalize unknown transfer sizes to null.
 /// The Dio adapter uses -1, which is invalid for Flutter's ImageChunkEvent.
 class PixivCacheManager extends CacheManager {
-  static late final PixivCacheManager instance;
+  static PixivCacheManager? _instance;
 
+  static PixivCacheManager get instance {
+    final instance = _instance;
+    if (instance == null) {
+      throw StateError('PixivCacheManager.initialize() has not been called');
+    }
+    return instance;
+  }
+
+  /// Only the first call creates the manager; replace the Dio adapter to
+  /// change network settings afterwards.
   static void initialize(Dio dio) {
-    instance = PixivCacheManager._(dio);
+    _instance ??= PixivCacheManager._(dio);
   }
 
   PixivCacheManager._(Dio dio)
