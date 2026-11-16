@@ -9,6 +9,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:pixez/clipboard_plugin.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/desktop/window_full_screen.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust.dart';
 import 'package:pixez/page/picture/illust_store.dart';
@@ -66,11 +67,13 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
     for (final controller in _zoom.values) {
       controller.dispose();
     }
-    if (_fullScreen)
+    if (_fullScreen) {
       SystemChrome.setEnabledSystemUIMode(
         SystemUiMode.manual,
         overlays: SystemUiOverlay.values,
       );
+      WindowFullScreen.set(false);
+    }
     super.dispose();
   }
 
@@ -84,6 +87,15 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
       });
   }
 
+  void _enterFullScreen() {
+    setState(() {
+      _fullScreen = true;
+    });
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+    // Immersive mode is a no-op on macOS; use native window full screen.
+    WindowFullScreen.set(true);
+  }
+
   void _exitFullScreen() {
     setState(() {
       _fullScreen = false;
@@ -92,6 +104,7 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
       SystemUiMode.manual,
       overlays: SystemUiOverlay.values,
     );
+    WindowFullScreen.set(false);
   }
 
   void _turnPage(int delta) {
@@ -158,6 +171,8 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
             _turnPage(-1),
         const SingleActivator(LogicalKeyboardKey.arrowRight): () =>
             _turnPage(1),
+        const SingleActivator(LogicalKeyboardKey.keyF): () =>
+            _fullScreen ? _exitFullScreen() : _enterFullScreen(),
         const SingleActivator(LogicalKeyboardKey.equal, meta: true): () =>
             _zoomBy(1.25),
         const SingleActivator(LogicalKeyboardKey.minus, meta: true): () =>
@@ -272,15 +287,7 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
         child: Row(
           children: [
             IconButton(
-              onPressed: () {
-                setState(() {
-                  _fullScreen = false;
-                });
-                SystemChrome.setEnabledSystemUIMode(
-                  SystemUiMode.manual,
-                  overlays: SystemUiOverlay.values,
-                );
-              },
+              onPressed: _exitFullScreen,
               icon: Icon(
                 Icons.fullscreen_exit,
                 color: Colors.white.withValues(alpha: 0.5),
@@ -324,15 +331,7 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                 ),
                 IconButton(
                   icon: Icon(Icons.fullscreen, color: Colors.white),
-                  onPressed: () {
-                    setState(() {
-                      _fullScreen = true;
-                    });
-                    SystemChrome.setEnabledSystemUIMode(
-                      SystemUiMode.manual,
-                      overlays: [],
-                    );
-                  },
+                  onPressed: _enterFullScreen,
                 ),
                 if (ClipboardPlugin.supported)
                   IconButton(

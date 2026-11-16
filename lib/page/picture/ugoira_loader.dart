@@ -23,6 +23,7 @@ import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/ugoira_painter.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/models/illust.dart';
+import 'package:pixez/page/picture/ugoira_fullscreen_page.dart';
 import 'package:pixez/page/picture/ugoira_store.dart';
 import 'package:pixez/utils/haptic_util.dart';
 
@@ -92,6 +93,78 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
     }
   }
 
+  /// Opens over the sidebar, like the photo viewer.
+  void _openFullscreen() {
+    Navigator.of(context, rootNavigator: true).push(
+      MaterialPageRoute(
+        builder: (_) => UgoiraFullscreenPage(
+          illusts: widget.illusts,
+          store: _store,
+          onActions: _showUgoiraActions,
+        ),
+      ),
+    );
+  }
+
+  /// The touch layout puts the play button and progress bar under the
+  /// cover, which a tall artwork pushes below the fold in a desktop window.
+  /// Overlay them on the cover instead; clicking anywhere on it plays.
+  Widget _buildDesktopCover(double height, double width) {
+    final loading = _store.status == UgoiraStatus.progress;
+    final colors = Theme.of(context).colorScheme;
+    return SizedBox(
+      height: height,
+      width: width,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          PixivImage(
+            widget.illusts.imageUrls.medium,
+            height: height,
+            width: width,
+            placeWidget: Container(height: height),
+          ),
+          Positioned.fill(
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: loading ? null : _store.downloadAndUnzip,
+                mouseCursor: loading
+                    ? SystemMouseCursors.progress
+                    : SystemMouseCursors.click,
+                child: Center(
+                  child: Container(
+                    width: 72,
+                    height: 72,
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.55),
+                      shape: BoxShape.circle,
+                    ),
+                    child: loading
+                        ? CircularProgressIndicator(
+                            strokeWidth: 3,
+                            color: colors.primary,
+                            backgroundColor: Colors.white24,
+                            value: _store.total > 0
+                                ? (_store.count / _store.total).clamp(0, 1)
+                                : null,
+                          )
+                        : const Icon(
+                            Icons.play_arrow,
+                            size: 40,
+                            color: Colors.white,
+                          ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -105,6 +178,7 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                     widget.illusts.width.toDouble());
             if (_store.status == UgoiraStatus.play) {
               return InkWell(
+                onTap: Platform.isMacOS ? _openFullscreen : null,
                 onLongPress: () {
                   HapticUtil.heavy();
                   _showUgoiraActions();
@@ -130,6 +204,7 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                 ),
               );
             }
+            if (Platform.isMacOS) return _buildDesktopCover(height, maxWidth);
             if (_store.status == UgoiraStatus.progress)
               return Column(
                 children: <Widget>[

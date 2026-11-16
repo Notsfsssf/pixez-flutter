@@ -124,6 +124,8 @@ abstract class _UgoiraStoreBase with Store {
       }
     } on PlatformException catch (e) {
       BotToast.showText(text: "encode failed: ${e.message ?? e.toString()}");
+    } on MissingPluginException {
+      BotToast.showText(text: "encode failed: not supported on this platform");
     } finally {
       isEncoding = false;
     }

@@ -23,6 +23,7 @@ import 'package:pixez/constants.dart';
 import 'package:pixez/er/fluent_leader.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/page/zoom/photo_zoom_page.dart';
 import 'package:pixez/models/account.dart';
 import 'package:pixez/network/oauth_client.dart';
 import 'package:pixez/page/hello/android_hello_page.dart';
@@ -357,8 +358,11 @@ class Leader {
         title: title,
       );
     }
+    // On macOS the image viewer covers the sidebar so full screen fills the
+    // window; other pages open inside the desktop pane.
     return Navigator.of(
       context,
+      rootNavigator: Platform.isMacOS && widget is PhotoZoomPage,
     ).push(MaterialPageRoute(builder: (context) => Scaffold(body: widget)));
   }
 
@@ -378,8 +382,11 @@ class Leader {
         forceSkipWrap: forceSkipWrap,
       );
     }
+    // On macOS the image viewer covers the sidebar so full screen fills the
+    // window; other pages open inside the desktop pane.
     return Navigator.of(
       context,
+      rootNavigator: Platform.isMacOS && widget is PhotoZoomPage,
     ).push(MaterialPageRoute(builder: (context) => Scaffold(body: widget)));
   }
 }
