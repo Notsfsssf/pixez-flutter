@@ -369,7 +369,7 @@ abstract class _SaveStoreBase with Store {
     Illusts illusts,
     String fileName,
   ) async {
-    saveToGalleryWithUser(
+    await saveToGalleryWithUser(
       uint8list,
       illusts.user.name,
       illusts.user.id,

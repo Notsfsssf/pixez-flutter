@@ -131,6 +131,7 @@ class _PreviewPageState extends State<PreviewPage> {
 
   @override
   void dispose() {
+    _lightingStore.dispose();
     _easyRefreshController.dispose();
     super.dispose();
   }

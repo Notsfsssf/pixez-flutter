@@ -41,7 +41,8 @@ class HelloPage extends StatefulWidget {
 }
 
 class _HelloPageState extends State<HelloPage> {
-  late StreamSubscription _sub;
+  StreamSubscription? _sub;
+  StreamSubscription? _saveSubscription;
   late int index;
   late PageController _pageController;
   double? bottomNavigatorHeight = null;
@@ -49,7 +50,8 @@ class _HelloPageState extends State<HelloPage> {
 
   @override
   void dispose() {
-    _sub.cancel();
+    _sub?.cancel();
+    _saveSubscription?.cancel();
     _pageController.dispose();
     super.dispose();
   }
@@ -90,7 +92,7 @@ class _HelloPageState extends State<HelloPage> {
     );
     super.initState();
     saveStore.ctx = this.context;
-    saveStore.saveStream.listen((stream) {
+    _saveSubscription = saveStore.saveStream.listen((stream) {
       saveStore.listenBehavior(stream);
     });
     initLinksStream();
