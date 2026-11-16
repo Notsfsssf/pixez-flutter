@@ -14,7 +14,10 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:material_ui/material_ui.dart';
+import 'package:pixez/er/leader.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/i18n.dart';
@@ -62,6 +65,11 @@ class _AccountSelectPageState extends State<AccountSelectPage> {
                   if (accountStore.accounts.indexOf(accountStore.now) !=
                       index) {
                     await accountStore.select(index);
+                  }
+                  if (!mounted) return;
+                  if (Platform.isMacOS) {
+                    await Leader.pushUntilHome(context);
+                  } else {
                     setState(() {});
                   }
                 },
@@ -75,9 +83,11 @@ class _AccountSelectPageState extends State<AccountSelectPage> {
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.add),
-              onPressed: () => Navigator.of(context, rootNavigator: true)
-                  .push(MaterialPageRoute(builder: (_) => LoginPage())),
-            )
+              onPressed: () => Navigator.of(
+                context,
+                rootNavigator: true,
+              ).push(MaterialPageRoute(builder: (_) => LoginPage())),
+            ),
           ],
         ),
       );

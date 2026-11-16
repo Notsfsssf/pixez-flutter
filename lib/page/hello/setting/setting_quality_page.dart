@@ -22,6 +22,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/app_widget_plugin.dart';
 import 'package:pixez/constants.dart';
+import 'package:pixez/desktop/download_folder_tile.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/prefer.dart';
 import 'package:pixez/er/updater.dart';
@@ -105,6 +106,7 @@ class _SettingQualityPageState extends State<SettingQualityPage>
           return Container(
             child: ListView(
               children: [
+                if (Platform.isMacOS) const DownloadFolderTile(),
                 if (Platform.isAndroid)
                   ListTile(
                     leading: Icon(Icons.android),

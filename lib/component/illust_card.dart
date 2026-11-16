@@ -23,6 +23,7 @@ import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
 import 'package:pixez/constants.dart';
+import 'package:pixez/desktop/artwork_context_menu.dart';
 import 'package:pixez/er/illust_cacher.dart';
 import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/er/prefer.dart';
@@ -141,7 +142,7 @@ class _IllustCardState extends State<IllustCard> {
   }
 
   Future _buildTap(BuildContext context) {
-    return Navigator.of(context, rootNavigator: true).push(
+    return Navigator.of(context, rootNavigator: !Platform.isMacOS).push(
       MaterialPageRoute(
         builder: (_) {
           return PictureListPage(
@@ -288,6 +289,13 @@ class _IllustCardState extends State<IllustCard> {
 
   Widget _buildAnimationWraper(BuildContext context, Widget child) {
     return InkWell(
+      onSecondaryTapUp: Platform.isMacOS
+          ? (details) => showArtworkContextMenu(
+              context,
+              details.globalPosition,
+              store.illusts!,
+            )
+          : null,
       onLongPress: () {
         _buildLongPressToSaveHint();
       },
@@ -327,7 +335,7 @@ class _IllustCardState extends State<IllustCard> {
 
   Future<void> _buildInkTap(BuildContext context, String heroTag) async {
     HapticUtil.selectionClick();
-    await Navigator.of(context, rootNavigator: true).push(
+    await Navigator.of(context, rootNavigator: !Platform.isMacOS).push(
       MaterialPageRoute(
         builder: (_) {
           if (iStores != null) {

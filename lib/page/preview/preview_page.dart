@@ -14,7 +14,10 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:pixez/desktop/desktop_layout.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
@@ -64,9 +67,9 @@ class GoToLoginPage extends StatelessWidget {
                       ),
                       Text(illust.createDate),
                     ],
-                  )
+                  ),
                 ],
-              )
+              ),
             ],
           ),
         ),
@@ -100,9 +103,11 @@ class LoginInFirst extends StatelessWidget {
               Navigator.push(context,
                   MaterialPageRoute(builder: (BuildContext context) {
                 return LoginPage();
-              }));
+                  },
+                ),
+              );
             },
-          )
+          ),
         ],
       ),
     );
@@ -137,36 +142,40 @@ class _PreviewPageState extends State<PreviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (_) {
-      return SafeArea(
-        child: EasyRefresh(
-          controller: _easyRefreshController,
-          onRefresh: () => _lightingStore.fetch(url: "walkthrough"),
-          onLoad: () => _lightingStore.fetchNext(),
-          child: WaterfallFlow.builder(
-            shrinkWrap: true,
-            gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-            ),
-            itemBuilder: (BuildContext context, int index) {
-              return InkWell(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => GoToLoginPage(
-                          illust: _lightingStore.iStores[index].illusts!)));
-                },
-                child: Card(
-                  child: Container(
-                    child: PixivImage(_lightingStore
-                        .iStores[index].illusts!.imageUrls.squareMedium),
+    return SafeArea(
+      child: LayoutBuilder(
+        builder: (context, constraints) => Observer(
+          builder: (_) => EasyRefresh(
+            controller: _easyRefreshController,
+            onRefresh: () => _lightingStore.fetch(url: "walkthrough"),
+            onLoad: () => _lightingStore.fetchNext(),
+            child: WaterfallFlow.builder(
+              shrinkWrap: true,
+              gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+                crossAxisCount: Platform.isMacOS
+                    ? desktopGridColumns(constraints.maxWidth)
+                    : 2,
+              ),
+              itemBuilder: (BuildContext context, int index) {
+                return InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => GoToLoginPage(
+                            illust: _lightingStore.iStores[index].illusts!)));
+                  },
+                  child: Card(
+                    child: Container(
+                      child: PixivImage(_lightingStore
+                          .iStores[index].illusts!.imageUrls.squareMedium),
+                    ),
                   ),
-                ),
-              );
-            },
-            itemCount: _lightingStore.iStores.length,
+                );
+              },
+              itemCount: _lightingStore.iStores.length,
+            ),
           ),
         ),
-      );
-    });
+      ),
+    );
   }
 }

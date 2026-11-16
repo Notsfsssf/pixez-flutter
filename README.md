@@ -23,6 +23,43 @@
 
 # 预览
 
+## macOS 本地运行
+
+需要 macOS 12 或以上、完整 Xcode、Flutter（本机已验证 3.47.9）、Rust 和 CocoaPods。
+在项目目录运行：
+
+```sh
+bash tool/build_macos.sh
+open build/macos/Build/Products/Debug/pixez_flutter.app
+```
+
+脚本会分别生成主项目和内置 rhttp 套件的代码，再构建 macOS 应用。
+可通过 `.envrc.local.sh` 配置本机 Flutter 路径和 `DEVELOPER_DIR`。
+当前签名配置用于本机 ad-hoc 运行；发布版本需另行配置开发者签名和公证。
+
+macOS 使用桌面侧栏，包含推荐、排行、快速查看、搜索、设置，以及历史、下载任务和小说入口。
+侧栏可折叠，窄窗口会自动切换为图标；作品详情在内容区内打开。
+图片网格随内容区宽度调整，沿用设置中的横屏列数／自适应宽度控制密度。
+快捷键：`⌘1`–`⌘5` 切换主页，`⌘F` 搜索，`⌘[` 返回。
+在图片卡片或作品详情图片上右键，可下载图片或复制 Pixiv 链接。
+进入 More → Preferences → Save path 可选择下载资料夹，路径会在重新启动后保留。
+
+macOS 图片下载默认写入 `Downloads/PixEz`，不再依赖 Photos 相册权限。
+下载任务在文件成功写入后才标记完成；写入失败会标记为失败，便于重试。
+
+```sh
+flutter test test/desktop_shell_test.dart
+flutter test integration_test/desktop_app_test.dart -d macos
+```
+
+已有登录账号时，可运行 `flutter test integration_test/desktop_account_test.dart -d macos`。
+该测试通过 UI 临时添加一条私人收藏并取消，下载一张单页图片，检查文件可解码和任务完成状态。
+测试下载文件使用 `codex_download_check_` 前缀，不会持久修改用户设置。
+
+`flutter test integration_test/desktop_mouse_test.dart -d macos` 验证右键菜单、实际图片下载、
+Preferences 路径显示及搜索结果的桌面导航。为避免上游 API 限流影响，此测试使用已缓存的公开图片元数据；
+图片文件下载和 macOS 保存通道仍为真实操作，测试文件使用 `codex_mouse_check_` 前缀。
+
 |![Preview](./.github/preview/2.jpg) | ![Preview](./.github/preview/1.jpg) | 
 |:-------------------:|:------------------------:|
 

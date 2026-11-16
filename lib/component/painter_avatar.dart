@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -36,7 +38,7 @@ class PainterAvatar extends StatefulWidget {
 
 class _PainterAvatarState extends State<PainterAvatar> {
   void pushToUserPage() {
-    Navigator.of(context, rootNavigator: true)
+    Navigator.of(context, rootNavigator: !Platform.isMacOS)
         .push(MaterialPageRoute(builder: (_) {
       return UsersPage(id: widget.id);
     }));
@@ -53,6 +55,8 @@ class _PainterAvatarState extends State<PainterAvatar> {
         },
         child: widget.size == null
             ? CachedNetworkImage(
+                width: 60,
+                height: 60,
                 imageUrl: widget.url,
                 imageBuilder: (context, imageProvider) => Container(
                   width: 60.0,

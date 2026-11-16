@@ -40,7 +40,10 @@ class MainFlutterWindow: NSWindow, FlutterStreamHandler {
         let flutterViewController = FlutterViewController()
         let windowFrame = self.frame
         self.contentViewController = flutterViewController
-        self.setFrame(windowFrame, display: true)
+        self.setFrame(NSRect(origin: windowFrame.origin, size: NSSize(width: 1280, height: 820)), display: true)
+        self.minSize = NSSize(width: 720, height: 560)
+        self.title = "PixEz"
+        self.center()
         let batteryChannel = FlutterMethodChannel(
             name: "com.perol.dev/custom_tab",
             binaryMessenger: flutterViewController.engine.binaryMessenger)

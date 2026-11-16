@@ -24,6 +24,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/component/pixiv_image.dart';
+import 'package:pixez/desktop/desktop_layout.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
@@ -104,7 +105,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
               automaticallyImplyLeading: false,
               // backgroundColor: Theme.of(context).canvasColor,
               title: Text(""),
-            )
+            ),
           ],
           body: ListView(),
         ),
@@ -157,7 +158,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
           SliverToBoxAdapter(
             child: _buildSecondRow(context, I18n.of(context).recommend_for_you),
           ),
-          _buildWaterfall(context, MediaQuery.of(context).orientation)
+          _buildWaterfall(context, MediaQuery.of(context).orientation),
         ],
       ),
     );
@@ -176,7 +177,15 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
 
   Widget _buildWaterfall(BuildContext context, Orientation orientation) {
     var count = 2;
-    if (orientation == Orientation.portrait
+    if (Platform.isMacOS) {
+      count = desktopGridColumns(
+        MediaQuery.sizeOf(context).width,
+        preferredColumns: userSetting.hCrossCount,
+        preferredWidth: userSetting.hCrossAdapt
+            ? userSetting.hCrossAdapterWidth.toDouble()
+            : null,
+      );
+    } else if (orientation == Orientation.portrait
         ? userSetting.crossAdapt
         : userSetting.hCrossAdapt) {
       count = _buildSliderValue(context, orientation);
@@ -227,7 +236,8 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
                                     true
                                 ? '${I18n.of(context).error_400_hint}\n ${_lightingStore.errorMessage}'
                                 : '${_lightingStore.errorMessage}'),
-                          ))
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -363,7 +373,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
               },
             ),
             padding: EdgeInsets.all(8.0),
-          )
+          ),
         ],
       ),
     );
@@ -384,7 +394,7 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
           ),
           padding: EdgeInsets.only(left: 20.0),
         ),
-        Expanded(child: RecomUserRoad())
+        Expanded(child: RecomUserRoad()),
       ],
     );
   }

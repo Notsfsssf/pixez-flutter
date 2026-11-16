@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -45,35 +47,34 @@ class _ResultPageState extends State<ResultPage> {
 
   @override
   Widget build(BuildContext context) {
+    final tabs = TabBar(
+      isScrollable: Platform.isMacOS,
+      tabAlignment: Platform.isMacOS ? TabAlignment.start : null,
+      indicatorSize: TabBarIndicatorSize.label,
+      onTap: (i) {
+        HapticUtil.selectionClick();
+        if (i == index) topStore.setTop('401');
+        index = i;
+      },
+      tabs: [
+        Tab(text: I18n.of(context).illust),
+        Tab(text: I18n.of(context).painter),
+      ],
+    );
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
           elevation: 0.0,
-          title: TabBar(
-              indicatorSize: TabBarIndicatorSize.label,
-              onTap: (i) {
-                HapticUtil.selectionClick();
-                if (i == index) {
-                  topStore.setTop("401");
-                }
-                index = i;
-              },
-              tabs: [
-                Tab(
-                  text: I18n.of(context).illust,
-                ),
-                Tab(
-                  text: I18n.of(context).painter,
-                ),
-              ]),
+          title: Platform.isMacOS ? Text(widget.word) : tabs,
+          bottom: Platform.isMacOS ? tabs : null,
         ),
-        body: TabBarView(children: [
-          ResultIllustList(word: widget.word),
-          SearchResultPainterPage(
-            word: widget.word,
-          ),
-        ]),
+        body: TabBarView(
+          children: [
+            ResultIllustList(word: widget.word),
+            SearchResultPainterPage(word: widget.word),
+          ],
+        ),
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'dart:io';
 /*
  * Copyright (C) 2020. by perol_notsf, All rights reserved
  *
@@ -30,6 +31,7 @@ import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/desktop/artwork_context_menu.dart';
 import 'package:pixez/models/ban_illust_id.dart';
 import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/illust.dart';
@@ -424,6 +426,13 @@ class _IllustRowPageState extends State<IllustRowPage>
             .map((element) => IllustStore(element.id, element))
             .toList();
         return InkWell(
+          onSecondaryTapUp: Platform.isMacOS
+              ? (details) => showArtworkContextMenu(
+                  context,
+                  details.globalPosition,
+                  _aboutStore.illusts[index],
+                )
+              : null,
           onTap: () {
             HapticUtil.selectionClick();
             Leader.push(
@@ -477,6 +486,14 @@ class _IllustRowPageState extends State<IllustRowPage>
                   int index,
                 ) {
                   return InkWell(
+                    onSecondaryTapUp: Platform.isMacOS
+                        ? (details) => showArtworkContextMenu(
+                            context,
+                            details.globalPosition,
+                            data,
+                            pageIndex: index,
+                          )
+                        : null,
                     onLongPress: () {
                       _pressSave(data, index);
                     },
@@ -507,6 +524,14 @@ class _IllustRowPageState extends State<IllustRowPage>
           }
           Widget placeWidget = Container(height: height);
           return InkWell(
+            onSecondaryTapUp: Platform.isMacOS
+                ? (details) => showArtworkContextMenu(
+                    context,
+                    details.globalPosition,
+                    data,
+                    pageIndex: 0,
+                  )
+                : null,
             onLongPress: () {
               _pressSave(data, 0);
             },

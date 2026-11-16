@@ -85,6 +85,8 @@ dependencies:
   cupertino_ui: ^1.1.3
 
 dev_dependencies:
+  integration_test:
+    sdk: flutter
   flutter_test:
     sdk: flutter
   mobx_codegen: ^2.6.1

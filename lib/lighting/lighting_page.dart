@@ -15,6 +15,7 @@
  */
 
 import 'dart:math';
+import 'dart:io';
 
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:material_ui/material_ui.dart';
@@ -23,6 +24,7 @@ import 'package:mobx/mobx.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/constants.dart';
+import 'package:pixez/desktop/desktop_layout.dart';
 import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_store.dart';
@@ -103,10 +105,10 @@ class _LightingListState extends State<LightingList> {
     _isNested = widget.isNested ?? false;
     _scrollController = widget.scrollController ?? ScrollController();
     _refreshController = EasyRefreshController(
-        controlFinishLoad: true, controlFinishRefresh: true);
-    _store = LightingStore(
-      widget.source,
+      controlFinishLoad: true,
+      controlFinishRefresh: true,
     );
+    _store = LightingStore(widget.source);
     _store.easyRefreshController = _refreshController;
     super.initState();
     _store.fetch();
@@ -126,16 +128,18 @@ class _LightingListState extends State<LightingList> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Observer(builder: (_) {
-        return Container(child: _buildContent(context));
-      }),
+    return LayoutBuilder(
+      builder: (context, constraints) => Observer(
+        builder: (_) {
+          return _buildContent(context, constraints.maxWidth);
+        },
+      ),
     );
   }
 
   late EasyRefreshController _refreshController;
 
-  Widget _buildWithoutHeader(context) {
+  Widget _buildWithoutHeader(context, double width) {
     _store.iStores.removeWhere((element) {
       if (element.illusts!.hateByUser(ai: _ai)) return true;
       if (widget.filter != null && !widget.filter!(element.illusts!)) {
@@ -175,7 +179,7 @@ class _LightingListState extends State<LightingList> {
             itemBuilder: (context, index) {
               return _buildItem(index);
             },
-            gridDelegate: _buildGridDelegate(),
+            gridDelegate: _buildGridDelegate(width),
           ),
         ));
   }
@@ -195,13 +199,13 @@ class _LightingListState extends State<LightingList> {
     return false;
   }
 
-  Widget _buildContent(context) {
+  Widget _buildContent(context, double width) {
     return _store.errorMessage != null
         ? _buildErrorContent(context)
         : _store.iStores.isNotEmpty
             ? (widget.header != null
-                ? _buildWithHeader(context)
-                : _buildWithoutHeader(context))
+                  ? _buildWithHeader(context, width)
+                  : _buildWithoutHeader(context, width))
             : Container(
                 child: _store.refreshing ? WaterFallLoading() : Container(),
               );
@@ -227,12 +231,9 @@ class _LightingListState extends State<LightingList> {
               onPressed: () {
                 _store.fetch(force: true);
               },
-              child: Text(I18n.of(context).retry)),
-          Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                errorText,
-              ))
+              child: Text(I18n.of(context).retry),
+            ),
+            Padding(padding: const EdgeInsets.all(16.0), child: Text(errorText)),
         ],
       ),
     );
@@ -246,7 +247,7 @@ class _LightingListState extends State<LightingList> {
     return '(${Constants.tagName}) $message';
   }
 
-  Widget _buildWithHeader(BuildContext context) {
+  Widget _buildWithHeader(BuildContext context, double width) {
     return NotificationListener<ScrollNotification>(
       onNotification: (ScrollNotification notification) {
         ScrollMetrics metrics = notification.metrics;
@@ -278,7 +279,7 @@ class _LightingListState extends State<LightingList> {
                 child: Container(child: widget.header),
               ),
               SliverWaterfallFlow(
-                gridDelegate: _buildGridDelegate(),
+                gridDelegate: _buildGridDelegate(width),
                 delegate: _buildSliverChildBuilderDelegate(context),
               ),
               const FooterLocator.sliver(),
@@ -307,7 +308,18 @@ class _LightingListState extends State<LightingList> {
     }, childCount: _store.iStores.length);
   }
 
-  SliverWaterfallFlowDelegate _buildGridDelegate() {
+  SliverWaterfallFlowDelegate _buildGridDelegate(double width) {
+    if (Platform.isMacOS) {
+      return SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+        crossAxisCount: desktopGridColumns(
+          width,
+          preferredColumns: userSetting.hCrossCount,
+          preferredWidth: userSetting.hCrossAdapt
+              ? userSetting.hCrossAdapterWidth.toDouble()
+              : null,
+        ),
+      );
+    }
     var count = 2;
     if (MediaQuery.of(context).orientation == Orientation.portrait
         ? userSetting.crossAdapt

@@ -267,6 +267,21 @@ abstract class _SaveStoreBase with Store {
   _joinQueue(String url, Illusts illusts, String fileName) async {
     final result = await fetcher.taskPersistProvider.getAccount(url);
     if (result != null) {
+      // A completed task may point at the previous download folder. The caller
+      // has already checked that the requested destination does not exist.
+      if (Platform.isMacOS &&
+          (result.status == 2 || result.status == 3) &&
+          !fetcher.urlPool.contains(url) &&
+          !fetcher.queue.any((task) => task.url == url)) {
+        await fetcher.taskPersistProvider.update(
+          result
+            ..fileName = fileName
+            ..status = 0,
+        );
+        fetcher.jobMaps.remove(url);
+        await fetcher.save(url, illusts, fileName);
+        return;
+      }
       streamController.add(
         SaveStream(
           SaveState.INQUEUE,
@@ -300,7 +315,10 @@ abstract class _SaveStoreBase with Store {
     int index, {
     bool redo = false,
   }) async {
-    if (Platform.isAndroid || Platform.isWindows || Platform.isLinux) {
+    if (Platform.isAndroid ||
+        Platform.isWindows ||
+        Platform.isLinux ||
+        Platform.isMacOS) {
       try {
         String targetFileName = applySingleFolder(illusts, fileName);
         final isExist = await DocumentPlugin.exist(targetFileName);
@@ -323,6 +341,21 @@ abstract class _SaveStoreBase with Store {
     int sanityLevel,
     String fileName,
   ) async {
+    if (Platform.isMacOS) {
+      var destination = userSetting.singleFolder
+          ? '${userName.toLegal()}_$userId/$fileName'
+          : fileName;
+      if (userSetting.overSanityLevelFolder && sanityLevel > 2) {
+        destination = 'sanity/$destination';
+      }
+      final saved = await DocumentPlugin.save(uint8list, destination);
+      if (saved != true)
+        throw FileSystemException(
+          'Unable to save downloaded image',
+          destination,
+        );
+      return;
+    }
     if (Platform.isAndroid ||
         Platform.isIOS ||
         Platform.isWindows ||

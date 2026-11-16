@@ -44,7 +44,7 @@ class Leader {
       FluentLeader.pushUntilHome(context);
       return;
     }
-    Navigator.of(context).pushAndRemoveUntil(
+    Navigator.of(context, rootNavigator: Platform.isMacOS).pushAndRemoveUntil(
       MaterialPageRoute(
         builder: (context) =>
             Platform.isAndroid ? AndroidHelloPage() : HelloPage(),
@@ -166,7 +166,9 @@ class Leader {
           await accountProvider.insert(accountPersist);
           await accountStore.fetch();
           BotToast.showText(text: "Login Success");
-          if (Platform.isIOS || Platform.isLinux) pushUntilHome(context);
+          if (Platform.isIOS || Platform.isLinux || Platform.isMacOS) {
+            await pushUntilHome(context);
+          }
         } catch (e) {
           LPrinter.d(e);
           BotToast.showText(text: e.toString());
@@ -189,7 +191,7 @@ class Leader {
       var idSource = link.pathSegments.last;
       try {
         int id = int.parse(idSource);
-        Navigator.of(context, rootNavigator: true).push(
+        Navigator.of(context, rootNavigator: !Platform.isMacOS).push(
           MaterialPageRoute(
             builder: (context) {
               return IllustLightingPage(id: id);
@@ -202,7 +204,7 @@ class Leader {
       var idSource = link.pathSegments.last;
       try {
         int id = int.parse(idSource);
-        Navigator.of(context, rootNavigator: true).push(
+        Navigator.of(context, rootNavigator: !Platform.isMacOS).push(
           MaterialPageRoute(
             builder: (context) {
               return UsersPage(id: id);
@@ -214,7 +216,7 @@ class Leader {
     } else if (link.host.contains("novel")) {
       try {
         int id = int.parse(link.pathSegments.last);
-        Navigator.of(context, rootNavigator: true).push(
+        Navigator.of(context, rootNavigator: !Platform.isMacOS).push(
           MaterialPageRoute(
             builder: (context) {
               return NovelViewerPage(id: id);
@@ -232,7 +234,7 @@ class Leader {
         if (index != -1) {
           try {
             int id = int.parse(paths[index + 1]);
-            Navigator.of(context, rootNavigator: true).push(
+            Navigator.of(context, rootNavigator: !Platform.isMacOS).push(
               MaterialPageRoute(
                 builder: (context) {
                   return IllustLightingPage(id: id);
@@ -253,7 +255,7 @@ class Leader {
             int id = int.parse(paths[index + 1]);
             Navigator.of(
               context,
-              rootNavigator: true,
+              rootNavigator: !Platform.isMacOS,
             ).push(MaterialPageRoute(builder: (context) => UsersPage(id: id)));
             return true;
           } catch (e) {
@@ -285,7 +287,7 @@ class Leader {
         try {
           var id = link.queryParameters['id'];
           if (!link.path.contains("novel"))
-            Navigator.of(context, rootNavigator: true).push(
+            Navigator.of(context, rootNavigator: !Platform.isMacOS).push(
               MaterialPageRoute(
                 builder: (context) {
                   return UsersPage(id: int.parse(id!));
@@ -293,7 +295,7 @@ class Leader {
               ),
             );
           else
-            Navigator.of(context, rootNavigator: true).push(
+            Navigator.of(context, rootNavigator: !Platform.isMacOS).push(
               MaterialPageRoute(
                 builder: (context) {
                   return NovelViewerPage(id: int.parse(id!), novelStore: null);
@@ -314,7 +316,7 @@ class Leader {
         } else if (i == "u") {
           try {
             int id = int.parse(link.pathSegments[link.pathSegments.length - 1]);
-            Navigator.of(context, rootNavigator: true).push(
+            Navigator.of(context, rootNavigator: !Platform.isMacOS).push(
               MaterialPageRoute(
                 builder: (context) {
                   return UsersPage(id: id);
@@ -326,7 +328,7 @@ class Leader {
         } else if (i == "tags") {
           try {
             String tag = link.pathSegments[link.pathSegments.length - 1];
-            Navigator.of(context, rootNavigator: true).push(
+            Navigator.of(context, rootNavigator: !Platform.isMacOS).push(
               MaterialPageRoute(
                 builder: (context) {
                   return ResultPage(word: tag);

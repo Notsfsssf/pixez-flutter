@@ -15,6 +15,7 @@
  */
 
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 import 'package:material_ui/material_ui.dart' hide SearchBar;
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -161,7 +162,7 @@ class _SearchPageState extends State<SearchPage>
                     IconButton(
                       icon: Icon(Icons.search),
                       onPressed: () {
-                        Navigator.of(context, rootNavigator: true).push(
+                        Navigator.of(context, rootNavigator: !Platform.isMacOS).push(
                           MaterialPageRoute(
                             builder: (context) => SearchSuggestionPage(),
                           ),
@@ -369,7 +370,7 @@ class _SearchPageState extends State<SearchPage>
                   final tags = _trendTagsStore.visibleTrendTags;
                   return GestureDetector(
                     onTap: () {
-                      Navigator.of(context, rootNavigator: true).push(
+                      Navigator.of(context, rootNavigator: !Platform.isMacOS).push(
                         MaterialPageRoute(
                           builder: (_) {
                             return ResultPage(word: tags[index].tag);
@@ -378,7 +379,7 @@ class _SearchPageState extends State<SearchPage>
                       );
                     },
                     onLongPress: () {
-                      Navigator.of(context, rootNavigator: true).push(
+                      Navigator.of(context, rootNavigator: !Platform.isMacOS).push(
                         MaterialPageRoute(
                           builder: (_) {
                             return IllustLightingPage(
@@ -486,7 +487,7 @@ class _SearchPageState extends State<SearchPage>
         padding: EdgeInsets.all(0.0),
         label: Text(f.name, style: TextStyle(fontSize: 12.0)),
         onPressed: () {
-          Navigator.of(context, rootNavigator: true).push(
+          Navigator.of(context, rootNavigator: !Platform.isMacOS).push(
             MaterialPageRoute(
               builder: (context) =>
                   ResultPage(word: f.name, translatedName: f.translatedName),

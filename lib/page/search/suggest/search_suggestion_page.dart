@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
@@ -113,9 +115,13 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                                   final start = _filter.text.indexOf(i);
                                   if (start != -1)
                                     _filter.selection =
-                                        TextSelection.fromPosition(TextPosition(
-                                            offset: start + i.length));
-                                })
+                                        TextSelection.fromPosition(
+                                          TextPosition(
+                                            offset: start + i.length,
+                                          ),
+                                        );
+                                },
+                              ),
                         ],
                       ),
                     ),
@@ -187,7 +193,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                                 setState(() {});
                               } else {
                                 FocusScope.of(context).unfocus();
-                                Navigator.of(context, rootNavigator: true)
+                                Navigator.of(context, rootNavigator: !Platform.isMacOS)
                                     .push(MaterialPageRoute(builder: (context) {
                                   return ResultPage(
                                     word: tags[index].name,
@@ -288,7 +294,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
         onSubmitted: (s) {
           var word = s.trim();
           if (word.isEmpty) return;
-          Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+          Navigator.of(context, rootNavigator: !Platform.isMacOS).push(MaterialPageRoute(
               builder: (context) => ResultPage(
                     word: word,
                   )));

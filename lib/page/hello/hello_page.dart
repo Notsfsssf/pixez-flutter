@@ -15,6 +15,7 @@
  */
 
 import 'dart:async';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:material_ui/material_ui.dart';
@@ -22,6 +23,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/deep_link_plugin.dart';
+import 'package:pixez/desktop/desktop_shell.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/er/prefer.dart';
 import 'package:pixez/i18n.dart';
@@ -32,7 +34,13 @@ import 'package:pixez/page/hello/ranking/rank_page.dart';
 import 'package:pixez/page/hello/recom/recom_spotlight_page.dart';
 import 'package:pixez/page/hello/setting/setting_page.dart';
 import 'package:pixez/page/preview/preview_page.dart';
+import 'package:pixez/page/account/select/account_select_page.dart';
+import 'package:pixez/page/login/login_page.dart';
+import 'package:pixez/page/history/history_page.dart';
+import 'package:pixez/page/novel/novel_rail.dart';
+import 'package:pixez/page/task/job_page.dart';
 import 'package:pixez/page/search/search_page.dart';
+import 'package:pixez/page/search/suggest/search_suggestion_page.dart';
 import 'package:pixez/utils/haptic_util.dart';
 
 class HelloPage extends StatefulWidget {
@@ -80,7 +88,14 @@ class _HelloPageState extends State<HelloPage> {
       ),
       NewPage(),
       SearchPage(),
-      SettingPage(),
+      Platform.isMacOS
+          ? Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 900),
+                child: SettingPage(),
+              ),
+            )
+          : SettingPage(),
     ];
     Constants.type = 0;
     fetcher.context = context;
@@ -121,6 +136,48 @@ class _HelloPageState extends State<HelloPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (Platform.isMacOS) {
+      return Observer(
+        builder: (context) {
+          final l10n = I18n.of(context);
+          return DesktopShell(
+            selectedIndex: index,
+            labels: [
+              l10n.home,
+              l10n.rank,
+              l10n.quick_view,
+              l10n.search,
+              l10n.more,
+            ],
+            onSelected: (value) {
+              if (index == value) topStore.setTop('${value + 1}00');
+              if (_pageController.hasClients) _pageController.jumpToPage(value);
+              setState(() => index = value);
+            },
+            contentBuilder: _buildPageView,
+            searchBuilder: (_) => SearchSuggestionPage(),
+            accountBuilder: (_) =>
+                accountStore.now == null ? LoginPage() : AccountSelectPage(),
+            accountLabel: accountStore.now?.name ?? l10n.go_to_login,
+            accountInWorkspace: accountStore.now != null,
+            links: [
+              DesktopLink(Icons.history, l10n.history, (_) => HistoryPage()),
+              DesktopLink(
+                Icons.download_outlined,
+                l10n.task_progress,
+                (_) => JobPage(),
+              ),
+              DesktopLink(
+                Icons.menu_book_outlined,
+                l10n.novel,
+                (_) => NovelRail(),
+                replaceRoot: true,
+              ),
+            ],
+          );
+        },
+      );
+    }
     if (bottomNavigatorHeight == null) {
       bottomNavigatorHeight = MediaQuery.of(context).padding.bottom + 80;
     }
@@ -280,6 +337,7 @@ class _HelloPageState extends State<HelloPage> {
 
   PageView _buildPageView(BuildContext context) {
     return PageView.builder(
+      physics: Platform.isMacOS ? const NeverScrollableScrollPhysics() : null,
       itemCount: 5,
       controller: _pageController,
       onPageChanged: (index) {
