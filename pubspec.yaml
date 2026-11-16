@@ -19,6 +19,7 @@ environment:
   sdk: ">=3.11.5"
 
 dependencies:
+  characters: ^1.4.1
   flutter:
     sdk: flutter
   flutter_localizations:

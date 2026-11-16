@@ -23,7 +23,7 @@ class DocumentPlugin {
       {bool clearOld = false, int? saveMode}) async {
     return platform.invokeMethod<bool>('save', {
       "data": uint8list,
-      "name": fileName,
+      "name": userSetting.sanitizeFileName(fileName),
       "save_mode": saveMode ?? userSetting.saveMode,
       "clear_old": clearOld
     });
@@ -33,7 +33,7 @@ class DocumentPlugin {
       {bool clearOld = false, int? saveMode}) async {
     return platform.invokeMethod<bool>('saveFromPath', {
       "source_path": sourcePath,
-      "name": fileName,
+      "name": userSetting.sanitizeFileName(fileName),
       "save_mode": saveMode ?? userSetting.saveMode,
       "clear_old": clearOld
     });
@@ -42,7 +42,7 @@ class DocumentPlugin {
   static Future<bool?> openSave(Uint8List uint8list, String fileName) {
     return platform.invokeMethod<bool>('openSave', {
       "data": uint8list,
-      "name": fileName,
+      "name": userSetting.sanitizeFileName(fileName),
     });
   }
 
@@ -56,7 +56,7 @@ class DocumentPlugin {
 
   static Future<bool?> exist(String fileName, {int? saveMode}) async {
     return platform.invokeMethod<bool>("exist", {
-      "name": fileName,
+      "name": userSetting.sanitizeFileName(fileName),
       "save_mode": saveMode ?? userSetting.saveMode,
     });
   }

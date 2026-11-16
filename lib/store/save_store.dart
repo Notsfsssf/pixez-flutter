@@ -86,7 +86,9 @@ Future<String> buildSaveFileName(
         index,
         memType,
       );
-      if (result != null && result.isNotEmpty) return result;
+      if (result != null && result.isNotEmpty) {
+        return userSetting.sanitizeFileName(result);
+      }
     } else {
       await userSetting.setFileNameEval(0);
     }
@@ -422,7 +424,7 @@ abstract class _SaveStoreBase with Store {
     String memType,
   ) async {
     final result = await JSEvalPlugin.eval(illust, func, index, memType);
-    return result ?? "";
+    return userSetting.sanitizeFileName(result ?? "");
   }
 
 

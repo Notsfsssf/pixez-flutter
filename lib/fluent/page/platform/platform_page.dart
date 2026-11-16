@@ -7,6 +7,7 @@ import 'package:pixez/document_plugin.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/fluent/page/hello/setting/save_format_page.dart';
+import 'package:pixez/utils/file_name.dart';
 
 class PlatformPage extends StatefulWidget {
   @override
@@ -131,6 +132,44 @@ class _PlatformPageStateWindow extends State<PlatformPage> {
                   //   ),
                   // ),
                 ),
+                Observer(builder: (_) {
+                  final i18n = I18n.of(context);
+                  return Column(children: [
+                    ListTile(
+                      title: Text(i18n.filename_emoji_mode),
+                      subtitle: Text(
+                          '🐟️.jpg → ${userSetting.sanitizeFileName('🐟️.jpg')}'),
+                      trailing: ComboBox<FilenameEmojiMode>(
+                        value: userSetting.filenameEmojiMode,
+                        items: [
+                          ComboBoxItem(
+                              value: FilenameEmojiMode.underscore,
+                              child: Text(i18n.filename_emoji_underscore)),
+                          ComboBoxItem(
+                              value: FilenameEmojiMode.remove,
+                              child: Text(i18n.filename_emoji_remove)),
+                          ComboBoxItem(
+                              value: FilenameEmojiMode.english,
+                              child: Text(i18n.filename_emoji_english)),
+                        ],
+                        onChanged: (value) {
+                          if (value != null)
+                            userSetting.setFilenameEmojiMode(value);
+                        },
+                      ),
+                    ),
+                    if (userSetting.filenameEmojiMode ==
+                        FilenameEmojiMode.english)
+                      ListTile(
+                        title: Text(i18n.filename_emoji_capitalize),
+                        subtitle: Text('fish → Fish'),
+                        trailing: ToggleSwitch(
+                          checked: userSetting.filenameEmojiCapitalize,
+                          onChanged: userSetting.setFilenameEmojiCapitalize,
+                        ),
+                      ),
+                  ]);
+                }),
                 // TODO: Windows.Storage.StorageFolder.CreateFileAsync 不支持文件名包含目录分隔符，先禁用这个选项
                 // Observer(
                 //   builder: (context) {

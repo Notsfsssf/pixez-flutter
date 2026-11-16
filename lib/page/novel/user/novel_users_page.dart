@@ -285,7 +285,9 @@ class _NovelUsersPageState extends State<NovelUsersPage>
         .replaceAll(">", "")
         .replaceAll("|", "")
         .replaceAll("<", "");
-    String fileName = "${replaceAll}_${userStore.userDetail!.user.id}.${meme}";
+    String fileName = userSetting.sanitizeFileName(
+      "${replaceAll}_${userStore.userDetail!.user.id}.${meme}",
+    );
     try {
       String tempFile = (await getTemporaryDirectory()).path + "/$fileName";
       final dio = Dio(BaseOptions(headers: Hoster.header(url: url)));
