@@ -34,6 +34,7 @@ import 'package:pixez/page/about/languages.dart';
 import 'package:pixez/secure_plugin.dart';
 import 'package:pixez/store/welcome_page_type.dart';
 import 'package:pixez/utils/tray_manager_helper.dart';
+import 'package:pixez/utils/file_name.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'user_setting.g.dart';
@@ -163,6 +164,17 @@ abstract class _UserSetting with Store {
   NetworkMode oauthNetworkMode = NetworkMode.ech;
   @observable
   bool singleFolder = false;
+  @observable
+  FilenameEmojiMode filenameEmojiMode = FilenameEmojiMode.underscore;
+  @observable
+  bool filenameEmojiCapitalize = false;
+
+  String sanitizeFileName(String name) => replaceFilenameEmoji(
+    name,
+    mode: filenameEmojiMode,
+    capitalize: filenameEmojiCapitalize,
+  );
+
   @observable
   bool overSanityLevelFolder = false;
   @observable
@@ -313,6 +325,18 @@ abstract class _UserSetting with Store {
   setFileNameEval(int value) async {
     await prefs.setInt("file_name_eval", value);
     fileNameEval = value;
+  }
+
+  @action
+  Future<void> setFilenameEmojiMode(FilenameEmojiMode value) async {
+    await prefs.setString('filename_emoji_mode', value.name);
+    filenameEmojiMode = value;
+  }
+
+  @action
+  Future<void> setFilenameEmojiCapitalize(bool value) async {
+    await prefs.setBool('filename_emoji_capitalize', value);
+    filenameEmojiCapitalize = value;
   }
 
   @observable
@@ -607,6 +631,12 @@ abstract class _UserSetting with Store {
     }
     format = prefs.getString(SAVE_FORMAT_KEY);
     if (format == null || format!.isEmpty) format = intialFormat;
+    final emojiMode = prefs.getString('filename_emoji_mode');
+    filenameEmojiMode = FilenameEmojiMode.values.firstWhere(
+      (mode) => mode.name == emojiMode,
+      orElse: () => FilenameEmojiMode.underscore,
+    );
+    filenameEmojiCapitalize = prefs.getBool('filename_emoji_capitalize') ?? false;
   }
 
   int toRealLanguageNum(int num) {

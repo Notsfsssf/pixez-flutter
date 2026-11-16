@@ -2,13 +2,14 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
+import 'package:pixez/main.dart';
 
 class SAFPlugin {
   static const platform = const MethodChannel('com.perol.dev/saf');
 
   static Future<String?> createFile(String name, String type) async {
     final result = await platform.invokeMethod("createFile", {
-      'name': name,
+      'name': userSetting.sanitizeFileName(name),
       'mimeType': type,
     });
     if (result != null) {

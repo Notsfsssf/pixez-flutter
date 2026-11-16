@@ -365,5 +365,10 @@
   "date_preset_6months": "6个月",
   "date_preset_1year": "1年",
   "date_preset_custom": "指定期间",
-  "related_users": "相关画师"
+  "related_users": "相关画师",
+  "filename_emoji_mode": "文件名中的 emoji",
+  "filename_emoji_underscore": "下划线",
+  "filename_emoji_remove": "剔除",
+  "filename_emoji_english": "英文名称",
+  "filename_emoji_capitalize": "每个表情的英文名称首字母大写"
 }

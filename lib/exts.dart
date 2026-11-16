@@ -50,7 +50,7 @@ extension TimeExts on String {
   }
 
   String toLegal() {
-    return this
+    return userSetting.sanitizeFileName(this)
         .replaceAll("/", "")
         .replaceAll("\\", "")
         .replaceAll(":", "")

@@ -29,6 +29,7 @@ import 'package:pixez/page/directory/save_mode_choice_page.dart';
 import 'package:pixez/page/hello/setting/save_eval_page.dart';
 import 'package:pixez/page/hello/setting/save_format_page.dart';
 import 'package:pixez/utils/haptic_util.dart';
+import 'package:pixez/utils/file_name.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class PlatformPage extends StatefulWidget {
@@ -168,6 +169,42 @@ class _PlatformPageState extends State<PlatformPage> {
                   ),
                 ),
               ),
+              Observer(builder: (_) {
+                final i18n = I18n.of(context);
+                return Column(children: [
+                  ListTile(
+                    title: Text(i18n.filename_emoji_mode),
+                    subtitle: Text(
+                        '🐟️.jpg → ${userSetting.sanitizeFileName('🐟️.jpg')}'),
+                    trailing: DropdownButton<FilenameEmojiMode>(
+                      value: userSetting.filenameEmojiMode,
+                      items: [
+                        DropdownMenuItem(
+                            value: FilenameEmojiMode.underscore,
+                            child: Text(i18n.filename_emoji_underscore)),
+                        DropdownMenuItem(
+                            value: FilenameEmojiMode.remove,
+                            child: Text(i18n.filename_emoji_remove)),
+                        DropdownMenuItem(
+                            value: FilenameEmojiMode.english,
+                            child: Text(i18n.filename_emoji_english)),
+                      ],
+                      onChanged: (value) {
+                        if (value != null)
+                          userSetting.setFilenameEmojiMode(value);
+                      },
+                    ),
+                  ),
+                  if (userSetting.filenameEmojiMode ==
+                      FilenameEmojiMode.english)
+                    SwitchListTile(
+                      title: Text(i18n.filename_emoji_capitalize),
+                      subtitle: Text('fish → Fish'),
+                      value: userSetting.filenameEmojiCapitalize,
+                      onChanged: userSetting.setFilenameEmojiCapitalize,
+                    ),
+                ]);
+              }),
               Observer(
                 builder: (context) {
                   return SwitchListTile(
