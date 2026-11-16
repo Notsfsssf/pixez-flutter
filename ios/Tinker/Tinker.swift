@@ -144,6 +144,83 @@ struct TinkerEntryView: View {
     }
 }
 
+@available(iOS 17.0, *)
+struct TinkerWidgetView: View {
+    var entry: SimpleEntry
+    @Environment(\.widgetRenderingMode) private var renderingMode
+    @Environment(\.widgetContentMargins) private var contentMargins
+
+    var body: some View {
+        ZStack {
+            Color.clear
+            VStack {
+                Spacer()
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("\(entry.title ?? "")")
+                            .font(.title3)
+                            .foregroundColor(.white)
+                            .lineLimit(1)
+                            .shadow(radius: 5, x: 0, y: 5)
+                        Text("@\(entry.userName ?? "")")
+                            .font(.caption2)
+                            .foregroundColor(.white)
+                            .lineLimit(1)
+                            .shadow(radius: 5, x: 0, y: 5)
+                    }
+                    Spacer()
+                }
+            }
+            VStack {
+                HStack(alignment: .top) {
+                    Spacer()
+                    Button(intent: SuperCharge()) {
+                        Image(systemName: "arrow.clockwise")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16)
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal, 4)
+                }
+                Spacer()
+            }
+        }
+        // In tinted / clear (Liquid Glass) modes the system removes the container
+        // background, so draw the illust in the content itself, edge to edge.
+        .background {
+            if renderingMode == .accented, let image = entry.uiImage {
+                illustImage(image)
+                    .padding(EdgeInsets(top: -contentMargins.top, leading: -contentMargins.leading,
+                                        bottom: -contentMargins.bottom, trailing: -contentMargins.trailing))
+            }
+        }
+        .widgetURL(URL(string: entry.type == "empty" ? "pixez://pixiv.net" : "pixez://pixiv.net/artworks/\(entry.illustId)"))
+        .containerBackground(for: .widget) {
+            ZStack {
+                if let image = entry.uiImage {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                }
+            }
+        }
+    }
+
+    @ViewBuilder private func illustImage(_ image: UIImage) -> some View {
+        if #available(iOS 18.0, *) {
+            Image(uiImage: image)
+                .resizable()
+                .widgetAccentedRenderingMode(.fullColor)
+                .scaledToFill()
+        } else {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFill()
+        }
+    }
+}
+
 @available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
 struct SuperCharge: AppIntent {
     static var title: LocalizedStringResource = "Refresh recommend illust"
@@ -160,51 +237,7 @@ struct Tinker: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             if #available(iOS 17.0, *) {
-                ZStack {
-                    Color.clear
-                    VStack {
-                        Spacer()
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text("\(entry.title ?? "")")
-                                    .font(.title3)
-                                    .foregroundColor(.white)
-                                    .lineLimit(1)
-                                    .shadow(radius: 5, x: 0, y: 5)
-                                Text("@\(entry.userName ?? "")")
-                                    .font(.caption2)
-                                    .foregroundColor(.white)
-                                    .lineLimit(1)
-                                    .shadow(radius: 5, x: 0, y: 5)
-                            }
-                            Spacer()
-                        }
-                    }
-                    VStack {
-                        HStack(alignment: .top) {
-                            Spacer()
-                            Button(intent: SuperCharge()) {
-                                Image(systemName: "arrow.clockwise")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 16)
-                            }
-                            .buttonStyle(.plain)
-                            .padding(.horizontal, 4)
-                        }
-                        Spacer()
-                    }
-                }
-                .widgetURL(URL(string: entry.type == "empty" ? "pixez://pixiv.net" : "pixez://pixiv.net/artworks/\(entry.illustId)"))
-                .containerBackground(for: .widget) {
-                    ZStack {
-                        if let image = entry.uiImage {
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFill()
-                        }
-                    }
-                }
+                TinkerWidgetView(entry: entry)
             } else {
                 TinkerEntryView(entry: entry)
                     .padding()
