@@ -228,15 +228,6 @@ class _PixivImageState extends State<PixivImage> {
         if (_loadRevision != PixivImage._networkRevision.value) {
           Future.microtask(_retry);
         }
-        final status = error is DioException
-            ? error.response?.statusCode
-            : null;
-        final reason = error is DioException
-            ? error.type.name
-            : error.runtimeType.toString();
-        debugPrint(
-          'Image load failed: ${Uri.tryParse(url)?.host} ${status == null ? reason : 'HTTP $status'}',
-        );
       },
       placeholder: (context, url) =>
           widget.placeWidget ??
