@@ -1,0 +1,105 @@
+name: Build macOS
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build macOS
+    runs-on: macos-26
+    steps:
+      - name: 签出仓库
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: 初始化 GitVersion
+        uses: gittools/actions/gitversion/setup@v4
+        with:
+          versionSpec: '6.7.x'
+
+      - name: 计算版本 Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v4
+        with:
+          overrideConfig: |
+            assembly-versioning-scheme=MajorMinorPatchTag
+            assembly-file-versioning-format="{Major}.{Minor}.{Patch}.{BuildMetaData ?? 0}"
+
+      - name: 初始化 mise
+        uses: jdx/mise-action@v5
+
+      - name: 初始化 Rust 工具链
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+
+      - name: 还原依赖
+        run: flutter pub get --no-example --enforce-lockfile
+
+      - name: 生成代码 (rhttp)
+        working-directory: plugins/rhttp/rhttp
+        run: dart run build_runner build
+
+      - name: 生成代码 (PixEz)
+        run: dart run build_runner build
+
+      # CI 没有开发者证书，改用 ad-hoc 签名；FLUTTER_XCODE_ 前缀的变量会传给 xcodebuild
+      - name: 构建项目
+        env:
+          FLUTTER_XCODE_CODE_SIGN_IDENTITY: '-'
+          FLUTTER_XCODE_CODE_SIGN_STYLE: Manual
+          FLUTTER_XCODE_DEVELOPMENT_TEAM: ''
+        run: |
+          flutter build macos \
+            --release \
+            --no-pub \
+            --build-name=${{ steps.gitversion.outputs.majorMinorPatch }} \
+            --build-number=${{ steps.gitversion.outputs.buildMetaData || '0' }}
+
+      - name: 打包产物
+        run: |
+          mkdir -p dist
+          ditto -c -k --keepParent build/macos/Build/Products/Release/pixez_flutter.app dist/macos-universal-release.zip
+
+      - name: 上传产物
+        id: zip-artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: macos-universal-release.zip
+          path: dist/macos-universal-release.zip
+          if-no-files-found: error
+          compression-level: 0
+
+      - name: 生成校验和
+        run: |
+          echo '### macOS 构建产物' >> $GITHUB_STEP_SUMMARY
+          echo '' >> $GITHUB_STEP_SUMMARY
+          echo '|File|SHA256|' >> $GITHUB_STEP_SUMMARY
+          echo '|:-|:-:|' >> $GITHUB_STEP_SUMMARY
+          echo "|[zip](${{ steps.zip-artifact.outputs.artifact-url }})|${{ steps.zip-artifact.outputs.artifact-digest }}|" >> $GITHUB_STEP_SUMMARY
+          echo '' >> $GITHUB_STEP_SUMMARY
+          echo '应用为 ad-hoc 签名，首次打开需在 Finder 中右键选择“打开”。' >> $GITHUB_STEP_SUMMARY
+
+  publish:
+    needs: build
+    name: 发布
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: write
+      discussions: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: 签出仓库
+        uses: actions/checkout@v7
+
+      - name: Download Zip Artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: macos-universal-release.zip
+          path: artifacts
+
+      - name: Release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: artifacts/*
