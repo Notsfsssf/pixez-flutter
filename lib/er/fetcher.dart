@@ -22,7 +22,7 @@ import 'package:dio_compatibility_layer/dio_compatibility_layer.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:flutter_cache_manager_dio/flutter_cache_manager_dio.dart';
+import 'package:pixez/network/pixiv_cache_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/hoster.dart';
@@ -300,7 +300,7 @@ entryPoint(SendMessage message) async {
     ),
   );
   dio.httpClientAdapter = ConversionLayerAdapter(client);
-  DioCacheManager.initialize(dio);
+  PixivCacheManager.initialize(dio);
   ReceivePort receivePort = ReceivePort();
   sendPort.send(
     IsoContactBean(state: IsoTaskState.INIT, data: receivePort.sendPort),
