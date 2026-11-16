@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
@@ -148,7 +150,9 @@ class _NavigationFrameworkState extends State<NavigationFramework>
   }
 
   Widget _buildTitleBar(BuildContext context) {
-    const captionWidth = 138.0;
+    // macOS keeps its own window buttons at the top left.
+    final captionWidth = Platform.isMacOS ? 0.0 : 138.0;
+    final macButtonsWidth = Platform.isMacOS ? 72.0 : 0.0;
     final view = NavigationView.dataOf(context);
     final navigationButtonWidth =
         view.pane?.size?.compactWidth ?? kCompactNavigationPaneWidth;
@@ -160,24 +164,29 @@ class _NavigationFrameworkState extends State<NavigationFramework>
 
     return Stack(
       children: [
-        TitleBar(
-          title:
-              _navigatorKey.currentState?.currentTitle ?? widget.defaultTitle,
-          onBackRequested: _onGoBackPress,
-          isBackButtonEnabled: _navigatorKey.currentState?.canGoBack ?? false,
-          captionControls: SizedBox(
-            width: captionWidth,
-            child: WindowCaption(
-              brightness: FluentTheme.of(context).brightness,
-              backgroundColor: Colors.transparent,
-            ),
+        Padding(
+          padding: EdgeInsetsDirectional.only(start: macButtonsWidth),
+          child: TitleBar(
+            title:
+                _navigatorKey.currentState?.currentTitle ?? widget.defaultTitle,
+            onBackRequested: _onGoBackPress,
+            isBackButtonEnabled: _navigatorKey.currentState?.canGoBack ?? false,
+            captionControls: Platform.isMacOS
+                ? null
+                : SizedBox(
+                    width: captionWidth,
+                    child: WindowCaption(
+                      brightness: FluentTheme.of(context).brightness,
+                      backgroundColor: Colors.transparent,
+                    ),
+                  ),
           ),
         ),
         // Restrict window gestures to the title area between the buttons.
         PositionedDirectional(
           top: 0,
           bottom: 0,
-          start: navigationControlsWidth,
+          start: macButtonsWidth + navigationControlsWidth,
           end: captionWidth,
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,

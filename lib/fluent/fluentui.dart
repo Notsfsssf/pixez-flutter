@@ -32,7 +32,9 @@ initFluent(List<String> args) async {
       minimumSize: const Size(350, 600),
     ),
     () async {
-      await Window.initialize();
+      // flutter_acrylic resets the hidden title bar on macOS, where no
+      // window effect is used anyway.
+      if (!Platform.isMacOS) await Window.initialize();
       if (Platform.isWindows) {
         Window.hideWindowControls();
       }
@@ -105,7 +107,7 @@ Widget buildFluentUI(BuildContext context) {
             material_ui.ThemeMode.light => false,
           };
 
-          if (_effect != null && !Platform.isLinux) {
+          if (_effect != null && Platform.isWindows) {
             debugPrint("背景特效: $_effect; 暗色主题: $isDark;");
             Window.setEffect(effect: _effect!, dark: isDark);
           }
