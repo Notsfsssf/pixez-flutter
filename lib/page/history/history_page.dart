@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'dart:math';
 
 import 'package:material_ui/material_ui.dart';
@@ -40,6 +42,39 @@ class HistoryPage extends HookConsumerWidget {
         ),
       );
 
+  Future<void> _confirmDelete(
+    BuildContext context,
+    WidgetRef ref,
+    int illustId,
+  ) async {
+    final result = await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("${I18n.of(context).delete}?"),
+            actions: <Widget>[
+              TextButton(
+                child: Text(I18n.of(context).cancel),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text(I18n.of(context).ok),
+                onPressed: () {
+                  Navigator.of(context).pop("OK");
+                },
+              ),
+            ],
+          );
+        });
+    if (result == "OK") {
+      ref
+          .read(historyProvider.notifier)
+          .delete(illustId);
+    }
+  }
+
   Widget buildBody(List<IllustPersist> data, WidgetRef ref) {
     final reIllust = data.reversed.toList();
     if (reIllust.isNotEmpty) {
@@ -53,42 +88,23 @@ class HistoryPage extends HookConsumerWidget {
               return GestureDetector(
                   onTap: () {
                     HapticUtil.selectionClick();
-                    Navigator.of(context, rootNavigator: true).push(
+                    Navigator.of(
+                      context,
+                      rootNavigator: !Platform.isMacOS,
+                    ).push(
                         MaterialPageRoute(builder: (BuildContext context) {
                       return IllustLightingPage(
                           id: reIllust[index].illustId,
                           store: IllustStore(reIllust[index].illustId, null));
                     }));
                   },
-                  onLongPress: () async {
+                  onLongPress: () {
                     HapticUtil.heavy();
-                    final result = await showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text("${I18n.of(context).delete}?"),
-                            actions: <Widget>[
-                              TextButton(
-                                child: Text(I18n.of(context).cancel),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                              TextButton(
-                                child: Text(I18n.of(context).ok),
-                                onPressed: () {
-                                  Navigator.of(context).pop("OK");
-                                },
-                              ),
-                            ],
-                          );
-                        });
-                    if (result == "OK") {
-                      ref
-                          .read(historyProvider.notifier)
-                          .delete(reIllust[index].illustId);
-                    }
+                    _confirmDelete(context, ref, reIllust[index].illustId);
                   },
+                  onSecondaryTap: Platform.isMacOS
+                      ? () => _confirmDelete(context, ref, reIllust[index].illustId)
+                      : null,
                   child: Card(
                       margin: EdgeInsets.all(8),
                       child: PixivImage(reIllust[index].pictureUrl)));

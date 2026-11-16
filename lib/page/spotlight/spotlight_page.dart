@@ -19,6 +19,7 @@ import 'dart:math';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/desktop/desktop_list_target.dart';
 import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/component/spotlight_card.dart';
 import 'package:pixez/i18n.dart';
@@ -47,7 +48,10 @@ class SpotLightPage extends StatelessWidget {
             )
           ],
         ),
-        body: EasyRefresh(
+        body: DesktopListTarget(
+          refreshController: _refreshController,
+          scrollController: _controller,
+          child: EasyRefresh(
             onLoad: () => _spotlightStore.next(),
             onRefresh: () => _spotlightStore.fetch(),
             header: PixezDefault.header(context),
@@ -61,7 +65,7 @@ class SpotLightPage extends StatelessWidget {
                     spotlight: _spotlightStore.articles[index]);
               },
               itemCount: _spotlightStore.articles.length,
-            )),
+            ))),
       );
     });
   }

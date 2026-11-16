@@ -12,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:image_picker_android/image_picker_android.dart';
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pixez/desktop/adaptive_sheet.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/er/leader.dart';
@@ -31,7 +32,7 @@ class SauceNaoModal extends StatefulWidget {
   const SauceNaoModal({super.key});
 
   static Future<void> show(BuildContext context) async {
-    final result = await showModalBottomSheet<SauceNaoResult>(
+    final result = await showAdaptiveSheet<SauceNaoResult>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,

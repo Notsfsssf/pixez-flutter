@@ -24,6 +24,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
+import 'package:pixez/desktop/adaptive_sheet.dart';
 import 'package:pixez/component/new_version_chip.dart';
 import 'package:pixez/constants.dart';
 import 'package:pixez/i18n.dart';
@@ -133,7 +134,7 @@ class _AboutPageState extends State<AboutPage> {
               title: Text('Perol_Notsfsssf'),
               subtitle: Text(I18n.of(context).perol_message),
               onTap: () {
-                showModalBottomSheet(
+                showAdaptiveSheet(
                   context: context,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.vertical(
@@ -168,7 +169,7 @@ class _AboutPageState extends State<AboutPage> {
               title: Text('Right now'),
               subtitle: Text(I18n.of(context).right_now_message),
               onTap: () {
-                showModalBottomSheet(
+                showAdaptiveSheet(
                   context: context,
                   builder: (BuildContext context) {
                     return Container(
@@ -261,7 +262,7 @@ class _AboutPageState extends State<AboutPage> {
                 ),
                 onTap: () {
                   if (!Constants.isGooglePlay)
-                    showModalBottomSheet(
+                    showAdaptiveSheet(
                       context: context,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.vertical(

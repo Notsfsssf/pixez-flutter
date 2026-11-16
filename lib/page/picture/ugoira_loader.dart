@@ -14,8 +14,11 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:material_ui/material_ui.dart' hide Image;
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/desktop/adaptive_sheet.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/ugoira_painter.dart';
 import 'package:pixez/i18n.dart';
@@ -43,6 +46,52 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
     super.initState();
   }
 
+  Future<void> _showUgoiraActions() async {
+    final result = await showAdaptiveSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(16),
+        ),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: Text(I18n.of(context).encode_message),
+              ),
+              ListTile(
+                title: Text(I18n.of(context).encode),
+                onTap: () {
+                  Navigator.of(context).pop('OK');
+                },
+              ),
+              ListTile(
+                title: Text(I18n.of(context).export),
+                onTap: () {
+                  Navigator.of(context).pop('EXPORT');
+                },
+              ),
+              ListTile(
+                title: Text(I18n.of(context).cancel),
+                onTap: () {
+                  Navigator.of(context).pop('SOURCE');
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+    if (result == "OK") {
+      await _store.encodeGif(widget.illusts);
+    } else if (result == "EXPORT") {
+      await _store.export(widget.illusts);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -56,52 +105,13 @@ class _UgoiraLoaderState extends State<UgoiraLoader> {
                     widget.illusts.width.toDouble());
             if (_store.status == UgoiraStatus.play) {
               return InkWell(
-                onLongPress: () async {
+                onLongPress: () {
                   HapticUtil.heavy();
-                  final result = await showModalBottomSheet(
-                    context: context,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(16),
-                      ),
-                    ),
-                    builder: (context) {
-                      return SafeArea(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ListTile(
-                              title: Text(I18n.of(context).encode_message),
-                            ),
-                            ListTile(
-                              title: Text(I18n.of(context).encode),
-                              onTap: () {
-                                Navigator.of(context).pop('OK');
-                              },
-                            ),
-                            ListTile(
-                              title: Text(I18n.of(context).export),
-                              onTap: () {
-                                Navigator.of(context).pop('EXPORT');
-                              },
-                            ),
-                            ListTile(
-                              title: Text(I18n.of(context).cancel),
-                              onTap: () {
-                                Navigator.of(context).pop('SOURCE');
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                  if (result == "OK") {
-                    await _store.encodeGif(widget.illusts);
-                  } else if (result == "EXPORT") {
-                    await _store.export(widget.illusts);
-                  }
+                  _showUgoiraActions();
                 },
+                onSecondaryTap: Platform.isMacOS
+                    ? () => _showUgoiraActions()
+                    : null,
                 child: UgoiraWidget(
                   delay: _store
                       .ugoiraMetadataResponse!

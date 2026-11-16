@@ -16,6 +16,7 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/desktop/desktop_list_target.dart';
 import 'package:pixez/component/painer_card.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/page/hello/recom/recom_user_store.dart';
@@ -60,13 +61,15 @@ class _RecomUserPageState extends State<RecomUserPage> {
         appBar: AppBar(
           title: Text(I18n.of(context).recommend_for_you),
         ),
-        body: EasyRefresh(
+        body: DesktopListTarget(
+          refreshController: _refreshController,
+          child: EasyRefresh(
           controller: _refreshController,
           onRefresh: () => _recomUserStore.fetch(),
           onLoad: () => _recomUserStore.next(),
           refreshOnStart: widget.recomUserStore == null,
           child: _buildList(),
-        ),
+        )),
       );
     });
   }

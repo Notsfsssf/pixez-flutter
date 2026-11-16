@@ -20,6 +20,8 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/desktop/desktop_list_target.dart';
+import 'package:pixez/desktop/adaptive_sheet.dart';
 import 'package:pixez/component/comment_emoji_text.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixez_default_header.dart';
@@ -179,7 +181,9 @@ class _CommentPageState extends State<CommentPage> {
           child: Column(
             children: <Widget>[
               Expanded(
-                child: EasyRefresh(
+                child: DesktopListTarget(
+                  refreshController: easyRefreshController,
+                  child: EasyRefresh(
                   header: PixezDefault.header(context),
                   controller: easyRefreshController,
                   onRefresh: () => _store.fetch(),
@@ -358,7 +362,7 @@ class _CommentPageState extends State<CommentPage> {
                             );
                     },
                   ),
-                ),
+                )),
               ),
               Align(
                 alignment: Alignment.bottomCenter,
@@ -506,7 +510,7 @@ class _CommentPageState extends State<CommentPage> {
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: InkWell(
                 onTap: () {
-                  showModalBottomSheet(
+                  showAdaptiveSheet(
                       context: context,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.vertical(

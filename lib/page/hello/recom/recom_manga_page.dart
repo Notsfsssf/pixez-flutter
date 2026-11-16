@@ -1,6 +1,7 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/desktop/desktop_list_target.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/lighting/lighting_store.dart';
@@ -44,7 +45,9 @@ class _RecomMangaPageState extends State<RecomMangaPage> {
       extendBody: true,
       extendBodyBehindAppBar: true,
       body: Observer(builder: (_) {
-        return EasyRefresh(
+        return DesktopListTarget(
+          refreshController: controller,
+          child: EasyRefresh(
           controller: controller,
           onLoad: () {
             _store.fetchNext();
@@ -70,7 +73,7 @@ class _RecomMangaPageState extends State<RecomMangaPage> {
                     itemCount: _store.iStores.length,
                   ),
           ),
-        );
+        ));
       }),
     );
   }

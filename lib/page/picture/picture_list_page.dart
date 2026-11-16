@@ -14,7 +14,10 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/lighting/lighting_store.dart';
@@ -82,37 +85,68 @@ class _PictureListPageState extends State<PictureListPage> {
               PointerDeviceKind.mouse,
             },
           ),
-          child: PageView.builder(
-            controller: _pageController,
-            physics: userSetting.swipeChangeArtwork
-                ? null
-                : NeverScrollableScrollPhysics(),
-            itemBuilder: (BuildContext context, int index) {
-              if (index == _iStores.length && _lightingStore != null) {
-                return PictureListNextPage(
-                  lightingStore: _lightingStore!,
+          child: _keyboardNavigation(
+            PageView.builder(
+              controller: _pageController,
+              // Keep the keyboard position in sync with mouse/trackpad swipes.
+              onPageChanged: (index) =>
+                  nowPosition = index.clamp(0, _iStores.length - 1),
+              physics: userSetting.swipeChangeArtwork
+                  ? null
+                  : NeverScrollableScrollPhysics(),
+              itemBuilder: (BuildContext context, int index) {
+                if (index == _iStores.length && _lightingStore != null) {
+                  return PictureListNextPage(
+                    lightingStore: _lightingStore!,
+                  );
+                }
+                final f = _iStores[index];
+                String? tag = nowPosition == index ? widget.heroString : null;
+                return MediaQuery(
+                  data: MediaQuery.of(context).copyWith(
+                      gestureSettings:
+                          DeviceGestureSettings(touchSlop: kTouchSlop)),
+                  child: IllustLightingPage(
+                    id: f.id,
+                    heroString: tag,
+                    store: f,
+                    onHorizontalDragEnd: (details) {
+                      _onDrag(details);
+                    },
+                  ),
                 );
-              }
-              final f = _iStores[index];
-              String? tag = nowPosition == index ? widget.heroString : null;
-              return MediaQuery(
-                data: MediaQuery.of(context).copyWith(
-                    gestureSettings:
-                        DeviceGestureSettings(touchSlop: kTouchSlop)),
-                child: IllustLightingPage(
-                  id: f.id,
-                  heroString: tag,
-                  store: f,
-                  onHorizontalDragEnd: (details) {
-                    _onDrag(details);
-                  },
-                ),
-              );
-            },
-            itemCount: _iStores.length + 1,
+              },
+              itemCount: _iStores.length + 1,
+            ),
           ),
         ),
       );
+    });
+  }
+
+  /// Left/right arrow keys page between artworks for keyboard users on macOS.
+  /// Text fields handle arrows first, so editing is unaffected.
+  Widget _keyboardNavigation(Widget child) {
+    if (!Platform.isMacOS) return child;
+    return CallbackShortcuts(
+      bindings: {
+        const SingleActivator(LogicalKeyboardKey.arrowLeft): () => _step(-1),
+        const SingleActivator(LogicalKeyboardKey.arrowRight): () => _step(1),
+      },
+      child: Focus(autofocus: true, child: child),
+    );
+  }
+
+  void _step(int delta) {
+    final result = (nowPosition + delta).clamp(0, _iStores.length);
+    if (result == nowPosition) return;
+    _pageController.animateToPage(
+      result,
+      duration: Duration(milliseconds: 200),
+      curve: Curves.easeInOut,
+    );
+    setState(() {
+      nowPosition = result.clamp(0, _iStores.length - 1);
     });
   }
 

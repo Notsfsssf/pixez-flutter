@@ -17,6 +17,7 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/desktop/adaptive_sheet.dart';
 import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/i18n.dart';
@@ -224,7 +225,7 @@ class _NovelUserBookmarkPageState extends State<NovelUserBookmarkPage> {
   }
 
   Future _buildShowModalBottomSheet(BuildContext context) {
-    return showModalBottomSheet(
+    return showAdaptiveSheet(
         context: context,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(16.0))),

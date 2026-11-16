@@ -18,6 +18,7 @@ import 'dart:async';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:pixez/desktop/adaptive_sheet.dart';
 import 'package:pixez/er/prefer.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_page.dart';
@@ -386,7 +387,7 @@ class _ResultIllustListState extends State<ResultIllustList> {
           }
         });
     // showDialog(context: context, builder: (context) => resultIllustSortWidget);
-    showModalBottomSheet(
+    showAdaptiveSheet(
         context: context,
         isScrollControlled: true,
         shape: RoundedRectangleBorder(

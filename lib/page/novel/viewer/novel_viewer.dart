@@ -23,6 +23,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pixez/desktop/adaptive_sheet.dart';
 import 'package:pixez/component/painter_avatar.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/selectable_html.dart';
@@ -439,7 +440,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
   }
 
   Future<void> _showSettings(BuildContext context) async {
-    await showModalBottomSheet(
+    await showAdaptiveSheet(
       context: context,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
@@ -594,7 +595,7 @@ class _NovelViewerPageState extends State<NovelViewerPage> {
   }
 
   Future _showMessage(BuildContext context) {
-    return showModalBottomSheet(
+    return showAdaptiveSheet(
       context: context,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(

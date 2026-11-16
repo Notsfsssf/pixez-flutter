@@ -20,6 +20,7 @@ import 'dart:math';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/desktop/desktop_list_target.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/component/sort_group.dart';
@@ -236,73 +237,77 @@ class _BookMarkNestedPageState extends State<BookMarkNestedPage> {
       bottom: false,
       child: Builder(
         builder: (BuildContext context) {
-          return EasyRefresh.builder(
-            controller: _easyRefreshController,
-            onLoad: () {
-              _store.fetchNext();
-            },
-            onRefresh: () {
-              _store.fetch(force: true);
-            },
-            header: PixezDefault.header(
-              context,
-              position: IndicatorPosition.locator,
-              safeArea: false,
-            ),
-            footer: PixezDefault.footer(
-              context,
-              position: IndicatorPosition.locator,
-            ),
-            childBuilder: (context, phy) {
-              return Observer(
-                builder: (_) {
-                  final userIsMe =
-                      accountStore.now != null &&
-                      accountStore.now!.userId == widget.id.toString();
-                  return CustomScrollView(
-                    physics: phy,
-                    key: PageStorageKey<String>(widget.portal),
-                    slivers: [
-                      userIsMe
-                          ? SliverPinnedOverlapInjector(
-                              handle:
-                                  NestedScrollView.sliverOverlapAbsorberHandleFor(
-                                    context,
-                                  ),
-                            )
-                          : SliverOverlapInjector(
-                              handle:
-                                  NestedScrollView.sliverOverlapAbsorberHandleFor(
-                                    context,
-                                  ),
+          return DesktopListTarget(
+            refreshController: _easyRefreshController,
+            scrollController: _scrollController,
+            child: EasyRefresh.builder(
+              controller: _easyRefreshController,
+              onLoad: () {
+                _store.fetchNext();
+              },
+              onRefresh: () {
+                _store.fetch(force: true);
+              },
+              header: PixezDefault.header(
+                context,
+                position: IndicatorPosition.locator,
+                safeArea: false,
+              ),
+              footer: PixezDefault.footer(
+                context,
+                position: IndicatorPosition.locator,
+              ),
+              childBuilder: (context, phy) {
+                return Observer(
+                  builder: (_) {
+                    final userIsMe =
+                        accountStore.now != null &&
+                        accountStore.now!.userId == widget.id.toString();
+                    return CustomScrollView(
+                      physics: phy,
+                      key: PageStorageKey<String>(widget.portal),
+                      slivers: [
+                        userIsMe
+                            ? SliverPinnedOverlapInjector(
+                                handle:
+                                    NestedScrollView.sliverOverlapAbsorberHandleFor(
+                                      context,
+                                    ),
+                              )
+                            : SliverOverlapInjector(
+                                handle:
+                                    NestedScrollView.sliverOverlapAbsorberHandleFor(
+                                      context,
+                                    ),
+                              ),
+                        if (userIsMe)
+                          SliverPersistentHeader(
+                            delegate: SliverChipDelegate(
+                              Container(
+                                child: Center(child: buildTopChip(context)),
+                              ),
                             ),
-                      if (userIsMe)
-                        SliverPersistentHeader(
-                          delegate: SliverChipDelegate(
-                            Container(
-                              child: Center(child: buildTopChip(context)),
+                            pinned: true,
+                          ),
+                        const HeaderLocator.sliver(),
+                        if (_store.refreshing && _store.iStores.isEmpty)
+                          SliverToBoxAdapter(
+                            child: Container(
+                              height: 200,
+                              child: Center(child: CircularProgressIndicator()),
                             ),
                           ),
-                          pinned: true,
+                        SliverWaterfallFlow(
+                          gridDelegate: _buildGridDelegate(),
+                          delegate: _buildSliverChildBuilderDelegate(context),
                         ),
-                      const HeaderLocator.sliver(),
-                      if (_store.refreshing && _store.iStores.isEmpty)
-                        SliverToBoxAdapter(
-                          child: Container(
-                            height: 200,
-                            child: Center(child: CircularProgressIndicator()),
-                          ),
-                        ),
-                      SliverWaterfallFlow(
-                        gridDelegate: _buildGridDelegate(),
-                        delegate: _buildSliverChildBuilderDelegate(context),
-                      ),
-                      const FooterLocator.sliver(),
-                    ],
-                  );
-                },
-              );
-            },
+                        const FooterLocator.sliver(),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
           );
         },
       ),

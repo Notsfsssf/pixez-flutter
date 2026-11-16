@@ -14,12 +14,15 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:pixez/desktop/adaptive_sheet.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/er/leader.dart';
 import 'package:pixez/i18n.dart';
@@ -143,7 +146,7 @@ class _PlatformPageState extends State<PlatformPage> {
                     Leader.push(context, SaveEvalPage());
                   } else {
                     final result =
-                        await Navigator.of(context, rootNavigator: true).push(
+                        await Navigator.of(context, rootNavigator: !Platform.isMacOS).push(
                             MaterialPageRoute(
                                 builder: (context) => SaveFormatPage()));
                     if (result is String) {
@@ -202,7 +205,7 @@ class _PlatformPageState extends State<PlatformPage> {
               ListTile(
                 leading: Icon(Icons.mobile_screen_share),
                 onTap: () {
-                  showModalBottomSheet(
+                  showAdaptiveSheet(
                       context: context,
                       shape: RoundedRectangleBorder(
                           borderRadius:

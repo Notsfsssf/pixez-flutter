@@ -20,6 +20,7 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/desktop/desktop_list_target.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/component/sort_group.dart';
@@ -124,7 +125,9 @@ class _WorksPageState extends State<WorksPage> {
         bottom: false,
         child: Builder(
           builder: (BuildContext context) {
-            return EasyRefresh.builder(
+            return DesktopListTarget(
+              refreshController: _easyRefreshController,
+              child: EasyRefresh.builder(
                 controller: _easyRefreshController,
                 onLoad: () {
                   _store.fetchNext();
@@ -179,7 +182,7 @@ class _WorksPageState extends State<WorksPage> {
                       ],
                     );
                   });
-                });
+                }));
           },
         ));
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:pixez/desktop/desktop_list_target.dart';
 
 class DesktopLink {
   const DesktopLink(
@@ -43,6 +44,17 @@ class DesktopShell extends StatefulWidget {
 
   @override
   State<DesktopShell> createState() => _DesktopShellState();
+
+  static _DesktopShellState? _current;
+
+  /// Opens [builder] inside the workspace pane. Returns false when no desktop
+  /// shell is mounted so callers can fall back to the root navigator.
+  static bool open(WidgetBuilder builder) {
+    final shell = _current;
+    if (shell == null || !shell.mounted) return false;
+    shell._open(builder);
+    return true;
+  }
 }
 
 class _DesktopShellState extends State<DesktopShell> {
@@ -51,6 +63,13 @@ class _DesktopShellState extends State<DesktopShell> {
   late final _observer = _RouteObserver(_routeChanged);
   bool _collapsed = false;
   bool _canGoBack = false;
+  Route<dynamic>? _searchRoute;
+
+  @override
+  void initState() {
+    super.initState();
+    DesktopShell._current = this;
+  }
 
   void _routeChanged() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -74,8 +93,52 @@ class _DesktopShellState extends State<DesktopShell> {
     _navigator.currentState?.push(MaterialPageRoute(builder: builder));
   }
 
+  /// Cmd+F focuses the open search page instead of stacking another one.
+  void _openSearch() {
+    final navigator = _navigator.currentState;
+    if (navigator == null) return;
+    final existing = _searchRoute;
+    if (existing != null && existing.isActive) {
+      if (!existing.isCurrent) navigator.popUntil((route) => route == existing);
+      return;
+    }
+    final route = MaterialPageRoute(builder: widget.searchBuilder);
+    _searchRoute = route;
+    navigator.push(route);
+  }
+
+  static final _scrollKeys = {
+    LogicalKeyboardKey.arrowUp,
+    LogicalKeyboardKey.arrowDown,
+    LogicalKeyboardKey.pageUp,
+    LogicalKeyboardKey.pageDown,
+    LogicalKeyboardKey.home,
+    LogicalKeyboardKey.end,
+    LogicalKeyboardKey.space,
+  };
+
+  /// Scroll keys move the visible list rather than traversing focus, which
+  /// made the page jump to whichever button received focus. Text fields and
+  /// focused buttons see the keys first; Tab still moves focus.
+  KeyEventResult _scrollKey(FocusNode node, KeyEvent event) {
+    if (event is KeyUpEvent || !_scrollKeys.contains(event.logicalKey)) {
+      return KeyEventResult.ignored;
+    }
+    final keyboard = HardwareKeyboard.instance;
+    if (keyboard.isMetaPressed ||
+        keyboard.isControlPressed ||
+        keyboard.isAltPressed ||
+        keyboard.isShiftPressed) {
+      return KeyEventResult.ignored;
+    }
+    // Handled even without a list on screen, so focus never jumps instead.
+    DesktopList.scroll(event.logicalKey);
+    return KeyEventResult.handled;
+  }
+
   @override
   void dispose() {
+    if (DesktopShell._current == this) DesktopShell._current = null;
     _focusScope.dispose();
     super.dispose();
   }
@@ -105,14 +168,16 @@ class _DesktopShellState extends State<DesktopShell> {
             meta: true,
           ): () =>
               _select(i),
-        const SingleActivator(LogicalKeyboardKey.keyF, meta: true): () =>
-            _open(widget.searchBuilder),
+        const SingleActivator(LogicalKeyboardKey.keyF, meta: true): _openSearch,
         const SingleActivator(LogicalKeyboardKey.bracketLeft, meta: true): () =>
             _navigator.currentState?.maybePop(),
+        const SingleActivator(LogicalKeyboardKey.keyR, meta: true):
+            DesktopList.refresh,
       },
       child: FocusScope(
         node: _focusScope,
         autofocus: true,
+        onKeyEvent: _scrollKey,
         child: LayoutBuilder(
           builder: (context, constraints) {
             final expanded = !_collapsed && constraints.maxWidth >= 1050;
@@ -235,8 +300,11 @@ class _DesktopShellState extends State<DesktopShell> {
                                 ),
                                 const SizedBox(width: 12),
                                 Expanded(
+                                  // Detail pages carry their own app bar title.
                                   child: Text(
-                                    widget.labels[widget.selectedIndex],
+                                    _canGoBack
+                                        ? ''
+                                        : widget.labels[widget.selectedIndex],
                                     style: Theme.of(
                                       context,
                                     ).textTheme.titleMedium,
@@ -244,7 +312,7 @@ class _DesktopShellState extends State<DesktopShell> {
                                   ),
                                 ),
                                 TextButton.icon(
-                                  onPressed: () => _open(widget.searchBuilder),
+                                  onPressed: _openSearch,
                                   icon: const Icon(Icons.search, size: 20),
                                   label: Text('${widget.labels[3]}   ⌘F'),
                                 ),

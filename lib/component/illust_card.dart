@@ -19,6 +19,7 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/desktop/adaptive_sheet.dart';
 import 'package:pixez/component/null_hero.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/star_icon.dart';
@@ -287,6 +288,30 @@ class _IllustCardState extends State<IllustCard> {
     );
   }
 
+  Future<void> _showBookmarkTags() async {
+    final result = await showAdaptiveSheet(
+      context: context,
+      clipBehavior: Clip.hardEdge,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      // Keep the sheet readable in a wide desktop window.
+      constraints: BoxConstraints(
+        maxWidth: 640,
+        minHeight: MediaQuery.of(context).size.height * .618,
+        maxHeight: MediaQuery.of(context).size.height * .618,
+      ),
+      isScrollControlled: true,
+      builder: (_) => TagForIllustPage(id: store.illusts!.id),
+    );
+    if (result?.isNotEmpty ?? false) {
+      LPrinter.d(result);
+      String restrict = result['restrict'];
+      List<String>? tags = result['tags'];
+      store.star(restrict: restrict, tags: tags, force: true);
+    }
+  }
+
   Widget _buildAnimationWraper(BuildContext context, Widget child) {
     return InkWell(
       onSecondaryTapUp: Platform.isMacOS
@@ -294,6 +319,7 @@ class _IllustCardState extends State<IllustCard> {
               context,
               details.globalPosition,
               store.illusts!,
+              store: store,
             )
           : null,
       onLongPress: () {
@@ -428,29 +454,11 @@ class _IllustCardState extends State<IllustCard> {
                   }
                 }
               },
-              onLongPress: () async {
+              onLongPress: () {
                 HapticUtil.heavy();
-                final result = await showModalBottomSheet(
-                  context: context,
-                  clipBehavior: Clip.hardEdge,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(16),
-                    ),
-                  ),
-                  constraints: BoxConstraints.expand(
-                    height: MediaQuery.of(context).size.height * .618,
-                  ),
-                  isScrollControlled: true,
-                  builder: (_) => TagForIllustPage(id: store.illusts!.id),
-                );
-                if (result?.isNotEmpty ?? false) {
-                  LPrinter.d(result);
-                  String restrict = result['restrict'];
-                  List<String>? tags = result['tags'];
-                  store.star(restrict: restrict, tags: tags, force: true);
-                }
+                _showBookmarkTags();
               },
+              onSecondaryTap: Platform.isMacOS ? _showBookmarkTags : null,
             ),
           ),
         ],

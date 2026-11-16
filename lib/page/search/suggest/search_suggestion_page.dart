@@ -81,6 +81,15 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
     super.dispose();
   }
 
+  void _copyTag(BuildContext context, String name) {
+    Clipboard.setData(
+      ClipboardData(text: name),
+    );
+    BotToast.showText(
+      text: I18n.of(context).copied_to_clipboard,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
@@ -177,11 +186,11 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                         return GestureDetector(
                           onLongPress: () {
                             HapticUtil.heavy();
-                            Clipboard.setData(
-                                ClipboardData(text: tags[index].name));
-                            BotToast.showText(
-                                text: I18n.of(context).copied_to_clipboard);
+                            _copyTag(context, tags[index].name);
                           },
+                          onSecondaryTap: Platform.isMacOS
+                              ? () => _copyTag(context, tags[index].name)
+                              : null,
                           child: ListTile(
                             onTap: () {
                               if (tagGroup.length > 1) {

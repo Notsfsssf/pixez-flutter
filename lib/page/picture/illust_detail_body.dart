@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:flutter/gestures.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -61,6 +63,9 @@ class IllustDetailBody extends StatelessWidget {
               onLongPress: () {
                 _store.followUser();
               },
+              onSecondaryTap: Platform.isMacOS
+                  ? () => _store.followUser()
+                  : null,
               child: Container(
                 height: 70,
                 width: 70,
@@ -233,6 +238,7 @@ class IllustDetailBody extends StatelessWidget {
         HapticUtil.heavy();
         await _longPressTag(context, f);
       },
+      onSecondaryTap: Platform.isMacOS ? () => _longPressTag(context, f) : null,
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return ResultPage(

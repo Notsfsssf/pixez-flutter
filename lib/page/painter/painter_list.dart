@@ -17,6 +17,7 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/desktop/desktop_list_target.dart';
 import 'package:pixez/component/painer_card.dart';
 import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/lighting/lighting_store.dart';
@@ -74,7 +75,10 @@ class _PainterListState extends State<PainterList> {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
-      return EasyRefresh(
+      return DesktopListTarget(
+        refreshController: _easyRefreshController,
+        scrollController: _scrollController,
+        child: EasyRefresh(
         controller: _easyRefreshController,
         header: PixezDefault.header(context),
         onLoad: () => _painterListStore.next(),
@@ -91,7 +95,7 @@ class _PainterListState extends State<PainterList> {
                 ],
               )
             : Container(),
-      );
+      ));
     });
   }
 

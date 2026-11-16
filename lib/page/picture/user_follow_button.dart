@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:pixez/component/follow_detail_alert.dart';
 import 'package:pixez/i18n.dart';
@@ -78,6 +80,7 @@ class _UserFollowButtonState extends State<UserFollowButton> {
         onLongPress: () {
           _longPressAction();
         },
+        onSecondaryTap: Platform.isMacOS ? () => _longPressAction() : null,
         child: Container(
           height: 32,
           child: Center(
@@ -110,6 +113,7 @@ class _UserFollowButtonState extends State<UserFollowButton> {
       onLongPress: () {
         _longPressAction();
       },
+      onSecondaryTap: Platform.isMacOS ? () => _longPressAction() : null,
       child: Container(
         height: 32,
         child: Center(

@@ -17,6 +17,7 @@
 import 'dart:async';
 
 import 'package:material_ui/material_ui.dart';
+import 'package:pixez/desktop/adaptive_sheet.dart';
 import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/lighting/lighting_page.dart';
@@ -117,7 +118,7 @@ class _NewIllustPageState extends State<NewIllustPage> {
       child: IconButton(
           icon: Icon(Icons.list),
           onPressed: () {
-            showModalBottomSheet(
+            showAdaptiveSheet(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.vertical(
                     top: Radius.circular(16),

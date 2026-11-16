@@ -21,6 +21,7 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
+import 'package:pixez/desktop/desktop_list_target.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/constants.dart';
@@ -160,6 +161,9 @@ class _LightingListState extends State<LightingList> {
           }
           return true;
         },
+        child: DesktopListTarget(
+          refreshController: _refreshController,
+          scrollController: _scrollController,
         child: EasyRefresh.builder(
           controller: _refreshController,
           header: PixezDefault.header(context),
@@ -181,7 +185,9 @@ class _LightingListState extends State<LightingList> {
             },
             gridDelegate: _buildGridDelegate(width),
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   bool needToBan(Illusts illust) {
@@ -258,34 +264,38 @@ class _LightingListState extends State<LightingList> {
         }
         return true;
       },
-      child: EasyRefresh.builder(
-        controller: _refreshController,
+      child: DesktopListTarget(
+        refreshController: _refreshController,
         scrollController: _scrollController,
-        header: PixezDefault.header(context),
-        footer:
-            PixezDefault.footer(context, position: IndicatorPosition.locator),
-        onRefresh: () {
-          _store.fetch(force: true);
-        },
-        onLoad: () {
-          _store.fetchNext();
-        },
-        childBuilder: ((context, physics) {
-          return CustomScrollView(
-            physics: physics,
-            controller: widget.isNested ?? false ? null : _scrollController,
-            slivers: [
-              SliverToBoxAdapter(
-                child: Container(child: widget.header),
-              ),
-              SliverWaterfallFlow(
-                gridDelegate: _buildGridDelegate(width),
-                delegate: _buildSliverChildBuilderDelegate(context),
-              ),
-              const FooterLocator.sliver(),
-            ],
-          );
-        }),
+        child: EasyRefresh.builder(
+          controller: _refreshController,
+          scrollController: _scrollController,
+          header: PixezDefault.header(context),
+          footer:
+              PixezDefault.footer(context, position: IndicatorPosition.locator),
+          onRefresh: () {
+            _store.fetch(force: true);
+          },
+          onLoad: () {
+            _store.fetchNext();
+          },
+          childBuilder: ((context, physics) {
+            return CustomScrollView(
+              physics: physics,
+              controller: widget.isNested ?? false ? null : _scrollController,
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Container(child: widget.header),
+                ),
+                SliverWaterfallFlow(
+                  gridDelegate: _buildGridDelegate(width),
+                  delegate: _buildSliverChildBuilderDelegate(context),
+                ),
+                const FooterLocator.sliver(),
+              ],
+            );
+          }),
+        ),
       ),
     );
   }

@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/null_hero.dart';
@@ -113,7 +115,7 @@ class _SoupPageState extends State<SoupPage> {
             onTap: () {
               int id = int.parse(Uri.parse(amWork.arworkLink!).pathSegments[
                   Uri.parse(amWork.arworkLink!).pathSegments.length - 1]);
-              Navigator.of(context, rootNavigator: true)
+              Navigator.of(context, rootNavigator: !Platform.isMacOS)
                   .push(MaterialPageRoute(builder: (BuildContext context) {
                 return IllustLightingPage(
                   id: id,

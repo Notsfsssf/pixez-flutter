@@ -433,52 +433,11 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
           ? userStore.userDetail!.profile.background_image_url != null
                 ? InkWell(
                     onLongPress: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text(I18n.of(context).save),
-                            content: ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: CachedNetworkImage(
-                                imageUrl: userStore
-                                    .userDetail!
-                                    .profile
-                                    .background_image_url!,
-                                fit: BoxFit.cover,
-                                cacheManager: pixivCacheManager,
-                                httpHeaders: Hoster.header(
-                                  url: userStore
-                                      .userDetail!
-                                      .profile
-                                      .background_image_url,
-                                ),
-                              ),
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () async {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text(I18n.of(context).cancel),
-                              ),
-                              TextButton(
-                                onPressed: () async {
-                                  Navigator.of(context).pop();
-                                  await _saveUserBg(
-                                    userStore
-                                        .userDetail!
-                                        .profile
-                                        .background_image_url!,
-                                  );
-                                },
-                                child: Text(I18n.of(context).ok),
-                              ),
-                            ],
-                          );
-                        },
-                      );
+                      _confirmSaveBackground(context);
                     },
+                    onSecondaryTap: Platform.isMacOS
+                        ? () => _confirmSaveBackground(context)
+                        : null,
                     child: CachedNetworkImage(
                       imageUrl:
                           userStore.userDetail!.profile.background_image_url!,
@@ -801,6 +760,54 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
           ],
         ),
       ),
+    );
+  }
+
+  void _confirmSaveBackground(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(I18n.of(context).save),
+          content: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: CachedNetworkImage(
+              imageUrl: userStore
+                  .userDetail!
+                  .profile
+                  .background_image_url!,
+              fit: BoxFit.cover,
+              cacheManager: pixivCacheManager,
+              httpHeaders: Hoster.header(
+                url: userStore
+                    .userDetail!
+                    .profile
+                    .background_image_url,
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+              },
+              child: Text(I18n.of(context).cancel),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await _saveUserBg(
+                  userStore
+                      .userDetail!
+                      .profile
+                      .background_image_url!,
+                );
+              },
+              child: Text(I18n.of(context).ok),
+            ),
+          ],
+        );
+      },
     );
   }
 

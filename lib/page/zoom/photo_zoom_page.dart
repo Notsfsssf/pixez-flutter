@@ -35,12 +35,19 @@ class PhotoZoomPage extends StatefulWidget {
 class _PhotoZoomPageState extends State<PhotoZoomPage> {
   late Illusts _illusts;
   int _index = 0;
+  late final PageController _galleryController;
+  final _zoom = <int, PhotoViewController>{};
+  final _fitScale = <int, double>{};
+
+  PhotoViewController _zoomFor(int index) =>
+      _zoom.putIfAbsent(index, PhotoViewController.new);
 
   @override
   void initState() {
     _loadSource = userSetting.zoomQuality == 1;
     _illusts = widget.illusts;
     _index = widget.index;
+    _galleryController = PageController(initialPage: _index);
     nowUrl = _illusts.pageCount == 1
         ? (_loadSource
               ? _illusts.metaSinglePage!.originalImageUrl!
@@ -55,6 +62,10 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
 
   @override
   void dispose() {
+    _galleryController.dispose();
+    for (final controller in _zoom.values) {
+      controller.dispose();
+    }
     if (_fullScreen)
       SystemChrome.setEnabledSystemUIMode(
         SystemUiMode.manual,
@@ -73,8 +84,100 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
       });
   }
 
+  void _exitFullScreen() {
+    setState(() {
+      _fullScreen = false;
+    });
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: SystemUiOverlay.values,
+    );
+  }
+
+  void _turnPage(int delta) {
+    if (_illusts.metaPages.length < 2 || !_galleryController.hasClients) return;
+    final target = (_index + delta).clamp(0, _illusts.metaPages.length - 1);
+    if (target == _index) return;
+    _galleryController.animateToPage(
+      target,
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void _saveOnly() {
+    if (_illusts.metaPages.isNotEmpty)
+      saveStore.saveImage(widget.illusts, index: _index);
+    else
+      saveStore.saveImage(widget.illusts);
+  }
+
+  int get _zoomIndex => _illusts.metaPages.length > 1 ? _index : 0;
+
+  /// Mouse-wheel and Cmd +/-/0 zoom on macOS. Trackpad pinch already works
+  /// through PhotoView; trackpad scrolling arrives as pan/zoom, not here.
+  void _zoomBy(double factor) {
+    final controller = _zoomFor(_zoomIndex);
+    final scale = controller.scale;
+    if (scale == null) return;
+    final fit = _fitScale.putIfAbsent(_zoomIndex, () => scale);
+    controller.scale = (scale * factor).clamp(fit, fit * 10);
+  }
+
+  void _resetZoom() {
+    final fit = _fitScale[_zoomIndex];
+    if (fit == null) return;
+    _zoomFor(_zoomIndex)
+      ..scale = fit
+      ..position = Offset.zero;
+  }
+
+  void _onPointerSignal(PointerSignalEvent event) {
+    if (event is! PointerScrollEvent || event.kind != PointerDeviceKind.mouse) {
+      return;
+    }
+    GestureBinding.instance.pointerSignalResolver.register(event, (event) {
+      final dy = (event as PointerScrollEvent).scrollDelta.dy;
+      if (dy != 0) _zoomBy(dy < 0 ? 1.15 : 1 / 1.15);
+    });
+  }
+
+  /// Esc leaves full screen, then closes; arrows turn pages on macOS.
+  Widget _keyboardShortcuts(Widget child) {
+    if (!Platform.isMacOS) return child;
+    return CallbackShortcuts(
+      bindings: {
+        const SingleActivator(LogicalKeyboardKey.escape): () {
+          if (_fullScreen) {
+            _exitFullScreen();
+          } else {
+            Navigator.of(this.context).maybePop();
+          }
+        },
+        const SingleActivator(LogicalKeyboardKey.arrowLeft): () =>
+            _turnPage(-1),
+        const SingleActivator(LogicalKeyboardKey.arrowRight): () =>
+            _turnPage(1),
+        const SingleActivator(LogicalKeyboardKey.equal, meta: true): () =>
+            _zoomBy(1.25),
+        const SingleActivator(LogicalKeyboardKey.minus, meta: true): () =>
+            _zoomBy(1 / 1.25),
+        const SingleActivator(LogicalKeyboardKey.digit0, meta: true):
+            _resetZoom,
+      },
+      child: Listener(
+        onPointerSignal: _onPointerSignal,
+        child: Focus(autofocus: true, child: child),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    return _keyboardShortcuts(_buildPage(context));
+  }
+
+  Widget _buildPage(BuildContext context) {
     return Builder(
       builder: (context) {
         if (_illusts.pageCount == 1) {
@@ -88,6 +191,7 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
             bottomNavigationBar: _buildBottom(context),
             body: Container(
               child: PhotoView(
+                controller: _zoomFor(0),
                 filterQuality: FilterQuality.high,
                 initialScale: PhotoViewComputedScale.contained,
                 heroAttributes: PhotoViewHeroAttributes(tag: url),
@@ -115,12 +219,13 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
               ),
               child: PhotoViewGallery.builder(
                 scrollPhysics: const BouncingScrollPhysics(),
-                pageController: PageController(initialPage: _index),
+                pageController: _galleryController,
                 builder: (BuildContext context, int index) {
                   final url = _loadSource
                       ? _illusts.metaPages[index].imageUrls!.original
                       : _illusts.metaPages[index].imageUrls!.large;
                   return PhotoViewGalleryPageOptions(
+                    controller: _zoomFor(index),
                     imageProvider: PixivProvider.url(url),
                     initialScale: PhotoViewComputedScale.contained,
                     heroAttributes: PhotoViewHeroAttributes(tag: url),
@@ -253,13 +358,12 @@ class _PhotoZoomPageState extends State<PhotoZoomPage> {
                       }
                     },
                   ),
-                  onLongPress: () async {
+                  // Saves without the bookmark-after-save setting.
+                  onLongPress: () {
                     HapticUtil.heavy();
-                    if (_illusts.metaPages.isNotEmpty)
-                      saveStore.saveImage(widget.illusts, index: _index);
-                    else
-                      saveStore.saveImage(widget.illusts);
+                    _saveOnly();
                   },
+                  onSecondaryTap: Platform.isMacOS ? _saveOnly : null,
                 ),
                 AnimatedOpacity(
                   opacity: shareShow ? 1 : 0.5,

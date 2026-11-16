@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:material_ui/material_ui.dart';
@@ -43,6 +45,13 @@ class _ShieldPageState extends State<ShieldPage> {
     muteStore.fetchBanUserIds();
     muteStore.fetchBanComments();
     super.initState();
+  }
+
+  void _copyTag(BuildContext context, String name) {
+    Clipboard.setData(ClipboardData(text: name));
+    BotToast.showText(
+      text: I18n.of(context).copied_to_clipboard,
+    );
   }
 
   @override
@@ -111,11 +120,11 @@ class _ShieldPageState extends State<ShieldPage> {
                         (f) => GestureDetector(
                           onLongPress: () {
                             HapticUtil.heavy();
-                            Clipboard.setData(ClipboardData(text: f.name));
-                            BotToast.showText(
-                              text: I18n.of(context).copied_to_clipboard,
-                            );
+                            _copyTag(context, f.name);
                           },
+                          onSecondaryTap: Platform.isMacOS
+                              ? () => _copyTag(context, f.name)
+                              : null,
                           child: ActionChip(
                             onPressed: () => deleteTag(context, f),
                             label: Text(f.name),

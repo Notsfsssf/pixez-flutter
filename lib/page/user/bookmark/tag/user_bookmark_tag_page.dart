@@ -17,6 +17,7 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/desktop/desktop_list_target.dart';
 import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
@@ -264,7 +265,9 @@ class _NewWidgetState extends State<NewWidget> {
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) {
-        return EasyRefresh(
+        return DesktopListTarget(
+          refreshController: widget.refreshController,
+          child: EasyRefresh(
           controller: widget.refreshController,
           refreshOnStart: true,
           header: PixezDefault.header(context),
@@ -305,7 +308,7 @@ class _NewWidgetState extends State<NewWidget> {
           onLoad: () async {
             await widget.tagStore.next();
           },
-        );
+        ));
       },
     );
   }

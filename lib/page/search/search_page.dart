@@ -379,16 +379,11 @@ class _SearchPageState extends State<SearchPage>
                       );
                     },
                     onLongPress: () {
-                      Navigator.of(context, rootNavigator: !Platform.isMacOS).push(
-                        MaterialPageRoute(
-                          builder: (_) {
-                            return IllustLightingPage(
-                              id: tags[index].illust.id,
-                            );
-                          },
-                        ),
-                      );
+                      _openTrendArtwork(context, tags[index].illust.id);
                     },
+                    onSecondaryTap: Platform.isMacOS
+                        ? () => _openTrendArtwork(context, tags[index].illust.id)
+                        : null,
                     child: Card(
                       clipBehavior: Clip.antiAlias,
                       shape: const RoundedRectangleBorder(
@@ -455,34 +450,56 @@ class _SearchPageState extends State<SearchPage>
     );
   }
 
+  void _confirmDeleteHistory(BuildContext context, TagsPersist f) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('${I18n.of(context).delete}?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                tagHistoryStore.delete(f.id!);
+                Navigator.of(context).pop();
+              },
+              child: Text(I18n.of(context).ok),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(I18n.of(context).cancel),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _openTrendArtwork(BuildContext context, int id) {
+    Navigator.of(
+      context,
+      rootNavigator: !Platform.isMacOS,
+    ).push(
+      MaterialPageRoute(
+        builder: (_) {
+          return IllustLightingPage(
+            id: id,
+          );
+        },
+      ),
+    );
+  }
+
   Widget buildActionChip(TagsPersist f, BuildContext context) {
     return GestureDetector(
       onLongPress: () {
         HapticUtil.heavy();
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text('${I18n.of(context).delete}?'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    tagHistoryStore.delete(f.id!);
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(I18n.of(context).ok),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(I18n.of(context).cancel),
-                ),
-              ],
-            );
-          },
-        );
+        _confirmDeleteHistory(context, f);
       },
+      onSecondaryTap: Platform.isMacOS
+          ? () => _confirmDeleteHistory(context, f)
+          : null,
       child: ActionChip(
         padding: EdgeInsets.all(0.0),
         label: Text(f.name, style: TextStyle(fontSize: 12.0)),

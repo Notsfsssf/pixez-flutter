@@ -1,4 +1,3 @@
-import 'dart:io';
 /*
  * Copyright (C) 2020. by perol_notsf, All rights reserved
  *
@@ -15,11 +14,14 @@ import 'dart:io';
  *
  */
 
+import 'dart:io';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/desktop/adaptive_sheet.dart';
 import 'package:pixez/component/ban_page.dart';
 import 'package:pixez/component/common_back_area.dart';
 import 'package:pixez/component/null_hero.dart';
@@ -32,6 +34,7 @@ import 'package:pixez/exts.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/desktop/artwork_context_menu.dart';
+import 'package:pixez/desktop/desktop_list_target.dart';
 import 'package:pixez/models/ban_illust_id.dart';
 import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/illust.dart';
@@ -133,6 +136,7 @@ class _IllustRowPageState extends State<IllustRowPage>
   void dispose() {
     _illustStore.dispose();
     _scrollController.dispose();
+    _photoScrollController.dispose();
     _refreshController.dispose();
     super.dispose();
   }
@@ -196,6 +200,7 @@ class _IllustRowPageState extends State<IllustRowPage>
         onLongPress: () {
           _showBookMarkTag();
         },
+        onSecondaryTap: Platform.isMacOS ? () => _showBookMarkTag() : null,
         onHorizontalDragEnd: (details) {
           if (widget.onHorizontalDragEnd != null) {
             widget.onHorizontalDragEnd!(details);
@@ -312,7 +317,7 @@ class _IllustRowPageState extends State<IllustRowPage>
     ),
   );
 
-  ScrollController scrollController = ScrollController();
+  final ScrollController _photoScrollController = ScrollController();
 
   Widget _buildContent(BuildContext context, Illusts? data) {
     if (_illustStore.errorMessage != null) return _buildErrorContent(context);
@@ -352,7 +357,10 @@ class _IllustRowPageState extends State<IllustRowPage>
                   children: [
                     Container(
                       width: expectWidth,
-                      child: CustomScrollView(
+                      child: DesktopListTarget(
+                        scrollController: _photoScrollController,
+                        child: CustomScrollView(
+                        controller: _photoScrollController,
                         slivers: [
                           ..._buildPhotoList(data, centerType, height),
                           SliverToBoxAdapter(
@@ -361,12 +369,14 @@ class _IllustRowPageState extends State<IllustRowPage>
                             ),
                           ),
                         ],
-                      ),
+                      )),
                     ),
                     Expanded(
                       child: Container(
                         color: Theme.of(context).cardColor,
-                        child: EasyRefresh(
+                        child: DesktopListTarget(
+                          scrollController: _scrollController,
+                          child: EasyRefresh(
                           controller: _refreshController,
                           onLoad: () {
                             _aboutStore.next();
@@ -392,7 +402,7 @@ class _IllustRowPageState extends State<IllustRowPage>
                               _buildRecom(),
                             ],
                           ),
-                        ),
+                        )),
                       ),
                     ),
                   ],
@@ -492,6 +502,7 @@ class _IllustRowPageState extends State<IllustRowPage>
                             details.globalPosition,
                             data,
                             pageIndex: index,
+                            store: _illustStore,
                           )
                         : null,
                     onLongPress: () {
@@ -530,6 +541,7 @@ class _IllustRowPageState extends State<IllustRowPage>
                     details.globalPosition,
                     data,
                     pageIndex: 0,
+                    store: _illustStore,
                   )
                 : null,
             onLongPress: () {
@@ -720,6 +732,7 @@ class _IllustRowPageState extends State<IllustRowPage>
         HapticUtil.heavy();
         await _longPressTag(context, f);
       },
+      onSecondaryTap: Platform.isMacOS ? () => _longPressTag(context, f) : null,
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -768,6 +781,9 @@ class _IllustRowPageState extends State<IllustRowPage>
                 onLongPress: () {
                   userStore!.follow();
                 },
+                onSecondaryTap: Platform.isMacOS
+                    ? () => userStore!.follow()
+                    : null,
                 child: Container(
                   height: 70,
                   width: 70,
@@ -862,7 +878,7 @@ class _IllustRowPageState extends State<IllustRowPage>
       await _autoBookmarkAfterSave(illust);
       return;
     }
-    showModalBottomSheet(
+    showAdaptiveSheet(
       context: context,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
@@ -909,13 +925,20 @@ class _IllustRowPageState extends State<IllustRowPage>
     );
   }
 
+  void _previewPage(BuildContext context, Illusts illust, int index) {
+    Leader.push(
+      context,
+      PhotoZoomPage(index: index, illusts: illust, illustStore: _illustStore),
+    );
+  }
+
   Future _showMutiChoiceDialog(Illusts illust, BuildContext context) async {
     List<bool> indexs = [];
     bool allOn = false;
     for (int i = 0; i < illust.metaPages.length; i++) {
       indexs.add(false);
     }
-    final result = await showModalBottomSheet(
+    final result = await showAdaptiveSheet(
       context: context,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
@@ -948,16 +971,11 @@ class _IllustRowPageState extends State<IllustRowPage>
                                     indexs[index] = !indexs[index];
                                   });
                                 },
-                                onLongPress: () {
-                                  Leader.push(
-                                    context,
-                                    PhotoZoomPage(
-                                      index: index,
-                                      illusts: illust,
-                                      illustStore: _illustStore,
-                                    ),
-                                  );
-                                },
+                                onLongPress: () =>
+                                    _previewPage(context, illust, index),
+                                onSecondaryTap: Platform.isMacOS
+                                    ? () => _previewPage(context, illust, index)
+                                    : null,
                                 child: Stack(
                                   children: [
                                     PixivImage(

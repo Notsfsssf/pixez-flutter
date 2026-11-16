@@ -21,6 +21,7 @@ import 'dart:math';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/desktop/desktop_list_target.dart';
 import 'package:pixez/component/illust_card.dart';
 import 'package:pixez/component/pixez_default_header.dart';
 import 'package:pixez/component/pixiv_image.dart';
@@ -109,20 +110,24 @@ class _RecomSpolightPageState extends State<RecomSpolightPage>
           ],
           body: ListView(),
         ),
-        EasyRefresh.builder(
-          controller: _easyRefreshController,
-          callLoadOverOffset: Platform.isIOS ? 2 : 5,
-          header: PixezDefault.header(context),
-          footer: PixezDefault.footer(context),
-          onRefresh: () async {
-            await fetchT();
-          },
-          refreshOnStart: true,
-          onLoad: () async {
-            await _lightingStore.fetchNext();
-          },
-          childBuilder: (context, physics) => Observer(
-            builder: (context) => _buildWaterFall(context, physics),
+        DesktopListTarget(
+          refreshController: _easyRefreshController,
+          scrollController: _scrollController,
+          child: EasyRefresh.builder(
+            controller: _easyRefreshController,
+            callLoadOverOffset: Platform.isIOS ? 2 : 5,
+            header: PixezDefault.header(context),
+            footer: PixezDefault.footer(context),
+            onRefresh: () async {
+              await fetchT();
+            },
+            refreshOnStart: true,
+            onLoad: () async {
+              await _lightingStore.fetchNext();
+            },
+            childBuilder: (context, physics) => Observer(
+              builder: (context) => _buildWaterFall(context, physics),
+            ),
           ),
         ),
       ],

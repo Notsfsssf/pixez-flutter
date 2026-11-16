@@ -14,6 +14,8 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pixez/component/painter_avatar.dart';
@@ -52,7 +54,7 @@ class _PainterCardState extends State<PainterCard> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        await Navigator.of(context, rootNavigator: true)
+        await Navigator.of(context, rootNavigator: !Platform.isMacOS)
             .push(MaterialPageRoute(builder: (BuildContext context) {
           if (isNovel) {
             return NovelUsersPage(
@@ -157,7 +159,7 @@ class _PainterCardState extends State<PainterCard> {
               url: _user.user.profileImageUrls.medium,
               id: _user.user.id,
               onTap: () {
-                Navigator.of(context, rootNavigator: true)
+                Navigator.of(context, rootNavigator: !Platform.isMacOS)
                     .push(MaterialPageRoute(builder: (BuildContext context) {
                   if (isNovel) {
                     return NovelUsersPage(

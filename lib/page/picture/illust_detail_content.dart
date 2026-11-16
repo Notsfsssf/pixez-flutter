@@ -479,6 +479,7 @@ class _IllustDetailContentState extends State<IllustDetailContent> {
         HapticUtil.heavy();
         await _longPressTag(context, f);
       },
+      onSecondaryTap: Platform.isMacOS ? () => _longPressTag(context, f) : null,
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return ResultPage(

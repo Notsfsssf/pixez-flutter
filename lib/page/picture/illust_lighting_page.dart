@@ -22,6 +22,7 @@ import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pixez/desktop/adaptive_sheet.dart';
 import 'package:pixez/component/ban_page.dart';
 import 'package:pixez/component/common_back_area.dart';
 import 'package:pixez/component/detail_jump_button.dart';
@@ -36,6 +37,7 @@ import 'package:pixez/er/lprinter.dart';
 import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/desktop/artwork_context_menu.dart';
+import 'package:pixez/desktop/desktop_list_target.dart';
 import 'package:pixez/models/ban_illust_id.dart';
 import 'package:pixez/models/ban_tag.dart';
 import 'package:pixez/models/illust.dart';
@@ -271,6 +273,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
             onLongPress: () {
               _showBookMarkTag();
             },
+            onSecondaryTap: Platform.isMacOS ? () => _showBookMarkTag() : null,
             onHorizontalDragEnd: (DragEndDetails detail) {
               if (widget.onHorizontalDragEnd != null) {
                 widget.onHorizontalDragEnd!(detail);
@@ -441,7 +444,9 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
         ),
       );
     if (userStore == null) userStore = UserStore(data.user.id, null, data.user);
-    return EasyRefresh(
+    return DesktopListTarget(
+      scrollController: _scrollController,
+      child: EasyRefresh(
       controller: _refreshController,
       header: PixezDefault.header(context),
       footer: PixezDefault.footer(context),
@@ -542,7 +547,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
           ),
         ],
       ),
-    );
+    ));
   }
 
   List<Widget> _buildPhotoList(Illusts data) {
@@ -576,6 +581,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                             details.globalPosition,
                             data,
                             pageIndex: 0,
+                            store: _illustStore,
                           )
                         : null,
                     onLongPress: () {
@@ -630,6 +636,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                             details.globalPosition,
                             data,
                             pageIndex: index,
+                            store: _illustStore,
                           )
                         : null,
                     onLongPress: () {
@@ -847,6 +854,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
         HapticUtil.heavy();
         await _longPressTag(context, f);
       },
+      onSecondaryTap: Platform.isMacOS ? () => _longPressTag(context, f) : null,
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -1012,7 +1020,7 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
       await _autoBookmarkAfterSave(illust);
       return;
     }
-    showModalBottomSheet(
+    showAdaptiveSheet(
       context: context,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
@@ -1032,18 +1040,27 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                       },
                     )
                   : Container(),
-              ListTile(
-                leading: Icon(Icons.save_alt),
-                onTap: () async {
-                  Navigator.of(context).pop();
-                  saveStore.saveImage(illust, index: index);
-                  await _autoBookmarkAfterSave(illust);
-                },
-                onLongPress: () async {
-                  Navigator.of(context).pop();
-                  saveStore.saveImage(illust, index: index);
-                },
-                title: Text(I18n.of(context).save),
+              // Long press / right-click saves without auto-bookmarking.
+              GestureDetector(
+                onSecondaryTap: Platform.isMacOS
+                    ? () {
+                        Navigator.of(context).pop();
+                        saveStore.saveImage(illust, index: index);
+                      }
+                    : null,
+                child: ListTile(
+                  leading: Icon(Icons.save_alt),
+                  onTap: () async {
+                    Navigator.of(context).pop();
+                    saveStore.saveImage(illust, index: index);
+                    await _autoBookmarkAfterSave(illust);
+                  },
+                  onLongPress: () async {
+                    Navigator.of(context).pop();
+                    saveStore.saveImage(illust, index: index);
+                  },
+                  title: Text(I18n.of(context).save),
+                ),
               ),
               ListTile(
                 leading: Icon(Icons.cancel),
@@ -1058,13 +1075,20 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
     );
   }
 
+  void _previewPage(BuildContext context, Illusts illust, int index) {
+    Leader.push(
+      context,
+      PhotoZoomPage(index: index, illusts: illust, illustStore: _illustStore),
+    );
+  }
+
   Future _showMutiChoiceDialog(Illusts illust, BuildContext context) async {
     List<bool> indexs = [];
     bool allOn = false;
     for (int i = 0; i < illust.metaPages.length; i++) {
       indexs.add(false);
     }
-    final result = await showModalBottomSheet(
+    final result = await showAdaptiveSheet(
       context: context,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
@@ -1097,16 +1121,11 @@ class _IllustVerticalPageState extends State<IllustVerticalPage>
                                     indexs[index] = !indexs[index];
                                   });
                                 },
-                                onLongPress: () {
-                                  Leader.push(
-                                    context,
-                                    PhotoZoomPage(
-                                      index: index,
-                                      illusts: illust,
-                                      illustStore: _illustStore,
-                                    ),
-                                  );
-                                },
+                                onLongPress: () =>
+                                    _previewPage(context, illust, index),
+                                onSecondaryTap: Platform.isMacOS
+                                    ? () => _previewPage(context, illust, index)
+                                    : null,
                                 child: Stack(
                                   children: [
                                     PixivImage(

@@ -16,6 +16,7 @@
 import 'dart:async';
 
 import 'package:material_ui/material_ui.dart';
+import 'package:pixez/desktop/adaptive_sheet.dart';
 import 'package:pixez/component/pixiv_image.dart';
 import 'package:pixez/component/sort_group.dart';
 import 'package:pixez/er/leader.dart';
@@ -238,7 +239,7 @@ class _JobPageState extends State<JobPage> with SingleTickerProviderStateMixin {
     return IconButton(
         icon: Icon(Icons.more_vert),
         onPressed: () async {
-          await showModalBottomSheet(
+          await showAdaptiveSheet(
               context: context,
               shape: RoundedRectangleBorder(
                   borderRadius:

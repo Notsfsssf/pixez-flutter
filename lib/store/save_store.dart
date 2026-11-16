@@ -23,6 +23,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pixez/desktop/desktop_shell.dart';
 import 'package:pixez/document_plugin.dart';
 import 'package:pixez/er/toaster.dart';
 import 'package:pixez/exts.dart';
@@ -143,13 +144,7 @@ abstract class _SaveStoreBase with Store {
                   IconButton(
                     icon: Icon(Icons.arrow_downward),
                     onPressed: () {
-                      Navigator.of(ctx!, rootNavigator: true).push(
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return JobPage();
-                          },
-                        ),
-                      );
+                      _openJobs();
                     },
                   ),
                   Padding(
@@ -174,13 +169,7 @@ abstract class _SaveStoreBase with Store {
             child: Card(
               child: GestureDetector(
                 onTap: () {
-                  Navigator.of(ctx!, rootNavigator: true).push(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return JobPage();
-                      },
-                    ),
-                  );
+                  _openJobs();
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -262,6 +251,14 @@ abstract class _SaveStoreBase with Store {
         ? (await getTemporaryDirectory()).path
         : (await getApplicationDocumentsDirectory()).path + '/pixez';
     return directory;
+  }
+
+  void _openJobs() {
+    if (Platform.isMacOS && DesktopShell.open((_) => JobPage())) return;
+    Navigator.of(
+      ctx!,
+      rootNavigator: true,
+    ).push(MaterialPageRoute(builder: (context) => JobPage()));
   }
 
   _joinQueue(String url, Illusts illusts, String fileName) async {
