@@ -20,12 +20,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_compatibility_layer/dio_compatibility_layer.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter_cache_manager_dio/flutter_cache_manager_dio.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:pixez/network/pixiv_cache_manager.dart';
 
 import 'package:pixez/er/hoster.dart';
 import 'package:pixez/er/illust_cacher.dart';
 import 'package:pixez/er/pixiv_image_source.dart';
 import 'package:pixez/main.dart';
+import 'package:pixez/i18n.dart';
 import 'package:pixez/network/pixez_network_settings.dart';
 import 'package:rhttp/rhttp.dart' as r;
 
@@ -38,7 +40,7 @@ const ImageSHost = "s.pximg.net";
 // 如果你恰好看到这个实现方法实例，且对你有些帮助或者启发：
 // 听一首Mili-Salt, Pepper, Birds, And the Thought Police吧 🎵
 
-DioCacheManager? pixivCacheManager = DioCacheManager.instance;
+CacheManager? pixivCacheManager = PixivCacheManager.instance;
 
 class PixEzCacheHeaderData {
   final String key;
@@ -74,6 +76,7 @@ class PixivImage extends StatefulWidget {
   _PixivImageState createState() => _PixivImageState();
 
   static Dio? _cacheDio;
+  static final _networkRevision = ValueNotifier<int>(0);
 
   static Future<void> generatePixivCache() async {
     final client = await r.RhttpCompatibleClient.createSync(
@@ -85,6 +88,7 @@ class PixivImage extends StatefulWidget {
     final existing = _cacheDio;
     if (existing != null) {
       existing.httpClientAdapter = ConversionLayerAdapter(client);
+      _networkRevision.value++;
       return;
     }
     final dio = Dio();
@@ -96,7 +100,8 @@ class PixivImage extends StatefulWidget {
     );
     dio.httpClientAdapter = ConversionLayerAdapter(client);
     _cacheDio = dio;
-    DioCacheManager.initialize(dio);
+    PixivCacheManager.initialize(dio);
+    _networkRevision.value++;
   }
 }
 
@@ -138,6 +143,44 @@ class PixivImageInterceptor extends Interceptor {
 }
 
 class _PixivImageState extends State<PixivImage> {
+  int _attempt = 0;
+  bool _failed = false;
+  bool _retrying = false;
+  int _loadRevision = 0;
+
+  void _networkChanged() {
+    if (_failed) _retry();
+  }
+
+  Future<void> _retry() async {
+    if (_retrying || !mounted) return;
+    _retrying = true;
+    final failedUrl = url;
+    try {
+      await CachedNetworkImage.evictFromCache(
+        failedUrl,
+        cacheManager: pixivCacheManager,
+      );
+    } catch (_) {
+      // Recreate the image stream even if removing a stale cache entry fails.
+    } finally {
+      _retrying = false;
+      if (mounted && url == failedUrl) {
+        setState(() {
+          _failed = false;
+          _loadRevision = PixivImage._networkRevision.value;
+          _attempt++;
+        });
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    PixivImage._networkRevision.removeListener(_networkChanged);
+    super.dispose();
+  }
+
   late String url;
   bool already = false;
   bool? enableMemoryCache;
@@ -157,6 +200,8 @@ class _PixivImageState extends State<PixivImage> {
     fade = widget.fade;
     placeWidget = widget.placeWidget;
     super.initState();
+    _loadRevision = PixivImage._networkRevision.value;
+    PixivImage._networkRevision.addListener(_networkChanged);
   }
 
   @override
@@ -165,6 +210,8 @@ class _PixivImageState extends State<PixivImage> {
     if (oldWidget.url != widget.url) {
       setState(() {
         url = widget.url;
+        _failed = false;
+        _loadRevision = PixivImage._networkRevision.value;
         width = widget.width;
         height = widget.height;
       });
@@ -175,6 +222,22 @@ class _PixivImageState extends State<PixivImage> {
   Widget build(BuildContext context) {
     final size = min(min(width ?? 60, height ?? 60), 60.0);
     return CachedNetworkImage(
+      key: ValueKey('$url:$_attempt'),
+      errorListener: (error) {
+        _failed = true;
+        if (_loadRevision != PixivImage._networkRevision.value) {
+          Future.microtask(_retry);
+        }
+        final status = error is DioException
+            ? error.response?.statusCode
+            : null;
+        final reason = error is DioException
+            ? error.type.name
+            : error.runtimeType.toString();
+        debugPrint(
+          'Image load failed: ${Uri.tryParse(url)?.host} ${status == null ? reason : 'HTTP $status'}',
+        );
+      },
       placeholder: (context, url) =>
           widget.placeWidget ??
           Container(
@@ -190,14 +253,17 @@ class _PixivImageState extends State<PixivImage> {
               ),
             ),
           ),
-      errorWidget: (context, url, _) => Container(
+      errorWidget: (context, url, error) => Container(
         height: height,
         child: Center(
-          child: TextButton(
-            onPressed: () {
-              setState(() {});
-            },
-            child: Text(":("),
+          child: Tooltip(
+            message:
+                '${I18n.of(context).load_image_failed_click_to_reload}${error is DioException && error.response?.statusCode != null ? ' (HTTP ${error.response!.statusCode})' : ''}',
+            child: TextButton.icon(
+              onPressed: _retry,
+              icon: const Icon(Icons.refresh, size: 18),
+              label: Text(I18n.of(context).retry),
+            ),
           ),
         ),
       ),
