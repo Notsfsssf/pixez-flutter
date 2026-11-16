@@ -149,6 +149,7 @@ class Leader {
           final user = accountResponse.user;
           AccountProvider accountProvider = new AccountProvider();
           await accountProvider.open();
+          await accountProvider.deleteByUserId(user.id);
           var accountPersist = AccountPersist(
             userId: user.id,
             userImage: user.profileImageUrls.px170x170,
@@ -165,6 +166,10 @@ class Leader {
           );
           await accountProvider.insert(accountPersist);
           await accountStore.fetch();
+          final selected = accountStore.accounts.indexWhere(
+            (a) => a.userId == user.id,
+          );
+          if (selected >= 0) await accountStore.select(selected);
           BotToast.showText(text: "Login Success");
           if (Platform.isIOS || Platform.isLinux) pushUntilHome(context);
         } catch (e) {

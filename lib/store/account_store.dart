@@ -72,8 +72,11 @@ abstract class _AccountStoreBase with Store {
       await Prefer.init();
       var i = Prefer.getInt('account_select_num');
       if (list.isNotEmpty) {
-        index = i ?? 0;
-        now = list[i ?? 0];
+        index = (i ?? 0).clamp(0, list.length - 1);
+        now = list[index];
+      } else {
+        index = 0;
+        now = null;
       }
     } catch (e) {}
     feching = false;
