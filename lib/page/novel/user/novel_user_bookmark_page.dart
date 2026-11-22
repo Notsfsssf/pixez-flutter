@@ -27,7 +27,6 @@ import 'package:pixez/page/novel/component/novel_bookmark_button.dart';
 import 'package:pixez/page/novel/component/novel_lighting_store.dart';
 import 'package:pixez/page/novel/viewer/novel_viewer.dart';
 import 'package:pixez/page/user/works/works_page.dart';
-import 'package:pixez/exts.dart';
 
 class NovelUserBookmarkPage extends StatefulWidget {
   final int id;
@@ -113,7 +112,7 @@ class _NovelUserBookmarkPageState extends State<NovelUserBookmarkPage> {
   }
 
   _buildListBody() {
-    _store.novels.removeWhere((element) => element.novel?.hateByUser() == true);
+    // 屏蔽项已经在 NovelLightingStore 里过滤掉了。
     return SliverList(
         delegate: SliverChildBuilderDelegate((context, index) {
       Novel novel = _store.novels[index].novel!;
