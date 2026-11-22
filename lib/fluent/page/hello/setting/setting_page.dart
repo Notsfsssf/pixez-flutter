@@ -263,12 +263,12 @@ class _SettingPageState extends State<SettingPage> {
               ),
             ),
             ListTile(
-              leading: Icon(FluentIcons.message),
+              leading: Icon(FluentIcons.info),
               title: Text(I18n.of(context).about),
               onPressed: () => Leader.push(
                 context,
                 AboutPage(newVersion: _effectiveHasNewVersion),
-                icon: Icon(FluentIcons.message),
+                icon: Icon(FluentIcons.info),
                 title: Text(I18n.of(context).about),
               ),
               trailing: Row(

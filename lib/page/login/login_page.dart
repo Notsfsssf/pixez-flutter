@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
               },
             ),
             IconButton(
-              icon: Icon(Icons.message),
+              icon: Icon(Icons.info),
               onPressed: () {
                 Navigator.of(
                   context,
@@ -137,7 +137,7 @@ class _LoginPageState extends State<LoginPage> {
                               builder: (context) => TokenPage(),
                             );
                           },
-                          child: Text("Token"),
+                          child: Text(I18n.of(context).login_with_token),
                         ),
                         SizedBox(height: 4),
                         TextButton(

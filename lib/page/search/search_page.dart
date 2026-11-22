@@ -407,7 +407,7 @@ class _SearchPageState extends State<SearchPage>
                           ),
                           Align(
                             child: Padding(
-                              padding: const EdgeInsets.all(2.0),
+                              padding: const EdgeInsets.all(8.0),
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
