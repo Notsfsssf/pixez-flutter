@@ -228,19 +228,23 @@ class Fetcher {
   ) async {
     var taskPersist = await taskPersistProvider.getAccount(url);
     if (taskPersist == null) return;
-    await taskPersistProvider.update(taskPersist..status = 2);
-    File file = File(savePath + Platform.pathSeparator + fileName);
-    final uint8list = await file.readAsBytes();
-    await saveStore.saveToGallery(uint8list, illusts, fileName);
-    Toaster.downloadOk("${illusts.title} ${I18n.of(context!).saved}");
-    var job = jobMaps[url];
-    if (job != null) {
-      job.status = 2;
-    } else {
-      jobMaps[url] = JobEntity()
-        ..status = 2
-        ..min = 1
-        ..max = 1;
+    try {
+      File file = File(savePath + Platform.pathSeparator + fileName);
+      final uint8list = await file.readAsBytes();
+      await saveStore.saveToGallery(uint8list, illusts, fileName);
+      await taskPersistProvider.update(taskPersist..status = 2);
+      Toaster.downloadOk("${illusts.title} ${I18n.of(context!).saved}");
+      var job = jobMaps[url];
+      if (job != null) {
+        job.status = 2;
+      } else {
+        jobMaps[url] = JobEntity()
+          ..status = 2
+          ..min = 1
+          ..max = 1;
+      }
+    } catch (_) {
+      await _errorD(url);
     }
   }
 

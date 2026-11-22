@@ -50,6 +50,11 @@ class _TokenPageState extends State<TokenPage> {
       );
       await accountProvider.insert(accountPersist);
       await accountStore.fetch();
+      final selected = accountStore.accounts.indexWhere(
+        (a) => a.userId == user.id,
+      );
+      if (selected >= 0) await accountStore.select(selected);
+      if (!mounted) return;
       Leader.pushUntilHome(context);
     } catch (e) {
       setState(() {
