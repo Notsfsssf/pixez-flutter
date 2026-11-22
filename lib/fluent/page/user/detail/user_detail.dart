@@ -14,6 +14,7 @@
  *
  */
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:pixez/fluent/component/selectable_html.dart';
@@ -34,6 +35,13 @@ class UserDetailPage extends StatefulWidget {
 }
 
 class _UserDetailPageState extends State<UserDetailPage> {
+  void _copy(String text) {
+    try {
+      Clipboard.setData(ClipboardData(text: text));
+      BotToast.showText(text: I18n.of(context).copied_to_clipboard);
+    } catch (e) {}
+  }
+
   @override
   Widget build(BuildContext context) {
     var detail = widget.userDetail;
@@ -63,19 +71,15 @@ class _UserDetailPageState extends State<UserDetailPage> {
                 children: [
                   TableRow(children: [
                     Text(I18n.of(context).nickname),
-                    Text(detail.user.name, textAlign: TextAlign.center)
+                    HyperlinkButton(
+                        child: Text(detail.user.name),
+                        onPressed: () => _copy(detail.user.name)),
                   ]),
                   TableRow(children: [
                     Text(I18n.of(context).painter_id),
                     HyperlinkButton(
                         child: Text(detail.user.id.toString()),
-                        onPressed: () {
-                          try {
-                            Clipboard.setData(
-                              ClipboardData(text: detail.user.id.toString()),
-                            );
-                          } catch (e) {}
-                        }),
+                        onPressed: () => _copy(detail.user.id.toString())),
                   ]),
                   TableRow(children: [
                     Text(I18n.of(context).total_follow_users),

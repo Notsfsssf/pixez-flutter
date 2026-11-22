@@ -16,6 +16,7 @@
 
 import 'dart:io';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:pixez/component/selectable_html.dart';
@@ -50,6 +51,14 @@ class _UserDetailPageState extends State<UserDetailPage> {
     _isNewNested = widget.isNewNested;
     _isNovel = widget.isNovel ?? false;
     super.initState();
+  }
+
+  void _copy(String? text) {
+    if (text == null || text.isEmpty) return;
+    try {
+      Clipboard.setData(ClipboardData(text: text));
+      BotToast.showText(text: I18n.of(context).copied_to_clipboard);
+    } catch (e) {}
   }
 
   @override
@@ -107,16 +116,18 @@ class _UserDetailPageState extends State<UserDetailPage> {
               columns: <DataColumn>[
                 DataColumn(label: Text(I18n.of(context).nickname)),
                 DataColumn(
-                    label: Expanded(child: Text(detail?.user.name ?? ""))),
+                    label: Expanded(
+                        child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => _copy(detail?.user.name),
+                  child: Text(detail?.user.name ?? ""),
+                ))),
               ],
               rows: <DataRow>[
                 DataRow(cells: [
                   DataCell(Text(I18n.of(context).painter_id)),
                   DataCell(Text(detail?.user.id.toString() ?? ""), onTap: () {
-                    try {
-                      Clipboard.setData(
-                          ClipboardData(text: detail!.user.id.toString()));
-                    } catch (e) {}
+                    _copy(detail?.user.id.toString());
                   }),
                 ]),
                 DataRow(cells: [
