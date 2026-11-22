@@ -239,6 +239,18 @@ class _UsersPageState extends State<UsersPage> with TickerProviderStateMixin {
                     _userWorkType = newType;
                   });
                 },
+                onNovelTap:
+                    (userStore.userDetail?.profile.total_novels ?? 0) > 0
+                        ? () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (BuildContext context) {
+                                  return NovelUsersPage(id: widget.id);
+                                },
+                              ),
+                            );
+                          }
+                        : null,
               ),
               BookMarkNestedPage(
                 id: widget.id,
