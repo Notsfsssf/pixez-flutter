@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:pixez/document_plugin.dart';
+import 'package:pixez/file_service_plugin.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/tags.dart';
 
@@ -22,12 +22,16 @@ class _ExportPageState extends State<ExportPage> {
       body: ListView(children: [
         ListTile(
           title: Text("Export tag history"),
-          onTap: () {
+          onTap: () async {
             final tags = tagHistoryStore.tags;
             List<TagsPersist> tagsPersist = tags.toList();
             String json = jsonEncode(tagsPersist);
             final data = Uint8List.fromList(json.codeUnits);
-            DocumentPlugin.openSave(data, "export_tag_history.json");
+            await FileServicePlugin.saveBytesAs(
+              data: data,
+              fileName: 'export_tag_history.json',
+              mimeType: 'application/json',
+            );
           },
         ),
         ListTile(
