@@ -133,6 +133,9 @@ class _SaveFormatPageState extends State<SaveFormatPage> {
                 _buildActionText("illust_id"),
                 _buildActionText("user_id"),
                 _buildActionText("user_name"),
+                _buildActionText("year"),
+                _buildActionText("month"),
+                _buildActionText("day"),
               ],
             ),
           ),
@@ -172,6 +175,18 @@ class _SaveFormatPageState extends State<SaveFormatPage> {
               DataRow(cells: [
                 DataCell(Text('{part}')),
                 DataCell(Text(I18n.of(context).which_part)),
+              ]),
+              DataRow(cells: [
+                DataCell(Text('{year}')),
+                DataCell(Text(I18n.of(context).upload_year)),
+              ]),
+              DataRow(cells: [
+                DataCell(Text('{month}')),
+                DataCell(Text(I18n.of(context).upload_month)),
+              ]),
+              DataRow(cells: [
+                DataCell(Text('{day}')),
+                DataCell(Text(I18n.of(context).upload_day)),
               ]),
             ],
           )

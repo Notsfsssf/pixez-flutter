@@ -91,10 +91,20 @@ Future<String> buildSaveFileName(
       await userSetting.setFileNameEval(0);
     }
   }
-  final result = userSetting.format!
+  // Use the date part of create_date as is (pixiv's local time), not UTC.
+  final createDate =
+      RegExp(r'^(\d{4})-(\d{2})-(\d{2})').firstMatch(illust.createDate);
+  var result = userSetting.format!
       .replaceAll("{illust_id}", illust.id.toString())
       .replaceAll("{user_id}", illust.user.id.toString())
-      .replaceAll("{part}", index.toString())
+      .replaceAll("{part}", index.toString());
+  if (createDate != null) {
+    result = result
+        .replaceAll("{year}", createDate.group(1)!)
+        .replaceAll("{month}", createDate.group(2)!)
+        .replaceAll("{day}", createDate.group(3)!);
+  }
+  result = result
       .replaceAll("{user_name}", illust.user.name.toString())
       .replaceAll("{title}", illust.title);
   if (withExtension) {
