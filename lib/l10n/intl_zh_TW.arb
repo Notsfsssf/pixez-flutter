@@ -361,5 +361,10 @@
   "date_preset_6months": "6個月",
   "date_preset_1year": "1年",
   "date_preset_custom": "指定期間",
-  "related_users": "相關繪師"
+  "related_users": "相關繪師",
+  "filename_emoji_mode": "檔名中的 emoji",
+  "filename_emoji_underscore": "底線",
+  "filename_emoji_remove": "移除",
+  "filename_emoji_english": "英文名稱",
+  "filename_emoji_capitalize": "每個表情的英文名稱首字母大寫"
 }

@@ -364,5 +364,10 @@
   "date_preset_6months": "6 months",
   "date_preset_1year": "1 year",
   "date_preset_custom": "Custom range",
-  "related_users": "Related users"
+  "related_users": "Related users",
+  "filename_emoji_mode": "Emoji in filenames",
+  "filename_emoji_underscore": "Underscores",
+  "filename_emoji_remove": "Remove",
+  "filename_emoji_english": "English names",
+  "filename_emoji_capitalize": "Capitalize the first letter of each emoji name"
 }

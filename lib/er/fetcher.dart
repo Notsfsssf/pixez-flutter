@@ -170,7 +170,7 @@ class Fetcher {
     var taskBean = TaskBean(
       url: url,
       illusts: illusts,
-      fileName: fileName,
+      fileName: userSetting.sanitizeFileName(fileName),
       networkMode: userSetting.networkMode,
       source: userSetting.pictureSource,
       host: splashStore.host,
